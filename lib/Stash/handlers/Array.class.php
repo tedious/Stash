@@ -41,18 +41,19 @@
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link       http://code.google.com/p/stash/
  * @since      File available since Release 0.9.1
- * @version    Release: 0.9.3
+ * @version    Release: 0.9.5
  */
 
+namespace Stash;
 
 /**
- * The StashArray class exists to assist with testing the main Stash class. Since this is a very mininal handler we can
+ * The ephemeral class exists to assist with testing the main Stash class. Since this is a very mininal handler we can
  * test Stash without having to worry about underlying problems interfering.
  *
  * @package Stash
  * @author Robert Hafner <tedivm@tedivm.com>
  */
-class StashArray implements \Stash\Handler
+class Ephemeral implements \Stash\Handler
 {
 	protected $store = array();
 
