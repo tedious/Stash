@@ -1,6 +1,6 @@
 <?php
 
-class Stash_ExceptionTest extends PHPUnit_Framework_TestCase
+class Cache_ExceptionTest extends PHPUnit_Framework_TestCase
 {
 	public function testStore()
 	{

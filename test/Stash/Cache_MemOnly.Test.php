@@ -1,6 +1,6 @@
 <?php
 
-class Stash_MemOnlyTest extends StashTest
+class Cache_MemOnlyTest extends CacheTest
 {
 
 	public function testConstruct()

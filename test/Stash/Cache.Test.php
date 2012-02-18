@@ -1,6 +1,6 @@
 <?php
 
-class StashTest extends PHPUnit_Framework_TestCase
+class CacheTest extends PHPUnit_Framework_TestCase
 {
 	protected $data = array('string' => 'Hello world!',
 							'complexString' => "\t\t\t\tHello\r\n\rWorld!",
