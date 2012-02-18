@@ -56,11 +56,11 @@ class StashHandlers
 	 *
 	 * @var array
 	 */
-	protected static $handlers = array(	'Apc'			=> 'StashApc',
-										'FileSystem' 	=> 'StashFileSystem',
-										'Memcached'		=> 'StashMemcached',
-										'MultiHandler'	=> 'StashMultiHandler',
-										'SQLite' 		=> 'StashSqlite');
+	protected static $handlers = array(	'Apc'			=> '\Stash\Handlers\Apc',
+										'FileSystem' 	=> '\Stash\Handlers\FileSystem',
+										'Memcached'		=> '\Stash\Handlers\Memcached',
+										'MultiHandler'	=> '\Stash\Handlers\MultiHandler',
+										'SQLite' 		=> '\Stash\Handlers\Sqlite');
 
 
 	/**

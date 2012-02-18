@@ -44,13 +44,17 @@
  * @version    Release: 0.9.3
  */
 
+namespace Stash\Handlers;
+
+use Stash;
+
 /**
  * The StashApc is a wrapper for the APC extension, which allows developers to store data in memory.
  *
  * @package Stash
  * @author Robert Hafner <tedivm@tedivm.com>
  */
-class StashApc implements StashHandler
+class Apc implements \StashHandler
 {
 	protected $ttl = 300;
 	protected $apcNamespace;

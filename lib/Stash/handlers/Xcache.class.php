@@ -44,6 +44,11 @@
  * @version    Release: 0.9.3
  */
 
+namespace Stash\Handlers;
+
+use Stash;
+
+
 /**
  * StashSqlite is a wrapper around the xcache php extension, which allows developers to store data in memory.
  *
@@ -51,7 +56,7 @@
  * @author Robert Hafner <tedivm@tedivm.com>
  * @codeCoverageIgnore Just until I figure out how to get phpunit working over http, or xcache over cli
  */
-class StashXcache extends StashApc
+class Xcache extends Apc
 {
 	protected $user;
 	protected $password;

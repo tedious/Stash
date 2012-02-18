@@ -44,6 +44,9 @@
  * @version    Release: 0.9.3
  */
 
+namespace Stash\Handlers;
+
+use Stash;
 
 /**
  * StashExceptionTest is used for testing how Stash reacts to thrown errors. Every function but the constructor throws
@@ -53,7 +56,7 @@
  * @author Robert Hafner <tedivm@tedivm.com>
  * @codeCoverageIgnore
  */
-class StashExceptionTest implements StashHandler
+class ExceptionTest implements \StashHandler
 {
 	protected $store = array();
 
@@ -97,5 +100,5 @@ class StashExceptionTest implements StashHandler
 	}
 }
 
-class StashExceptionTestError extends StashError {}
+class StashExceptionTestError extends \StashError {}
 ?>

@@ -2,7 +2,7 @@
 
 class StashMemcached_memcacheTest extends StashHandlerTest
 {
-	protected $handlerClass = 'StashMemcached';
+	protected $handlerClass = '\Stash\Handlers\Memcached';
 	protected $extension = 'memcache';
 
 	protected $servers = array('127.0.0.1', '11211');

@@ -11,13 +11,13 @@ class StashAutoloaderTest extends PHPUnit_Framework_TestCase
 										'StashWarning',
 										'StashUtilities',
 										'Stash',
-										'StashApc',
-										'StashExceptionTest',
-										'StashXcache',
-										'StashSqlite',
-										'StashFileSystem',
-										'StashMemcached',
-										'StashMultiHandler'
+										'\Stash\Handlers\Apc',
+										'\Stash\Handlers\ExceptionTest',
+										'\Stash\Handlers\Xcache',
+										'\Stash\Handlers\Sqlite',
+										'\Stash\Handlers\FileSystem',
+										'\Stash\Handlers\Memcached',
+										'\Stash\Handlers\MultiHandler'
 									);
 
 	public function testInit()
@@ -37,15 +37,7 @@ class StashAutoloaderTest extends PHPUnit_Framework_TestCase
 	{
 		StashAutoloader::register();
 		$this->assertEquals('spl_autoload_call', ini_get('unserialize_callback_func'), 'Register enables spl autoload');
-		$this->assertTrue(class_exists('StashSqlite'), 'Autoloader does load Stash code.');
-	}
-
-	public function testloadAll()
-	{
-		$this->assertTrue(StashAutoloader::loadAll(), 'Autoloader can load all classes.');
-
-		foreach($this->classes as $class)
-			$this->assertTrue(class_exists($class, false) || interface_exists($class, false), 'Autoloader can load class ' . $class);
+		$this->assertTrue(class_exists('\Stash\Handlers\Sqlite'), 'Autoloader does load Stash code.');
 	}
 }
 

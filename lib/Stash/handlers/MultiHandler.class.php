@@ -44,6 +44,9 @@
  * @version    Release: 0.9.3
  */
 
+namespace Stash\Handlers;
+
+use Stash;
 
 /**
  * StashMultieHandler is a wrapper around one or more StashHandlers, allowing faster caching engines with size or
@@ -53,7 +56,7 @@
  * @package Stash
  * @author Robert Hafner <tedivm@tedivm.com>
  */
-class StashMultiHandler implements StashHandler
+class MultiHandler implements \StashHandler
 {
 
 	protected $handlers = array();
@@ -70,10 +73,10 @@ class StashMultiHandler implements StashHandler
 
 		foreach($options['handlers'] as $handler)
 		{
-			if(!(is_object($handler) && $handler instanceof StashHandler))
+			if(!(is_object($handler) && $handler instanceof \StashHandler))
 				throw new StashMultiHandlerError('Handler objects are expected to implement StashHandler');
 
-			if(!StashUtilities::staticFunctionHack($handler, 'canEnable'))
+			if(!\StashUtilities::staticFunctionHack($handler, 'canEnable'))
 				continue;
 
 			$this->handlers[] = $handler;
@@ -188,5 +191,5 @@ class StashMultiHandler implements StashHandler
 	}
 }
 
-class StashMultiHandlerError extends StashError {}
+class StashMultiHandlerError extends \StashError {}
 ?>

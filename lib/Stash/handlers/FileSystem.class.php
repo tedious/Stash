@@ -44,7 +44,9 @@
  * @version    Release: 0.9.3
  */
 
+namespace Stash\Handlers;
 
+use Stash;
 
 /**
  * StashFileSystem stores cache objects in the filesystem as native php, making the process of retrieving stored data
@@ -54,7 +56,7 @@
  * @package Stash
  * @author Robert Hafner <tedivm@tedivm.com>
  */
-class StashFileSystem implements StashHandler
+class FileSystem implements \StashHandler
 {
 	/**
 	 * This is the path to the file which will be used to store the cached item. It is based off of the key.
@@ -111,7 +113,7 @@ class StashFileSystem implements StashHandler
 	{
 		$options = array_merge($this->defaultOptions, $options);
 
-		$this->cachePath = isset($options['path']) ? $options['path'] : StashUtilities::getBaseDirectory($this);
+		$this->cachePath = isset($options['path']) ? $options['path'] : \StashUtilities::getBaseDirectory($this);
 		$lastChar = substr($this->cachePath, -1);
 		if($lastChar != '/' && $lastChar != '\'')
 			$this->cachePath .= '/';
@@ -241,7 +243,7 @@ class StashFileSystem implements StashHandler
 
 	protected function encode($data)
 	{
-		switch(StashUtilities::encoding($data))
+		switch(\StashUtilities::encoding($data))
 		{
 			case 'bool':
 				$dataString = (bool) $data ? 'true' : 'false';
@@ -302,7 +304,7 @@ class StashFileSystem implements StashHandler
 			$pathPieces = array();
 			$path = $basePath;
 			$len = floor(32 / $this->directorySplit);
-			$key = StashUtilities::normalizeKeys($key);
+			$key = \StashUtilities::normalizeKeys($key);
 
 			foreach($key as $index => $value)
 			{
@@ -355,7 +357,7 @@ class StashFileSystem implements StashHandler
 			$path = substr($path, 0, strlen($path) - 4);
 
 		if(is_dir($path))
-			return StashUtilities::deleteRecursive($path);
+			return \StashUtilities::deleteRecursive($path);
 
 		return isset($return);
 	}
@@ -370,9 +372,9 @@ class StashFileSystem implements StashHandler
 		$startTime = time();
 		$filePath = $this->makePath();
 
-		$directoryIt = new RecursiveDirectoryIterator($filePath);
+		$directoryIt = new \RecursiveDirectoryIterator($filePath);
 
-		foreach(new RecursiveIteratorIterator($directoryIt, RecursiveIteratorIterator::CHILD_FIRST) as $file)
+		foreach(new \RecursiveIteratorIterator($directoryIt, \RecursiveIteratorIterator::CHILD_FIRST) as $file)
 		{
 			$filename = $file->getPathname();
 			if($file->isDir())
@@ -412,5 +414,5 @@ class StashFileSystem implements StashHandler
 
 }
 
-class StashFileSystemError extends StashError {}
+class StashFileSystemError extends \StashError {}
 ?>

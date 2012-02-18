@@ -44,7 +44,9 @@
  * @version    Release: 0.9.3
  */
 
+namespace Stash\Handlers;
 
+use Stash;
 
 /**
  * StashSqlite is a wrapper around one or more SQLite databases stored on the local system. While not as quick at at
@@ -54,7 +56,7 @@
  * @package Stash
  * @author Robert Hafner <tedivm@tedivm.com>
  */
-class StashSqlite implements StashHandler
+class Sqlite implements \StashHandler
 {
 	protected $defaultOptions = array(
 										'filePermissions'	=> 0660,
@@ -80,13 +82,12 @@ class StashSqlite implements StashHandler
 	{
 		$options = array_merge($this->defaultOptions, $options);
 
-		$path = isset($options['path']) ? $options['path'] : StashUtilities::getBaseDirectory($this);
+		$path = isset($options['path']) ? $options['path'] : \StashUtilities::getBaseDirectory($this);
 		$lastChar = substr($path, -1);
 		if($lastChar != '/' && $lastChar != '\'')
 			$path .= '/';
 
 		$this->path = $path;
-
 		if(!isset($options['extension']))
 			$options['extension'] = 'pdo';
 
@@ -94,13 +95,13 @@ class StashSqlite implements StashHandler
 
 		if($extension == 'sqlite')
 		{
-			$handler = 'StashSqlite_SQLite';
+			$handler = '\Stash\Handlers\Sqlite_SQLite';
 		}else{
 			if(isset($options['version']) && $options['version'] == 2)
 			{
-				$handler = 'StashSqlite_PDO2';
+				$handler = '\Stash\Handlers\Sqlite_PDO2';
 			}else{
-				$handler = 'StashSqlite_PDO';
+				$handler = '\Stash\Handlers\Sqlite_PDO';
 			}
 		}
 
@@ -125,7 +126,7 @@ class StashSqlite implements StashHandler
 		if(!($data = $sqlHandler->get($sqlKey)))
 		   return false;
 
-		$data['data'] = StashUtilities::decode($data['data'], $data['encoding']);
+		$data['data'] = \StashUtilities::decode($data['data'], $data['encoding']);
 
 		return $data;
 	}
@@ -143,9 +144,9 @@ class StashSqlite implements StashHandler
 
 		$sqlKey = $this->makeSqlKey($key);
 
-		$storeData = array('data'		=> StashUtilities::encode($data),
+		$storeData = array('data'		=> \StashUtilities::encode($data),
 						   'expiration'	=> $expiration,
-						   'encoding'	=> StashUtilities::encoding($data));
+						   'encoding'	=> \StashUtilities::encoding($data));
 
 		return $sqlHandler->set($sqlKey, $storeData, $expiration);
 	}
@@ -167,6 +168,7 @@ class StashSqlite implements StashHandler
 		{
 			if(!($handler = $this->getSqliteHandler($database, true)))
 				continue;
+			
 
 			isset($sqlKey) ? $handler->clear($sqlKey) : $handler->clear();
 			$handler->__destruct();
@@ -201,7 +203,7 @@ class StashSqlite implements StashHandler
 	 *
 	 * @param null|array $key
 	 * @param bool $name = false
-	 * @return StashSqlite_SQLite
+	 * @return Sqlite_SQLite
 	 */
 	protected function getSqliteHandler($key, $name = false)
 	{
@@ -216,7 +218,7 @@ class StashSqlite implements StashHandler
 			if(!is_array($key))
 				return false;
 
-			$key = StashUtilities::normalizeKeys($key);
+			$key = \StashUtilities::normalizeKeys($key);
 
 			$nestingLevel = $this->nesting;
 			$fileName = 'cache_';
@@ -273,7 +275,7 @@ class StashSqlite implements StashHandler
 	 */
 	static function canEnable()
 	{
-		$drivers = class_exists('PDO', false) ? PDO::getAvailableDrivers() : array();
+		$drivers = class_exists('\PDO', false) ? \PDO::getAvailableDrivers() : array();
 		return (in_array('sqlite', $drivers) || in_array('sqlite2', $drivers)) || class_exists('SQLiteDatabase', false);
 	}
 
@@ -287,7 +289,7 @@ class StashSqlite implements StashHandler
 	 */
 	static function makeSqlKey($key)
 	{
-		$key = StashUtilities::normalizeKeys($key, 'base64_encode');
+		$key = \StashUtilities::normalizeKeys($key, 'base64_encode');
 		$path = '';
 		foreach($key as $rawPathPiece)
 			$path .= $rawPathPiece . ':::';
@@ -297,7 +299,7 @@ class StashSqlite implements StashHandler
 }
 
 
-class StashSqlite_SQLite
+class Sqlite_SQLite
 {
 	protected $path;
 	protected $handler;
@@ -376,8 +378,8 @@ class StashSqlite_SQLite
 		{
 			unset($handler);
 			unset($this->handler);
-				$this->handler = false;
-			StashUtilities::deleteRecursive($this->path);
+			$this->handler = false;
+			\StashUtilities::deleteRecursive($this->path);
 		}else{
 			$query = $handler->query("DELETE FROM cacheStore WHERE key LIKE '{$key}%'");
 		}
@@ -450,13 +452,13 @@ class StashSqlite_SQLite
 
 	protected function buildHandler()
 	{
-		if(!$db = new SQLiteDatabase($this->path, $this->filePermissions, $errorMessage))
+		if(!$db = new \SQLiteDatabase($this->path, $this->filePermissions, $errorMessage))
 			throw new StashSqliteError('Unable to open SQLite Database: '. $errorMessage);
 		return $db;
 	}
 }
 
-class StashSqlite_PDO extends StashSqlite_SQLite
+class Sqlite_PDO extends Sqlite_SQLite
 {
 	public function __construct($path, $directoryPermissiom, $filePermission, $busyTimeout)
 	{
@@ -464,7 +466,7 @@ class StashSqlite_PDO extends StashSqlite_SQLite
 		$this->filePermissions = $filePermission;
 		$this->dirPermissions = $directoryPermissiom;
 		$this->busyTimeout = $busyTimeout;
-		$this->responseCode = PDO::FETCH_ASSOC;
+		$this->responseCode = \PDO::FETCH_ASSOC;
 	}
 
 
@@ -474,24 +476,24 @@ class StashSqlite_PDO extends StashSqlite_SQLite
 			return false;
 
 		$timeout = ceil($milliseconds/1000);
-		$handler->setAttribute(PDO::ATTR_TIMEOUT, $timeout);
+		$handler->setAttribute(\PDO::ATTR_TIMEOUT, $timeout);
 	}
 
 	protected function buildHandler()
 	{
-		$db = new PDO('sqlite:' . $this->path);
+		$db = new \PDO('sqlite:' . $this->path);
 		return $db;
 	}
 }
 
-class StashSqlite_PDO2 extends StashSqlite_PDO
+class Sqlite_PDO2 extends Sqlite_PDO
 {
 	protected function buildHandler()
 	{
-		$db = new PDO('sqlite2:' . $this->path);
+		$db = new \PDO('sqlite2:' . $this->path);
 		return $db;
 	}
 }
 
-class StashSqliteError extends StashError {}
+class StashSqliteError extends \StashError {}
 ?>

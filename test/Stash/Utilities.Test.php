@@ -73,7 +73,7 @@ class StashUtilitiesTest extends PHPUnit_Framework_TestCase
 
 	public function testGetBaseDirectory()
 	{
-		$filesystem = new StashFileSystem();
+		$filesystem = new Stash\Handlers\FileSystem();
 		$tmp = sys_get_temp_dir();
 		$directory = StashUtilities::getBaseDirectory($filesystem);
 		$this->assertStringStartsWith($tmp, $directory, 'Base directory is placed inside the system temp directory.');

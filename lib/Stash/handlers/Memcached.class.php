@@ -44,6 +44,9 @@
  * @version    Release: 0.9.3
  */
 
+namespace Stash\Handlers;
+
+use Stash;
 
 /**
  * StashMemcached is a wrapper around the popular memcached server. StashMemcached supports both memcached php
@@ -52,7 +55,7 @@
  * @package Stash
  * @author Robert Hafner <tedivm@tedivm.com>
  */
-class StashMemcached implements StashHandler
+class Memcached implements \StashHandler
 {
 	/**
 	 * Memcache subhandler used by this class.
@@ -175,7 +178,7 @@ class StashMemcached implements StashHandler
 		// array(name, sub);
 		// a => name, b => sub;
 
-		$key = StashUtilities::normalizeKeys($key);
+		$key = \StashUtilities::normalizeKeys($key);
 
 		$keyString = 'cache:::';
 		foreach($key as $name)
@@ -273,21 +276,21 @@ class StashMemcached_Memcached
 			{
 				case 'HASH':
 					$value = strtoupper($value);
-					if(!defined('Memcached::HASH_' . $value))
+					if(!defined('\Memcached::HASH_' . $value))
 						throw new StashMemcached_MemcachedError('Memcached option ' . $name . ' requires valid memcache hash option value');
 					$value = constant('Memcached::HASH_' . $value);
 						break;
 
 				case 'DISTRIBUTION':
 					$value = strtoupper($value);
-					if(!defined('Memcached::DISTRIBUTION_' . $value))
+					if(!defined('\Memcached::DISTRIBUTION_' . $value))
 						throw new StashMemcached_MemcachedError('Memcached option ' . $name . ' requires valid memcache distribution option value');
 					$value = constant('Memcached::DISTRIBUTION_' . $value);
 						break;
 
 				case 'SERIALIZER':
 					$value = strtoupper($value);
-					if(!defined('Memcached::SERIALIZER_' . $value))
+					if(!defined('\Memcached::SERIALIZER_' . $value))
 						throw new StashMemcached_MemcachedError('Memcached option ' . $name . ' requires valid memcache serializer option value');
 					$value = constant('Memcached::SERIALIZER_' . $value);
 						break;
@@ -321,7 +324,7 @@ class StashMemcached_Memcached
 					break;
 			}
 
-			$memcached->setOption(constant('Memcached::OPT_' . $name), $value);
+			$memcached->setOption(constant('\Memcached::OPT_' . $name), $value);
 		}
 
 		$this->memcached = $memcached;
@@ -421,6 +424,6 @@ class StashMemcached_Memcache extends StashMemcached_Memcached
 
 
 
-class StashMemcachedError extends StashError {}
-class StashMemcached_MemcachedError extends StashError {}
+class StashMemcachedError extends \StashError {}
+class StashMemcached_MemcachedError extends \StashError {}
 ?>

@@ -2,7 +2,7 @@
 
 class StashApcTest extends StashHandlerTest
 {
-	protected $handlerClass = 'StashApc';
+	protected $handlerClass = '\Stash\Handlers\Apc';
 
 	public function testConstructor()
 	{
