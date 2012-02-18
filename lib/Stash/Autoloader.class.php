@@ -40,7 +40,7 @@
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link       http://code.google.com/p/stash/
  * @since      File available since Release 0.9.1
- * @version    Release: 0.9.3
+ * @version    Release: 0.9.5
  */
 
 namespace Stash;
@@ -67,10 +67,10 @@ class Autoloader
 							//			'StashWarning'		=> 'Warning.class.php',
 							//			'StashUtilities'	=> 'Utilities.class.php',
 										
-										'Cache'				=> 'Stash.class.php',
-										'\Cache'			=> 'Stash.class.php',
-										'Stash\Cache'				=> 'Stash.class.php',
-										'\Stash\Cache'				=> 'Stash.class.php',										
+							//			'Cache'				=> 'Stash.class.php',
+							//			'\Cache'			=> 'Stash.class.php',
+							//			'Stash\Cache'				=> 'Stash.class.php',
+							//			'\Stash\Cache'				=> 'Stash.class.php',										
 										
 										
 							//			'StashApc' 				=> 'Handlers/Apc.class.php',
@@ -113,6 +113,15 @@ class Autoloader
 	 */
 	static function autoload($classname)
 	{
+	
+		if(class_exists($classname, false))
+			return true;
+	
+		//$classname = ltrim($classname);
+		
+		//if(strpos($classname, 'Stash') !== 0)
+		//	return false;
+	
 		if(!isset(self::$classes[$classname]) && self::psr_autoload($classname))
 			return true;
 		
