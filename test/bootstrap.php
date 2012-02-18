@@ -5,5 +5,5 @@ define('TESTING', true); // this is basically used by the StashArray handler to 
 error_reporting(-1);
 $currentDir = dirname(__FILE__) . '/';
 include($currentDir . '../lib/Stash/Autoloader.class.php');
-StashAutoloader::register();
+Stash\Autoloader::register();
 ?>

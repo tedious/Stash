@@ -24,7 +24,7 @@ class StashTest extends PHPUnit_Framework_TestCase
 
 	public static function tearDownAfterClass()
 	{
-		StashUtilities::deleteRecursive(StashUtilities::getBaseDirectory());
+		Stash\Utilities::deleteRecursive(Stash\Utilities::getBaseDirectory());
 	}
 
 	protected function setUp()
@@ -42,8 +42,8 @@ class StashTest extends PHPUnit_Framework_TestCase
 		if(!isset($this->handler))
 			$this->handler = new StashArray(array());
 
-		$stash = new Stash($this->handler);
-		$this->assertTrue(is_a($stash, 'Stash'), 'Test object is an instance of Stash');
+		$stash = new Stash\Cache($this->handler);
+		$this->assertTrue(is_a($stash, 'Stash\Cache'), 'Test object is an instance of Stash');
 		return $stash;
 	}
 

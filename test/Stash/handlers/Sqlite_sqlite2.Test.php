@@ -2,7 +2,7 @@
 
 class StashSqlite_sqlite2Test extends StashHandlerTest
 {
-	protected $handlerClass = '\Stash\Handlers\Sqlite';
+	protected $handlerClass = 'Stash\Handlers\Sqlite';
 
 	public function getOptions()
 	{

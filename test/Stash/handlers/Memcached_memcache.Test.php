@@ -2,7 +2,7 @@
 
 class StashMemcached_memcacheTest extends StashHandlerTest
 {
-	protected $handlerClass = '\Stash\Handlers\Memcached';
+	protected $handlerClass = 'Stash\Handlers\Memcached';
 	protected $extension = 'memcache';
 
 	protected $servers = array('127.0.0.1', '11211');
@@ -54,16 +54,16 @@ class StashMemcached_memcacheTest extends StashHandlerTest
 		$options['servers'][] =  array('127.0.0.1', '11211', '50');
 		$options['servers'][] =  array('127.0.0.1', '11211');
 		$options['extension'] = $this->extension;
-		$handler = new StashMemcached($options);
+		$handler = new Stash\Handlers\Memcached($options);
 
-		$stash = new Stash($handler);
+		$stash = new Stash\Cache($handler);
 		$stash->setupKey($key);
 		$this->assertTrue($stash->store($key), 'Able to load and store memcached handler using multiple servers');
 
 		$options = array();
 		$options['extension'] = $this->extension;
-		$handler = new StashMemcached($options);
-		$stash = new Stash($handler);
+		$handler = new Stash\Handlers\Memcached($options);
+		$stash = new Stash\Cache($handler);
 		$stash->setupKey($key);
 		$this->assertTrue($stash->store($key), 'Able to load and store memcached handler using default server');
 	}

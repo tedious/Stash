@@ -60,7 +60,7 @@ abstract class StashHandlerTest extends PHPUnit_Framework_TestCase
 		$options = $this->getOptions();
 		$handler = new $handlerType($options);
 		$this->assertTrue(is_a($handler, $handlerType), 'Handler is an instance of ' . $handlerType);
-		$this->assertTrue(is_a($handler, 'StashHandler'), 'Handler implments the StashHandler interface');
+		$this->assertTrue(is_a($handler, '\Stash\Handler'), 'Handler implments the Stash\Handler interface');
 
 		return $handler;
 	}
@@ -197,7 +197,7 @@ abstract class StashHandlerTest extends PHPUnit_Framework_TestCase
 	{
 		$handler->__destruct();
 		unset($handler);
-		StashUtilities::deleteRecursive(StashUtilities::getBaseDirectory());
+		Stash\Utilities::deleteRecursive(Stash\Utilities::getBaseDirectory());
 	}
 }
 

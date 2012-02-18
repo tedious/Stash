@@ -2,7 +2,7 @@
 
 class StashMultiHandlerTest extends StashHandlerTest
 {
-	protected $handlerClass = '\Stash\Handlers\MultiHandler';
+	protected $handlerClass = 'Stash\Handlers\MultiHandler';
 	protected $subHandlers;
 
 	protected function getOptions()
