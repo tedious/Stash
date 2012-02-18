@@ -6,9 +6,9 @@ class StashBoxTest extends PHPUnit_Framework_TestCase
 
 	public function testSetHandler()
 	{
-		Stash\Box::setHandler(new StashArray(array()));
+		Stash\Box::setHandler(new Stash\Handlers\Ephemeral(array()));
 		$stash = Stash\Box::getCache();
-		$this->assertAttributeInstanceOf('StashArray', 'handler', $stash, 'set handler is pushed to new stash objects');
+		$this->assertAttributeInstanceOf('Stash\Handlers\Ephemeral', 'handler', $stash, 'set handler is pushed to new stash objects');
 	}
 
 	public function testGetCache()

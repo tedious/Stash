@@ -44,7 +44,9 @@
  * @version    Release: 0.9.5
  */
 
-namespace Stash;
+namespace Stash\Handlers;
+
+use Stash;
 
 /**
  * The ephemeral class exists to assist with testing the main Stash class. Since this is a very mininal handler we can

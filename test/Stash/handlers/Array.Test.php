@@ -2,7 +2,7 @@
 
 class StashArrayTest extends StashHandlerTest
 {
-	protected $handlerClass = 'StashArray';
+	protected $handlerClass = 'Stash\Handlers\Ephemeral';
 }
 
 ?>

@@ -11,7 +11,7 @@ class StashHandlersTest extends PHPUnit_Framework_TestCase
 
 	public function testRegisterHandler()
 	{
-		Stash\Handlers::registerHandler('Array', 'StashArray');
+		Stash\Handlers::registerHandler('Array', 'Stash\Handlers\Ephemeral');
 
 		$handlers = Stash\Handlers::getHandlers();
 		$this->assertArrayHasKey('Array', $handlers, 'getHandlers returns Array handler');
@@ -21,7 +21,7 @@ class StashHandlersTest extends PHPUnit_Framework_TestCase
 	{
 		Stash\Handlers::getHandlerClass('Array');
 
-		$this->assertEquals('StashArray', Stash\Handlers::getHandlerClass('Array'),
+		$this->assertEquals('Stash\Handlers\Ephemeral', Stash\Handlers::getHandlerClass('Array'),
 							'getHandlerClass returns proper classname for Array handler');
 	}
 

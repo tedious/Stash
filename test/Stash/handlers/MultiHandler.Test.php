@@ -8,9 +8,9 @@ class StashMultiHandlerTest extends StashHandlerTest
 	protected function getOptions()
 	{
 		$options = array();
-		$options['handlers'][] = new StashArray(array());
-		$options['handlers'][] = new StashArray(array());
-		$options['handlers'][] = new StashArray(array());
+		$options['handlers'][] = new Stash\Handlers\Ephemeral(array());
+		$options['handlers'][] = new Stash\Handlers\Ephemeral(array());
+		$options['handlers'][] = new Stash\Handlers\Ephemeral(array());
 		$this->subHandlers = $options['handlers'];
 		return $options;
 	}

@@ -9,9 +9,9 @@ class StashManagerTest extends PHPUnit_Framework_TestCase
 		$stash = Stash\Manager::getCache('base');
 		$this->assertInstanceOf('Stash\Cache', $stash, 'Unprimed Stash\Manager returns memory based stash.');
 
-		Stash\Manager::setHandler('base', new StashArray(array()));
+		Stash\Manager::setHandler('base', new Stash\Handlers\Ephemeral(array()));
 		$stash = Stash\Manager::getCache('base');
-		$this->assertAttributeInstanceOf('StashArray', 'handler', $stash, 'set handler is pushed to new stash objects');
+		$this->assertAttributeInstanceOf('Stash\Handlers\Ephemeral', 'handler', $stash, 'set handler is pushed to new stash objects');
 	}
 
 	public function testGetCache()

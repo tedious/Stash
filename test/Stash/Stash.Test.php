@@ -40,7 +40,7 @@ class StashTest extends PHPUnit_Framework_TestCase
 	public function testConstruct()
 	{
 		if(!isset($this->handler))
-			$this->handler = new StashArray(array());
+			$this->handler = new Stash\Handlers\Ephemeral(array());
 
 		$stash = new Stash\Cache($this->handler);
 		$this->assertTrue(is_a($stash, 'Stash\Cache'), 'Test object is an instance of Stash');
