@@ -46,42 +46,13 @@
 namespace Stash;
 
 /**
- * The StashAutoloader loads classes from the Stash library.
+ * The Autoloader loads classes from the Stash library.
  *
  * @package Stash
  * @author Robert Hafner <tedivm@tedivm.com>
  */
 class Autoloader
 {
-	/**
-	 * A class name to path lookup of the classes in the project.
-	 *
-	 * @var array Class Name => Relative Path
-	 */
-	static protected $classes = array(
-							//			'StashBox'			=> 'Box.class.php',
-							//			'StashHandler'		=> 'Handler.class.php',
-							//			'StashHandlers'		=> 'Handlers.class.php',
-							//			'StashManager'		=> 'Manager.class.php',
-							//			'StashError'		=> 'Error.class.php',
-							//			'StashWarning'		=> 'Warning.class.php',
-							//			'StashUtilities'	=> 'Utilities.class.php',
-										
-							//			'Cache'				=> 'Stash.class.php',
-							//			'\Cache'			=> 'Stash.class.php',
-							//			'Stash\Cache'				=> 'Stash.class.php',
-							//			'\Stash\Cache'				=> 'Stash.class.php',										
-										
-										
-							//			'StashApc' 				=> 'Handlers/Apc.class.php',
-										'StashArray'			=> 'Handlers/Array.class.php',
-							//			'StashExceptionTest'	=> 'Handlers/ExceptionTest.class.php',
-							//			'StashXcache'			=> 'Handlers/Xcache.class.php',
-							//			'StashSqlite'			=> 'Handlers/Sqlite.class.php',
-							//			'StashFileSystem'		=> 'Handlers/FileSystem.class.php',
-							//			'StashMemcached'		=> 'Handlers/Memcached.class.php',
-							//			'StashMultiHandler'		=> 'Handlers/MultiHandler.class.php',
-									);
 	/**
 	 * @var string Base path the autoloader uses when loading classes.
 	 */
@@ -117,33 +88,17 @@ class Autoloader
 		if(class_exists($classname, false))
 			return true;
 	
-		//$classname = ltrim($classname);
+		$classname = ltrim($classname);
 		
-		//if(strpos($classname, 'Stash') !== 0)
-		//	return false;
-	
-		if(!isset(self::$classes[$classname]) && self::psr_autoload($classname))
-			return true;
-		
-		if(!isset(self::$classes[$classname]))
+		if(strpos($classname, 'Stash') !== 0)
 			return false;
-
-		if(class_exists($classname, false) || interface_exists($classname, false))
-			return true;
-
-		if(!file_exists(self::$path . self::$classes[$classname]))
-			return false;
-
-		include(self::$path . self::$classes[$classname]);
-		return class_exists($classname, false) || interface_exists($classname, false);
-	}
 	
-	static function psr_autoload($classname)
-	{
+		// Everything has at least one namespace (Stash)
 		if(strpos($classname, '\\', 1) === false)
 			return false;
 
-		$filebase = substr(ltrim($classname), 6);
+		// Remove "Stash", since this is in relation to this folder
+		$filebase = substr($classname, 6);
 		$fileName = self::$path . str_replace('\\', DIRECTORY_SEPARATOR, $filebase) . '.class.php';
 
 		if(!file_exists($fileName))
