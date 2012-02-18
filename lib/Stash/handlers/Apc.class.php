@@ -54,7 +54,7 @@ use Stash;
  * @package Stash
  * @author Robert Hafner <tedivm@tedivm.com>
  */
-class Apc implements \StashHandler
+class Apc implements \Stash\Handler
 {
 	protected $ttl = 300;
 	protected $apcNamespace;

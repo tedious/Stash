@@ -55,7 +55,7 @@ use Stash;
  * @package Stash
  * @author Robert Hafner <tedivm@tedivm.com>
  */
-class Memcached implements \StashHandler
+class Memcached implements \Stash\Handler
 {
 	/**
 	 * Memcache subhandler used by this class.
@@ -424,6 +424,6 @@ class StashMemcached_Memcache extends StashMemcached_Memcached
 
 
 
-class StashMemcachedError extends \StashError {}
-class StashMemcached_MemcachedError extends \StashError {}
+class StashMemcachedError extends \Stash\Error {}
+class StashMemcached_MemcachedError extends \Stash\Error {}
 ?>

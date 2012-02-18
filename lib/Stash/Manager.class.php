@@ -43,6 +43,7 @@
  * @version    Release: 0.9.3
  */
 
+namespace Stash;
 
 /**
  * StashManager is a collection of static functions used to make certain repetitive tasks easier by consilidating their
@@ -51,7 +52,7 @@
  * @package Stash
  * @author Robert Hafner <tedivm@tedivm.com>
  */
-class StashManager
+class Manager
 {
 	static protected $handlers = array();
 
@@ -90,10 +91,10 @@ class StashManager
 		if(isset(self::$handlers[$name]) && self::$handlers[$name] != false)
 		{
 			$group .= '_' . get_class(self::$handlers[$name]) . '__';
-			$stash = new Stash(self::$handlers[$name], $group);
+			$stash = new Cache(self::$handlers[$name], $group);
 		}else{
 			$group .= '_memory__';
-			$stash = new Stash(null, $group);
+			$stash = new Cache(null, $group);
 		}
 
 		if(count($args) > 0)
@@ -141,7 +142,7 @@ class StashManager
 	 */
 	static function getCacheHandlers()
 	{
-		return StashHandlers::getHandlers();
+		return Handlers::getHandlers();
 	}
 
 	/**
@@ -152,7 +153,7 @@ class StashManager
 	 * @param string $name The label for the handler being passed
 	 * @param StashHandler $handler
 	 */
-	static function setHandler($name, StashHandler $handler)
+	static function setHandler($name, Handler $handler)
 	{
 		if(!isset($handler))
 			$handler = false;
@@ -161,5 +162,5 @@ class StashManager
 
 }
 
-class StashManagerError extends StashError {}
+class StashManagerError extends Error {}
 ?>

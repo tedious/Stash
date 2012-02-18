@@ -56,7 +56,7 @@ use Stash;
  * @package Stash
  * @author Robert Hafner <tedivm@tedivm.com>
  */
-class MultiHandler implements \StashHandler
+class MultiHandler implements \Stash\Handler
 {
 
 	protected $handlers = array();
@@ -73,10 +73,10 @@ class MultiHandler implements \StashHandler
 
 		foreach($options['handlers'] as $handler)
 		{
-			if(!(is_object($handler) && $handler instanceof \StashHandler))
-				throw new StashMultiHandlerError('Handler objects are expected to implement StashHandler');
+			if(!(is_object($handler) && $handler instanceof \Stash\Handler))
+				throw new StashMultiHandlerError('Handler objects are expected to implement Stash\Handler');
 
-			if(!\StashUtilities::staticFunctionHack($handler, 'canEnable'))
+			if(!\Stash\Utilities::staticFunctionHack($handler, 'canEnable'))
 				continue;
 
 			$this->handlers[] = $handler;
@@ -191,5 +191,5 @@ class MultiHandler implements \StashHandler
 	}
 }
 
-class StashMultiHandlerError extends \StashError {}
+class StashMultiHandlerError extends \Stash\Error {}
 ?>

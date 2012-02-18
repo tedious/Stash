@@ -40,9 +40,10 @@
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link       http://code.google.com/p/stash/
  * @since      File available since Release 0.9.1
- * @version    Release: 0.9.3
+ * @version    Release: 0.9.5
  */
 
+namespace Stash;
 
 /**
  * StashUtilities contains static functions used throughout the Stash project, both by core classes and handlers.
@@ -50,7 +51,7 @@
  * @package Stash
  * @author Robert Hafner <tedivm@tedivm.com>
  */
-class StashUtilities
+class Utilities
 {
 	/**
 	 * Various handlers use this to define what kind of encoding to use on objects being cached. It needs to be revamped
@@ -140,7 +141,7 @@ class StashUtilities
 		{
 			return call_user_func_array(array($className, $functionName), $arguments);
 		}else{
-			throw new StashError('static function ' . $functionName . ' not found in class ' . $className);
+			throw new Error('static function ' . $functionName . ' not found in class ' . $className);
 		}
 	}
 
@@ -152,7 +153,7 @@ class StashUtilities
 	 * @param StashHandler $handler
 	 * @return string Path for Stash files
 	 */
-	static function getBaseDirectory(StashHandler $handler = null)
+	static function getBaseDirectory(Handler $handler = null)
 	{
 		$tmp = sys_get_temp_dir();
 		$lastChar = substr($tmp, -1, 1);
@@ -178,19 +179,19 @@ class StashUtilities
 	static function deleteRecursive($file)
 	{
 		if(substr($file, 0, 1) !== '/' && substr($file, 1, 2) !== ':\\')
-			throw new StashError('deleteRecursive function requires an absolute path.');
+			throw new Error('deleteRecursive function requires an absolute path.');
 
 		$badCalls = array('/', '/*', '/.', '/..');
 		if(in_array($file, $badCalls))
-			throw new StashError('deleteRecursive function does not like that call.');
+			throw new Error('deleteRecursive function does not like that call.');
 
 		$filePath = rtrim($file, ' /');
 
 		if(is_dir($filePath))
 		{
-			$directoryIt = new RecursiveDirectoryIterator($filePath);
+			$directoryIt = new \RecursiveDirectoryIterator($filePath);
 
-			foreach(new RecursiveIteratorIterator($directoryIt, RecursiveIteratorIterator::CHILD_FIRST) as $file)
+			foreach(new \RecursiveIteratorIterator($directoryIt, \RecursiveIteratorIterator::CHILD_FIRST) as $file)
 			{
 				$filename = $file->getPathname();
 				if($file->isDir())

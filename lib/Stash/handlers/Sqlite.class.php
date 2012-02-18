@@ -56,14 +56,14 @@ use Stash;
  * @package Stash
  * @author Robert Hafner <tedivm@tedivm.com>
  */
-class Sqlite implements \StashHandler
+class Sqlite implements \Stash\Handler
 {
 	protected $defaultOptions = array(
-										'filePermissions'	=> 0660,
-										'dirPermissions'	=> 0770,
-										'busyTimeout'		=> 500,
-										'nesting'			=> 0,
-										'subhandler'		=> 'PDO'
+						'filePermissions'	=> 0660,
+						'dirPermissions'	=> 0770,
+						'busyTimeout'		=> 500,
+						'nesting'		=> 0,
+						'subhandler'		=> 'PDO'
 									  );
 
 	protected $filePerms;
@@ -82,7 +82,7 @@ class Sqlite implements \StashHandler
 	{
 		$options = array_merge($this->defaultOptions, $options);
 
-		$path = isset($options['path']) ? $options['path'] : \StashUtilities::getBaseDirectory($this);
+		$path = isset($options['path']) ? $options['path'] : \Stash\Utilities::getBaseDirectory($this);
 		$lastChar = substr($path, -1);
 		if($lastChar != '/' && $lastChar != '\'')
 			$path .= '/';
@@ -126,7 +126,7 @@ class Sqlite implements \StashHandler
 		if(!($data = $sqlHandler->get($sqlKey)))
 		   return false;
 
-		$data['data'] = \StashUtilities::decode($data['data'], $data['encoding']);
+		$data['data'] = \Stash\Utilities::decode($data['data'], $data['encoding']);
 
 		return $data;
 	}
@@ -144,9 +144,9 @@ class Sqlite implements \StashHandler
 
 		$sqlKey = $this->makeSqlKey($key);
 
-		$storeData = array('data'		=> \StashUtilities::encode($data),
+		$storeData = array('data'		=> \Stash\Utilities::encode($data),
 						   'expiration'	=> $expiration,
-						   'encoding'	=> \StashUtilities::encoding($data));
+						   'encoding'	=> \Stash\Utilities::encoding($data));
 
 		return $sqlHandler->set($sqlKey, $storeData, $expiration);
 	}
@@ -218,7 +218,7 @@ class Sqlite implements \StashHandler
 			if(!is_array($key))
 				return false;
 
-			$key = \StashUtilities::normalizeKeys($key);
+			$key = \Stash\Utilities::normalizeKeys($key);
 
 			$nestingLevel = $this->nesting;
 			$fileName = 'cache_';
@@ -289,7 +289,7 @@ class Sqlite implements \StashHandler
 	 */
 	static function makeSqlKey($key)
 	{
-		$key = \StashUtilities::normalizeKeys($key, 'base64_encode');
+		$key = \Stash\Utilities::normalizeKeys($key, 'base64_encode');
 		$path = '';
 		foreach($key as $rawPathPiece)
 			$path .= $rawPathPiece . ':::';
@@ -379,7 +379,7 @@ class Sqlite_SQLite
 			unset($handler);
 			unset($this->handler);
 			$this->handler = false;
-			\StashUtilities::deleteRecursive($this->path);
+			\Stash\Utilities::deleteRecursive($this->path);
 		}else{
 			$query = $handler->query("DELETE FROM cacheStore WHERE key LIKE '{$key}%'");
 		}
@@ -495,5 +495,5 @@ class Sqlite_PDO2 extends Sqlite_PDO
 	}
 }
 
-class StashSqliteError extends \StashError {}
+class StashSqliteError extends \Stash\Error {}
 ?>

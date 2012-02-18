@@ -40,8 +40,10 @@
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link       http://code.google.com/p/stash/
  * @since      File available since Release 0.9.1
- * @version    Release: 0.9.3
+ * @version    Release: 0.9.5
  */
+
+namespace Stash;
 
 /**
  * Stash caches data that has a high generation cost, such as template preprocessing or code that requires a database
@@ -152,7 +154,7 @@
  * @package Stash
  * @author Robert Hafner <tedivm@tedivm.com>
  */
-class Stash
+class Cache
 {
 	/**
 	 * This is the default time, in seconds, that objects are cached for.
@@ -283,7 +285,7 @@ class Stash
 	 *
 	 * @param StashHandler If no handler is passed the cache is set to script time only.
 	 */
-	public function __construct(StashHandler $handler = null, $cacheGroup = null)
+	public function __construct(Handler $handler = null, $cacheGroup = null)
 	{
 		if(!isset($cacheGroup))
 		{
@@ -353,7 +355,7 @@ class Stash
 	public function setupKey()
 	{
 		if(func_num_args() == 0)
-			throw new StashError('No key sent to the cache constructor.');
+			throw new Error('No key sent to the cache constructor.');
 
 		$key = func_get_args();
 		if(count($key) == 1 && is_array($key[0]))
@@ -404,7 +406,7 @@ class Stash
 
 			return true;
 
-		}catch(Exception $e){
+		}catch(\Exception $e){
 			return false;
 		}
 	}
@@ -425,7 +427,7 @@ class Stash
 			if($handler = $this->getHandler())
 				return $handler->purge();
 			return true;
-		}catch(Exception $e){
+		}catch(\Exception $e){
 
 		}
 
@@ -479,7 +481,7 @@ class Stash
 
 			return isset($record['data']['return']) ? $record['data']['return'] : null;
 
-		}catch(Exception $e){
+		}catch(\Exception $e){
 			$this->cache_enabled = false;
 			return null;
 		}
@@ -548,7 +550,7 @@ class Stash
 
 			if(isset($time))
 			{
-				if($time instanceof DateTime)
+				if($time instanceof \DateTime)
 				{
 					$expiration = $time->getTimestamp();
 					$cacheTime = $expiration - $store['createdOn'];
@@ -583,7 +585,7 @@ class Stash
 			}
 
 			return $handler->storeData($this->key, $store, $expiration);
-		}catch(Exception $e){
+		}catch(\Exception $e){
 
 		}
 		return false;

@@ -56,7 +56,7 @@ use Stash;
  * @author Robert Hafner <tedivm@tedivm.com>
  * @codeCoverageIgnore
  */
-class ExceptionTest implements \StashHandler
+class ExceptionTest implements \Stash\Handler
 {
 	protected $store = array();
 
@@ -100,5 +100,5 @@ class ExceptionTest implements \StashHandler
 	}
 }
 
-class StashExceptionTestError extends \StashError {}
+class StashExceptionTestError extends \Stash\Error {}
 ?>

@@ -56,7 +56,7 @@ use Stash;
  * @package Stash
  * @author Robert Hafner <tedivm@tedivm.com>
  */
-class FileSystem implements \StashHandler
+class FileSystem implements \Stash\Handler
 {
 	/**
 	 * This is the path to the file which will be used to store the cached item. It is based off of the key.
@@ -113,7 +113,7 @@ class FileSystem implements \StashHandler
 	{
 		$options = array_merge($this->defaultOptions, $options);
 
-		$this->cachePath = isset($options['path']) ? $options['path'] : \StashUtilities::getBaseDirectory($this);
+		$this->cachePath = isset($options['path']) ? $options['path'] : \Stash\Utilities::getBaseDirectory($this);
 		$lastChar = substr($this->cachePath, -1);
 		if($lastChar != '/' && $lastChar != '\'')
 			$this->cachePath .= '/';
@@ -243,7 +243,7 @@ class FileSystem implements \StashHandler
 
 	protected function encode($data)
 	{
-		switch(\StashUtilities::encoding($data))
+		switch(\Stash\Utilities::encoding($data))
 		{
 			case 'bool':
 				$dataString = (bool) $data ? 'true' : 'false';
@@ -304,7 +304,7 @@ class FileSystem implements \StashHandler
 			$pathPieces = array();
 			$path = $basePath;
 			$len = floor(32 / $this->directorySplit);
-			$key = \StashUtilities::normalizeKeys($key);
+			$key = \Stash\Utilities::normalizeKeys($key);
 
 			foreach($key as $index => $value)
 			{
@@ -357,7 +357,7 @@ class FileSystem implements \StashHandler
 			$path = substr($path, 0, strlen($path) - 4);
 
 		if(is_dir($path))
-			return \StashUtilities::deleteRecursive($path);
+			return \Stash\Utilities::deleteRecursive($path);
 
 		return isset($return);
 	}
@@ -414,5 +414,5 @@ class FileSystem implements \StashHandler
 
 }
 
-class StashFileSystemError extends \StashError {}
+class StashFileSystemError extends \Stash\Error {}
 ?>

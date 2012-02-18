@@ -40,8 +40,10 @@
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link       http://code.google.com/p/stash/
  * @since      File available since Release 0.9.1
- * @version    Release: 0.9.3
+ * @version    Release: 0.9.5
  */
 
-class StashError extends Exception {}
+namespace Stash;
+
+class Error extends \Exception {}
 ?>

@@ -40,9 +40,10 @@
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link       http://code.google.com/p/stash/
  * @since      File available since Release 0.9.1
- * @version    Release: 0.9.3
+ * @version    Release: 0.9.5
  */
 
+namespace Stash;
 
 /**
  * Stash Handlers are the engines behind the Stash library. These classes handle the low level operations- retrieving,
@@ -72,7 +73,7 @@
  * @package Stash
  * @author Robert Hafner <tedivm@tedivm.com>
  */
-interface StashHandler
+interface Handler
 {
 	/**
 	 * Takes an array which is used to pass option values to the handler. As this is the only required function that is

@@ -52,7 +52,7 @@
  * @package Stash
  * @author Robert Hafner <tedivm@tedivm.com>
  */
-class StashArray implements StashHandler
+class StashArray implements \Stash\Handler
 {
 	protected $store = array();
 

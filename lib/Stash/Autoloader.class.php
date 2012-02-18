@@ -43,13 +43,15 @@
  * @version    Release: 0.9.3
  */
 
+namespace Stash;
+
 /**
  * The StashAutoloader loads classes from the Stash library.
  *
  * @package Stash
  * @author Robert Hafner <tedivm@tedivm.com>
  */
-class StashAutoloader
+class Autoloader
 {
 	/**
 	 * A class name to path lookup of the classes in the project.
@@ -57,15 +59,20 @@ class StashAutoloader
 	 * @var array Class Name => Relative Path
 	 */
 	static protected $classes = array(
-										'StashBox'			=> 'Box.class.php',
-										'StashHandler'		=> 'Handler.class.php',
-										'StashHandlers'		=> 'Handlers.class.php',
-										'StashManager'		=> 'Manager.class.php',
-										'StashError'		=> 'Error.class.php',
-										'StashWarning'		=> 'Warning.class.php',
-										'StashUtilities'	=> 'Utilities.class.php',
-										'Stash'				=> 'Stash.class.php',
-
+							//			'StashBox'			=> 'Box.class.php',
+							//			'StashHandler'		=> 'Handler.class.php',
+							//			'StashHandlers'		=> 'Handlers.class.php',
+							//			'StashManager'		=> 'Manager.class.php',
+							//			'StashError'		=> 'Error.class.php',
+							//			'StashWarning'		=> 'Warning.class.php',
+							//			'StashUtilities'	=> 'Utilities.class.php',
+										
+										'Cache'				=> 'Stash.class.php',
+										'\Cache'			=> 'Stash.class.php',
+										'Stash\Cache'				=> 'Stash.class.php',
+										'\Stash\Cache'				=> 'Stash.class.php',										
+										
+										
 							//			'StashApc' 				=> 'Handlers/Apc.class.php',
 										'StashArray'			=> 'Handlers/Array.class.php',
 							//			'StashExceptionTest'	=> 'Handlers/ExceptionTest.class.php',
@@ -141,7 +148,7 @@ class StashAutoloader
 /**
  * This call makes sure the path is set when the class is first loaded.
  */
-StashAutoloader::init();
+Autoloader::init();
 
 define('STASH_SP_NONE', 0);
 define('STASH_SP_OLD', 1);

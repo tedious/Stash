@@ -43,6 +43,8 @@
  * @version    Release: 0.9.3
  */
 
+namespace Stash;
+
 /**
  * StashBox makes managing a simply cache system easier by encapsulating certain commonly used tasks. StashBox also
  * makes it easier to reuse a handler object for each Stash instance. The downside to StashBox is that it only works
@@ -51,7 +53,7 @@
  * @package Stash
  * @author Robert Hafner <tedivm@tedivm.com>
  */
-class StashBox
+class Box
 {
 	static protected $handler;
 
@@ -75,7 +77,7 @@ class StashBox
 			$args = $args[0];
 
 		$handler = (isset(self::$handler)) ? self::$handler : null;
-		$stash = new Stash($handler, 'stashbox');
+		$stash = new Cache($handler, 'stashbox');
 
 		if(count($args) > 0)
 			$stash->setupKey($args);
@@ -115,7 +117,7 @@ class StashBox
 	 */
 	static function getCacheHandlers()
 	{
-		return StashHandlers::getHandlers();
+		return Handlers::getHandlers();
 	}
 
 	/**
@@ -124,7 +126,7 @@ class StashBox
 	 *
 	 * @param StashHandler $handler
 	 */
-	static function setHandler(StashHandler $handler)
+	static function setHandler(Handler $handler)
 	{
 		self::$handler = $handler;
 	}

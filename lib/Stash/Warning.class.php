@@ -43,5 +43,7 @@
  * @version    Release: 0.9.3
  */
 
-class StashWarning extends StashError {}
+namespace Stash;
+
+class Warning extends Error {}
 ?>
