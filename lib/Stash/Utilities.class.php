@@ -157,11 +157,11 @@ class StashUtilities
 		$tmp = sys_get_temp_dir();
 		$lastChar = substr($tmp, -1, 1);
 		if($lastChar !== '\\' && $lastChar !== '/')
-			$tmp .= '/';
+			$tmp .= DIRECTORY_SEPARATOR;
 
-		$baseDir = $tmp . 'stash/' . md5(dirname(__FILE__)) . '/';
+		$baseDir = $tmp . 'stash' . DIRECTORY_SEPARATOR . md5(dirname(__FILE__)) . DIRECTORY_SEPARATOR;
 		if(isset($handler))
-			$baseDir .= get_class($handler) . '/';
+			$baseDir .= str_replace(array('/', '\\'), '_', get_class($handler)) . '/';
 
 		if(!is_dir($baseDir))
 			mkdir($baseDir, 0770, true);
