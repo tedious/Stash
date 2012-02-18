@@ -99,7 +99,7 @@ class Autoloader
 
 		// Remove "Stash", since this is in relation to this folder
 		$filebase = substr($classname, 6);
-		$fileName = self::$path . str_replace('\\', DIRECTORY_SEPARATOR, $filebase) . '.class.php';
+		$fileName = self::$path . str_replace('\\', DIRECTORY_SEPARATOR, $filebase) . '.php';
 
 		if(!file_exists($fileName))
 			return false;
