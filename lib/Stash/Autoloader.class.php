@@ -66,14 +66,14 @@ class StashAutoloader
 										'StashUtilities'	=> 'Utilities.class.php',
 										'Stash'				=> 'Stash.class.php',
 
-										'StashApc' 				=> 'handlers/Apc.class.php',
-										'StashArray'			=> 'handlers/Array.class.php',
-										'StashExceptionTest'	=> 'handlers/ExceptionTest.class.php',
-										'StashXcache'			=> 'handlers/Xcache.class.php',
-										'StashSqlite'			=> 'handlers/Sqlite.class.php',
-										'StashFileSystem'		=> 'handlers/FileSystem.class.php',
-										'StashMemcached'		=> 'handlers/Memcached.class.php',
-										'StashMultiHandler'		=> 'handlers/MultiHandler.class.php',
+							//			'StashApc' 				=> 'Handlers/Apc.class.php',
+										'StashArray'			=> 'Handlers/Array.class.php',
+							//			'StashExceptionTest'	=> 'Handlers/ExceptionTest.class.php',
+							//			'StashXcache'			=> 'Handlers/Xcache.class.php',
+							//			'StashSqlite'			=> 'Handlers/Sqlite.class.php',
+							//			'StashFileSystem'		=> 'Handlers/FileSystem.class.php',
+							//			'StashMemcached'		=> 'Handlers/Memcached.class.php',
+							//			'StashMultiHandler'		=> 'Handlers/MultiHandler.class.php',
 									);
 	/**
 	 * @var string Base path the autoloader uses when loading classes.
@@ -106,6 +106,9 @@ class StashAutoloader
 	 */
 	static function autoload($classname)
 	{
+		if(!isset(self::$classes[$classname]) && self::psr_autoload($classname))
+			return true;
+		
 		if(!isset(self::$classes[$classname]))
 			return false;
 
@@ -118,31 +121,20 @@ class StashAutoloader
 		include(self::$path . self::$classes[$classname]);
 		return class_exists($classname, false) || interface_exists($classname, false);
 	}
-
-	/**
-	 * Attempts to load every class available to Stash into the current environment.
-	 */
-	static function loadAll()
+	
+	static function psr_autoload($classname)
 	{
-		$currentDir = dirname(__file__) . '/';
+		if(strpos($classname, '\\', 1) === false)
+			return false;
 
-		foreach(self::$classes as $classname => $path)
-		{
-			if(class_exists($classname, false) || interface_exists($classname, false))
-				continue;
+		$filebase = substr(ltrim($classname), 6);
+		$fileName = self::$path . str_replace('\\', DIRECTORY_SEPARATOR, $filebase) . '.class.php';
 
-			if(!file_exists($currentDir . $path))
-				return false;
-
-			include($currentDir . $path);
-
-			if(!class_exists($classname, false) && !interface_exists($classname, false))
-				return false;
-
-		}
-
-
-		return true;
+		if(!file_exists($fileName))
+			return false;
+		
+		include($fileName);
+		return class_exists($classname, false) || interface_exists($classname, false);
 	}
 }
 
