@@ -2,7 +2,7 @@
 
 namespace Stash\Test\Handler;
 
-class MemcachedMemcachedTest extends MemcachedMemcacheTest
+class MemcachedTest extends MemcacheTest
 {
     protected $extension = 'memcached';
 
