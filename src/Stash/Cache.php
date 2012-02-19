@@ -46,6 +46,7 @@
 namespace Stash;
 
 use Stash\Handler\HandlerInterface;
+use Stash\Exception\Exception;
 
 /**
  * Stash caches data that has a high generation cost, such as template preprocessing or code that requires a database
@@ -362,7 +363,7 @@ class Cache
     public function setupKey()
     {
         if (func_num_args() == 0) {
-            throw new Error('No key sent to the cache constructor.');
+            throw new Exception('No key sent to the cache constructor.');
         }
 
         $key = func_get_args();

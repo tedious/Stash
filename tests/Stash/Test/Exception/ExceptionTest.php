@@ -35,6 +35,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @package    Stash
+ * @subpackage Handlers
  * @author     Robert Hafner <tedivm@tedivm.com>
  * @copyright  2009-2011 Robert Hafner <tedivm@tedivm.com>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
@@ -43,8 +44,59 @@
  * @version    Release: 0.9.5
  */
 
-namespace Stash;
+namespace Stash\Test\Exception;
 
-class Error extends \Exception
+use Stash;
+use Stash\Handler\HandlerInterface;
+
+/**
+ * ExceptionTest is used for testing how Stash reacts to thrown errors. Every function but the constructor throws
+ * an exception.
+ *
+ * @package Stash
+ * @author Robert Hafner <tedivm@tedivm.com>
+ * @codeCoverageIgnore
+ */
+class ExceptionTest implements HandlerInterface
 {
+    protected $store = array();
+
+    public function __construct($options = array())
+    {
+
+    }
+
+    public function __destruct()
+    {
+    }
+
+    public function getData($key)
+    {
+        throw new TestException('Test exception for ' . __FUNCTION__ . ' call');
+    }
+
+    protected function getKeyIndex($key)
+    {
+        throw new TestException('Test exception for ' . __FUNCTION__ . ' call');
+    }
+
+    public function storeData($key, $data, $expiration)
+    {
+        throw new TestException('Test exception for ' . __FUNCTION__ . ' call');
+    }
+
+    public function clear($key = null)
+    {
+        throw new TestException('Test exception for ' . __FUNCTION__ . ' call');
+    }
+
+    public function purge()
+    {
+        throw new TestException('Test exception for ' . __FUNCTION__ . ' call');
+    }
+
+    static function canEnable()
+    {
+        return (defined('TESTING') && TESTING);
+    }
 }

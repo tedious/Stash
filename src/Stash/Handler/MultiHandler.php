@@ -47,6 +47,7 @@
 namespace Stash\Handler;
 
 use Stash;
+use Stash\Exception\MulitHandlerException;
 
 /**
  * StashMultieHandler is a wrapper around one or more StashHandlers, allowing faster caching engines with size or
@@ -69,12 +70,12 @@ class MultiHandler implements HandlerInterface
     public function __construct($options = array())
     {
         if (!isset($options['handlers']) || !is_array($options['handlers']) || count($options['handlers']) < 1) {
-            throw new StashMultiHandlerError('This handler requires secondary handlers to run.');
+            throw new MulitHandlerException('This handler requires secondary handlers to run.');
         }
 
         foreach ($options['handlers'] as $handler) {
             if (!(is_object($handler) && $handler instanceof HandlerInterface)) {
-                throw new StashMultiHandlerError('Handler objects are expected to implement Stash\Handler');
+                throw new MulitHandlerException('Handler objects are expected to implement Stash\Handler');
             }
 
             if (!\Stash\Utilities::staticFunctionHack($handler, 'canEnable')) {
@@ -190,8 +191,4 @@ class MultiHandler implements HandlerInterface
     {
         return true;
     }
-}
-
-class StashMultiHandlerError extends \Stash\Error
-{
 }

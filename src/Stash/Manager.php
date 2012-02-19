@@ -46,6 +46,7 @@
 namespace Stash;
 
 use Stash\Handler\HandlerInterface;
+use Stash\Exception\ManagerException;
 
 /**
  * StashManager is a collection of static functions used to make certain repetitive tasks easier by consilidating their
@@ -82,7 +83,7 @@ class Manager
         }
 
         if (count($args) < 1) {
-            throw new StashManagerError('getCache function requires a cache name.');
+            throw new ManagerException('getCache function requires a cache name.');
         }
 
         $name = array_shift($args);
@@ -168,6 +169,3 @@ class Manager
 
 }
 
-class StashManagerError extends Error
-{
-}

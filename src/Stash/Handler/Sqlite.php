@@ -47,6 +47,7 @@
 namespace Stash\Handler;
 
 use Stash;
+use Stash\Exception\SqliteException;
 
 /**
  * StashSqlite is a wrapper around one or more SQLite databases stored on the local system. While not as quick at at
@@ -457,7 +458,7 @@ class Sqlite_SQLite
 
         if ($runInstall && !$db->query($this->creationSql)) {
             unlink($path);
-            throw new StashSqliteError('Unable to set SQLite: structure');
+            throw new SqliteException('Unable to set SQLite: structure');
         }
         $this->handler = $db;
 
@@ -470,7 +471,7 @@ class Sqlite_SQLite
     protected function buildHandler()
     {
         if (!$db = new \SQLiteDatabase($this->path, $this->filePermissions, $errorMessage)) {
-            throw new StashSqliteError('Unable to open SQLite Database: ' . $errorMessage);
+            throw new SqliteException('Unable to open SQLite Database: ' . $errorMessage);
         }
         return $db;
     }
@@ -512,8 +513,4 @@ class Sqlite_PDO2 extends Sqlite_PDO
         $db = new \PDO('sqlite2:' . $this->path);
         return $db;
     }
-}
-
-class StashSqliteError extends \Stash\Error
-{
 }

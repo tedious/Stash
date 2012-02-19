@@ -2,7 +2,7 @@
 
 namespace Stash\Test;
 
-use Stash\Test\Handler\ExceptionTest;
+use Stash\Test\Exception\ExceptionTest;
 use Stash\Cache;
 
 class CacheExceptionTest extends \PHPUnit_Framework_TestCase

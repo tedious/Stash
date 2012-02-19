@@ -47,6 +47,7 @@
 namespace Stash\Handler;
 
 use Stash;
+use Stash\Exception\MemcacheException;
 
 /**
  * StashMemcached is a wrapper around the popular memcached server. StashMemcached supports both memcached php
@@ -86,7 +87,7 @@ class Memcached implements HandlerInterface
         }
 
         if (!is_array($options['servers'])) {
-            throw new StashMemcachedError('Server list required to be an array.');
+            throw new MemcacheException('Server list required to be an array.');
         }
 
         if (is_scalar($options['servers'][0])) {
@@ -107,7 +108,7 @@ class Memcached implements HandlerInterface
         } elseif (class_exists('Memcache', false) && $extension != 'memcached') {
             $this->memcached = new StashMemcached_Memcache();
         } else {
-            throw new StashMemcachedError('Unable to load either memcache extension.');
+            throw new MemcacheException('Unable to load either memcache extension.');
         }
 
         if ($this->memcached->initialize($servers, $options)) {
@@ -261,7 +262,6 @@ class StashMemcached_Memcached
 
         $memcached = new \Memcached();
 
-
         $memcached->addServers($servers);
 
         foreach ($options as $name => $value) {
@@ -275,7 +275,7 @@ class StashMemcached_Memcached
                 case 'HASH':
                     $value = strtoupper($value);
                     if (!defined('\Memcached::HASH_' . $value)) {
-                        throw new StashMemcached_MemcachedError('Memcached option ' . $name . ' requires valid memcache hash option value');
+                        throw new MemcacheException('Memcached option ' . $name . ' requires valid memcache hash option value');
                     }
                     $value = constant('\Memcached::HASH_' . $value);
                     break;
@@ -283,7 +283,7 @@ class StashMemcached_Memcached
                 case 'DISTRIBUTION':
                     $value = strtoupper($value);
                     if (!defined('\Memcached::DISTRIBUTION_' . $value)) {
-                        throw new StashMemcached_MemcachedError('Memcached option ' . $name . ' requires valid memcache distribution option value');
+                        throw new MemcacheException('Memcached option ' . $name . ' requires valid memcache distribution option value');
                     }
                     $value = constant('\Memcached::DISTRIBUTION_' . $value);
                     break;
@@ -291,7 +291,7 @@ class StashMemcached_Memcached
                 case 'SERIALIZER':
                     $value = strtoupper($value);
                     if (!defined('\Memcached::SERIALIZER_' . $value)) {
-                        throw new StashMemcached_MemcachedError('Memcached option ' . $name . ' requires valid memcache serializer option value');
+                        throw new MemcacheException('Memcached option ' . $name . ' requires valid memcache serializer option value');
                     }
                     $value = constant('\Memcached::SERIALIZER_' . $value);
                     break;
@@ -305,13 +305,13 @@ class StashMemcached_Memcached
                 case 'POLL_TIMEOUT':
                 case 'SERVER_FAILURE_LIMIT':
                     if (!is_numeric($value)) {
-                        throw new StashMemcached_MemcachedError('Memcached option ' . $name . ' requires numeric value');
+                        throw new MemcacheException('Memcached option ' . $name . ' requires numeric value');
                     }
                     break;
 
                 case 'PREFIX_KEY':
                     if (!is_string($value)) {
-                        throw new StashMemcached_MemcachedError('Memcached option ' . $name . ' requires string value');
+                        throw new MemcacheException('Memcached option ' . $name . ' requires string value');
                     }
                     break;
 
@@ -323,7 +323,7 @@ class StashMemcached_Memcached
                 case 'TCP_NODELAY':
                 case 'CACHE_LOOKUPS':
                     if (!is_bool($value)) {
-                        throw new StashMemcached_MemcachedError('Memcached option ' . $name . ' requires boolean value');
+                        throw new MemcacheException('Memcached option ' . $name . ' requires boolean value');
                     }
                     break;
             }
@@ -424,13 +424,4 @@ class StashMemcached_Memcache extends StashMemcached_Memcached
         $this->memcached->set($key, $value);
         return $value;
     }
-}
-
-
-class StashMemcachedError extends \Stash\Error
-{
-}
-
-class StashMemcached_MemcachedError extends \Stash\Error
-{
 }

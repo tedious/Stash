@@ -46,6 +46,7 @@
 namespace Stash;
 
 use Stash\Handler\HandlerInterface;
+use Stash\Exception\Exception;
 
 /**
  * StashUtilities contains static functions used throughout the Stash project, both by core classes and handlers.
@@ -143,7 +144,7 @@ class Utilities
         if (is_callable(array($className, $functionName))) {
             return call_user_func_array(array($className, $functionName), $arguments);
         } else {
-            throw new Error('static function ' . $functionName . ' not found in class ' . $className);
+            throw new Exception('static function ' . $functionName . ' not found in class ' . $className);
         }
     }
 
@@ -184,12 +185,12 @@ class Utilities
     static function deleteRecursive($file)
     {
         if (substr($file, 0, 1) !== '/' && substr($file, 1, 2) !== ':\\') {
-            throw new Error('deleteRecursive function requires an absolute path.');
+            throw new Exception('deleteRecursive function requires an absolute path.');
         }
 
         $badCalls = array('/', '/*', '/.', '/..');
         if (in_array($file, $badCalls)) {
-            throw new Error('deleteRecursive function does not like that call.');
+            throw new Exception('deleteRecursive function does not like that call.');
         }
 
         $filePath = rtrim($file, ' /');
