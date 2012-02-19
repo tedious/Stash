@@ -45,7 +45,7 @@
 
 namespace Stash;
 
-use Stash\Handlers\HandlerInterface;
+use Stash\Handler\HandlerInterface;
 
 /**
  * Stash caches data that has a high generation cost, such as template preprocessing or code that requires a database

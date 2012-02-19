@@ -4,7 +4,7 @@ namespace Stash\Test;
 
 use Stash\Cache;
 use Stash\Utilities;
-use Stash\Handlers\Ephemeral;
+use Stash\Handler\Ephemeral;
 
 class CacheTest extends \PHPUnit_Framework_TestCase
 {

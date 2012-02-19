@@ -43,7 +43,7 @@
  * @version    Release: 0.9.5
  */
 
-namespace Stash\Handlers;
+namespace Stash\Handler;
 
 /**
  * Stash Handlers are the engines behind the Stash library. These classes handle the low level operations- retrieving,

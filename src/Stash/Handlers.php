@@ -58,11 +58,11 @@ class Handlers
      *
      * @var array
      */
-    protected static $handlers = array('Apc' => '\Stash\Handlers\Ephemeral',
-                                       'FileSystem' => '\Stash\Handlers\FileSystem',
-                                       'Memcached' => '\Stash\Handlers\Memcached',
-                                       'MultiHandler' => '\Stash\Handlers\MultiHandler',
-                                       'SQLite' => '\Stash\Handlers\Sqlite'
+    protected static $handlers = array('Apc' => '\Stash\Handler\Ephemeral',
+                                       'FileSystem' => '\Stash\Handler\FileSystem',
+                                       'Memcached' => '\Stash\Handler\Memcached',
+                                       'MultiHandler' => '\Stash\Handler\MultiHandler',
+                                       'SQLite' => '\Stash\Handler\Sqlite'
     );
 
 
@@ -79,7 +79,7 @@ class Handlers
                 continue;
             }
 
-            if (!in_array('Stash\Handlers\HandlerInterface', class_implements($class))) {
+            if (!in_array('Stash\Handler\HandlerInterface', class_implements($class))) {
                 continue;
             }
 

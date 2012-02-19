@@ -1,10 +1,10 @@
 <?php
 
-namespace Stash\Test\Handlers;
+namespace Stash\Test\Handler;
 
 class StashFileSystemTest extends AbstractHandlerTest
 {
-    protected $handlerClass = 'Stash\Handlers\FileSystem';
+    protected $handlerClass = 'Stash\Handler\FileSystem';
 
     protected function getOptions()
     {

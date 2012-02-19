@@ -3,7 +3,7 @@
 namespace Stash\Test;
 
 use Stash\Box;
-use Stash\Handlers\Ephemeral;
+use Stash\Handler\Ephemeral;
 
 class BoxTest extends \PHPUnit_Framework_TestCase
 {
@@ -13,7 +13,7 @@ class BoxTest extends \PHPUnit_Framework_TestCase
     {
         Box::setHandler(new Ephemeral(array()));
         $stash = Box::getCache();
-        $this->assertAttributeInstanceOf('Stash\Handlers\Ephemeral', 'handler', $stash, 'set handler is pushed to new stash objects');
+        $this->assertAttributeInstanceOf('Stash\Handler\Ephemeral', 'handler', $stash, 'set handler is pushed to new stash objects');
     }
 
     public function testGetCache()

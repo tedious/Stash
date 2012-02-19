@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Stash
  *
@@ -45,20 +44,21 @@
  * @version    Release: 0.9.5
  */
 
-namespace Stash\Handlers;
+namespace Stash\Test\Handler;
 
 use Stash;
+use Stash\Handler\HandlerInterface;
 
 /**
- * The ephemeral class exists to assist with testing the main Stash class. Since this is a very mininal handler we can
- * test Stash without having to worry about underlying problems interfering.
+ * StashExceptionTest is used for testing how Stash reacts to thrown errors. Every function but the constructor throws
+ * an exception.
  *
  * @package Stash
  * @author Robert Hafner <tedivm@tedivm.com>
+ * @codeCoverageIgnore
  */
-class Ephemeral implements HandlerInterface
+class ExceptionTest implements HandlerInterface
 {
-
     protected $store = array();
 
     public function __construct($options = array())
@@ -68,67 +68,39 @@ class Ephemeral implements HandlerInterface
 
     public function __destruct()
     {
-
     }
 
     public function getData($key)
     {
-        $index = $this->getKeyIndex($key);
-        if (isset($this->store[$index])) {
-            return $this->store[$index];
-        }
-
-        return false;
+        throw new StashExceptionTestError('Test exception for ' . __FUNCTION__ . ' call');
     }
 
     protected function getKeyIndex($key)
     {
-        $index = '';
-        foreach ($key as $value) {
-            $index .= $value;
-        }
-
-        return $index;
+        throw new StashExceptionTestError('Test exception for ' . __FUNCTION__ . ' call');
     }
 
     public function storeData($key, $data, $expiration)
     {
-        $index = $this->getKeyIndex($key);
-        $this->store[$index] = array('data' => $data, 'expiration' => $expiration);
-        return true;
+        throw new StashExceptionTestError('Test exception for ' . __FUNCTION__ . ' call');
     }
 
     public function clear($key = null)
     {
-        if (!isset($key)) {
-            $this->store = array();
-        } else {
-            $clearIndex = $this->getKeyIndex($key);
-            foreach ($this->store as $index => $data) {
-                if (strpos($index, $clearIndex) === 0) {
-                    unset($this->store[$index]);
-                }
-            }
-        }
-
-        return true;
+        throw new StashExceptionTestError('Test exception for ' . __FUNCTION__ . ' call');
     }
 
     public function purge()
     {
-        $now = time();
-        foreach ($this->store as $index => $data) {
-            if ($data['expiration'] <= $now) {
-                unset($this->store[$index]);
-            }
-        }
-
-        return true;
+        throw new StashExceptionTestError('Test exception for ' . __FUNCTION__ . ' call');
     }
 
     static function canEnable()
     {
         return (defined('TESTING') && TESTING);
     }
+}
 
+class StashExceptionTestError extends \Stash\Error
+{
 }

@@ -45,7 +45,7 @@
 
 namespace Stash;
 
-use Stash\Handlers\HandlerInterface;
+use Stash\Handler\HandlerInterface;
 
 /**
  * StashUtilities contains static functions used throughout the Stash project, both by core classes and handlers.

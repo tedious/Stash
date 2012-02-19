@@ -1,13 +1,13 @@
 <?php
 
-namespace Stash\Test\Handlers;
+namespace Stash\Test\Handler;
 
-use Stash\Handlers\Memcached;
+use Stash\Handler\Memcached;
 use Stash\Cache;
 
 class MemcachedMemcacheTest extends AbstractHandlerTest
 {
-    protected $handlerClass = 'Stash\Handlers\Memcached';
+    protected $handlerClass = 'Stash\Handler\Memcached';
     protected $extension = 'memcache';
 
     protected $servers = array('127.0.0.1', '11211');

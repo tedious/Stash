@@ -1,10 +1,10 @@
 <?php
 
-namespace Stash\Test\Handlers;
+namespace Stash\Test\Handler;
 
 class SqliteSqlite2Test extends AbstractHandlerTest
 {
-    protected $handlerClass = 'Stash\Handlers\Sqlite';
+    protected $handlerClass = 'Stash\Handler\Sqlite';
 
     public function getOptions()
     {

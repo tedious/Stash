@@ -45,7 +45,7 @@
 
 namespace Stash;
 
-use Stash\Handlers\HandlerInterface;
+use Stash\Handler\HandlerInterface;
 
 /**
  * StashManager is a collection of static functions used to make certain repetitive tasks easier by consilidating their

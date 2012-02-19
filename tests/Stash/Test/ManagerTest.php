@@ -4,7 +4,7 @@ namespace Stash\Test;
 
 use Stash\Manager;
 
-use Stash\Handlers\Ephemeral;
+use Stash\Handler\Ephemeral;
 
 class ManagerTest extends \PHPUnit_Framework_TestCase
 {
@@ -17,7 +17,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
         Manager::setHandler('base', new Ephemeral(array()));
         $stash = Manager::getCache('base');
-        $this->assertAttributeInstanceOf('Stash\Handlers\Ephemeral', 'handler', $stash, 'set handler is pushed to new stash objects');
+        $this->assertAttributeInstanceOf('Stash\Handler\Ephemeral', 'handler', $stash, 'set handler is pushed to new stash objects');
     }
 
     public function testGetCache()

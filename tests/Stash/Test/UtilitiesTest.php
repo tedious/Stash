@@ -3,7 +3,7 @@
 namespace Stash\Test;
 
 use Stash\Utilities;
-use Stash\Handlers\FileSystem;
+use Stash\Handler\FileSystem;
 
 class UtilitiesTest extends \PHPUnit_Framework_TestCase
 {

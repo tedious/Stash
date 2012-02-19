@@ -44,7 +44,7 @@
  * @version    Release: 0.9.5
  */
 
-namespace Stash\Handlers;
+namespace Stash\Handler;
 
 use Stash;
 

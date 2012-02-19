@@ -15,7 +15,7 @@ class HandlersTest extends \PHPUnit_Framework_TestCase
 
     public function testRegisterHandler()
     {
-        Handlers::registerHandler('Array', 'Stash\Handlers\Ephemeral');
+        Handlers::registerHandler('Array', 'Stash\Handler\Ephemeral');
 
         $handlers = Handlers::getHandlers();
         $this->assertArrayHasKey('Array', $handlers, 'getHandlers returns Array handler');
@@ -25,7 +25,7 @@ class HandlersTest extends \PHPUnit_Framework_TestCase
     {
         Handlers::getHandlerClass('Array');
 
-        $this->assertEquals('Stash\Handlers\Ephemeral', Handlers::getHandlerClass('Array'), 'getHandlerClass returns proper classname for Array handler');
+        $this->assertEquals('Stash\Handler\Ephemeral', Handlers::getHandlerClass('Array'), 'getHandlerClass returns proper classname for Array handler');
     }
 
 }

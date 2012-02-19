@@ -1,12 +1,12 @@
 <?php
 
-namespace Stash\Test\Handlers;
+namespace Stash\Test\Handler;
 
-use Stash\Handlers\Ephemeral;
+use Stash\Handler\Ephemeral;
 
 class StashMultiHandlerTest extends AbstractHandlerTest
 {
-    protected $handlerClass = 'Stash\Handlers\MultiHandler';
+    protected $handlerClass = 'Stash\Handler\MultiHandler';
     protected $subHandlers;
 
     protected function getOptions()

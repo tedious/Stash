@@ -44,7 +44,7 @@
  * @version    Release: 0.9.5
  */
 
-namespace Stash\Handlers;
+namespace Stash\Handler;
 
 use Stash;
 
@@ -95,12 +95,12 @@ class Sqlite implements HandlerInterface
         $extension = isset($options['extension']) ? strtolower($options['extension']) : 'pdo';
 
         if ($extension == 'sqlite') {
-            $handler = '\Stash\Handlers\Sqlite_SQLite';
+            $handler = '\Stash\Handler\Sqlite_SQLite';
         } else {
             if (isset($options['version']) && $options['version'] == 2) {
-                $handler = '\Stash\Handlers\Sqlite_PDO2';
+                $handler = '\Stash\Handler\Sqlite_PDO2';
             } else {
-                $handler = '\Stash\Handlers\Sqlite_PDO';
+                $handler = '\Stash\Handler\Sqlite_PDO';
             }
         }
 

@@ -45,7 +45,7 @@
 
 namespace Stash;
 
-use Stash\Handlers\HandlerInterface;
+use Stash\Handler\HandlerInterface;
 
 /**
  * StashBox makes managing a simply cache system easier by encapsulating certain commonly used tasks. StashBox also

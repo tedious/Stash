@@ -1,6 +1,6 @@
 <?php
 
-namespace Stash\Test\Handlers;
+namespace Stash\Test\Handler;
 
 class MemcachedMemcachedTest extends MemcachedMemcacheTest
 {
