@@ -178,7 +178,7 @@ class Memcached implements \Stash\Handler
 		// array(name, sub);
 		// a => name, b => sub;
 
-		$key = \StashUtilities::normalizeKeys($key);
+		$key = \Stash\Utilities::normalizeKeys($key);
 
 		$keyString = 'cache:::';
 		foreach($key as $name)
@@ -260,7 +260,7 @@ class StashMemcached_Memcached
 			'CACHE_LOOKUPS',
 			'SERVER_FAILURE_LIMIT');
 
-		$memcached = new Memcached();
+		$memcached = new \Memcached();
 
 
 		$memcached->addServers($servers);
@@ -269,7 +269,7 @@ class StashMemcached_Memcached
 		{
 			$name = strtoupper($name);
 
-			if(!in_array($name, $memOptions) || !defined('Memcached::OPT_' . $name))
+			if(!in_array($name, $memOptions) || !defined('\Memcached::OPT_' . $name))
 				continue;
 
 			switch($name)
@@ -278,21 +278,21 @@ class StashMemcached_Memcached
 					$value = strtoupper($value);
 					if(!defined('\Memcached::HASH_' . $value))
 						throw new StashMemcached_MemcachedError('Memcached option ' . $name . ' requires valid memcache hash option value');
-					$value = constant('Memcached::HASH_' . $value);
+					$value = constant('\Memcached::HASH_' . $value);
 						break;
 
 				case 'DISTRIBUTION':
 					$value = strtoupper($value);
 					if(!defined('\Memcached::DISTRIBUTION_' . $value))
 						throw new StashMemcached_MemcachedError('Memcached option ' . $name . ' requires valid memcache distribution option value');
-					$value = constant('Memcached::DISTRIBUTION_' . $value);
+					$value = constant('\Memcached::DISTRIBUTION_' . $value);
 						break;
 
 				case 'SERIALIZER':
 					$value = strtoupper($value);
 					if(!defined('\Memcached::SERIALIZER_' . $value))
 						throw new StashMemcached_MemcachedError('Memcached option ' . $name . ' requires valid memcache serializer option value');
-					$value = constant('Memcached::SERIALIZER_' . $value);
+					$value = constant('\Memcached::SERIALIZER_' . $value);
 						break;
 
 				case 'SOCKET_SEND_SIZE':
@@ -338,7 +338,7 @@ class StashMemcached_Memcached
 	public function get($key)
 	{
 		$value = $this->memcached->get($key);
-		if($value === false && $this->memcached->getResultCode() == Memcached::RES_NOTFOUND)
+		if($value === false && $this->memcached->getResultCode() == \Memcached::RES_NOTFOUND)
 			return false;
 
 		return $value;
@@ -349,7 +349,7 @@ class StashMemcached_Memcached
 		if(($rValue = $this->memcached->get($key, null, $token)) !== false)
 			return $rValue;
 
-		if($this->memcached->getResultCode() === Memcached::RES_NOTFOUND)
+		if($this->memcached->getResultCode() === \Memcached::RES_NOTFOUND)
 		{
 			$this->memcached->add($key, $value);
 		}else{
@@ -382,7 +382,7 @@ class StashMemcached_Memcache extends StashMemcached_Memcached
 {
 	public function initialize($servers, $options = array())
 	{
-		$memcached = new Memcache();
+		$memcached = new \Memcache();
 
 		foreach($servers as $server)
 		{
