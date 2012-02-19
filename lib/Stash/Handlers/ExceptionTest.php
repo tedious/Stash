@@ -58,47 +58,48 @@ use Stash;
  */
 class ExceptionTest implements HandlerInterface
 {
-	protected $store = array();
+    protected $store = array();
 
-	public function __construct($options = array())
-	{
+    public function __construct($options = array())
+    {
 
-	}
+    }
 
-	public function __destruct()
-	{
-	}
+    public function __destruct()
+    {
+    }
 
-	public function getData($key)
-	{
-		throw new StashExceptionTestError('Test exception for ' . __FUNCTION__ . ' call');
-	}
+    public function getData($key)
+    {
+        throw new StashExceptionTestError('Test exception for ' . __FUNCTION__ . ' call');
+    }
 
-	protected function getKeyIndex($key)
-	{
-		throw new StashExceptionTestError('Test exception for ' . __FUNCTION__ . ' call');
-	}
+    protected function getKeyIndex($key)
+    {
+        throw new StashExceptionTestError('Test exception for ' . __FUNCTION__ . ' call');
+    }
 
-	public function storeData($key, $data, $expiration)
-	{
-		throw new StashExceptionTestError('Test exception for ' . __FUNCTION__ . ' call');
-	}
+    public function storeData($key, $data, $expiration)
+    {
+        throw new StashExceptionTestError('Test exception for ' . __FUNCTION__ . ' call');
+    }
 
-	public function clear($key = null)
-	{
-		throw new StashExceptionTestError('Test exception for ' . __FUNCTION__ . ' call');
-	}
+    public function clear($key = null)
+    {
+        throw new StashExceptionTestError('Test exception for ' . __FUNCTION__ . ' call');
+    }
 
-	public function purge()
-	{
-		throw new StashExceptionTestError('Test exception for ' . __FUNCTION__ . ' call');
-	}
+    public function purge()
+    {
+        throw new StashExceptionTestError('Test exception for ' . __FUNCTION__ . ' call');
+    }
 
-	static function canEnable()
-	{
-		return (defined('TESTING') && TESTING);
-	}
+    static function canEnable()
+    {
+        return (defined('TESTING') && TESTING);
+    }
 }
 
-class StashExceptionTestError extends \Stash\Error {}
-?>
+class StashExceptionTestError extends \Stash\Error
+{
+}

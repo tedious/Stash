@@ -73,73 +73,73 @@ namespace Stash\Handlers;
  * @package Stash
  * @author Robert Hafner <tedivm@tedivm.com>
  */
+
 interface HandlerInterface
 {
-	/**
-	 * Takes an array which is used to pass option values to the handler. As this is the only required function that is
-	 * used specifically by the developer is is where any engine specific options should go. An engine that requires
-	 * authentication information, as an example, should get them here.
-	 *
-	 * @param array $options
-	 */
-	public function __construct($options = array());
+    /**
+     * Takes an array which is used to pass option values to the handler. As this is the only required function that is
+     * used specifically by the developer is is where any engine specific options should go. An engine that requires
+     * authentication information, as an example, should get them here.
+     *
+     * @param array $options
+     */
+    public function __construct($options = array());
 
-	/**
-	 * Returns the previously stored data as well as it's expiration date in an associative array. This array contains
-	 * two keys- a 'data' key and an 'expiration' key. The 'data' key should be exactly the same as the value passed to
-	 * storeData.
-	 *
-	 * @return array
-	 */
-	public function getData($key);
+    /**
+     * Returns the previously stored data as well as it's expiration date in an associative array. This array contains
+     * two keys- a 'data' key and an 'expiration' key. The 'data' key should be exactly the same as the value passed to
+     * storeData.
+     *
+     * @return array
+     */
+    public function getData($key);
 
-	/**
-	 * Takes in data from the exposed Stash class and stored it for later retrieval.
-	 *
-	 * *The first argument is an array which should map to a specific, unique location for that array, This location
-	 * should also be able to handle recursive deletes, where the removal of an item represented by an identicle, but
-	 * truncated, key causes all of the 'children' keys to be removed.
-	 *
-	 * *The second argument is the data itself. This is an array which contains the raw storage as well as meta data
-	 * about the data. The meta data can be ignored or used by the handler but entire data parameter must be retrievable
-	 * exactly as it was placed in.
-	 *
-	 * *The third parameter is the expiration date of the item as a timestamp. This should also be stored, as it is
-	 * needed by the getData function.
-	 *
-	 * @param array $data
-	 * @param int $expiration
-	 * @return bool
-	 */
-	public function storeData($key, $data, $expiration);
+    /**
+     * Takes in data from the exposed Stash class and stored it for later retrieval.
+     *
+     * *The first argument is an array which should map to a specific, unique location for that array, This location
+     * should also be able to handle recursive deletes, where the removal of an item represented by an identicle, but
+     * truncated, key causes all of the 'children' keys to be removed.
+     *
+     * *The second argument is the data itself. This is an array which contains the raw storage as well as meta data
+     * about the data. The meta data can be ignored or used by the handler but entire data parameter must be retrievable
+     * exactly as it was placed in.
+     *
+     * *The third parameter is the expiration date of the item as a timestamp. This should also be stored, as it is
+     * needed by the getData function.
+     *
+     * @param string $key
+     * @param array $data
+     * @param int $expiration
+     * @return bool
+     */
+    public function storeData($key, $data, $expiration);
 
-	/**
-	 * Clears the cache tree using the key array provided as the key. If called with no arguments the entire cache gets
-	 * cleared.
-	 *
-	 * @param null|array $key
-	 * @return bool
-	 */
-	public function clear($key = null);
+    /**
+     * Clears the cache tree using the key array provided as the key. If called with no arguments the entire cache gets
+     * cleared.
+     *
+     * @param null|array $key
+     * @return bool
+     */
+    public function clear($key = null);
 
-	/**
-	 * Removed any expired code from the cache. For same handlers this can just return true, as their underlying engines
-	 * automatically take care of time based expiration (apc or memcache for example). This function should also be used
-	 * for other clean up operations that the specific engine needs to handle. This function is generally called outside
-	 * of user requests as part of a maintenance check, so it is okay if the code in this function takes some time to
-	 * run,
-	 *
-	 * @return bool
-	 */
-	public function purge();
+    /**
+     * Removed any expired code from the cache. For same handlers this can just return true, as their underlying engines
+     * automatically take care of time based expiration (apc or memcache for example). This function should also be used
+     * for other clean up operations that the specific engine needs to handle. This function is generally called outside
+     * of user requests as part of a maintenance check, so it is okay if the code in this function takes some time to
+     * run,
+     *
+     * @return bool
+     */
+    public function purge();
 
-	/**
-	 * Returns whether the handler is able to run in the current environment or not. Any system checks- such as making
-	 * sure any required extensions are missing- should be done here.
-	 *
-	 * @return bool
-	 */
-	static function canEnable();
+    /**
+     * Returns whether the handler is able to run in the current environment or not. Any system checks- such as making
+     * sure any required extensions are missing- should be done here.
+     *
+     * @return bool
+     */
+    static function canEnable();
 }
-
-?>

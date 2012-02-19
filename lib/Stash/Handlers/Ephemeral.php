@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Stash
  *
@@ -57,73 +58,77 @@ use Stash;
  */
 class Ephemeral implements HandlerInterface
 {
-	protected $store = array();
 
-	public function __construct($options = array())
-	{
+    protected $store = array();
 
-	}
+    public function __construct($options = array())
+    {
 
-	public function __destruct()
-	{
-	}
+    }
 
-	public function getData($key)
-	{
-		$index = $this->getKeyIndex($key);
-		if(isset($this->store[$index]))
-			return $this->store[$index];
+    public function __destruct()
+    {
 
-		return false;
-	}
+    }
 
-	protected function getKeyIndex($key)
-	{
-		$index = '';
-		foreach($key as $value)
-			$index .= $value;
+    public function getData($key)
+    {
+        $index = $this->getKeyIndex($key);
+        if (isset($this->store[$index])) {
+            return $this->store[$index];
+        }
 
-		return $index;
-	}
+        return false;
+    }
 
-	public function storeData($key, $data, $expiration)
-	{
-		$index = $this->getKeyIndex($key);
-		$this->store[$index] = array('data' => $data, 'expiration' => $expiration);
-		return true;
-	}
+    protected function getKeyIndex($key)
+    {
+        $index = '';
+        foreach ($key as $value) {
+            $index .= $value;
+        }
 
-	public function clear($key = null)
-	{
-		if(!isset($key))
-		{
-			$this->store = array();
-		}else{
-			$clearIndex = $this->getKeyIndex($key);
-			foreach($this->store as $index => $data)
-			{
-				if(strpos($index, $clearIndex) === 0)
-					unset($this->store[$index]);
-			}
-		}
+        return $index;
+    }
 
-		return true;
-	}
+    public function storeData($key, $data, $expiration)
+    {
+        $index = $this->getKeyIndex($key);
+        $this->store[$index] = array('data' => $data, 'expiration' => $expiration);
+        return true;
+    }
 
-	public function purge()
-	{
-		$now = time();
-		foreach($this->store as $index => $data)
-			if($data['expiration'] <= $now)
-				unset($this->store[$index]);
+    public function clear($key = null)
+    {
+        if (!isset($key)) {
+            $this->store = array();
+        } else {
+            $clearIndex = $this->getKeyIndex($key);
+            foreach ($this->store as $index => $data) {
+                if (strpos($index, $clearIndex) === 0) {
+                    unset($this->store[$index]);
+                }
+            }
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	static function canEnable()
-	{
-		return (defined('TESTING') && TESTING);
-	}
+    public function purge()
+    {
+        $now = time();
+        foreach ($this->store as $index => $data) {
+            if ($data['expiration'] <= $now) {
+                unset($this->store[$index]);
+            }
+        }
+
+        return true;
+    }
+
+    static function canEnable()
+    {
+        return (defined('TESTING') && TESTING);
+    }
+
 }
-
-?>

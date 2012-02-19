@@ -45,5 +45,6 @@
 
 namespace Stash;
 
-class Warning extends Error {}
-?>
+class Warning extends Error
+{
+}

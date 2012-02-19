@@ -57,81 +57,81 @@ use Stash\Handlers\HandlerInterface;
  */
 class Box
 {
-	static protected $handler;
+    static protected $handler;
 
 
-	/**
-	 * Takes the same arguments as the Stash->setupKey() function and returns with a new Stash object. If a handler
-	 * has been set for this class then it is used, otherwise the Stash object will be set to use script memory only.
-	 * Any Stash object set for this class uses the 'stashbox' namespace.
-	 *
-	 * @example $cache = new StashBox::getCache('permissions', 'user', '4', '2');
-	 *
-	 * @param string|array $key, $key, $key...
-	 * @return Stash
-	 */
-	static function getCache()
-	{
-		$args = func_get_args();
+    /**
+     * Takes the same arguments as the Stash->setupKey() function and returns with a new Stash object. If a handler
+     * has been set for this class then it is used, otherwise the Stash object will be set to use script memory only.
+     * Any Stash object set for this class uses the 'stashbox' namespace.
+     *
+     * @example $cache = new StashBox::getCache('permissions', 'user', '4', '2');
+     *
+     * @param string|array $key, $key, $key...
+     * @return Stash
+     */
+    static function getCache()
+    {
+        $args = func_get_args();
 
-		// check to see if a single array was used instead of multiple arguments
-		if(count($args) == 1 && is_array($args[0]))
-			$args = $args[0];
+        // check to see if a single array was used instead of multiple arguments
+        if (count($args) == 1 && is_array($args[0])) {
+            $args = $args[0];
+        }
 
-		$handler = (isset(self::$handler)) ? self::$handler : null;
-		$stash = new Cache($handler, 'stashbox');
+        $handler = (isset(self::$handler)) ? self::$handler : null;
+        $stash = new Cache($handler, 'stashbox');
 
-		if(count($args) > 0)
-			$stash->setupKey($args);
+        if (count($args) > 0) {
+            $stash->setupKey($args);
+        }
 
-		return $stash;
-	}
+        return $stash;
+    }
 
-	/**
-	 * Works exactly like the Stash->clear() function, except it can be called as a single function which will build the
-	 * Stash object internally, load the handler, and clear the portion of the cache pool specified all in one call.
-	 *
- 	 * @param null|string|array $key, $key, $key...
- 	 * @return bool success
-	 */
-	static function clearCache()
-	{
-		$stash = self::getCache(func_get_args());
-		return $stash->clear();
-	}
+    /**
+     * Works exactly like the Stash->clear() function, except it can be called as a single function which will build the
+     * Stash object internally, load the handler, and clear the portion of the cache pool specified all in one call.
+     *
+     * @param null|string|array $key, $key, $key...
+     * @return bool success
+     */
+    static function clearCache()
+    {
+        $stash = self::getCache(func_get_args());
+        return $stash->clear();
+    }
 
-	/**
-	 * Works exactly like the Stash->purge() function, except it can be called as a single function which will build the
-	 * Stash object internally, load the handler, and run the purge function all in one call.
-	 *
- 	 * @return bool success
-	 */
-	static function purgeCache()
-	{
-		$stash = self::getCache();
-		return $stash->purge();
-	}
+    /**
+     * Works exactly like the Stash->purge() function, except it can be called as a single function which will build the
+     * Stash object internally, load the handler, and run the purge function all in one call.
+     *
+     * @return bool success
+     */
+    static function purgeCache()
+    {
+        $stash = self::getCache();
+        return $stash->purge();
+    }
 
-	/**
-	 * Returns a list of all available handlers that are registered with the system.
-	 *
-	 * @return array ShortName => Class
-	 */
-	static function getCacheHandlers()
-	{
-		return Handlers::getHandlers();
-	}
+    /**
+     * Returns a list of all available handlers that are registered with the system.
+     *
+     * @return array ShortName => Class
+     */
+    static function getCacheHandlers()
+    {
+        return Handlers::getHandlers();
+    }
 
-	/**
-	 * Sets a handler for each Stash object created by this class. This allows the handlers to be created just once
-	 * and reused, making it much easier to incorporate caching into any code.
-	 *
-	 * @param HandlerInterface $handler
-	 */
-	static function setHandler(HandlerInterface $handler)
-	{
-		self::$handler = $handler;
-	}
+    /**
+     * Sets a handler for each Stash object created by this class. This allows the handlers to be created just once
+     * and reused, making it much easier to incorporate caching into any code.
+     *
+     * @param HandlerInterface $handler
+     */
+    static function setHandler(HandlerInterface $handler)
+    {
+        self::$handler = $handler;
+    }
 }
-
-?>

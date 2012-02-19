@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Stash
  *
@@ -56,156 +57,162 @@ use Stash;
  */
 class Apc implements HandlerInterface
 {
-	protected $ttl = 300;
-	protected $apcNamespace;
 
-	/**
-	 * This function should takes an array which is used to pass option values to the handler.
-	 *
-	 * * ttl - This is the maximum time the item will be stored.
-	 * * namespace - This should be used when multiple projects may use the same library.
-	 *
-	 * @param array $options
-	 */
-	public function __construct($options = array())
-	{
-		if(isset($options['ttl']) && is_numeric($options['ttl']))
-			$this->ttl = (int) $options['ttl'];
+    protected $ttl = 300;
+    protected $apcNamespace;
 
-		if(isset($options['namespace']))
-		{
-			$this->apcNamespace = $options['namespace'];
-		}else{
-			$this->apcNamespace = md5(__file__);
-		}
-	}
+    /**
+     * This function should takes an array which is used to pass option values to the handler.
+     *
+     * * ttl - This is the maximum time the item will be stored.
+     * * namespace - This should be used when multiple projects may use the same library.
+     *
+     * @param array $options
+     */
+    public function __construct($options = array())
+    {
+        if (isset($options['ttl']) && is_numeric($options['ttl'])) {
+            $this->ttl = (int)$options['ttl'];
+        }
 
-	/**
-	 * Empty destructor to maintain a standardized interface across all handlers.
-	 *
-	 */
-	public function __destruct()
-	{
-	}
+        if (isset($options['namespace'])) {
+            $this->apcNamespace = $options['namespace'];
+        } else {
+            $this->apcNamespace = md5(__file__);
+        }
+    }
 
-	/**
-	 * This function should return the data array, exactly as it was received by the storeData function, or false if it
-	 * is not present. This array should have a value for "createdOn" and for "return", which should be the data the
-	 * main script is trying to store.
-	 *
-	 * @return array
-	 */
-	public function getData($key)
-	{
-		$keyString = self::makeKey($key);
-		if(!$keyString)
-			return false;
+    /**
+     * Empty destructor to maintain a standardized interface across all handlers.
+     *
+     */
+    public function __destruct()
+    {
 
-		$data = apc_fetch($keyString, $success);
-		if(!$success)
-			return false;
+    }
 
-		return unserialize($data);
-	}
+    /**
+     * This function should return the data array, exactly as it was received by the storeData function, or false if it
+     * is not present. This array should have a value for "createdOn" and for "return", which should be the data the
+     * main script is trying to store.
+     *
+     * @return array
+     */
+    public function getData($key)
+    {
+        $keyString = self::makeKey($key);
+        if (!$keyString) {
+            return false;
+        }
 
-	/**
-	 * This function takes an array as its first argument and the expiration time as the second. This array contains two
-	 * items, "createdOn" describing the first time the item was called and "return", which is the data that needs to be
-	 * stored. This function needs to store that data in such a way that it can be retrieced exactly as it was sent. The
-	 * expiration time needs to be stored with this data.
-	 *
-	 * @param array $data
-	 * @param int $expiration
-	 * @return bool
-	 */
-	public function storeData($key, $data, $expiration)
-	{
-		$life = $this->getCacheTime($expiration);
-		$keyString = $this->makeKey($key);
-		$storage = serialize(array('data' => $data, 'expiration' => $expiration));
-		$errors = apc_store(array($keyString => $storage), null, $life);
-		return count($errors) === 0;
-	}
+        $data = apc_fetch($keyString, $success);
+        if (!$success) {
+            return false;
+        }
 
-	/**
-	 * This function should clear the cache tree using the key array provided. If called with no arguments the entire
-	 * cache needs to be cleared.
-	 *
-	 * @param null|array $key
-	 * @return bool
-	 */
-	public function clear($key = null)
-	{
-		if(!isset($key))
-		{
-			return apc_clear_cache('user');
-		}else{
-			$keyRegex = '[' . $this->makeKey($key) . '*]';
-			$chunkSize = isset($this->chunkSize) && is_numeric($this->chunkSize) ? $this->chunkSize : 100;
-			$it = new \APCIterator('user', $keyRegex, \APC_ITER_KEY, $chunkSize);
-			foreach($it as $key)
-				apc_delete($key);
-		}
-		return true;
-	}
+        return unserialize($data);
+    }
 
-	/**
-	 * This function is used to remove expired items from the cache.
-	 *
-	 * @return bool
-	 */
-	public function purge()
-	{
-		$now = time();
-		$keyRegex = '[' . $this->makeKey(array()) . '*]';
-		$chunkSize = isset($this->chunkSize) && is_numeric($this->chunkSize) ? $this->chunkSize : 100;
-		$it = new \APCIterator('user', $keyRegex, \APC_ITER_KEY, $chunkSize);
-		foreach($it as $key)
-		{
-			$data = apc_fetch($key, $success);
-			$data = unserialize($data[$key['key']]);
+    /**
+     * This function takes an array as its first argument and the expiration time as the second. This array contains two
+     * items, "createdOn" describing the first time the item was called and "return", which is the data that needs to be
+     * stored. This function needs to store that data in such a way that it can be retrieced exactly as it was sent. The
+     * expiration time needs to be stored with this data.
+     *
+     * @param array $data
+     * @param int $expiration
+     * @return bool
+     */
+    public function storeData($key, $data, $expiration)
+    {
+        $life = $this->getCacheTime($expiration);
+        $keyString = $this->makeKey($key);
+        $storage = serialize(array('data' => $data, 'expiration' => $expiration));
+        $errors = apc_store(array($keyString => $storage), null, $life);
+        return count($errors) === 0;
+    }
 
-			if($success && is_array($data) && $data['expiration'] <= $now)
-				apc_delete($key);
-		}
+    /**
+     * This function should clear the cache tree using the key array provided. If called with no arguments the entire
+     * cache needs to be cleared.
+     *
+     * @param null|array $key
+     * @return bool
+     */
+    public function clear($key = null)
+    {
+        if (!isset($key)) {
+            return apc_clear_cache('user');
+        } else {
+            $keyRegex = '[' . $this->makeKey($key) . '*]';
+            $chunkSize = isset($this->chunkSize) && is_numeric($this->chunkSize) ? $this->chunkSize : 100;
+            $it = new \APCIterator('user', $keyRegex, \APC_ITER_KEY, $chunkSize);
+            foreach ($it as $key) {
+                apc_delete($key);
+            }
+        }
+        return true;
+    }
 
-		return true;
-	}
+    /**
+     * This function is used to remove expired items from the cache.
+     *
+     * @return bool
+     */
+    public function purge()
+    {
+        $now = time();
+        $keyRegex = '[' . $this->makeKey(array()) . '*]';
+        $chunkSize = isset($this->chunkSize) && is_numeric($this->chunkSize) ? $this->chunkSize : 100;
+        $it = new \APCIterator('user', $keyRegex, \APC_ITER_KEY, $chunkSize);
+        foreach ($it as $key) {
+            $data = apc_fetch($key, $success);
+            $data = unserialize($data[$key['key']]);
 
-	/**
-	 * This function checks to see if it is possible to enable this handler. This returns true no matter what, since
-	 * this is the handler of last resort.
-	 *
-	 * @return bool true
-	 */
-	static function canEnable()
-	{
-		return extension_loaded('apc');
-	}
+            if ($success && is_array($data) && $data['expiration'] <= $now) {
+                apc_delete($key);
+            }
+        }
 
-	protected function makeKey($key)
-	{
-		$keyString = md5(__file__) . '::'; // make it unique per install
+        return true;
+    }
 
-		if(isset($this->apcNamespace))
-			$keyString .= $this->apcNamespace . '::';
+    /**
+     * This function checks to see if it is possible to enable this handler. This returns true no matter what, since
+     * this is the handler of last resort.
+     *
+     * @return bool true
+     */
+    static function canEnable()
+    {
+        return extension_loaded('apc');
+    }
 
-		foreach($key as $piece)
-			$keyString .= $piece . '::';
+    protected function makeKey($key)
+    {
+        $keyString = md5(__FILE__) . '::'; // make it unique per install
 
-		return $keyString;
-	}
+        if (isset($this->apcNamespace)) {
+            $keyString .= $this->apcNamespace . '::';
+        }
 
-	protected function getCacheTime($expiration)
-	{
-		$currentTime = time(true);
-		$life = $expiration - $currentTime;
+        foreach ($key as $piece) {
+            $keyString .= $piece . '::';
+        }
 
-		if(isset($this->ttl) && $this->ttl > $life)
-			$life = $this->ttl;
+        return $keyString;
+    }
 
-		return $life;
-	}
+    protected function getCacheTime($expiration)
+    {
+        $currentTime = time(true);
+        $life = $expiration - $currentTime;
+
+        if (isset($this->ttl) && $this->ttl > $life) {
+            $life = $this->ttl;
+        }
+
+        return $life;
+    }
+
 }
-
-?>

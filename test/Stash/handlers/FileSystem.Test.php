@@ -2,12 +2,10 @@
 
 class StashFileSystemTest extends StashHandlerTest
 {
-	protected $handlerClass = 'Stash\Handlers\FileSystem';
+    protected $handlerClass = 'Stash\Handlers\FileSystem';
 
-	protected function getOptions()
-	{
-		return array('memKeyLimit' => 2);
-	}
+    protected function getOptions()
+    {
+        return array('memKeyLimit' => 2);
+    }
 }
-
-?>

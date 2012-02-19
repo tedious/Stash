@@ -2,7 +2,6 @@
 /*
 class StashAXcacheTest extends StashHandlerTest
 {
-	protected $handlerClass = 'Stash\Handlers\Xcache';
+    protected $handlerClass = 'Stash\Handlers\Xcache';
 }
 */
-?>

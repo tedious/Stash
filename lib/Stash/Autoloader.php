@@ -53,60 +53,64 @@ namespace Stash;
  */
 class Autoloader
 {
-	/**
-	 * @var string Base path the autoloader uses when loading classes.
-	 */
-	static protected $path;
+    /**
+     * @var string Base path the autoloader uses when loading classes.
+     */
+    static protected $path;
 
-	/**
-	 * Registers the autoloader using the spl_autoload system.
-	 */
-	static public function register()
-	{
-		ini_set('unserialize_callback_func', 'spl_autoload_call');
-		spl_autoload_register(array(new self, 'autoload'));
-	}
+    /**
+     * Registers the autoloader using the spl_autoload system.
+     */
+    static public function register()
+    {
+        ini_set('unserialize_callback_func', 'spl_autoload_call');
+        spl_autoload_register(array(new self, 'autoload'));
+    }
 
-	/**
-	 * Initializes the autoloader (at this point this just means setting the base path).
-	 */
-	static public function init()
-	{
-		self::$path = dirname(__file__) . '/';
-	}
+    /**
+     * Initializes the autoloader (at this point this just means setting the base path).
+     */
+    static public function init()
+    {
+        self::$path = dirname(__file__) . '/';
+    }
 
-	/**
-	 * Takes a class name and attempts to load it into the current environment. If the class is not part of the Stash
-	 * project, or the file is unable to be opened, this function returns false.
-	 *
-	 * @param string $classname
-	 * @return bool Returns true when class is successfully loaded.
-	 */
-	static function autoload($classname)
-	{
-	
-		if(class_exists($classname, false))
-			return true;
-	
-		$classname = ltrim($classname);
-		
-		if(strpos($classname, 'Stash') !== 0)
-			return false;
-	
-		// Everything has at least one namespace (Stash)
-		if(strpos($classname, '\\', 1) === false)
-			return false;
+    /**
+     * Takes a class name and attempts to load it into the current environment. If the class is not part of the Stash
+     * project, or the file is unable to be opened, this function returns false.
+     *
+     * @param string $classname
+     * @return bool Returns true when class is successfully loaded.
+     */
+    static function autoload($classname)
+    {
 
-		// Remove "Stash", since this is in relation to this folder
-		$filebase = substr($classname, 6);
-		$fileName = self::$path . str_replace('\\', DIRECTORY_SEPARATOR, $filebase) . '.php';
+        if (class_exists($classname, false)) {
+            return true;
+        }
 
-		if(!file_exists($fileName))
-			return false;
-		
-		include($fileName);
-		return class_exists($classname, false) || interface_exists($classname, false);
-	}
+        $classname = ltrim($classname);
+
+        if (strpos($classname, 'Stash') !== 0) {
+            return false;
+        }
+
+        // Everything has at least one namespace (Stash)
+        if (strpos($classname, '\\', 1) === false) {
+            return false;
+        }
+
+        // Remove "Stash", since this is in relation to this folder
+        $filebase = substr($classname, 6);
+        $fileName = self::$path . str_replace('\\', DIRECTORY_SEPARATOR, $filebase) . '.php';
+
+        if (!file_exists($fileName)) {
+            return false;
+        }
+
+        include($fileName);
+        return class_exists($classname, false) || interface_exists($classname, false);
+    }
 }
 
 /**
@@ -119,4 +123,3 @@ define('STASH_SP_OLD', 1);
 define('STASH_SP_VALUE', 2);
 define('STASH_SP_SLEEP', 3);
 define('STASH_SP_PRECOMPUTE', 4);
-?>
