@@ -6,13 +6,13 @@ error_reporting(-1);
 
 spl_autoload_register(function($class) {
     if (0 === strpos($class, 'Stash\\Test\\')) {
-        $file = __DIR__ . '/../test/' . str_replace('\\', '/', $class) . '.php';
+        $file = __DIR__ . '/../tests/' . str_replace('\\', '/', $class) . '.php';
         if (file_exists($file)) {
             require_once $file;
             return true;
         }
     } elseif (0 === strpos($class, 'Stash\\')) {
-        $file = __DIR__ . '/../lib/' . str_replace('\\', '/', $class) . '.php';
+        $file = __DIR__ . '/../src/' . str_replace('\\', '/', $class) . '.php';
         if (file_exists($file)) {
             require_once $file;
             return true;
