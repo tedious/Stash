@@ -117,9 +117,3 @@ class Autoloader
  * This call makes sure the path is set when the class is first loaded.
  */
 Autoloader::init();
-
-define('STASH_SP_NONE', 0);
-define('STASH_SP_OLD', 1);
-define('STASH_SP_VALUE', 2);
-define('STASH_SP_SLEEP', 3);
-define('STASH_SP_PRECOMPUTE', 4);

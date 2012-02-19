@@ -113,7 +113,7 @@ class CacheTest extends \PHPUnit_Framework_TestCase
         $controlStash = $this->testConstruct();
         $controlStash->setupKey($key);
 
-        $return = $controlStash->get(STASH_SP_VALUE, $newValue);
+        $return = $controlStash->get(Cache::STASH_SP_VALUE, $newValue);
         $this->assertEquals($oldValue, $return, 'Old value is returned');
         $this->assertTrue($controlStash->isMiss());
         unset($controlStash);
@@ -128,7 +128,7 @@ class CacheTest extends \PHPUnit_Framework_TestCase
         $oldStash = $this->testConstruct();
         $oldStash->setupKey($key);
 
-        $return = $oldStash->get(STASH_SP_OLD);
+        $return = $oldStash->get(Cache::STASH_SP_OLD);
         $this->assertEquals($oldValue, $return, 'Old value is returned');
         $this->assertFalse($oldStash->isMiss());
         unset($oldStash);
@@ -137,7 +137,7 @@ class CacheTest extends \PHPUnit_Framework_TestCase
         $valueStash = $this->testConstruct();
         $valueStash->setupKey($key);
 
-        $return = $valueStash->get(STASH_SP_VALUE, $newValue);
+        $return = $valueStash->get(Cache::STASH_SP_VALUE, $newValue);
         $this->assertEquals($newValue, $return, 'New value is returned');
         $this->assertFalse($valueStash->isMiss());
         unset($valueStash);
@@ -148,7 +148,7 @@ class CacheTest extends \PHPUnit_Framework_TestCase
         $sleepStash->setupKey($key);
 
         $start = microtime(true);
-        $return = $sleepStash->get(array(STASH_SP_SLEEP, 250, 2));
+        $return = $sleepStash->get(array(Cache::STASH_SP_SLEEP, 250, 2));
         $end = microtime(true);
 
         $this->assertTrue($sleepStash->isMiss());
@@ -180,7 +180,7 @@ class CacheTest extends \PHPUnit_Framework_TestCase
         $precomputeStash = $this->testConstruct();
         $precomputeStash->setupKey($key);
 
-        $return = $precomputeStash->get(STASH_SP_PRECOMPUTE, 10);
+        $return = $precomputeStash->get(Cache::STASH_SP_PRECOMPUTE, 10);
         $this->assertFalse($precomputeStash->isMiss(), 'Cache is marked as hit');
         unset($precomputeStash);
 
@@ -188,7 +188,7 @@ class CacheTest extends \PHPUnit_Framework_TestCase
         $precomputeStash = $this->testConstruct();
         $precomputeStash->setupKey($key);
 
-        $return = $precomputeStash->get(STASH_SP_PRECOMPUTE, 35);
+        $return = $precomputeStash->get(Cache::STASH_SP_PRECOMPUTE, 35);
         $this->assertTrue($precomputeStash->isMiss(), 'Cache is marked as miss');
         unset($precomputeStash);
 

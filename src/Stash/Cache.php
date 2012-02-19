@@ -158,6 +158,12 @@ use Stash\Handler\HandlerInterface;
  */
 class Cache
 {
+    const STASH_SP_NONE         = 0;
+    const STASH_SP_OLD          = 1;
+    const STASH_SP_VALUE        = 2;
+    const STASH_SP_SLEEP        = 3;
+    const STASH_SP_PRECOMPUTE   = 4;
+
     /**
      * This is the default time, in seconds, that objects are cached for.
      *
@@ -734,7 +740,7 @@ class Cache
         if (isset($record['expiration']) && ($ttl = $record['expiration'] - $curTime) > 0) {
             $this->isHit = true;
 
-            if ($invalidation == STASH_SP_PRECOMPUTE) {
+            if ($invalidation == self::STASH_SP_PRECOMPUTE) {
                 $time = isset($arg) && is_numeric($arg) ? $arg : self::$defaults['precompute_time'];
 
                 // If stampede control is on it means another cache is already processing, so we return
@@ -748,7 +754,7 @@ class Cache
 
         }
 
-        if (!isset($invalidation) || $invalidation == STASH_SP_NONE) {
+        if (!isset($invalidation) || $invalidation == self::STASH_SP_NONE) {
             $this->isHit = false;
             return;
         }
@@ -759,12 +765,12 @@ class Cache
         }
 
         switch ($invalidation) {
-            case STASH_SP_VALUE:
+            case self::STASH_SP_VALUE:
                 $record['data']['return'] = $arg;
                 $this->isHit = true;
                 break;
 
-            case STASH_SP_SLEEP:
+            case self::STASH_SP_SLEEP:
                 $time = isset($arg) && is_numeric($arg) ? $arg : self::$defaults['sleep_time'];
                 $attempts = isset($arg2) && is_numeric($arg2) ? $arg2 : self::$defaults['sleep_attempts'];
 
@@ -777,15 +783,15 @@ class Cache
                 }
 
                 usleep($ptime);
-                $record['data']['return'] = $this->get(STASH_SP_SLEEP, $time, $attempts - 1);
+                $record['data']['return'] = $this->get(self::STASH_SP_SLEEP, $time, $attempts - 1);
                 break;
 
-            case STASH_SP_OLD:
+            case self::STASH_SP_OLD:
                 $this->isHit = true;
                 break;
 
             default:
-            case STASH_SP_NONE:
+            case self::STASH_SP_NONE:
                 $this->isHit = false;
                 break;
         } // switch($invalidate)
