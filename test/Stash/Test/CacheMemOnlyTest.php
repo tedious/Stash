@@ -1,11 +1,15 @@
 <?php
 
-class Cache_MemOnlyTest extends CacheTest
+namespace Stash\Test;
+
+use Stash\Cache;
+
+class CacheMemOnlyTest extends CacheTest
 {
 
     public function testConstruct()
     {
-        $stash = new Stash\Cache(null, '_memTest');
+        $stash = new Cache(null, '_memTest');
         $this->assertTrue(is_a($stash, 'Stash\Cache'), 'Test object is an instance of Stash');
         return $stash;
     }

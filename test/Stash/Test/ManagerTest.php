@@ -1,22 +1,28 @@
 <?php
 
-class StashManagerTest extends PHPUnit_Framework_TestCase
+namespace Stash\Test;
+
+use Stash\Manager;
+
+use Stash\Handlers\Ephemeral;
+
+class ManagerTest extends \PHPUnit_Framework_TestCase
 {
     protected $data = array(array('test', 'test'));
 
     public function testSetHandler()
     {
-        $stash = Stash\Manager::getCache('base');
+        $stash = Manager::getCache('base');
         $this->assertInstanceOf('Stash\Cache', $stash, 'Unprimed Stash\Manager returns memory based stash.');
 
-        Stash\Manager::setHandler('base', new Stash\Handlers\Ephemeral(array()));
-        $stash = Stash\Manager::getCache('base');
+        Manager::setHandler('base', new Ephemeral(array()));
+        $stash = Manager::getCache('base');
         $this->assertAttributeInstanceOf('Stash\Handlers\Ephemeral', 'handler', $stash, 'set handler is pushed to new stash objects');
     }
 
     public function testGetCache()
     {
-        $stash = Stash\Manager::getCache('base', 'one');
+        $stash = Manager::getCache('base', 'one');
         $this->assertInstanceOf('Stash\Cache', $stash, 'getCache returns a Stash\Cache object');
         $stash->store($this->data);
         $storedData = $stash->get();
@@ -25,29 +31,29 @@ class StashManagerTest extends PHPUnit_Framework_TestCase
 
     public function testClearCache()
     {
-        $stash = Stash\Manager::getCache('base', 'one');
+        $stash = Manager::getCache('base', 'one');
         $stash->store($this->data, -600);
-        $this->assertTrue(Stash\Manager::clearCache('base', 'one'), 'clear returns true');
+        $this->assertTrue(Manager::clearCache('base', 'one'), 'clear returns true');
 
-        $stash = Stash\Manager::getCache('base', 'one');
+        $stash = Manager::getCache('base', 'one');
         $this->assertNull($stash->get(), 'clear removes item');
         $this->assertTrue($stash->isMiss(), 'clear causes cache miss');
     }
 
     public function testPurgeCache()
     {
-        $stash = Stash\Manager::getCache('base', 'one');
+        $stash = Manager::getCache('base', 'one');
         $stash->store($this->data, -600);
-        $this->assertTrue(Stash\Manager::purgeCache('base'), 'purge returns true');
+        $this->assertTrue(Manager::purgeCache('base'), 'purge returns true');
 
-        $stash = Stash\Manager::getCache('base', 'one');
+        $stash = Manager::getCache('base', 'one');
         $this->assertNull($stash->get(), 'purge removes item');
         $this->assertTrue($stash->isMiss(), 'purge causes cache miss');
     }
 
     public function testGetCacheHandlers()
     {
-        $handlers = Stash\Manager::getCacheHandlers();
+        $handlers = Manager::getCacheHandlers();
         $this->assertTrue(is_array($handlers), '');
     }
 }

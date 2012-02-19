@@ -1,6 +1,12 @@
 <?php
 
-class CacheTest extends PHPUnit_Framework_TestCase
+namespace Stash\Test;
+
+use Stash\Cache;
+use Stash\Utilities;
+use Stash\Handlers\Ephemeral;
+
+class CacheTest extends \PHPUnit_Framework_TestCase
 {
     protected $data = array('string' => 'Hello world!',
                             'complexString' => "\t\t\t\tHello\r\n\rWorld!",
@@ -25,7 +31,7 @@ class CacheTest extends PHPUnit_Framework_TestCase
 
     public static function tearDownAfterClass()
     {
-        Stash\Utilities::deleteRecursive(Stash\Utilities::getBaseDirectory());
+        Utilities::deleteRecursive(Utilities::getBaseDirectory());
     }
 
     protected function setUp()
@@ -33,17 +39,17 @@ class CacheTest extends PHPUnit_Framework_TestCase
         if (!$this->setup) {
             $this->startTime = time();
             $this->expiration = $this->startTime + 3600;
-            $this->data['object'] = new stdClass();
+            $this->data['object'] = new \stdClass();
         }
     }
 
     public function testConstruct()
     {
         if (!isset($this->handler)) {
-            $this->handler = new Stash\Handlers\Ephemeral(array());
+            $this->handler = new Ephemeral(array());
         }
 
-        $stash = new Stash\Cache($this->handler);
+        $stash = new Cache($this->handler);
         $this->assertTrue(is_a($stash, 'Stash\Cache'), 'Test object is an instance of Stash');
         return $stash;
     }
@@ -191,8 +197,8 @@ class CacheTest extends PHPUnit_Framework_TestCase
     public function testStoreWithDateTime()
     {
 
-        $expiration = new DateTime('now');
-        $expiration->add(new DateInterval('P1D'));
+        $expiration = new \DateTime('now');
+        $expiration->add(new \DateInterval('P1D'));
 
         $key = array('base', 'expiration', 'test');
         $stash = $this->testConstruct();

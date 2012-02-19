@@ -1,6 +1,8 @@
 <?php
 
-class StashApcTest extends StashHandlerTest
+namespace Stash\Test\Handlers;
+
+class ApcTest extends AbstractHandlerTest
 {
     protected $handlerClass = 'Stash\Handlers\Apc';
 

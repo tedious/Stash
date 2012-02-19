@@ -1,6 +1,8 @@
 <?php
 
-class StashMemcached_memcachedTest extends StashMemcached_memcacheTest
+namespace Stash\Test\Handlers;
+
+class MemcachedMemcachedTest extends MemcachedMemcacheTest
 {
     protected $extension = 'memcached';
 

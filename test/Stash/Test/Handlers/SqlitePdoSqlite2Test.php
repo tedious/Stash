@@ -1,6 +1,8 @@
 <?php
 
-class StashSqlite_pdo_sqlite3Test extends StashHandlerTest
+namespace Stash\Test\Handlers;
+
+class SqlitePdoSqlite2Test extends AbstractHandlerTest
 {
     protected $handlerClass = 'Stash\Handlers\Sqlite';
 
@@ -9,6 +11,7 @@ class StashSqlite_pdo_sqlite3Test extends StashHandlerTest
         $options = parent::getOptions();
         $options['extension'] = 'pdo';
         $options['nesting'] = 2;
+        $options['version'] = 2;
         return $options;
     }
 }

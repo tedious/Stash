@@ -44,9 +44,10 @@
  * @version    Release: 0.9.5
  */
 
-namespace Stash\Handlers;
+namespace Stash\Test\Handlers;
 
 use Stash;
+use Stash\Handlers\HandlerInterface;
 
 /**
  * StashExceptionTest is used for testing how Stash reacts to thrown errors. Every function but the constructor throws

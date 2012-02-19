@@ -1,6 +1,10 @@
 <?php
 
-class StashMultiHandlerTest extends StashHandlerTest
+namespace Stash\Test\Handlers;
+
+use Stash\Handlers\Ephemeral;
+
+class StashMultiHandlerTest extends AbstractHandlerTest
 {
     protected $handlerClass = 'Stash\Handlers\MultiHandler';
     protected $subHandlers;
@@ -8,9 +12,9 @@ class StashMultiHandlerTest extends StashHandlerTest
     protected function getOptions()
     {
         $options = array();
-        $options['handlers'][] = new Stash\Handlers\Ephemeral(array());
-        $options['handlers'][] = new Stash\Handlers\Ephemeral(array());
-        $options['handlers'][] = new Stash\Handlers\Ephemeral(array());
+        $options['handlers'][] = new Ephemeral(array());
+        $options['handlers'][] = new Ephemeral(array());
+        $options['handlers'][] = new Ephemeral(array());
         $this->subHandlers = $options['handlers'];
         return $options;
     }

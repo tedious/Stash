@@ -1,6 +1,10 @@
 <?php
 
-class StashAutoloaderTest extends PHPUnit_Framework_TestCase
+namespace Stash\Test;
+
+use Stash\Autoloader;
+
+class AutoloaderTest extends \PHPUnit_Framework_TestCase
 {
     protected $classes = array('Stash\Box',
                                'Stash\Handler',
@@ -21,20 +25,20 @@ class StashAutoloaderTest extends PHPUnit_Framework_TestCase
 
     public function testInit()
     {
-        Stash\Autoloader::init();
+        Autoloader::init();
         $this->assertClassHasStaticAttribute('path', 'Stash\Autoloader', 'Path value set by init function');
     }
 
     public function testAutoload()
     {
-        $this->assertFalse(Stash\Autoloader::autoload('FakeClass'), 'Autoloader does not load non-Stash code.');
-        $this->assertTrue(Stash\Autoloader::autoload('Stash\Cache'), 'Autoloader does load Cache code.');
-        $this->assertTrue(Stash\Autoloader::autoload('Stash\Cache'), 'Autoloader does not attempt to reload already included classes.');
+        $this->assertFalse(Autoloader::autoload('FakeClass'), 'Autoloader does not load non-Stash code.');
+        $this->assertTrue(Autoloader::autoload('Stash\Cache'), 'Autoloader does load Cache code.');
+        $this->assertTrue(Autoloader::autoload('Stash\Cache'), 'Autoloader does not attempt to reload already included classes.');
     }
 
     public function testRegister()
     {
-        Stash\Autoloader::register();
+        Autoloader::register();
         $this->assertEquals('spl_autoload_call', ini_get('unserialize_callback_func'), 'Register enables spl autoload');
         $this->assertTrue(class_exists('Stash\Handlers\Sqlite'), 'Autoloader does load Stash code.');
     }

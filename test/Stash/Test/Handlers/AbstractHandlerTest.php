@@ -1,6 +1,10 @@
 <?php
 
-abstract class StashHandlerTest extends PHPUnit_Framework_TestCase
+namespace Stash\Test\Handlers;
+
+use Stash\Utilities;
+
+abstract class AbstractHandlerTest extends \PHPUnit_Framework_TestCase
 {
     protected $data = array('string' => 'Hello world!',
                             'complexString' => "\t\tHello\r\n\r\'\'World!\"\'\\",
@@ -38,7 +42,7 @@ abstract class StashHandlerTest extends PHPUnit_Framework_TestCase
                 $this->markTestSkipped('Handler class unsuited for current environment');
             }
 
-            $this->data['object'] = new stdClass();
+            $this->data['object'] = new \stdClass();
             $this->data['large_string'] = str_repeat('apples', ceil(200000 / 6));
         }
     }
@@ -197,6 +201,6 @@ abstract class StashHandlerTest extends PHPUnit_Framework_TestCase
     {
         $handler->__destruct();
         unset($handler);
-        Stash\Utilities::deleteRecursive(Stash\Utilities::getBaseDirectory());
+        Utilities::deleteRecursive(Utilities::getBaseDirectory());
     }
 }
