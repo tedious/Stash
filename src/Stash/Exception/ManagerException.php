@@ -43,8 +43,8 @@
  * @version    Release: 0.9.5
  */
 
-namespace Stash;
+namespace Stash\Exception;
 
-class Warning extends Error
+class ManagerException extends Exception
 {
 }
