@@ -78,7 +78,7 @@ class Handlers
 			if(!class_exists($class))
 				continue;
 
-			if(!in_array('Stash\Handler', class_implements($class)))
+			if(!in_array('Stash\Handlers\HandlerInterface', class_implements($class)))
 				continue;
 
 			// This code is commented out until I have a chance to see if the $class::canEnable() line will throw a

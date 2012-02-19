@@ -56,7 +56,7 @@ use Stash;
  * @author Robert Hafner <tedivm@tedivm.com>
  * @codeCoverageIgnore
  */
-class ExceptionTest implements \Stash\Handler
+class ExceptionTest implements HandlerInterface
 {
 	protected $store = array();
 

@@ -55,7 +55,7 @@ use Stash;
  * @package Stash
  * @author Robert Hafner <tedivm@tedivm.com>
  */
-class Memcached implements \Stash\Handler
+class Memcached implements HandlerInterface
 {
 	/**
 	 * Memcache subhandler used by this class.

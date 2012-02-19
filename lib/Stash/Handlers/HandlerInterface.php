@@ -43,7 +43,7 @@
  * @version    Release: 0.9.5
  */
 
-namespace Stash;
+namespace Stash\Handlers;
 
 /**
  * Stash Handlers are the engines behind the Stash library. These classes handle the low level operations- retrieving,
@@ -73,7 +73,7 @@ namespace Stash;
  * @package Stash
  * @author Robert Hafner <tedivm@tedivm.com>
  */
-interface Handler
+interface HandlerInterface
 {
 	/**
 	 * Takes an array which is used to pass option values to the handler. As this is the only required function that is

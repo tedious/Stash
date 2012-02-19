@@ -60,7 +60,7 @@ abstract class StashHandlerTest extends PHPUnit_Framework_TestCase
 		$options = $this->getOptions();
 		$handler = new $handlerType($options);
 		$this->assertTrue(is_a($handler, $handlerType), 'Handler is an instance of ' . $handlerType);
-		$this->assertTrue(is_a($handler, '\Stash\Handler'), 'Handler implments the Stash\Handler interface');
+		$this->assertTrue(is_a($handler, '\Stash\Handlers\HandlerInterface'), 'Handler implments the Stash\Handlers\HandlerInterface interface');
 
 		return $handler;
 	}

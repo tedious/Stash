@@ -55,7 +55,7 @@ use Stash;
  * @package Stash
  * @author Robert Hafner <tedivm@tedivm.com>
  */
-class Ephemeral implements \Stash\Handler
+class Ephemeral implements HandlerInterface
 {
 	protected $store = array();
 
@@ -63,7 +63,7 @@ class Ephemeral implements \Stash\Handler
 	{
 
 	}
-	
+
 	public function __destruct()
 	{
 	}

@@ -45,6 +45,8 @@
 
 namespace Stash;
 
+use Stash\Handlers\HandlerInterface;
+
 /**
  * Stash caches data that has a high generation cost, such as template preprocessing or code that requires a database
  * connection. This class can store any native php datatype, as long as it can be serialized (so when creating classes
@@ -283,9 +285,9 @@ class Cache
 	/**
 	 * This constructor requires a StashHandler object.
 	 *
-	 * @param StashHandler If no handler is passed the cache is set to script time only.
+	 * @param HandlerInterface If no handler is passed the cache is set to script time only.
 	 */
-	public function __construct(Handler $handler = null, $cacheGroup = null)
+	public function __construct(HandlerInterface $handler = null, $cacheGroup = null)
 	{
 		if(!isset($cacheGroup))
 		{
@@ -613,7 +615,7 @@ class Cache
 	/**
 	 * Returns the StashHandler in use by this class or false is none are set.
 	 *
-	 * @return StashHandler|boolean
+	 * @return HandlerInterface|boolean
 	 */
 	protected function getHandler()
 	{

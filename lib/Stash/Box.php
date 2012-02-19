@@ -45,6 +45,8 @@
 
 namespace Stash;
 
+use Stash\Handlers\HandlerInterface;
+
 /**
  * StashBox makes managing a simply cache system easier by encapsulating certain commonly used tasks. StashBox also
  * makes it easier to reuse a handler object for each Stash instance. The downside to StashBox is that it only works
@@ -124,9 +126,9 @@ class Box
 	 * Sets a handler for each Stash object created by this class. This allows the handlers to be created just once
 	 * and reused, making it much easier to incorporate caching into any code.
 	 *
-	 * @param StashHandler $handler
+	 * @param HandlerInterface $handler
 	 */
-	static function setHandler(Handler $handler)
+	static function setHandler(HandlerInterface $handler)
 	{
 		self::$handler = $handler;
 	}

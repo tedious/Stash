@@ -56,7 +56,7 @@ use Stash;
  * @package Stash
  * @author Robert Hafner <tedivm@tedivm.com>
  */
-class Sqlite implements \Stash\Handler
+class Sqlite implements HandlerInterface
 {
 	protected $defaultOptions = array(
 						'filePermissions'	=> 0660,

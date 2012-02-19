@@ -45,6 +45,8 @@
 
 namespace Stash;
 
+use Stash\Handlers\HandlerInterface;
+
 /**
  * StashUtilities contains static functions used throughout the Stash project, both by core classes and handlers.
  *
@@ -150,10 +152,10 @@ class Utilities
 	 * of last resort and can cause problems if one library is shared by multiple projects. The directory returned
 	 * resides in the system's temap folder and is specific to each Stash installation and handler.
 	 *
-	 * @param StashHandler $handler
+	 * @param HandlerInterface $handler
 	 * @return string Path for Stash files
 	 */
-	static function getBaseDirectory(Handler $handler = null)
+	static function getBaseDirectory(HandlerInterface $handler = null)
 	{
 		$tmp = sys_get_temp_dir();
 		$lastChar = substr($tmp, -1, 1);

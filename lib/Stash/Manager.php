@@ -45,6 +45,8 @@
 
 namespace Stash;
 
+use Stash\Handlers\HandlerInterface;
+
 /**
  * StashManager is a collection of static functions used to make certain repetitive tasks easier by consilidating their
  * steps. Unlike the StashBox class StashManager can work with multiple distinct cache pools.
@@ -151,9 +153,9 @@ class Manager
 	 * match the one used by the other cache items in order to reuse this handler.
 	 *
 	 * @param string $name The label for the handler being passed
-	 * @param StashHandler $handler
+	 * @param HandlerInterface $handler
 	 */
-	static function setHandler($name, Handler $handler)
+	static function setHandler($name, HandlerInterface $handler)
 	{
 		if(!isset($handler))
 			$handler = false;

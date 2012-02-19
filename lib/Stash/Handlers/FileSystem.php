@@ -56,7 +56,7 @@ use Stash;
  * @package Stash
  * @author Robert Hafner <tedivm@tedivm.com>
  */
-class FileSystem implements \Stash\Handler
+class FileSystem implements HandlerInterface
 {
 	/**
 	 * This is the path to the file which will be used to store the cached item. It is based off of the key.
