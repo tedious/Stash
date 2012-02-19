@@ -142,7 +142,7 @@ class Apc implements \Stash\Handler
 		}else{
 			$keyRegex = '[' . $this->makeKey($key) . '*]';
 			$chunkSize = isset($this->chunkSize) && is_numeric($this->chunkSize) ? $this->chunkSize : 100;
-			$it = new APCIterator('user', $keyRegex, APC_ITER_KEY, $chunkSize);
+			$it = new \APCIterator('user', $keyRegex, \APC_ITER_KEY, $chunkSize);
 			foreach($it as $key)
 				apc_delete($key);
 		}
@@ -159,7 +159,7 @@ class Apc implements \Stash\Handler
 		$now = time();
 		$keyRegex = '[' . $this->makeKey(array()) . '*]';
 		$chunkSize = isset($this->chunkSize) && is_numeric($this->chunkSize) ? $this->chunkSize : 100;
-		$it = new APCIterator('user', $keyRegex, APC_ITER_KEY, $chunkSize);
+		$it = new \APCIterator('user', $keyRegex, \APC_ITER_KEY, $chunkSize);
 		foreach($it as $key)
 		{
 			$data = apc_fetch($key, $success);
