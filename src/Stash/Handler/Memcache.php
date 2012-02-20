@@ -107,7 +107,7 @@ class Memcache implements HandlerInterface
 
         if (class_exists('Memcached', false) && $extension != 'memcache') {
             $this->memcache = new SubMemcached();
-        } elseif (class_exists('Memcache', false) && $extension != 'memcache') {
+        } elseif (class_exists('Memcache', false) && $extension != 'memcached') {
             $this->memcache = new SubMemcache();
         } else {
             throw new MemcacheException('Unable to load either memcache extension.');

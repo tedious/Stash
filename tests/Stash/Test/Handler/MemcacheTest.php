@@ -42,7 +42,7 @@ class MemcacheTest extends AbstractHandlerTest
             }
 
             fclose($sock);
-            $this->data['object'] = new stdClass();
+            $this->data['object'] = new \stdClass();
         }
     }
 
