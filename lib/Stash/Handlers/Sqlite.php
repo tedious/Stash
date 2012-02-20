@@ -168,7 +168,7 @@ class Sqlite implements \Stash\Handler
 		{
 			if(!($handler = $this->getSqliteHandler($database, true)))
 				continue;
-			
+
 
 			isset($sqlKey) ? $handler->clear($sqlKey) : $handler->clear();
 			$handler->__destruct();
@@ -496,4 +496,3 @@ class Sqlite_PDO2 extends Sqlite_PDO
 }
 
 class StashSqliteError extends \Stash\Error {}
-?>

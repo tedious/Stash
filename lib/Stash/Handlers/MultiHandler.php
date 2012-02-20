@@ -192,4 +192,3 @@ class MultiHandler implements \Stash\Handler
 }
 
 class StashMultiHandlerError extends \Stash\Error {}
-?>

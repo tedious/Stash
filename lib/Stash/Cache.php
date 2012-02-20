@@ -781,5 +781,3 @@ class Cache
 		} // switch($invalidate)
 	}
 }
-
-?>

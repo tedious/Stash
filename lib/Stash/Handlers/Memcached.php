@@ -426,4 +426,3 @@ class StashMemcached_Memcache extends StashMemcached_Memcached
 
 class StashMemcachedError extends \Stash\Error {}
 class StashMemcached_MemcachedError extends \Stash\Error {}
-?>

@@ -46,4 +46,3 @@
 namespace Stash;
 
 class Error extends \Exception {}
-?>

@@ -84,15 +84,15 @@ class Autoloader
 	 */
 	static function autoload($classname)
 	{
-	
+
 		if(class_exists($classname, false))
 			return true;
-	
+
 		$classname = ltrim($classname);
-		
+
 		if(strpos($classname, 'Stash') !== 0)
 			return false;
-	
+
 		// Everything has at least one namespace (Stash)
 		if(strpos($classname, '\\', 1) === false)
 			return false;
@@ -103,7 +103,7 @@ class Autoloader
 
 		if(!file_exists($fileName))
 			return false;
-		
+
 		include($fileName);
 		return class_exists($classname, false) || interface_exists($classname, false);
 	}
@@ -119,4 +119,3 @@ define('STASH_SP_OLD', 1);
 define('STASH_SP_VALUE', 2);
 define('STASH_SP_SLEEP', 3);
 define('STASH_SP_PRECOMPUTE', 4);
-?>

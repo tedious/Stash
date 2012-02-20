@@ -415,4 +415,3 @@ class FileSystem implements \Stash\Handler
 }
 
 class StashFileSystemError extends \Stash\Error {}
-?>

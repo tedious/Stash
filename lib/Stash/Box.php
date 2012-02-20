@@ -131,5 +131,3 @@ class Box
 		self::$handler = $handler;
 	}
 }
-
-?>

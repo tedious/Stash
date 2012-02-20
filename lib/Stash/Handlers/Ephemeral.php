@@ -63,7 +63,7 @@ class Ephemeral implements \Stash\Handler
 	{
 
 	}
-	
+
 	public function __destruct()
 	{
 	}
@@ -125,5 +125,3 @@ class Ephemeral implements \Stash\Handler
 		return (defined('TESTING') && TESTING);
 	}
 }
-
-?>

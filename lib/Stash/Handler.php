@@ -141,5 +141,3 @@ interface Handler
 	 */
 	static function canEnable();
 }
-
-?>
