@@ -47,6 +47,7 @@
 namespace Stash\Handler;
 
 use Stash;
+use Stash\Exception\XcacheException;
 
 
 /**
@@ -225,8 +226,4 @@ class Xcache extends Apc
         // xcache isn't available over CLI
         return extension_loaded('xcache') && !(defined('STDIN') || !isset($_SERVER['REQUEST_METHOD']));
     }
-}
-
-class StashXcacheError extends \Stash\Error
-{
 }
