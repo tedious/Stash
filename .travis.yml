@@ -7,3 +7,4 @@ before_script:
     - sh bin/prepare_env
 
 script: phpunit
+
