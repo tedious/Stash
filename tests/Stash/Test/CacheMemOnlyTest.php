@@ -4,7 +4,7 @@ namespace Stash\Test;
 
 use Stash\Cache;
 
-class CacheMemOnlyTest extends CacheTest
+class CacheMemOnlyTest extends AbstractCacheTest
 {
 
     public function testConstruct()
