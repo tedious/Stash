@@ -163,4 +163,3 @@ class Manager
 }
 
 class StashManagerError extends Error {}
-?>

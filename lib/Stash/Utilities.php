@@ -237,5 +237,3 @@ class Utilities
 		return $pKey;
 	}
 }
-
-?>

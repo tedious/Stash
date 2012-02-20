@@ -221,4 +221,3 @@ class Xcache extends Apc
 }
 
 class StashXcacheError extends \Stash\Error {}
-?>

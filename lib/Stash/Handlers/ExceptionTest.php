@@ -101,4 +101,3 @@ class ExceptionTest implements \Stash\Handler
 }
 
 class StashExceptionTestError extends \Stash\Error {}
-?>

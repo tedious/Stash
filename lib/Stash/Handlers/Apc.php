@@ -207,5 +207,3 @@ class Apc implements \Stash\Handler
 		return $life;
 	}
 }
-
-?>
