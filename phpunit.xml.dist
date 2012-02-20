@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<phpunit bootstrap="./test/bootstrap.php" colors="true">
+<phpunit bootstrap="./tests/bootstrap.php" colors="true">
     <testsuites>
-        <testsuite name="Assetic Test Suite">
-            <directory suffix="Test.php">./test/Stash/</directory>
+        <testsuite name="Stash Test Suite">
+            <directory suffix="Test.php">./tests/Stash/</directory>
         </testsuite>
     </testsuites>
 
     <filter>
         <whitelist>
-            <directory suffix=".php">./lib/Stash/</directory>
+            <directory suffix=".php">./src/Stash/</directory>
         </whitelist>
     </filter>
 </phpunit>
