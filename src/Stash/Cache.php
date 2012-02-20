@@ -159,11 +159,11 @@ use Stash\Exception\Exception;
  */
 class Cache
 {
-    const STASH_SP_NONE         = 0;
-    const STASH_SP_OLD          = 1;
-    const STASH_SP_VALUE        = 2;
-    const STASH_SP_SLEEP        = 3;
-    const STASH_SP_PRECOMPUTE   = 4;
+    const SP_NONE         = 0;
+    const SP_OLD          = 1;
+    const SP_VALUE        = 2;
+    const SP_SLEEP        = 3;
+    const SP_PRECOMPUTE   = 4;
 
     /**
      * This is the default time, in seconds, that objects are cached for.
@@ -741,7 +741,7 @@ class Cache
         if (isset($record['expiration']) && ($ttl = $record['expiration'] - $curTime) > 0) {
             $this->isHit = true;
 
-            if ($invalidation == self::STASH_SP_PRECOMPUTE) {
+            if ($invalidation == self::SP_PRECOMPUTE) {
                 $time = isset($arg) && is_numeric($arg) ? $arg : self::$defaults['precompute_time'];
 
                 // If stampede control is on it means another cache is already processing, so we return
@@ -755,7 +755,7 @@ class Cache
 
         }
 
-        if (!isset($invalidation) || $invalidation == self::STASH_SP_NONE) {
+        if (!isset($invalidation) || $invalidation == self::SP_NONE) {
             $this->isHit = false;
             return;
         }
@@ -766,12 +766,12 @@ class Cache
         }
 
         switch ($invalidation) {
-            case self::STASH_SP_VALUE:
+            case self::SP_VALUE:
                 $record['data']['return'] = $arg;
                 $this->isHit = true;
                 break;
 
-            case self::STASH_SP_SLEEP:
+            case self::SP_SLEEP:
                 $time = isset($arg) && is_numeric($arg) ? $arg : self::$defaults['sleep_time'];
                 $attempts = isset($arg2) && is_numeric($arg2) ? $arg2 : self::$defaults['sleep_attempts'];
 
@@ -784,15 +784,15 @@ class Cache
                 }
 
                 usleep($ptime);
-                $record['data']['return'] = $this->get(self::STASH_SP_SLEEP, $time, $attempts - 1);
+                $record['data']['return'] = $this->get(self::SP_SLEEP, $time, $attempts - 1);
                 break;
 
-            case self::STASH_SP_OLD:
+            case self::SP_OLD:
                 $this->isHit = true;
                 break;
 
             default:
-            case self::STASH_SP_NONE:
+            case self::SP_NONE:
                 $this->isHit = false;
                 break;
         } // switch($invalidate)
