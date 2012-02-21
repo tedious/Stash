@@ -382,6 +382,25 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         Cache::$runtimeDisable = false;
     }
 
+    public function testMemoryOnlyWithInstanceFlag()
+    {
+        $stash = new Cache($this->getMockedHandler());
+        $stash->storeInMemoryOnly();
+        $this->assertTrue($stash->isMemoryOnly());
+        $stash->storeInMemoryOnly(false);
+        $this->assertFalse($stash->isMemoryOnly());
+        $stash->storeInMemoryOnly(true);
+        $this->assertTrue($stash->isMemoryOnly());
+        $this->assertMemoryOnlyStash($stash);
+    }
+
+    public function testMemoryOnlyWithoutHandler()
+    {
+        $stash = new Cache();
+        $this->assertTrue($stash->isMemoryOnly());
+        $this->assertMemoryOnlyStash($stash);
+    }
+
     private function getMockedHandler()
     {
         $handler = $this->getMockBuilder('Stash\Handler\HandlerInterface')
@@ -392,6 +411,16 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         }
 
         return $handler;
+    }
+
+    private function assertMemoryOnlyStash(Cache $stash)
+    {
+        $this->assertFalse($stash->store('true'), 'storeData returns false for memory only cache');
+        $this->assertNull($stash->get(), 'getData returns null for memory only cache');
+        $this->assertTrue($stash->clear(), 'clear returns true for memory only cache');
+        $this->assertTrue($stash->purge(), 'purge returns true for memory only cache');
+        $this->assertTrue($stash->isMiss(), 'isMiss returns true for memory only cache');
+        $this->assertFalse($stash->extendCache(), 'extendCache returns false for memory only cache');
     }
 
     private function assertDisabledStash(Cache $stash)
