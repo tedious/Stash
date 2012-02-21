@@ -5,7 +5,7 @@ php:
     - 5.4
 
 before_script:
-    - sh bin/prepare_env
+    - php tests/travis.setup.php
 
 script: phpunit
 
