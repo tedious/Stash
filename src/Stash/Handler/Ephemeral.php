@@ -126,7 +126,7 @@ class Ephemeral implements HandlerInterface
         return true;
     }
 
-    static function canEnable()
+    public function canEnable()
     {
         return (defined('TESTING') && TESTING);
     }

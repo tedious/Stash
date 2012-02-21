@@ -183,7 +183,7 @@ class Apc implements HandlerInterface
      *
      * @return bool true
      */
-    static function canEnable()
+    public function canEnable()
     {
         return extension_loaded('apc');
     }

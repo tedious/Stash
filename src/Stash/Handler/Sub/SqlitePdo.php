@@ -59,6 +59,10 @@ class SqlitePdo extends Sqlite
         $this->responseCode = \PDO::FETCH_ASSOC;
     }
 
+    public function canEnable()
+    {
+        return class_exists('SQLiteDatabase', false);
+    }
 
     protected function setTimeout($milliseconds)
     {

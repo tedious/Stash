@@ -26,10 +26,10 @@ class MemcacheTest extends AbstractHandlerTest
             $this->expiration = $this->startTime + 3600;
             $handlerClass = $this->handlerClass;
 
-            if (!$handlerClass::canEnable()) {
+            /*if (!$handlerClass::canEnable()) {
                 $this->markTestSkipped('Handler class unsuited for current environment');
                 return;
-            }
+            }*/
 
             if (!class_exists(ucfirst($this->extension))) {
                 $this->markTestSkipped('Test requires ' . $this->extension . ' extension');

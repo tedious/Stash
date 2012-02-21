@@ -47,8 +47,9 @@
 namespace Stash\Handler\Sub;
 
 use Stash\Exception\SqliteException;
+use Stash\Handler\EnabledInterface;
 
-class Sqlite
+class Sqlite implements EnabledInterface
 {
     protected $path;
     protected $handler;
@@ -149,6 +150,11 @@ class Sqlite
         return true;
     }
 
+    public function canEnable()
+    {
+        return in_array('sqlite', $this->getDrivers());
+    }
+
     protected function setTimeout($milliseconds)
     {
         if (!($handler = $this->getHandler())) {
@@ -211,5 +217,10 @@ class Sqlite
             throw new SqliteException('Unable to open SQLite Database: ' . $errorMessage);
         }
         return $db;
+    }
+
+    protected function getDrivers()
+    {
+        return class_exists('\PDO', false) ? \PDO::getAvailableDrivers() : array();
     }
 }

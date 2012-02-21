@@ -78,7 +78,7 @@ class MultiHandler implements HandlerInterface
                 throw new MulitHandlerException('Handler objects are expected to implement Stash\Handler');
             }
 
-            if (!\Stash\Utilities::staticFunctionHack($handler, 'canEnable')) {
+            if (!$handler->canEnable()) {
                 continue;
             }
 
@@ -187,7 +187,7 @@ class MultiHandler implements HandlerInterface
      *
      * @return bool true
      */
-    static function canEnable()
+    public function canEnable()
     {
         return true;
     }
