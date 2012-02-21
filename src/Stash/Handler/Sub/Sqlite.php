@@ -152,7 +152,7 @@ class Sqlite implements EnabledInterface
 
     public function canEnable()
     {
-        return in_array('sqlite', $this->getDrivers());
+        return class_exists('SQLiteDatabase', false);
     }
 
     protected function setTimeout($milliseconds)
@@ -217,10 +217,5 @@ class Sqlite implements EnabledInterface
             throw new SqliteException('Unable to open SQLite Database: ' . $errorMessage);
         }
         return $db;
-    }
-
-    protected function getDrivers()
-    {
-        return class_exists('\PDO', false) ? \PDO::getAvailableDrivers() : array();
     }
 }
