@@ -38,7 +38,7 @@ abstract class AbstractHandlerTest extends \PHPUnit_Framework_TestCase
             $this->expiration = $this->startTime + 3600;
             $handlerClass = $this->handlerClass;
 
-            if (!$handlerClass::canEnable()) {
+            if (!$this->getFreshHandler()) {
                 $this->markTestSkipped('Handler class unsuited for current environment');
             }
 
@@ -50,14 +50,13 @@ abstract class AbstractHandlerTest extends \PHPUnit_Framework_TestCase
     protected function getFreshHandler()
     {
         $handlerClass = $this->handlerClass;
+        $options = $this->getOptions();
+        $handler = new $handlerClass($options);
 
-        if (!$handlerClass::canEnable()) {
+        if (!$handler->canEnable()) {
             return false;
         }
 
-        $handlerClass = $this->handlerClass;
-        $options = $this->getOptions();
-        $handler = new $handlerClass($options);
         return $handler;
     }
 

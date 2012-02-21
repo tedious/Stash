@@ -210,12 +210,8 @@ class Memcache implements HandlerInterface
         return $path ? $pathKey : md5($keyString);
     }
 
-    /**
-     *
-     * @return bool
-     */
-    static function canEnable()
+    public function canEnable()
     {
-        return class_exists('Memcached', false) || class_exists('Memcache', false);
+        return $this->memcache->canEnable();
     }
 }

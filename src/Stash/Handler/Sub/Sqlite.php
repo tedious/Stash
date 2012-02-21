@@ -47,8 +47,9 @@
 namespace Stash\Handler\Sub;
 
 use Stash\Exception\SqliteException;
+use Stash\Handler\UsableInterface;
 
-class Sqlite
+class Sqlite implements UsableInterface
 {
     protected $path;
     protected $handler;
@@ -73,7 +74,7 @@ class Sqlite
         $this->filePermissions = $filePermission;
         $this->dirPermissions = $directoryPermissiom;
         $this->busyTimeout = $busyTimeout;
-        $this->responseCode = SQLITE_ASSOC;
+        $this->responseCode = 1; // SQLITE_ASSOC
     }
 
     public function __destruct()
@@ -147,6 +148,11 @@ class Sqlite
         $handler->query('DELETE FROM cacheStore WHERE expiration < ' . time());
         $handler->query('VACUUM');
         return true;
+    }
+
+    public function canEnable()
+    {
+        return class_exists('SQLiteDatabase', false);
     }
 
     protected function setTimeout($milliseconds)

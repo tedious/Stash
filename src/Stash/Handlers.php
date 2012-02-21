@@ -93,9 +93,11 @@ class Handlers
                        $availableHandlers[$name] = $class;
                }else */
 
+            /*
             if (Utilities::staticFunctionHack($class, 'canEnable')) {
                 $availableHandlers[$name] = $class;
-            }
+            }*/
+            $availableHandlers[$name] = $class;
         }
 
         return $availableHandlers;

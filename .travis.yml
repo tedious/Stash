@@ -2,9 +2,10 @@ language: php
 
 php: 
     - 5.3
+    - 5.4
 
 before_script:
-    - sh bin/prepare_env
+    - php tests/travis.setup.php
 
-script: phpunit
+script: phpunit --verbose
 

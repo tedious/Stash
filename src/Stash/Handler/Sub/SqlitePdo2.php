@@ -50,6 +50,11 @@ use Stash\Exception\SqliteException;
 
 class SqlitePdo2 extends SqlitePdo
 {
+    public function canEnable()
+    {
+        return in_array('sqlite2', $this->getDrivers());
+    }
+
     protected function buildHandler()
     {
         $db = new \PDO('sqlite2:' . $this->path);

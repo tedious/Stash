@@ -47,8 +47,9 @@
 namespace Stash\Handler\Sub;
 
 use Stash\Exception\MemcacheException;
+use Stash\Handler\UsableInterface;
 
-class Memcached
+class Memcached implements UsableInterface
 {
     /**
      * @var Memcached
@@ -192,5 +193,10 @@ class Memcached
     public function flush()
     {
         $this->memcached->flush();
+    }
+
+    public function canEnable()
+    {
+        return class_exists('Memcached', false);
     }
 }

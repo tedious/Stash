@@ -210,7 +210,7 @@ class Sqlite implements HandlerInterface
      *
      * @param null|array $key
      * @param bool $name = false
-     * @return Sqlite_SQLite
+     * @return \Stash\Handler\Sub\Sqlite
      */
     protected function getSqliteHandler($key, $name = false)
     {
@@ -284,10 +284,11 @@ class Sqlite implements HandlerInterface
      *
      * @return bool
      */
-    static function canEnable()
+    public function canEnable()
     {
-        $drivers = class_exists('\PDO', false) ? \PDO::getAvailableDrivers() : array();
-        return (in_array('sqlite', $drivers) || in_array('sqlite2', $drivers)) || class_exists('SQLiteDatabase', false);
+        $handler = $this->getSqliteHandler(array('_none'));
+
+        return $handler->canEnable();
     }
 
     /**

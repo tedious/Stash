@@ -35,7 +35,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @package    Stash
- * @subpackage Handlers
  * @author     Robert Hafner <tedivm@tedivm.com>
  * @copyright  2009-2011 Robert Hafner <tedivm@tedivm.com>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
@@ -44,52 +43,15 @@
  * @version    Release: 0.9.5
  */
 
-namespace Stash\Handler\Sub;
+namespace Stash\Handler;
 
-class Memcache extends Memcached
+interface UsableInterface
 {
-    public function initialize($servers, $options = array())
-    {
-        $memcache = new \Memcache();
-
-        foreach ($servers as $server) {
-            $host = $server[0];
-            $port = isset($server[1]) ? $server[1] : 11211;
-            $weight = isset($server[2]) ? $server[2] : null;
-
-
-            if (is_numeric($weight)) {
-                $memcache->addServer($host, $port, true, $weight);
-            } else {
-                $memcache->addServer($host, $port);
-            }
-        }
-
-        $this->memcached = $memcache;
-    }
-
-    public function set($key, $value, $expire = null)
-    {
-        return $this->memcached->set($key, array('data' => $value, 'expiration' => $expire), null, $expire);
-    }
-
-    public function get($key)
-    {
-        return @$this->memcached->get($key);
-    }
-
-    public function cas($key, $value)
-    {
-        if (($return = @$this->memcached->get($key)) !== false) {
-            return $return;
-        }
-
-        $this->memcached->set($key, $value);
-        return $value;
-    }
-
-    public function canEnable()
-    {
-        return class_exists('Memcache', false);
-    }
+    /**
+     * Returns whether the handler is able to run in the current environment or not. Any system checks - such as making
+     * sure any required extensions are missing - should be done here.
+     *
+     * @return bool
+     */
+    public function canEnable();
 }

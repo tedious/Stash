@@ -411,7 +411,7 @@ class FileSystem implements HandlerInterface
      *
      * @return bool true
      */
-    static function canEnable()
+    public function canEnable()
     {
         return true;
     }
