@@ -635,13 +635,7 @@ class Cache
             return false;
         }
 
-        $data = $this->get();
-
-        if (!isset($data) && !@is_null($data)) {
-            return false;
-        }
-
-        return $this->store($data);
+        return $this->store($this->get());
     }
 
     /**
