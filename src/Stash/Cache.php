@@ -519,16 +519,16 @@ class Cache
      */
     public function lock($ttl = null)
     {
-        if ($this->isDisabled()) {
+       if ($this->isDisabled()) {
             return true;
-        }
-
-        if (!isset($this->key) || !isset($this->key)) {
-            return false;
         }
 
         if ($this->isMemoryOnly()) {
             return true;
+        }
+
+        if (!Isset($this->key)) {
+            return false;
         }
 
         $this->stampedeRunning = true;

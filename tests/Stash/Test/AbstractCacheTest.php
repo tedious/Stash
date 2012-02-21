@@ -412,6 +412,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($stash->purge(), 'purge returns true for memory only cache');
         $this->assertTrue($stash->isMiss(), 'isMiss returns true for memory only cache');
         $this->assertFalse($stash->extendCache(), 'extendCache returns false for memory only cache');
+        $this->assertTrue($stash->lock(100), 'lock returns true in memory only cache');
     }
 
     private function assertDisabledStash(Cache $stash)
@@ -422,5 +423,6 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($stash->purge(), 'purge returns false for disabled cache');
         $this->assertTrue($stash->isMiss(), 'isMiss returns true for disabled cache');
         $this->assertFalse($stash->extendCache(), 'extendCache returns false for disabled cache');
+        $this->assertTrue($stash->lock(100), 'lock returns true for disabled cache');
     }
 }
