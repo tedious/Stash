@@ -74,7 +74,7 @@ class Sqlite implements EnabledInterface
         $this->filePermissions = $filePermission;
         $this->dirPermissions = $directoryPermissiom;
         $this->busyTimeout = $busyTimeout;
-        $this->responseCode = SQLITE_ASSOC;
+        $this->responseCode = 1; // SQLITE_ASSOC
     }
 
     public function __destruct()
