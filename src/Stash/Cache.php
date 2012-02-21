@@ -307,9 +307,7 @@ class Cache
 
         $this->group = $cacheGroup;
 
-        if ((defined('STASH_DISABLE_CACHE') && STASH_DISABLE_CACHE) || self::$runtimeDisable) {
-            $this->cacheEnabled = false;
-        } elseif ((defined('STASH_FORCE_MEM_ONLY') && STASH_FORCE_MEM_ONLY) || !isset($handler)) {
+        if ((defined('STASH_FORCE_MEM_ONLY') && STASH_FORCE_MEM_ONLY) || !isset($handler)) {
             $this->memOnly = true;
         } else {
             $this->handler = $handler;
@@ -384,12 +382,11 @@ class Cache
      */
     public function clear()
     {
+        if ($this->isDisabled()) {
+            return false;
+        }
+
         try {
-            if ((defined('STASH_DISABLE_CACHE') && STASH_DISABLE_CACHE) || self::$runtimeDisable || !$this->cacheEnabled) {
-                return false;
-            }
-
-
             if ($handler = $this->getHandler()) {
                 self::$memStore[$this->group] = array();
                 return $handler->clear(isset($this->key) ? $this->key : null);
@@ -428,7 +425,7 @@ class Cache
      */
     public function purge()
     {
-        if ((defined('STASH_DISABLE_CACHE') && STASH_DISABLE_CACHE) || self::$runtimeDisable || !$this->cacheEnabled) {
+        if ($this->isDisabled()) {
             return false;
         }
 
@@ -456,7 +453,7 @@ class Cache
     {
         self::$cacheCalls++;
 
-        if ((defined('STASH_DISABLE_CACHE') && STASH_DISABLE_CACHE) || self::$runtimeDisable || !$this->cacheEnabled) {
+        if ($this->isDisabled()) {
             return null;
         }
 
@@ -508,7 +505,7 @@ class Cache
      */
     public function isMiss()
     {
-        if ((defined('STASH_DISABLE_CACHE') && STASH_DISABLE_CACHE) || self::$runtimeDisable || !$this->cacheEnabled) {
+        if ($this->isDisabled()) {
             return true;
         }
 
@@ -522,7 +519,7 @@ class Cache
      */
     public function lock($ttl = null)
     {
-        if ((defined('STASH_DISABLE_CACHE') && STASH_DISABLE_CACHE) || self::$runtimeDisable || !$this->cacheEnabled) {
+        if ($this->isDisabled()) {
             return true;
         }
 
@@ -554,7 +551,7 @@ class Cache
      */
     public function store($data, $time = null)
     {
-        if ((defined('STASH_DISABLE_CACHE') && STASH_DISABLE_CACHE) || self::$runtimeDisable || !$this->cacheEnabled) {
+        if ($this->isDisabled()) {
             return false;
         }
 
@@ -617,7 +614,7 @@ class Cache
      */
     public function extendCache()
     {
-        if ((defined('STASH_DISABLE_CACHE') && STASH_DISABLE_CACHE) || self::$runtimeDisable || !$this->cacheEnabled) {
+        if ($this->isDisabled()) {
             return false;
         }
 
@@ -637,7 +634,7 @@ class Cache
      */
     protected function getHandler()
     {
-        if ((defined('STASH_DISABLE_CACHE') && STASH_DISABLE_CACHE) || self::$runtimeDisable || !$this->cacheEnabled) {
+        if ($this->isDisabled()) {
             return false;
         }
 
@@ -796,5 +793,13 @@ class Cache
                 $this->isHit = false;
                 break;
         } // switch($invalidate)
+    }
+
+    /**
+     * Return true if caching is disabled
+     */
+    public function isDisabled()
+    {
+        return self::$runtimeDisable || !$this->cacheEnabled || (defined('STASH_DISABLE_CACHE') && STASH_DISABLE_CACHE);
     }
 }

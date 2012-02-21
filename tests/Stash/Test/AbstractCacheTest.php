@@ -351,6 +351,39 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         $stash->disable();
         $stash->setupKey(array('path', 'to', 'key'));
 
+    }
+
+    public function testDisableCacheWillNeverCallHandler()
+    {
+        $stash = new Cache($this->getMockedHandler());
+        $stash->disable();
+        $this->assertTrue($stash->isDisabled());
+        $this->assertDisabledStash($stash);
+    }
+
+    public function testDisableCacheGlobally()
+    {
+        Cache::$runtimeDisable = true;
+        $stash = new Cache($this->getMockedHandler());
+        $this->assertDisabledStash($stash);
+        $this->assertTrue($stash->isDisabled());
+        Cache::$runtimeDisable = false;
+    }
+
+    private function getMockedHandler()
+    {
+        $handler = $this->getMockBuilder('Stash\Handler\HandlerInterface')
+                        ->getMock();
+        foreach (get_class_methods($handler) as $methodName) {
+            $handler->expects($this->never())
+                    ->method($methodName);
+        }
+
+        return $handler;
+    }
+
+    private function assertDisabledStash(Cache $stash)
+    {
         $this->assertFalse($stash->store('true'), 'storeData returns false for disabled cache');
         $this->assertNull($stash->get(), 'getData returns null for disabled cache');
         $this->assertFalse($stash->clear(), 'clear returns false for disabled cache');
