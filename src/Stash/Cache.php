@@ -47,6 +47,7 @@ namespace Stash;
 
 use Stash\Handler\HandlerInterface;
 use Stash\Exception\Exception;
+use Exception as BaseException;
 
 /**
  * Stash caches data that has a high generation cost, such as template preprocessing or code that requires a database
@@ -382,37 +383,42 @@ class Cache
      */
     public function clear()
     {
+        try {
+            return $this->executeClear();
+        } catch (BaseException $e) {
+            $this->disable();
+            return false;
+        }
+    }
+
+    private function executeClear()
+    {
         if ($this->isDisabled()) {
             return false;
         }
 
-        try {
-            if (!$this->isMemoryOnly()) {
-                self::$memStore[$this->group] = array();
-                return $this->handler->clear(isset($this->key) ? $this->key : null);
-            }
-
-            // Typically speaking- when there is handler backing the Stash class- we just want to wipe the whole
-            // memCache out when it's cleared. However, when it is the only 'backend' available it makes sense
-            // to actually go through and only clear the items requested by the user, since any cache misses from
-            // script memory are then complete misses.
-            if (!isset($this->keyString)) {
-                self::$memStore[$this->group] = array();
-                return true;
-            }
-
-            $length = strlen($this->keyString);
-            foreach (self::$memStore[$this->group] as $name => $value) {
-                if (substr($name, 0, $length) == $this->keyString) {
-                    unset(self::$memStore[$this->group][$name]);
-                }
-            }
-
-            return true;
-
-        } catch (\Exception $e) {
-            return false;
+        if (!$this->isMemoryOnly()) {
+            self::$memStore[$this->group] = array();
+            return $this->handler->clear(isset($this->key) ? $this->key : null);
         }
+
+        // Typically speaking- when there is handler backing the Stash class- we just want to wipe the whole
+        // memCache out when it's cleared. However, when it is the only 'backend' available it makes sense
+        // to actually go through and only clear the items requested by the user, since any cache misses from
+        // script memory are then complete misses.
+        if (!isset($this->keyString)) {
+            self::$memStore[$this->group] = array();
+            return true;
+        }
+
+        $length = strlen($this->keyString);
+        foreach (self::$memStore[$this->group] as $name => $value) {
+            if (substr($name, 0, $length) == $this->keyString) {
+                unset(self::$memStore[$this->group][$name]);
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -423,23 +429,27 @@ class Cache
      */
     public function purge()
     {
+        try {
+            return $this->executePurge();
+        } catch (BaseException $e) {
+            $this->disable();
+            return false;
+        }
+    }
+
+    private function executePurge()
+    {
         if ($this->isDisabled()) {
             return false;
         }
 
-        try {
-            self::$memStore[$this->group] = array();
+        self::$memStore[$this->group] = array();
 
-            if ($this->isMemoryOnly()) {
-                return true;
-            }
-
-            return $this->handler->purge();
-        } catch (\Exception $e) {
-
+        if ($this->isMemoryOnly()) {
+            return true;
         }
 
-        return false;
+        return $this->handler->purge();
     }
 
     /**
@@ -451,13 +461,23 @@ class Cache
      */
     public function get($invalidation = 0, $arg = null, $arg2 = null)
     {
+        try {
+            return $this->executeGet($invalidation, $arg, $arg2);
+        } catch (BaseException $e) {
+            $this->disable();
+            return null;
+        }
+    }
+
+    private function executeGet($invalidation, $arg, $arg2)
+    {
         self::$cacheCalls++;
 
         if ($this->isDisabled()) {
             return null;
         }
 
-        if (!isset($this->key) || !isset($this->key)) {
+        if (!isset($this->key)) {
             return null;
         }
 
@@ -479,23 +499,17 @@ class Cache
             $invalidation = $vArray;
         }
 
-        try {
-            $record = $this->getRecord();
-            $this->validateRecord($invalidation, $record);
+        $record = $this->getRecord();
+        $this->validateRecord($invalidation, $record);
 
-            if ($this->isHit) {
-                self::$cacheReturns++;
-                self::$queryRecord[$this->keyString][] = 1;
-            } else {
-                self::$queryRecord[$this->keyString][] = 0;
-            }
-
-            return isset($record['data']['return']) ? $record['data']['return'] : null;
-
-        } catch (\Exception $e) {
-            $this->cache_enabled = false;
-            return null;
+        if ($this->isHit) {
+            self::$cacheReturns++;
+            self::$queryRecord[$this->keyString][] = 1;
+        } else {
+            self::$queryRecord[$this->keyString][] = 0;
         }
+
+        return isset($record['data']['return']) ? $record['data']['return'] : null;
     }
 
     /**
@@ -527,7 +541,7 @@ class Cache
             return true;
         }
 
-        if (!Isset($this->key)) {
+        if (!isset($this->key)) {
             return false;
         }
 
@@ -551,58 +565,62 @@ class Cache
      */
     public function store($data, $time = null)
     {
+        try {
+            return $this->executeStore($data, $time);
+        } catch (BaseException $e) {
+            $this->disable();
+            return false;
+        }
+    }
+
+    private function executeStore($data, $time)
+    {
         if ($this->isDisabled()) {
             return false;
         }
 
-        try {
-
-            if (!isset($this->key) || !isset($this->key)) {
-                return false;
-            }
-
-            $store['return'] = $data;
-            $store['createdOn'] = time();
-
-            if (isset($time)) {
-                if ($time instanceof \DateTime) {
-                    $expiration = $time->getTimestamp();
-                    $cacheTime = $expiration - $store['createdOn'];
-                } else {
-                    $cacheTime = isset($time) && is_numeric($time) ? $time : self::$cacheTime;
-                }
-            } else {
-                $cacheTime = self::$cacheTime;
-            }
-
-            $expiration = $store['createdOn'] + $cacheTime;
-
-            if ($cacheTime > 0) {
-                $diff = $cacheTime * 0.15;
-                $expirationDiff = rand(0, floor($cacheTime * .15));
-                $expiration -= $expirationDiff;
-            }
-
-            if ($this->storeMemory) {
-                self::$memStore[$this->group][$this->keyString] = array('expiration' => $expiration, 'data' => $store);
-            }
-
-            if ($this->isMemoryOnly()) {
-                return true;
-            }
-
-            if ($this->stampedeRunning == true) {
-                $spkey = $this->key;
-                $spkey[0] = 'sp';
-                $this->handler->clear($spkey);
-                $this->stampedeRunning = false;
-            }
-
-            return $this->handler->storeData($this->key, $store, $expiration);
-        } catch (\Exception $e) {
-
+        if (!isset($this->key)) {
+            return false;
         }
-        return false;
+
+        $store['return'] = $data;
+        $store['createdOn'] = time();
+
+        if (isset($time)) {
+            if ($time instanceof \DateTime) {
+                $expiration = $time->getTimestamp();
+                $cacheTime = $expiration - $store['createdOn'];
+            } else {
+                $cacheTime = isset($time) && is_numeric($time) ? $time : self::$cacheTime;
+            }
+        } else {
+            $cacheTime = self::$cacheTime;
+        }
+
+        $expiration = $store['createdOn'] + $cacheTime;
+
+        if ($cacheTime > 0) {
+            $diff = $cacheTime * 0.15;
+            $expirationDiff = rand(0, floor($cacheTime * .15));
+            $expiration -= $expirationDiff;
+        }
+
+        if ($this->storeMemory) {
+            self::$memStore[$this->group][$this->keyString] = array('expiration' => $expiration, 'data' => $store);
+        }
+
+        if ($this->isMemoryOnly()) {
+            return true;
+        }
+
+        if ($this->stampedeRunning == true) {
+            $spkey = $this->key;
+            $spkey[0] = 'sp';
+            $this->handler->clear($spkey);
+            $this->stampedeRunning = false;
+        }
+
+        return $this->handler->storeData($this->key, $store, $expiration);
     }
 
     /**
