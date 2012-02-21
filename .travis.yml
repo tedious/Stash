@@ -7,5 +7,5 @@ php:
 before_script:
     - php tests/travis.setup.php
 
-script: phpunit
+script: phpunit --verbose
 
