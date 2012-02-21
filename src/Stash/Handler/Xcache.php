@@ -221,7 +221,7 @@ class Xcache extends Apc
      *
      * @return bool true
      */
-    static function canEnable()
+    public function canEnable()
     {
         // xcache isn't available over CLI
         return extension_loaded('xcache') && !(defined('STDIN') || !isset($_SERVER['REQUEST_METHOD']));

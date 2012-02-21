@@ -59,6 +59,10 @@ class SqlitePdo extends Sqlite
         $this->responseCode = \PDO::FETCH_ASSOC;
     }
 
+    public function canEnable()
+    {
+        return in_array('sqlite', $this->getDrivers());
+    }
 
     protected function setTimeout($milliseconds)
     {
@@ -74,5 +78,10 @@ class SqlitePdo extends Sqlite
     {
         $db = new \PDO('sqlite:' . $this->path);
         return $db;
+    }
+
+    protected function getDrivers()
+    {
+        return class_exists('\PDO', false) ? \PDO::getAvailableDrivers() : array();
     }
 }

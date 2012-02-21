@@ -95,7 +95,7 @@ class ExceptionTest implements HandlerInterface
         throw new TestException('Test exception for ' . __FUNCTION__ . ' call');
     }
 
-    static function canEnable()
+    public function canEnable()
     {
         return (defined('TESTING') && TESTING);
     }
