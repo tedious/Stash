@@ -71,6 +71,9 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         $stash->setupKey('this', 'is', 'the', 'key');
         $this->assertAttributeInternalType('string', 'keyString', $stash, 'Argument based keys setup keystring');
         $this->assertAttributeInternalType('array', 'key', $stash, 'Argument based keys setup key');
+
+        $this->setExpectedException('Stash\Exception\Exception', 'No key sent to the cache constructor.');
+        $stash->setupKey();
     }
 
     public function testStore()
