@@ -74,7 +74,7 @@ namespace Stash\Handler;
  * @author Robert Hafner <tedivm@tedivm.com>
  */
 
-interface HandlerInterface extends EnabledInterface
+interface HandlerInterface extends UsableInterface
 {
     /**
      * Takes an array which is used to pass option values to the handler. As this is the only required function that is

@@ -47,9 +47,9 @@
 namespace Stash\Handler\Sub;
 
 use Stash\Exception\SqliteException;
-use Stash\Handler\EnabledInterface;
+use Stash\Handler\UsableInterface;
 
-class Sqlite implements EnabledInterface
+class Sqlite implements UsableInterface
 {
     protected $path;
     protected $handler;

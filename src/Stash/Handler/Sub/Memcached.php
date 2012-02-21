@@ -47,9 +47,9 @@
 namespace Stash\Handler\Sub;
 
 use Stash\Exception\MemcacheException;
-use Stash\Handler\EnabledInterface;
+use Stash\Handler\UsableInterface;
 
-class Memcached implements EnabledInterface
+class Memcached implements UsableInterface
 {
     /**
      * @var Memcached

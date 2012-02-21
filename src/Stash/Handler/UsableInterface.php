@@ -45,7 +45,7 @@
 
 namespace Stash\Handler;
 
-interface EnabledInterface
+interface UsableInterface
 {
     /**
      * Returns whether the handler is able to run in the current environment or not. Any system checks - such as making
