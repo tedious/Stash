@@ -83,6 +83,9 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         $stash->setupKey('this', 'is', 'the', 'key');
         $this->assertAttributeInternalType('string', 'keyString', $stash, 'Argument based keys setup keystring');
         $this->assertAttributeInternalType('array', 'key', $stash, 'Argument based keys setup key');
+
+        $this->setExpectedException('Stash\Exception\Exception', 'No key sent to the cache constructor.');
+        $stash->setupKey();
     }
 
     public function testStore()
@@ -421,6 +424,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($stash->purge(), 'purge returns true for memory only cache');
         $this->assertTrue($stash->isMiss(), 'isMiss returns true for memory only cache');
         $this->assertFalse($stash->extendCache(), 'extendCache returns false for memory only cache');
+        $this->assertTrue($stash->lock(100), 'lock returns true in memory only cache');
     }
 
     private function assertDisabledStash(Cache $stash)
@@ -431,5 +435,6 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($stash->purge(), 'purge returns false for disabled cache');
         $this->assertTrue($stash->isMiss(), 'isMiss returns true for disabled cache');
         $this->assertFalse($stash->extendCache(), 'extendCache returns false for disabled cache');
+        $this->assertTrue($stash->lock(100), 'lock returns true for disabled cache');
     }
 }
