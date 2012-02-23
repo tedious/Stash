@@ -25,7 +25,7 @@ class Memcached implements UsableInterface
      */
     protected $memcached;
 
-    public function initialize($servers, $options = array())
+    public function initialize($servers, array $options = array())
     {
         // build this array here instead of as a class variable since the constants are only defined if the extension
         // exists

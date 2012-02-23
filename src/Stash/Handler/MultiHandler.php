@@ -32,9 +32,11 @@ class MultiHandler implements HandlerInterface
      *
      * @param array $options
      */
-    public function __construct($options = array())
+    public function __construct(array $options = array())
     {
+        // todo move count() at the end of the function so that we have at least one enabled handler
         if (!isset($options['handlers']) || !is_array($options['handlers']) || count($options['handlers']) < 1) {
+            // todo IllegalArgumentException ?
             throw new MulitHandlerException('This handler requires secondary handlers to run.');
         }
 
@@ -43,11 +45,9 @@ class MultiHandler implements HandlerInterface
                 throw new MulitHandlerException('Handler objects are expected to implement Stash\Handler');
             }
 
-            if (!$handler->canEnable()) {
-                continue;
+            if ($handler->canEnable()) {
+                $this->handlers[] = $handler;
             }
-
-            $this->handlers[] = $handler;
         }
     }
 
@@ -70,6 +70,7 @@ class MultiHandler implements HandlerInterface
     public function getData($key)
     {
         $failedHandlers = array();
+        $return = false;
         foreach ($this->handlers as $handler) {
             if ($return = $handler->getData($key)) {
                 $failedHandlers = array_reverse($failedHandlers);
@@ -92,14 +93,15 @@ class MultiHandler implements HandlerInterface
      * stored. This function needs to store that data in such a way that it can be retrieved exactly as it was sent. The
      * expiration time needs to be stored with this data.
      *
-     * @param $key
-     * @param $data
+     * @param array $key
+     * @param array $data
      * @param $expiration
      * @return bool
      */
     public function storeData($key, $data, $expiration)
     {
         $handlers = array_reverse($this->handlers);
+        // todo correct if at least one handler
         $return = true;
         foreach ($handlers as $handler) {
             $storeResults = $handler->storeData($key, $data, $expiration);
@@ -119,6 +121,7 @@ class MultiHandler implements HandlerInterface
     public function clear($key = null)
     {
         $handlers = array_reverse($this->handlers);
+        // todo correct if at least one handler
         $return = true;
         foreach ($handlers as $handler) {
             $clearResults = $handler->clear($key);
@@ -136,8 +139,8 @@ class MultiHandler implements HandlerInterface
     public function purge()
     {
         $handlers = array_reverse($this->handlers);
+        // todo correct if at least one handler
         $return = true;
-
         foreach ($handlers as $handler) {
             $purgeResults = $handler->purge();
             $return = ($return) ? $purgeResults : false;

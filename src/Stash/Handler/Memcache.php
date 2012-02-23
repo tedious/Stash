@@ -47,13 +47,14 @@ class Memcache implements HandlerInterface
      *
      * @param array $options
      */
-    public function __construct($options = array())
+    public function __construct(array $options = array())
     {
         if (!isset($options['servers'])) {
             $options['servers'] = array('127.0.0.1', 11211);
         }
 
         if (!is_array($options['servers'])) {
+            // todo InvalidArgumentException ?
             throw new MemcacheException('Server list required to be an array.');
         }
 
@@ -75,6 +76,7 @@ class Memcache implements HandlerInterface
         } elseif (class_exists('Memcache', false) && $extension != 'memcached') {
             $this->memcache = new SubMemcache();
         } else {
+            // todo RuntimeException ?
             throw new MemcacheException('Unable to load either memcache extension.');
         }
 
@@ -97,20 +99,19 @@ class Memcache implements HandlerInterface
      */
     public function getData($key)
     {
-        $keyString = $this->makeKeyString($key);
-        return $this->memcache->get($keyString);
+        return $this->memcache->get($this->makeKeyString($key));
     }
 
     /**
      *
+     * @param array $key
      * @param array $data
      * @param int $expiration
      * @return bool
      */
     public function storeData($key, $data, $expiration)
     {
-        $keyString = $this->makeKeyString($key);
-        return $this->memcache->set($keyString, $data, $expiration);
+        return $this->memcache->set($this->makeKeyString($key), $data, $expiration);
     }
 
     /**
@@ -177,6 +178,7 @@ class Memcache implements HandlerInterface
 
     public function canEnable()
     {
+        // todo find a better way (this has been tested in the constructor)
         return $this->memcache->canEnable();
     }
 }

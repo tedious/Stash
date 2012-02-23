@@ -27,7 +27,7 @@ class ExceptionTest implements HandlerInterface
 {
     protected $store = array();
 
-    public function __construct($options = array())
+    public function __construct(array $options = array())
     {
 
     }

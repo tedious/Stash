@@ -97,13 +97,9 @@ class Utilities
      */
     static function getBaseDirectory(HandlerInterface $handler = null)
     {
-        $tmp = sys_get_temp_dir();
-        $lastChar = substr($tmp, -1, 1);
-        if ($lastChar !== '\\' && $lastChar !== '/') {
-            $tmp .= DIRECTORY_SEPARATOR;
-        }
+        $tmp = rtrim(sys_get_temp_dir(), '/\\') . '/';
 
-        $baseDir = $tmp . 'stash' . DIRECTORY_SEPARATOR . md5(dirname(__FILE__)) . DIRECTORY_SEPARATOR;
+        $baseDir = $tmp . 'stash/' . md5(__DIR__) . '/';
         if (isset($handler)) {
             $baseDir .= str_replace(array('/', '\\'), '_', get_class($handler)) . '/';
         }
