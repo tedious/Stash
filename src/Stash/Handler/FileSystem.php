@@ -12,7 +12,7 @@
 namespace Stash\Handler;
 
 use Stash;
-use Stash\Exception\FileSystemException;
+use Stash\Exception\LogicException;
 
 /**
  * StashFileSystem stores cache objects in the filesystem as native php, making the process of retrieving stored data
@@ -225,8 +225,7 @@ class FileSystem implements HandlerInterface
     protected function makePath($key = null)
     {
         if (!isset($this->cachePath)) {
-            // todo RuntimeExecption ?
-            throw new FileSystemException('Unable to load system without a base path.');
+            throw new LogicException('Unable to load system without a base path.');
         }
 
         $basePath = $this->cachePath;

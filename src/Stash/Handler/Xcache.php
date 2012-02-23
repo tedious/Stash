@@ -12,8 +12,6 @@
 namespace Stash\Handler;
 
 use Stash;
-use Stash\Exception\XcacheException;
-
 
 /**
  * StashSqlite is a wrapper around the xcache php extension, which allows developers to store data in memory.

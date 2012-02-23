@@ -12,7 +12,6 @@
 namespace Stash\Handler;
 
 use Stash;
-use Stash\Exception\SqliteException;
 
 /**
  * StashSqlite is a wrapper around one or more SQLite databases stored on the local system. While not as quick at at

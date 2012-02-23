@@ -14,7 +14,8 @@ namespace Stash\Handler;
 use Stash;
 use Stash\Handler\Sub\Memcache as SubMemcache;
 use Stash\Handler\Sub\Memcached as SubMemcached;
-use Stash\Exception\MemcacheException;
+use Stash\Exception\InvalidArgumentException;
+use Stash\Exception\RuntimeException;
 
 /**
  * Memcache is a wrapper around the popular memcache server. Memcache supports both memcache php
@@ -54,8 +55,7 @@ class Memcache implements HandlerInterface
         }
 
         if (!is_array($options['servers'])) {
-            // todo InvalidArgumentException ?
-            throw new MemcacheException('Server list required to be an array.');
+            throw new InvalidArgumentException('Server list required to be an array.');
         }
 
         if (is_scalar($options['servers'][0])) {
@@ -76,8 +76,7 @@ class Memcache implements HandlerInterface
         } elseif (class_exists('Memcache', false) && $extension != 'memcached') {
             $this->memcache = new SubMemcache();
         } else {
-            // todo RuntimeException ?
-            throw new MemcacheException('Unable to load either memcache extension.');
+            throw new RuntimeException('Unable to load either memcache extension.');
         }
 
         if ($this->memcache->initialize($servers, $options)) {
@@ -178,7 +177,7 @@ class Memcache implements HandlerInterface
 
     public function canEnable()
     {
-        // todo find a better way (this has been tested in the constructor)
+        // todo find a better way
         return $this->memcache->canEnable();
     }
 }
