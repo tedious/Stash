@@ -49,20 +49,6 @@ class Handlers
                 continue;
             }
 
-            // This code is commented out until I have a chance to see if the $class::canEnable() line will throw a
-            // php error with versions less than 5.3. If it does then the block is pointless and we'll just have to
-            // break compatibility with code before 5.3 at some point.
-            /*
-               if(defined('PHP_VERSION_ID') && PHP_VERSION_ID >= 50300)
-               {
-                   if($class::canEnable())
-                       $availableHandlers[$name] = $class;
-               }else */
-
-            /*
-            if (Utilities::staticFunctionHack($class, 'canEnable')) {
-                $availableHandlers[$name] = $class;
-            }*/
             $availableHandlers[$name] = $class;
         }
 
