@@ -13,6 +13,7 @@ namespace Stash\Handler\Sub;
 
 use Stash\Exception\MemcacheException;
 use Stash\Handler\UsableInterface;
+use Stash\Exception\RuntimeException;
 
 /**
  * @package Stash
@@ -25,7 +26,7 @@ class Memcached implements UsableInterface
      */
     protected $memcached;
 
-    public function initialize($servers, $options = array())
+    public function initialize($servers, array $options = array())
     {
         // build this array here instead of as a class variable since the constants are only defined if the extension
         // exists
@@ -65,7 +66,7 @@ class Memcached implements UsableInterface
                 case 'HASH':
                     $value = strtoupper($value);
                     if (!defined('\Memcached::HASH_' . $value)) {
-                        throw new MemcacheException('Memcached option ' . $name . ' requires valid memcache hash option value');
+                        throw new RuntimeException('Memcached option ' . $name . ' requires valid memcache hash option value');
                     }
                     $value = constant('\Memcached::HASH_' . $value);
                     break;
@@ -73,7 +74,7 @@ class Memcached implements UsableInterface
                 case 'DISTRIBUTION':
                     $value = strtoupper($value);
                     if (!defined('\Memcached::DISTRIBUTION_' . $value)) {
-                        throw new MemcacheException('Memcached option ' . $name . ' requires valid memcache distribution option value');
+                        throw new RuntimeException('Memcached option ' . $name . ' requires valid memcache distribution option value');
                     }
                     $value = constant('\Memcached::DISTRIBUTION_' . $value);
                     break;
@@ -81,7 +82,7 @@ class Memcached implements UsableInterface
                 case 'SERIALIZER':
                     $value = strtoupper($value);
                     if (!defined('\Memcached::SERIALIZER_' . $value)) {
-                        throw new MemcacheException('Memcached option ' . $name . ' requires valid memcache serializer option value');
+                        throw new RuntimeException('Memcached option ' . $name . ' requires valid memcache serializer option value');
                     }
                     $value = constant('\Memcached::SERIALIZER_' . $value);
                     break;
@@ -95,13 +96,13 @@ class Memcached implements UsableInterface
                 case 'POLL_TIMEOUT':
                 case 'SERVER_FAILURE_LIMIT':
                     if (!is_numeric($value)) {
-                        throw new MemcacheException('Memcached option ' . $name . ' requires numeric value');
+                        throw new RuntimeException('Memcached option ' . $name . ' requires numeric value');
                     }
                     break;
 
                 case 'PREFIX_KEY':
                     if (!is_string($value)) {
-                        throw new MemcacheException('Memcached option ' . $name . ' requires string value');
+                        throw new RuntimeException('Memcached option ' . $name . ' requires string value');
                     }
                     break;
 
@@ -113,7 +114,7 @@ class Memcached implements UsableInterface
                 case 'TCP_NODELAY':
                 case 'CACHE_LOOKUPS':
                     if (!is_bool($value)) {
-                        throw new MemcacheException('Memcached option ' . $name . ' requires boolean value');
+                        throw new RuntimeException('Memcached option ' . $name . ' requires boolean value');
                     }
                     break;
             }

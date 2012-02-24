@@ -14,7 +14,8 @@ namespace Stash\Handler;
 use Stash;
 use Stash\Handler\Sub\Memcache as SubMemcache;
 use Stash\Handler\Sub\Memcached as SubMemcached;
-use Stash\Exception\MemcacheException;
+use Stash\Exception\InvalidArgumentException;
+use Stash\Exception\RuntimeException;
 
 /**
  * Memcache is a wrapper around the popular memcache server. Memcache supports both memcache php
@@ -47,7 +48,7 @@ class Memcache implements HandlerInterface
      *
      * @param array $options
      */
-    public function __construct($options = array())
+    public function __construct(array $options = array())
     {
         if (!isset($options['servers'])) {
             $options['servers'] = array('127.0.0.1', 11211);
@@ -95,12 +96,12 @@ class Memcache implements HandlerInterface
         if(!$this->canEnable())
             return false;
 
-        $keyString = $this->makeKeyString($key);
-        return $this->memcache->get($keyString);
+        return $this->memcache->get($this->makeKeyString($key));
     }
 
     /**
      *
+     * @param array $key
      * @param array $data
      * @param int $expiration
      * @return bool
@@ -110,8 +111,7 @@ class Memcache implements HandlerInterface
         if(!$this->canEnable())
             return false;
 
-        $keyString = $this->makeKeyString($key);
-        return $this->memcache->set($keyString, $data, $expiration);
+        return $this->memcache->set($this->makeKeyString($key), $data, $expiration);
     }
 
     /**

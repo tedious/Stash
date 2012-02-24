@@ -25,7 +25,7 @@ class Ephemeral implements HandlerInterface
 
     protected $store = array();
 
-    public function __construct($options = array())
+    public function __construct(array $options = array())
     {
 
     }
@@ -40,12 +40,7 @@ class Ephemeral implements HandlerInterface
         if(!$this->canEnable())
             return false;
 
-        $index = $this->getKeyIndex($key);
-        if (isset($this->store[$index])) {
-            return $this->store[$index];
-        }
-
-        return false;
+        return isset($this->store[$this->getKeyIndex($key)]) ? $this->store[$this->getKeyIndex($key)] : false;
     }
 
     protected function getKeyIndex($key)
@@ -55,7 +50,7 @@ class Ephemeral implements HandlerInterface
 
         $index = '';
         foreach ($key as $value) {
-            $index .= $value;
+            $index .= $value . '#';
         }
 
         return $index;
@@ -63,8 +58,7 @@ class Ephemeral implements HandlerInterface
 
     public function storeData($key, $data, $expiration)
     {
-        $index = $this->getKeyIndex($key);
-        $this->store[$index] = array('data' => $data, 'expiration' => $expiration);
+        $this->store[$this->getKeyIndex($key)] = array('data' => $data, 'expiration' => $expiration);
         return true;
     }
 

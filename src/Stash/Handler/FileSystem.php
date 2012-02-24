@@ -12,7 +12,7 @@
 namespace Stash\Handler;
 
 use Stash;
-use Stash\Exception\FileSystemException;
+use Stash\Exception\LogicException;
 
 /**
  * StashFileSystem stores cache objects in the filesystem as native php, making the process of retrieving stored data
@@ -67,15 +67,12 @@ class FileSystem implements HandlerInterface
                                       'memKeyLimit' => 20
     );
 
-    public function __construct($options = array())
+    public function __construct(array $options = array())
     {
         $options = array_merge($this->defaultOptions, $options);
 
         $this->cachePath = isset($options['path']) ? $options['path'] : \Stash\Utilities::getBaseDirectory($this);
-        $lastChar = substr($this->cachePath, -1);
-        if ($lastChar != '/' && $lastChar != '\'') {
-            $this->cachePath .= '/';
-        }
+        $this->cachePath = rtrim($this->cachePath, '\\/') . '/';
 
         $this->filePermissions = $options['filePermissions'];
         $this->dirPermissions = $options['dirPermissions'];
@@ -122,13 +119,7 @@ class FileSystem implements HandlerInterface
         if(!$this->canEnable())
             return false;
 
-        $path = $this->makePath($key);
-
-        if (!file_exists($path)) {
-            return false;
-        }
-
-        return self::getDataFromFile($path);
+        return self::getDataFromFile($this->makePath($key));
     }
 
     static protected function getDataFromFile($path)
@@ -146,6 +137,7 @@ class FileSystem implements HandlerInterface
      * This function takes the data and stores it to the path specified. If the directory leading up to the path does
      * not exist, it creates it.
      *
+     * @param array $key
      * @param array $data
      * @param int $expiration
      * @return bool
@@ -166,11 +158,7 @@ class FileSystem implements HandlerInterface
                 }
             }
 
-            if (!touch($path)) {
-                return false;
-            }
-
-            if (!chmod($path, $this->filePermissions)) {
+            if (!(touch($path) && chmod($path, $this->filePermissions))) {
                 return false;
             }
         }
@@ -186,8 +174,6 @@ class FileSystem implements HandlerInterface
                 $storeString .= '/* Child Type: ' . gettype($value) . ' */' . PHP_EOL;
                 $storeString .= "\$data['{$key}'] = {$dataString};" . PHP_EOL;
             }
-            $storeString .= '?>';
-
         } else {
 
             $dataString = $this->encode($data);
@@ -195,15 +181,7 @@ class FileSystem implements HandlerInterface
             $storeString .= "\$data = {$dataString};" . PHP_EOL;
         }
 
-
-        $file = fopen($path, 'w+');
-        if (flock($file, LOCK_EX)) {
-            $success = fwrite($file, $storeString) !== false;
-            flock($file, LOCK_UN);
-            fclose($file);
-        }
-
-        return $success;
+        return false !== file_put_contents($path, $storeString, LOCK_EX);
     }
 
     protected function encode($data)
@@ -244,12 +222,12 @@ class FileSystem implements HandlerInterface
     protected function makePath($key = null)
     {
         if (!isset($this->cachePath)) {
-            throw new FileSystemException('Unable to load system without a base path.');
+            throw new LogicException('Unable to load system without a base path.');
         }
 
         $basePath = $this->cachePath;
 
-        if (!isset($key) || count($key) == 0) {
+        if (count($key) == 0) {
             return $basePath;
         }
 
@@ -318,7 +296,7 @@ class FileSystem implements HandlerInterface
         }
 
         if (strpos($path, '.php') !== false) {
-            $path = substr($path, 0, strlen($path) - 4);
+            $path = substr($path, 0, -4);
         }
 
         if (is_dir($path)) {

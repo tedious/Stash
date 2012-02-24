@@ -12,7 +12,6 @@
 namespace Stash\Handler;
 
 use Stash;
-use Stash\Exception\SqliteException;
 
 /**
  * StashSqlite is a wrapper around one or more SQLite databases stored on the local system. While not as quick at at
@@ -43,20 +42,12 @@ class Sqlite implements HandlerInterface
      *
      * @param array $options
      */
-    public function __construct($options = array())
+    public function __construct(array $options = array())
     {
         $options = array_merge($this->defaultOptions, $options);
 
         $path = isset($options['path']) ? $options['path'] : \Stash\Utilities::getBaseDirectory($this);
-        $lastChar = substr($path, -1);
-        if ($lastChar != '/' && $lastChar != '\'') {
-            $path .= '/';
-        }
-
-        $this->path = $path;
-        if (!isset($options['extension'])) {
-            $options['extension'] = 'pdo';
-        }
+        $this->path = rtrim($path, '\\/') . '/';
 
         $extension = isset($options['extension']) ? strtolower($options['extension']) : 'pdo';
 
@@ -78,7 +69,7 @@ class Sqlite implements HandlerInterface
     }
 
     /**
-     *
+     * @param array $key
      * @return array
      */
     public function getData($key)
@@ -102,7 +93,7 @@ class Sqlite implements HandlerInterface
     }
 
     /**
-     *
+     * @param array $key
      * @param array $data
      * @param int $expiration
      * @return bool
@@ -116,14 +107,12 @@ class Sqlite implements HandlerInterface
             return false;
         }
 
-        $sqlKey = $this->makeSqlKey($key);
-
         $storeData = array('data' => \Stash\Utilities::encode($data),
                            'expiration' => $expiration,
                            'encoding' => \Stash\Utilities::encoding($data)
         );
 
-        return $sqlHandler->set($sqlKey, $storeData, $expiration);
+        return $sqlHandler->set($this->makeSqlKey($key), $storeData, $expiration);
     }
 
     /**
@@ -146,7 +135,6 @@ class Sqlite implements HandlerInterface
                 continue;
             }
 
-
             isset($sqlKey) ? $handler->clear($sqlKey) : $handler->clear();
             $handler->__destruct();
             unset($handler);
@@ -168,11 +156,9 @@ class Sqlite implements HandlerInterface
 
         $expiration = time();
         foreach ($databases as $database) {
-            if (!($handler = $this->getSqliteHandler($database, true))) {
-                continue;
+            if ($handler = $this->getSqliteHandler($database, true)) {
+                $handler->purge();
             }
-
-            $handler->purge();
         }
         return true;
     }

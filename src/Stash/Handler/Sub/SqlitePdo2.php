@@ -11,8 +11,6 @@
 
 namespace Stash\Handler\Sub;
 
-use Stash\Exception\SqliteException;
-
 /**
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>

@@ -12,9 +12,11 @@
 namespace Stash\Exception;
 
 /**
+ * Exception thrown if an argument does not match with the expected value.
+ *
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class SqliteException extends Exception
+class InvalidArgumentException extends \InvalidArgumentException implements Exception
 {
 }

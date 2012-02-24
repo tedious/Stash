@@ -12,8 +12,6 @@
 namespace Stash\Handler;
 
 use Stash;
-use Stash\Exception\XcacheException;
-
 
 /**
  * StashSqlite is a wrapper around the xcache php extension, which allows developers to store data in memory.
@@ -28,13 +26,13 @@ class Xcache extends Apc
     protected $user;
     protected $password;
 
-    public function __construct($options = array())
+    public function __construct(array $options = array())
     {
         if (isset($options['user'])) {
             $this->user = $options['user'];
         }
 
-        if (isset($options['user'])) {
+        if (isset($options['password'])) {
             $this->password = $options['password'];
         }
 
@@ -54,6 +52,7 @@ class Xcache extends Apc
      * is not present. This array should have a value for "createdOn" and for "return", which should be the data the
      * main script is trying to store.
      *
+     * @param array $key
      * @return array
      */
     public function getData($key)
@@ -200,7 +199,6 @@ class Xcache extends Apc
      */
     public function isAvailable()
     {
-        // xcache isn't available over CLI
-        return extension_loaded('xcache') && !(defined('STDIN') || !isset($_SERVER['REQUEST_METHOD']));
+        return extension_loaded('xcache') && 'cli' !== php_sapi_name();
     }
 }

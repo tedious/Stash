@@ -14,7 +14,7 @@ namespace Stash\Handler;
 /**
  * Stash Handlers are the engines behind the Stash library. These classes handle the low level operations- retrieving,
  * storing and deleting items in the persistant cache pool. By creating new handlers developers can add new caching
- * methods to their applications with extremely minmal changes to their existing code base. This interface defines the
+ * methods to their applications with extremely minimal changes to their existing code base. This interface defines the
  * standard for those handlers and all of them are required to implement it. When writing new cache storage engines this
  * is the place to start.
  *
@@ -27,7 +27,7 @@ namespace Stash\Handler;
  * will persist in a useful way.
  *
  * * Each storage engine must be able to handle multiple requests with the same object, meaning functions like
- * getData can be called multiple times in sequence while storeData may be mixed in at random requences, all using
+ * getData can be called multiple times in sequence while storeData may be mixed in at random frequences, all using
  * different keys.
  *
  * * Keys are passed as arrays that represent a hierarchal 'location' where the cached data is virtually stored, with
@@ -49,13 +49,14 @@ interface HandlerInterface extends UsableInterface
      *
      * @param array $options
      */
-    public function __construct($options = array());
+    public function __construct(array $options = array());
 
     /**
      * Returns the previously stored data as well as it's expiration date in an associative array. This array contains
      * two keys- a 'data' key and an 'expiration' key. The 'data' key should be exactly the same as the value passed to
      * storeData.
      *
+     * @param array $key
      * @return array
      */
     public function getData($key);
@@ -74,7 +75,7 @@ interface HandlerInterface extends UsableInterface
      * *The third parameter is the expiration date of the item as a timestamp. This should also be stored, as it is
      * needed by the getData function.
      *
-     * @param string $key
+     * @param array $key
      * @param array $data
      * @param int $expiration
      * @return bool
