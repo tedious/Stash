@@ -12,7 +12,7 @@
 namespace Stash;
 
 use Stash\Handler\HandlerInterface;
-use Stash\Exception\Exception;
+use Stash\Exception\RuntimeException;
 
 /**
  * StashUtilities contains static functions used throughout the Stash project, both by core classes and handlers.
@@ -97,13 +97,9 @@ class Utilities
      */
     static function getBaseDirectory(HandlerInterface $handler = null)
     {
-        $tmp = sys_get_temp_dir();
-        $lastChar = substr($tmp, -1, 1);
-        if ($lastChar !== '\\' && $lastChar !== '/') {
-            $tmp .= DIRECTORY_SEPARATOR;
-        }
+        $tmp = rtrim(sys_get_temp_dir(), '/\\') . '/';
 
-        $baseDir = $tmp . 'stash' . DIRECTORY_SEPARATOR . md5(dirname(__FILE__)) . DIRECTORY_SEPARATOR;
+        $baseDir = $tmp . 'stash/' . md5(__DIR__) . '/';
         if (isset($handler)) {
             $baseDir .= str_replace(array('/', '\\'), '_', get_class($handler)) . '/';
         }
@@ -124,12 +120,12 @@ class Utilities
     static function deleteRecursive($file)
     {
         if (substr($file, 0, 1) !== '/' && substr($file, 1, 2) !== ':\\') {
-            throw new Exception('deleteRecursive function requires an absolute path.');
+            throw new RuntimeException('deleteRecursive function requires an absolute path.');
         }
 
         $badCalls = array('/', '/*', '/.', '/..');
         if (in_array($file, $badCalls)) {
-            throw new Exception('deleteRecursive function does not like that call.');
+            throw new RuntimeException('deleteRecursive function does not like that call.');
         }
 
         $filePath = rtrim($file, ' /');

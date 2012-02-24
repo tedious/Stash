@@ -12,9 +12,11 @@
 namespace Stash\Exception;
 
 /**
+ * Exception thrown if an error which can only be found on runtime occurs.
+ *
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class MemcacheException extends Exception
+class RuntimeException extends \RuntimeException implements Exception
 {
 }

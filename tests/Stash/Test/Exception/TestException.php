@@ -13,6 +13,6 @@ namespace Stash\Test\Exception;
 
 use Stash\Exception\Exception;
 
-class TestException extends Exception
+class TestException extends \Exception implements Exception
 {
 }

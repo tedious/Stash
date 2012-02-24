@@ -11,7 +11,7 @@
 
 namespace Stash\Handler\Sub;
 
-use Stash\Exception\SqliteException;
+use Stash\Exception\RuntimeException;
 use Stash\Handler\UsableInterface;
 
 /**
@@ -170,7 +170,7 @@ class Sqlite implements UsableInterface
 
         if ($runInstall && !$db->query($this->creationSql)) {
             unlink($path);
-            throw new SqliteException('Unable to set SQLite: structure');
+            throw new RuntimeException('Unable to set SQLite: structure');
         }
         $this->handler = $db;
 
@@ -183,7 +183,7 @@ class Sqlite implements UsableInterface
     protected function buildHandler()
     {
         if (!$db = new \SQLiteDatabase($this->path, $this->filePermissions, $errorMessage)) {
-            throw new SqliteException('Unable to open SQLite Database: ' . $errorMessage);
+            throw new RuntimeException('Unable to open SQLite Database: ' . $errorMessage);
         }
         return $db;
     }

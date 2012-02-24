@@ -33,17 +33,13 @@ class Apc implements HandlerInterface
      *
      * @param array $options
      */
-    public function __construct($options = array())
+    public function __construct(array $options = array())
     {
         if (isset($options['ttl']) && is_numeric($options['ttl'])) {
             $this->ttl = (int)$options['ttl'];
         }
 
-        if (isset($options['namespace'])) {
-            $this->apcNamespace = $options['namespace'];
-        } else {
-            $this->apcNamespace = md5(__file__);
-        }
+        $this->apcNamespace = isset($options['namespace']) ? $options['namespace'] : md5(__FILE__);
     }
 
     /**
@@ -60,6 +56,7 @@ class Apc implements HandlerInterface
      * is not present. This array should have a value for "createdOn" and for "return", which should be the data the
      * main script is trying to store.
      *
+     * @param array $key
      * @return array
      */
     public function getData($key)
@@ -70,11 +67,8 @@ class Apc implements HandlerInterface
         }
 
         $data = apc_fetch($keyString, $success);
-        if (!$success) {
-            return false;
-        }
 
-        return unserialize($data);
+        return $success ? $data : false;
     }
 
     /**
@@ -83,6 +77,7 @@ class Apc implements HandlerInterface
      * stored. This function needs to store that data in such a way that it can be retrieced exactly as it was sent. The
      * expiration time needs to be stored with this data.
      *
+     * @param array $key
      * @param array $data
      * @param int $expiration
      * @return bool
@@ -90,10 +85,7 @@ class Apc implements HandlerInterface
     public function storeData($key, $data, $expiration)
     {
         $life = $this->getCacheTime($expiration);
-        $keyString = $this->makeKey($key);
-        $storage = serialize(array('data' => $data, 'expiration' => $expiration));
-        $errors = apc_store(array($keyString => $storage), null, $life);
-        return count($errors) === 0;
+        return apc_store($this->makeKey($key), array('data' => $data, 'expiration' => $expiration), $life);
     }
 
     /**
@@ -131,7 +123,7 @@ class Apc implements HandlerInterface
         $it = new \APCIterator('user', $keyRegex, \APC_ITER_KEY, $chunkSize);
         foreach ($it as $key) {
             $data = apc_fetch($key, $success);
-            $data = unserialize($data[$key['key']]);
+            $data = $data[$key['key']];
 
             if ($success && is_array($data) && $data['expiration'] <= $now) {
                 apc_delete($key);
@@ -149,7 +141,7 @@ class Apc implements HandlerInterface
      */
     public function canEnable()
     {
-        return extension_loaded('apc');
+        return extension_loaded('apc') && ini_get('apc.enabled');
     }
 
     protected function makeKey($key)
@@ -169,14 +161,9 @@ class Apc implements HandlerInterface
 
     protected function getCacheTime($expiration)
     {
-        $currentTime = time(true);
-        $life = $expiration - $currentTime;
+        $life = $expiration - time(true);
 
-        if (isset($this->ttl) && $this->ttl > $life) {
-            $life = $this->ttl;
-        }
-
-        return $life;
+        return $this->ttl > $life ? $this->ttl : $life;
     }
 
 }
