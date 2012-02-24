@@ -13,7 +13,7 @@ namespace Stash;
 
 use Stash\Handler\HandlerInterface;
 use Stash\Exception\Exception;
-use Exception as BaseException;
+use Stash\Exception\InvalidArgumentException;
 
 /**
  * Stash caches data that has a high generation cost, such as template preprocessing or code that requires a database
@@ -328,7 +328,7 @@ class Cache
     public function setupKey()
     {
         if (func_num_args() == 0) {
-            throw new Exception('No key sent to the cache constructor.');
+            throw new InvalidArgumentException('No key sent to the cache constructor.');
         }
 
         $key = func_get_args();
@@ -351,7 +351,7 @@ class Cache
     {
         try {
             return $this->executeClear();
-        } catch (BaseException $e) {
+        } catch (Exception $e) {
             $this->disable();
             return false;
         }
@@ -397,7 +397,7 @@ class Cache
     {
         try {
             return $this->executePurge();
-        } catch (BaseException $e) {
+        } catch (Exception $e) {
             $this->disable();
             return false;
         }
@@ -429,7 +429,7 @@ class Cache
     {
         try {
             return $this->executeGet($invalidation, $arg, $arg2);
-        } catch (BaseException $e) {
+        } catch (Exception $e) {
             $this->disable();
             return null;
         }
@@ -533,7 +533,7 @@ class Cache
     {
         try {
             return $this->executeStore($data, $time);
-        } catch (BaseException $e) {
+        } catch (Exception $e) {
             $this->disable();
             return false;
         }

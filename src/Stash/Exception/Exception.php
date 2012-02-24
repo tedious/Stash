@@ -12,9 +12,11 @@
 namespace Stash\Exception;
 
 /**
+ * Interface for the Stash exceptions.
+ *
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class Exception extends \Exception
+interface Exception
 {
 }

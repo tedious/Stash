@@ -12,7 +12,8 @@
 namespace Stash\Handler;
 
 use Stash;
-use Stash\Exception\MulitHandlerException;
+use Stash\Exception\InvalidArgumentException;
+use Stash\Exception\RuntimeException;
 
 /**
  * StashMultieHandler is a wrapper around one or more StashHandlers, allowing faster caching engines with size or
@@ -32,22 +33,24 @@ class MultiHandler implements HandlerInterface
      *
      * @param array $options
      */
-    public function __construct($options = array())
+    public function __construct(array $options = array())
     {
-        if (!isset($options['handlers']) || !is_array($options['handlers']) || count($options['handlers']) < 1) {
-            throw new MulitHandlerException('This handler requires secondary handlers to run.');
+        if (!isset($options['handlers']) || !is_array($options['handlers'])) {
+            throw new InvalidArgumentException('This handler requires secondary handlers to run.');
         }
 
         foreach ($options['handlers'] as $handler) {
             if (!(is_object($handler) && $handler instanceof HandlerInterface)) {
-                throw new MulitHandlerException('Handler objects are expected to implement Stash\Handler');
+                throw new RuntimeException('Handler objects are expected to implement Stash\Handler');
             }
 
-            if (!$handler->canEnable()) {
-                continue;
+            if ($handler->canEnable()) {
+                $this->handlers[] = $handler;
             }
+        }
 
-            $this->handlers[] = $handler;
+        if (count($this->handlers) < 1) {
+            throw new RuntimeException('None of the secondary handlers can be enabled.');
         }
     }
 
@@ -70,6 +73,7 @@ class MultiHandler implements HandlerInterface
     public function getData($key)
     {
         $failedHandlers = array();
+        $return = false;
         foreach ($this->handlers as $handler) {
             if ($return = $handler->getData($key)) {
                 $failedHandlers = array_reverse($failedHandlers);
@@ -92,8 +96,8 @@ class MultiHandler implements HandlerInterface
      * stored. This function needs to store that data in such a way that it can be retrieved exactly as it was sent. The
      * expiration time needs to be stored with this data.
      *
-     * @param $key
-     * @param $data
+     * @param array $key
+     * @param array $data
      * @param $expiration
      * @return bool
      */
@@ -103,7 +107,7 @@ class MultiHandler implements HandlerInterface
         $return = true;
         foreach ($handlers as $handler) {
             $storeResults = $handler->storeData($key, $data, $expiration);
-            $return = ($return) ? $storeResults : false;
+            $return = $return && $storeResults;
         }
 
         return $return;
@@ -122,7 +126,7 @@ class MultiHandler implements HandlerInterface
         $return = true;
         foreach ($handlers as $handler) {
             $clearResults = $handler->clear($key);
-            $return = ($return) ? $clearResults : false;
+            $return = $return && $clearResults;
         }
 
         return $return;
@@ -137,10 +141,9 @@ class MultiHandler implements HandlerInterface
     {
         $handlers = array_reverse($this->handlers);
         $return = true;
-
         foreach ($handlers as $handler) {
             $purgeResults = $handler->purge();
-            $return = ($return) ? $purgeResults : false;
+            $return = $return && $purgeResults;
         }
 
         return $return;
