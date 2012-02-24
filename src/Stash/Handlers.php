@@ -50,7 +50,6 @@ class Handlers
                 continue;
             }
 
-<<<<<<< HEAD
             if($name == 'MultiHandler') {
                 $availableHandlers[$name] = $class;
             } else {
@@ -60,9 +59,6 @@ class Handlers
                     $availableHandlers[$name] = $class;
                 }
             }
-=======
-            $availableHandlers[$name] = $class;
->>>>>>> upstream/master
         }
 
         return $availableHandlers;
