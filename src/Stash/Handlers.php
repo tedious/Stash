@@ -25,7 +25,6 @@ class Handlers
      * @var array
      */
     protected static $handlers = array('Apc' => '\Stash\Handler\Apc',
-                                       'Ephemeral' => '\Stash\Handler\Ephemeral',
                                        'FileSystem' => '\Stash\Handler\FileSystem',
                                        'Memcached' => '\Stash\Handler\Memcached',
                                        'MultiHandler' => '\Stash\Handler\MultiHandler',
@@ -51,6 +50,7 @@ class Handlers
                 continue;
             }
 
+<<<<<<< HEAD
             if($name == 'MultiHandler') {
                 $availableHandlers[$name] = $class;
             } else {
@@ -60,6 +60,9 @@ class Handlers
                     $availableHandlers[$name] = $class;
                 }
             }
+=======
+            $availableHandlers[$name] = $class;
+>>>>>>> upstream/master
         }
 
         return $availableHandlers;

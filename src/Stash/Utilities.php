@@ -88,33 +88,6 @@ class Utilities
     }
 
     /**
-     * Used to get around late static binding issues and other fun things in versions of php prior to 5.3. It
-     * unfortunately has some perfomance issues and is one of the reasons why support for earlier versions of php will
-     * be dropped.
-     *
-     * @param string $className
-     * @param string $functionName
-     * @param mixed $arguments,...
-     */
-    static function staticFunctionHack($className, $functionName)
-    {
-        $arguments = func_get_args();
-        $className = array_shift($arguments);
-        $functionName = array_shift($arguments);
-
-        if (is_object($className)) {
-            $className = get_class($className);
-        }
-
-        /* This dirty hack is brought to you by php < 5.3 failing at oop */
-        if (is_callable(array($className, $functionName))) {
-            return call_user_func_array(array($className, $functionName), $arguments);
-        } else {
-            throw new Exception('static function ' . $functionName . ' not found in class ' . $className);
-        }
-    }
-
-    /**
      * Returns the default base directory for the system when one isn't provided by the developer. This is a directory
      * of last resort and can cause problems if one library is shared by multiple projects. The directory returned
      * resides in the system's temap folder and is specific to each Stash installation and handler.
