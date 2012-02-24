@@ -20,10 +20,19 @@ namespace Stash\Handler;
 interface UsableInterface
 {
     /**
-     * Returns whether the handler is able to run in the current environment or not. Any system checks - such as making
-     * sure any required extensions are missing - should be done here.
+     * Returns whether the handler is functional given its current configuration. This is an instance-specific check;
+     * any checks based on the options of the current instance should be done here.
      *
      * @return bool
      */
     public function canEnable();
+
+    /**
+     * Returns whether the handler is able to run in the current environment or not. Any system checks - such as making
+     * sure any required extensions are missing - should be done here. This is a general check; if any instance of this
+     * handler can be used in the current environment it should return true.
+     *
+     * @return bool
+     */
+    public function isAvailable();
 }

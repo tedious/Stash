@@ -37,6 +37,9 @@ class Ephemeral implements HandlerInterface
 
     public function getData($key)
     {
+        if(!$this->canEnable())
+            return false;
+
         $index = $this->getKeyIndex($key);
         if (isset($this->store[$index])) {
             return $this->store[$index];
@@ -47,6 +50,9 @@ class Ephemeral implements HandlerInterface
 
     protected function getKeyIndex($key)
     {
+        if(!$this->canEnable())
+            return false;
+
         $index = '';
         foreach ($key as $value) {
             $index .= $value;
@@ -92,7 +98,11 @@ class Ephemeral implements HandlerInterface
 
     public function canEnable()
     {
-        return (defined('TESTING') && TESTING);
+        return $this->isAvailable();
     }
 
+    public function isAvailable()
+    {
+        return (defined('TESTING') && TESTING);
+    }
 }

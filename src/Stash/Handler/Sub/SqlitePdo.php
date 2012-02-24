@@ -28,7 +28,7 @@ class SqlitePdo extends Sqlite
         $this->responseCode = \PDO::FETCH_ASSOC;
     }
 
-    public function canEnable()
+    public function isAvailable()
     {
         return in_array('sqlite', $this->getDrivers());
     }

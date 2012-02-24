@@ -83,6 +83,9 @@ class Sqlite implements HandlerInterface
      */
     public function getData($key)
     {
+        if(!$this->canEnable())
+            return false;
+
         if (!($sqlHandler = $this->getSqliteHandler($key))) {
             return false;
         }
@@ -106,6 +109,9 @@ class Sqlite implements HandlerInterface
      */
     public function storeData($key, $data, $expiration)
     {
+        if(!$this->canEnable())
+            return false;
+
         if (!($sqlHandler = $this->getSqliteHandler($key))) {
             return false;
         }
@@ -244,16 +250,30 @@ class Sqlite implements HandlerInterface
     }
 
     /**
-     * Returns whether the handler is able to run in the current environment or not. Any system checks- such as making
-     * sure any required extensions are missing- should be done here.
+     * Returns a value based on the current subhandler.
      *
      * @return bool
      */
     public function canEnable()
     {
+        if(!$this->isAvailable())
+            return false;
+
         $handler = $this->getSqliteHandler(array('_none'));
 
         return $handler->canEnable();
+    }
+
+    /**
+     * Returns whether the handler is able to run in the current environment or not. Any system checks- such as making
+     * sure any required extensions are missing- should be done here.
+     *
+     * @return bool
+     */
+    public function isAvailable()
+    {
+        $drivers = class_exists('\PDO', false) ? \PDO::getAvailableDrivers() : array();
+        return (class_exists('SQLiteDatabase', false) || in_array('sqlite', $drivers) || in_array('sqlite2', $drivers));
     }
 
     /**

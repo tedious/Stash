@@ -53,16 +53,11 @@ class Memcache implements HandlerInterface
             $options['servers'] = array('127.0.0.1', 11211);
         }
 
-        if (!is_array($options['servers'])) {
-            throw new MemcacheException('Server list required to be an array.');
-        }
-
         if (is_scalar($options['servers'][0])) {
             $servers = array($options['servers']);
         } else {
             $servers = $options['servers'];
         }
-
 
         if (!isset($options['extension'])) {
             $options['extension'] = 'any';
@@ -75,7 +70,7 @@ class Memcache implements HandlerInterface
         } elseif (class_exists('Memcache', false) && $extension != 'memcached') {
             $this->memcache = new SubMemcache();
         } else {
-            throw new MemcacheException('Unable to load either memcache extension.');
+            return;
         }
 
         if ($this->memcache->initialize($servers, $options)) {
@@ -97,6 +92,9 @@ class Memcache implements HandlerInterface
      */
     public function getData($key)
     {
+        if(!$this->canEnable())
+            return false;
+
         $keyString = $this->makeKeyString($key);
         return $this->memcache->get($keyString);
     }
@@ -109,6 +107,9 @@ class Memcache implements HandlerInterface
      */
     public function storeData($key, $data, $expiration)
     {
+        if(!$this->canEnable())
+            return false;
+
         $keyString = $this->makeKeyString($key);
         return $this->memcache->set($keyString, $data, $expiration);
     }
@@ -177,6 +178,11 @@ class Memcache implements HandlerInterface
 
     public function canEnable()
     {
-        return $this->memcache->canEnable();
+        return isset($this->memcache) ? $this->memcache->canEnable() : false;
+    }
+
+    public function isAvailable()
+    {
+        return isset($this->memcache) ? $this->memcache->isAvailable() : false;
     }
 }
