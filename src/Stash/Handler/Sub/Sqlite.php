@@ -127,7 +127,7 @@ class Sqlite implements UsableInterface
         if(!isset($this->path))
             return false;
 
-        if(!is_writable($this->path))
+        if(!is_writable($this->path) && !is_writable(dirname($this->path)))
             return false;
 
         return true;

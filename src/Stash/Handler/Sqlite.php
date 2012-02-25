@@ -49,16 +49,31 @@ class Sqlite implements HandlerInterface
         $path = isset($options['path']) ? $options['path'] : \Stash\Utilities::getBaseDirectory($this);
         $this->path = rtrim($path, '\\/') . '/';
 
-        $extension = isset($options['extension']) ? strtolower($options['extension']) : 'pdo';
+        $extension = isset($options['extension']) ? strtolower($options['extension']) : 'any';
+        $version = isset($options['version']) ? $options['version'] : 'any';
 
-        if ($extension == 'sqlite') {
-            $handler = '\Stash\Handler\Sub\Sqlite';
+        $subhandlers = array();
+        $drivers = class_exists('\PDO', false) ? \PDO::getAvailableDrivers() : array();
+        if(in_array('sqlite', $drivers)) {
+            $subhandlers['pdo'] = '\Stash\Handler\Sub\SqlitePdo';
+        }
+        if(class_exists('SQLiteDatabase', false)) {
+            $subhandlers['sqlite'] = '\Stash\Handler\Sub\Sqlite';
+        }
+        if(in_array('sqlite2', $drivers)) {
+            $subhandlers['pdo2'] = '\Stash\Handler\Sub\SqlitePdo2';
+        }
+
+        if($extension == 'pdo' && $version != '2' && isset($subhandlers['pdo'])) {
+            $handler = $subhandlers['pdo'];
+        } elseif($extension == 'sqlite' && isset($subhandlers['sqlite'])) {
+            $handler = $subhandlers['sqlite'];
+        } elseif($extension == 'pdo' && $version != '3' && isset($subhandlers['pdo2'])) {
+            $handler = $subhandlers['pdo2'];
+        } elseif(count($subhandlers) > 0 && $extension == 'any') {
+            $handler = reset($subhandlers);
         } else {
-            if (isset($options['version']) && $options['version'] == 2) {
-                $handler = '\Stash\Handler\Sub\SqlitePdo2';
-            } else {
-                $handler = '\Stash\Handler\Sub\SqlitePdo';
-            }
+            $handler = null;
         }
 
         $this->handlerClass = $handler;
@@ -199,6 +214,10 @@ class Sqlite implements HandlerInterface
         }
 
         $handlerClass = $this->handlerClass;
+
+        if(is_null($handlerClass))
+            return false;
+
         $handler = new $handlerClass($file, $this->dirPerms, $this->filePerms, $this->busyTimeout);
 
         $this->subHandlers[$file] = $handler;
@@ -246,6 +265,10 @@ class Sqlite implements HandlerInterface
             return false;
 
         $handler = $this->getSqliteHandler(array('_none'));
+
+        if(!$handler) {
+            return false;
+        }
 
         return $handler->canEnable();
     }
