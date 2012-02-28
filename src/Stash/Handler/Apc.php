@@ -61,8 +61,9 @@ class Apc implements HandlerInterface
      */
     public function getData($key)
     {
-        if(!$this->canEnable())
+        if(!$this->canEnable()) {
             return false;
+        }
 
         $keyString = self::makeKey($key);
         if (!$keyString) {
@@ -87,8 +88,9 @@ class Apc implements HandlerInterface
      */
     public function storeData($key, $data, $expiration)
     {
-        if(!$this->canEnable())
+        if(!$this->canEnable()) {
             return false;
+        }
 
         $life = $this->getCacheTime($expiration);
         return apc_store($this->makeKey($key), array('data' => $data, 'expiration' => $expiration), $life);

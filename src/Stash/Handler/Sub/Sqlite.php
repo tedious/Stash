@@ -121,14 +121,13 @@ class Sqlite implements UsableInterface
 
     public function canEnable()
     {
-        if(!$this->isAvailable())
+        if(!$this->isAvailable() || !isset($this->path)) {
             return false;
+        }
 
-        if(!isset($this->path))
+        if(!is_writable($this->path) && !is_writable(dirname($this->path))) {
             return false;
-
-        if(!is_writable($this->path) && !is_writable(dirname($this->path)))
-            return false;
+        }
 
         return true;
     }

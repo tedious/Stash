@@ -93,8 +93,9 @@ class Memcache implements HandlerInterface
      */
     public function getData($key)
     {
-        if(!$this->canEnable())
+        if(!$this->canEnable()) {
             return false;
+        }
 
         return $this->memcache->get($this->makeKeyString($key));
     }
@@ -108,8 +109,9 @@ class Memcache implements HandlerInterface
      */
     public function storeData($key, $data, $expiration)
     {
-        if(!$this->canEnable())
+        if(!$this->canEnable()) {
             return false;
+        }
 
         return $this->memcache->set($this->makeKeyString($key), $data, $expiration);
     }

@@ -116,8 +116,9 @@ class FileSystem implements HandlerInterface
      */
     public function getData($key)
     {
-        if(!$this->canEnable())
+        if(!$this->canEnable()) {
             return false;
+        }
 
         return self::getDataFromFile($this->makePath($key));
     }
@@ -144,8 +145,9 @@ class FileSystem implements HandlerInterface
      */
     public function storeData($key, $data, $expiration)
     {
-        if(!$this->canEnable())
+        if(!$this->canEnable()) {
             return false;
+        }
 
         $success = false;
 
@@ -351,14 +353,9 @@ class FileSystem implements HandlerInterface
      */
     public function canEnable()
     {
-        if(!isset($this->cachePath))
+        if(!isset($this->cachePath) || !is_dir($this->cachePath) || !is_writable($this->cachePath)) {
             return false;
-
-        if(!is_dir($this->cachePath))
-            return false;
-
-        if(!is_writable($this->cachePath))
-            return false;
+        }
 
         return true;
     }

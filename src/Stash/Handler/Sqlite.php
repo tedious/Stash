@@ -89,8 +89,9 @@ class Sqlite implements HandlerInterface
      */
     public function getData($key)
     {
-        if(!$this->canEnable())
+        if(!$this->canEnable()) {
             return false;
+        }
 
         if (!($sqlHandler = $this->getSqliteHandler($key))) {
             return false;
@@ -115,8 +116,9 @@ class Sqlite implements HandlerInterface
      */
     public function storeData($key, $data, $expiration)
     {
-        if(!$this->canEnable())
+        if(!$this->canEnable()) {
             return false;
+        }
 
         if (!($sqlHandler = $this->getSqliteHandler($key))) {
             return false;
@@ -261,8 +263,9 @@ class Sqlite implements HandlerInterface
      */
     public function canEnable()
     {
-        if(!$this->isAvailable())
+        if(!$this->isAvailable()) {
             return false;
+        }
 
         $handler = $this->getSqliteHandler(array('_none'));
 

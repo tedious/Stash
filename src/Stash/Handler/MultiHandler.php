@@ -157,8 +157,9 @@ class MultiHandler implements HandlerInterface
      */
     public function canEnable()
     {
-        if(count($this->handlers) == 0)
+        if(count($this->handlers) == 0) {
             return false;
+        }
 
         foreach($this->handlers as $handler) {
             if(!$handler->canEnable()) {
