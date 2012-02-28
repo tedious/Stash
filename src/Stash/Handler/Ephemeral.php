@@ -99,6 +99,6 @@ class Ephemeral implements HandlerInterface
 
     public function isAvailable()
     {
-        return (defined('TESTING') && TESTING);
+        return true;
     }
 }
