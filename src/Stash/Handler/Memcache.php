@@ -75,7 +75,8 @@ class Memcache implements HandlerInterface
             return;
         }
 
-        if(!$this->memcache->initialize($servers, $options) || !$this->canEnable()) {
+        $this->memcache->initialize($servers, $options);
+        if(!$this->canEnable()) {
             $this->disabled = true;
         }
     }
