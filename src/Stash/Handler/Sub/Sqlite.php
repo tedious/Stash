@@ -121,6 +121,19 @@ class Sqlite implements UsableInterface
 
     public function canEnable()
     {
+        if(!$this->isAvailable() || !isset($this->path)) {
+            return false;
+        }
+
+        if(!is_writable($this->path) && !is_writable(dirname($this->path))) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function isAvailable()
+    {
         return class_exists('SQLiteDatabase', false);
     }
 

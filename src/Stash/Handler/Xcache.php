@@ -57,6 +57,10 @@ class Xcache extends Apc
      */
     public function getData($key)
     {
+        if($this->disabled) {
+            return false;
+        }
+
         $keyString = $this->makeKey($key);
         if (!$keyString) {
             return false;
@@ -82,6 +86,10 @@ class Xcache extends Apc
      */
     public function storeData($key, $data, $expiration)
     {
+        if($this->disabled) {
+            return false;
+        }
+
         $keyString = self::makeKey($key);
         if (!$keyString) {
             return false;
@@ -181,12 +189,17 @@ class Xcache extends Apc
 
     }
 
+    public function canEnable()
+    {
+        return $this->isAvailable();
+    }
+
     /**
      * This function checks to see if it is possible to enable this handler.
      *
      * @return bool true
      */
-    public function canEnable()
+    public function isAvailable()
     {
         return extension_loaded('xcache') && 'cli' !== php_sapi_name();
     }

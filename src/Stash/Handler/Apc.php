@@ -21,6 +21,7 @@ use Stash;
  */
 class Apc implements HandlerInterface
 {
+    protected $disabled = false;
 
     protected $ttl = 300;
     protected $apcNamespace;
@@ -40,6 +41,10 @@ class Apc implements HandlerInterface
         }
 
         $this->apcNamespace = isset($options['namespace']) ? $options['namespace'] : md5(__FILE__);
+
+        if(!$this->canEnable()) {
+            $this->disabled = true;
+        }
     }
 
     /**
@@ -61,6 +66,10 @@ class Apc implements HandlerInterface
      */
     public function getData($key)
     {
+        if($this->disabled) {
+            return false;
+        }
+
         $keyString = self::makeKey($key);
         if (!$keyString) {
             return false;
@@ -84,6 +93,10 @@ class Apc implements HandlerInterface
      */
     public function storeData($key, $data, $expiration)
     {
+        if($this->disabled) {
+            return false;
+        }
+
         $life = $this->getCacheTime($expiration);
         return apc_store($this->makeKey($key), array('data' => $data, 'expiration' => $expiration), $life);
     }
@@ -134,12 +147,21 @@ class Apc implements HandlerInterface
     }
 
     /**
-     * This function checks to see if it is possible to enable this handler. This returns true no matter what, since
-     * this is the handler of last resort.
+     * Instance-specific configuration options do not affect the usability of this handler.
      *
-     * @return bool true
+     * @return bool
      */
     public function canEnable()
+    {
+        return $this->isAvailable();
+    }
+
+    /**
+     * This handler is available iff the apc extension is present and loaded on the system.
+     *
+     * @return bool
+     */
+    public function isAvailable()
     {
         return extension_loaded('apc') && ini_get('apc.enabled');
     }

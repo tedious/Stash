@@ -35,13 +35,13 @@ class MultiHandler implements HandlerInterface
      */
     public function __construct(array $options = array())
     {
-        if (!isset($options['handlers']) || !is_array($options['handlers'])) {
-            throw new InvalidArgumentException('This handler requires secondary handlers to run.');
+        if (!isset($options['handlers']) || !is_array($options['handlers']) || count($options['handlers']) < 1) {
+            return;
         }
 
         foreach ($options['handlers'] as $handler) {
             if (!(is_object($handler) && $handler instanceof HandlerInterface)) {
-                throw new RuntimeException('Handler objects are expected to implement Stash\Handler');
+                continue;
             }
 
             if ($handler->canEnable()) {
@@ -150,12 +150,33 @@ class MultiHandler implements HandlerInterface
     }
 
     /**
-     * This function checks to see if it is possible to enable this handler. This always returns true because this
-     * handler has no dependencies, beign a wrapper around other classes.
+     * This function checks to see if this handler instance is usable; the answer is true as long as there's at least
+     * one other handler provided and all handlers can be enabled.
      *
      * @return bool true
      */
     public function canEnable()
+    {
+        if(count($this->handlers) == 0) {
+            return false;
+        }
+
+        foreach($this->handlers as $handler) {
+            if(!$handler->canEnable()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * This function checks to see if this handler is available. This always returns true because this
+     * handler has no dependencies, beign a wrapper around other classes.
+     *
+     * @return bool true
+     */
+    public function isAvailable()
     {
         return true;
     }
