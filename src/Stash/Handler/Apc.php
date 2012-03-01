@@ -21,6 +21,7 @@ use Stash;
  */
 class Apc implements HandlerInterface
 {
+    protected $disabled = false;
 
     protected $ttl = 300;
     protected $apcNamespace;
@@ -40,6 +41,10 @@ class Apc implements HandlerInterface
         }
 
         $this->apcNamespace = isset($options['namespace']) ? $options['namespace'] : md5(__FILE__);
+
+        if(!$this->canEnable()) {
+            $this->disabled = true;
+        }
     }
 
     /**
@@ -61,7 +66,7 @@ class Apc implements HandlerInterface
      */
     public function getData($key)
     {
-        if(!$this->canEnable()) {
+        if($this->disabled) {
             return false;
         }
 
@@ -88,7 +93,7 @@ class Apc implements HandlerInterface
      */
     public function storeData($key, $data, $expiration)
     {
-        if(!$this->canEnable()) {
+        if($this->disabled) {
             return false;
         }
 

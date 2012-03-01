@@ -38,6 +38,8 @@ class Sqlite implements HandlerInterface
     protected $nesting;
     protected $subHandlers;
 
+    protected $disabled = false;
+
     /**
      *
      * @param array $options
@@ -81,6 +83,10 @@ class Sqlite implements HandlerInterface
         $this->dirPerms = $options['dirPermissions'];
         $this->busyTimeout = $options['busyTimeout'];
         $this->nesting = $options['nesting'];
+
+        if(!$this->canEnable()) {
+            $this->disabled = true;
+        }
     }
 
     /**
@@ -89,7 +95,7 @@ class Sqlite implements HandlerInterface
      */
     public function getData($key)
     {
-        if(!$this->canEnable()) {
+        if($this->disabled) {
             return false;
         }
 
@@ -116,7 +122,7 @@ class Sqlite implements HandlerInterface
      */
     public function storeData($key, $data, $expiration)
     {
-        if(!$this->canEnable()) {
+        if($this->disabled) {
             return false;
         }
 

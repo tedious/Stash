@@ -37,19 +37,11 @@ class Ephemeral implements HandlerInterface
 
     public function getData($key)
     {
-        if(!$this->canEnable()) {
-            return false;
-        }
-
         return isset($this->store[$this->getKeyIndex($key)]) ? $this->store[$this->getKeyIndex($key)] : false;
     }
 
     protected function getKeyIndex($key)
     {
-        if(!$this->canEnable()) {
-            return false;
-        }
-
         $index = '';
         foreach ($key as $value) {
             $index .= $value . '#';

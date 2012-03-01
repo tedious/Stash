@@ -61,6 +61,8 @@ class FileSystem implements HandlerInterface
     protected $dirPermissions;
     protected $directorySplit;
 
+    protected $disabled = false;
+
     protected $defaultOptions = array('filePermissions' => 0660,
                                       'dirPermissions' => 0770,
                                       'dirSplit' => 2,
@@ -88,6 +90,10 @@ class FileSystem implements HandlerInterface
         }
 
         $this->memStoreLimit = (int)$options['memKeyLimit'];
+
+        if(!$this->canEnable()) {
+            $this->disabled = true;
+        }
     }
 
     /**
@@ -116,7 +122,7 @@ class FileSystem implements HandlerInterface
      */
     public function getData($key)
     {
-        if(!$this->canEnable()) {
+        if($this->disabled) {
             return false;
         }
 
@@ -145,7 +151,7 @@ class FileSystem implements HandlerInterface
      */
     public function storeData($key, $data, $expiration)
     {
-        if(!$this->canEnable()) {
+        if($this->disabled) {
             return false;
         }
 
