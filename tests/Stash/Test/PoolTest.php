@@ -56,9 +56,9 @@ class PoolTest extends \PHPUnit_Framework_TestCase
         $keyData = $this->multiData;
         foreach($cacheIterator as $stash)
         {
-            $key = $stash->getKey();
+  //          $key = $stash->getKey();
             $this->assertTrue($stash->isMiss(), 'new Cache in iterator is empty');
-            $stash->set($keyData[$key]);
+            $stash->store($keyData[$key]);
             unset($keyData[$key]);
         }
         $this->assertCount(0, $keyData, 'all keys are accounted for the in cache iterator');
@@ -67,7 +67,7 @@ class PoolTest extends \PHPUnit_Framework_TestCase
         foreach($cacheIterator as $stash)
         {
             $key = $stash->getKey();
-            $data = $stash->get($key);
+    //        $data = $stash->get($key);
             $this->assertEquals($this->multiData[$key], $data, 'data put into the pool comes back the same through iterators.');
         }
     }
