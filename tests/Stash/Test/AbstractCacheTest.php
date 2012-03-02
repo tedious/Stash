@@ -88,7 +88,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         $stash->setupKey();
     }
 
-    public function testStore()
+    public function testSet()
     {
         foreach ($this->data as $type => $value) {
             $key = array('base', $type);
@@ -97,12 +97,12 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
             $this->assertAttributeInternalType('string', 'keyString', $stash, 'Argument based keys setup keystring');
             $this->assertAttributeInternalType('array', 'key', $stash, 'Argument based keys setup key');
 
-            $this->assertTrue($stash->store($value), 'Handler class able to store data type ' . $type);
+            $this->assertTrue($stash->set($value), 'Handler class able to store data type ' . $type);
         }
     }
 
     /**
-     * @depends testStore
+     * @depends testSet
      */
     public function testGet()
     {
@@ -124,7 +124,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
 
         $runningStash = $this->testConstruct();
         $runningStash->setupKey($key);
-        $runningStash->store($oldValue, -300);
+        $runningStash->set($oldValue, -300);
 
 
         // Test without stampede
@@ -189,7 +189,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
 
 
         // Test that storing the cache turns off stampede mode.
-        $runningStash->store($newValue, 30);
+        $runningStash->set($newValue, 30);
         $this->assertAttributeEquals(false, 'stampedeRunning', $runningStash, 'Stampede flag is off.');
         unset($runningStash);
 
@@ -212,7 +212,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
 
     }
 
-    public function testStoreWithDateTime()
+    public function testSetWithDateTime()
     {
 
         $expiration = new \DateTime('now');
@@ -221,7 +221,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         $key = array('base', 'expiration', 'test');
         $stash = $this->testConstruct();
         $stash->setupKey($key);
-        $stash->store(array(1, 2, 3, 'apples'), $expiration);
+        $stash->set(array(1, 2, 3, 'apples'), $expiration);
 
         $stash = $this->testConstruct();
         $stash->setupKey($key);
@@ -247,11 +247,11 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
             $key = array('base', $type);
             $stash = $this->testConstruct();
             $stash->setupKey($key);
-            $stash->store($value);
+            $stash->set($value);
             $this->assertAttributeInternalType('string', 'keyString', $stash, 'Argument based keys setup keystring');
             $this->assertAttributeInternalType('array', 'key', $stash, 'Argument based keys setup key');
 
-            $this->assertTrue($stash->store($value), 'Handler class able to store data type ' . $type);
+            $this->assertTrue($stash->set($value), 'Handler class able to store data type ' . $type);
         }
 
         foreach ($this->data as $type => $value) {
@@ -284,7 +284,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
             $key = array('base', $type);
             $stash = $this->testConstruct();
             $stash->setupKey($key);
-            $stash->store($value);
+            $stash->set($value);
         }
 
         // clear
@@ -310,14 +310,14 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
             $key = array('base', 'fresh', $type);
             $stash = $this->testConstruct();
             $stash->setupKey($key);
-            $stash->store($value);
+            $stash->set($value);
         }
 
         foreach ($this->data as $type => $value) {
             $key = array('base', 'stale', $type);
             $stash = $this->testConstruct();
             $stash->setupKey($key);
-            $stash->store($value, -600);
+            $stash->set($value, -600);
         }
 
         $this->assertTrue($stash->purge());
@@ -345,7 +345,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
 
             $stash = $this->testConstruct();
             $stash->setupKey($key);
-            $stash->store($value, -600);
+            $stash->set($value, -600);
 
             $stash = $this->testConstruct();
             $stash->setupKey($key);
@@ -418,7 +418,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
 
     private function assertMemoryOnlyStash(Cache $stash)
     {
-        $this->assertFalse($stash->store('true'), 'storeData returns false for memory only cache');
+        $this->assertFalse($stash->set('true'), 'storeData returns false for memory only cache');
         $this->assertNull($stash->get(), 'getData returns null for memory only cache');
         $this->assertTrue($stash->clear(), 'clear returns true for memory only cache');
         $this->assertTrue($stash->purge(), 'purge returns true for memory only cache');
@@ -429,7 +429,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
 
     private function assertDisabledStash(Cache $stash)
     {
-        $this->assertFalse($stash->store('true'), 'storeData returns false for disabled cache');
+        $this->assertFalse($stash->set('true'), 'storeData returns false for disabled cache');
         $this->assertNull($stash->get(), 'getData returns null for disabled cache');
         $this->assertFalse($stash->clear(), 'clear returns false for disabled cache');
         $this->assertFalse($stash->purge(), 'purge returns false for disabled cache');

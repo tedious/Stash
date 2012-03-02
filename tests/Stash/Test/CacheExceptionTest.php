@@ -20,13 +20,13 @@ use Stash\Cache;
  */
 class CacheExceptionTest extends \PHPUnit_Framework_TestCase
 {
-    public function testStore()
+    public function testSet()
     {
         $handler = new ExceptionTest();
         $stash = new Cache($handler);
         $stash->setupKey('path', 'to', 'store');
         $this->assertFalse($stash->isDisabled());
-        $this->assertFalse($stash->store(array(1, 2, 3), 3600));
+        $this->assertFalse($stash->set(array(1, 2, 3), 3600));
         $this->assertTrue($stash->isDisabled(), 'Is disabled after exception is thrown in handler');
     }
 
