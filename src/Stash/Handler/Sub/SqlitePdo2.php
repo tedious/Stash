@@ -17,7 +17,7 @@ namespace Stash\Handler\Sub;
  */
 class SqlitePdo2 extends SqlitePdo
 {
-    public function canEnable()
+    public function isAvailable()
     {
         return in_array('sqlite2', $this->getDrivers());
     }

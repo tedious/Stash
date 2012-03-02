@@ -28,7 +28,8 @@ class Handlers
                                        'FileSystem' => '\Stash\Handler\FileSystem',
                                        'Memcached' => '\Stash\Handler\Memcached',
                                        'MultiHandler' => '\Stash\Handler\MultiHandler',
-                                       'SQLite' => '\Stash\Handler\Sqlite'
+                                       'SQLite' => '\Stash\Handler\Sqlite',
+                                       'Xcache' => '\Stash\Handler\Xcache',
     );
 
 
@@ -49,7 +50,15 @@ class Handlers
                 continue;
             }
 
-            $availableHandlers[$name] = $class;
+            if($name == 'MultiHandler') {
+                $availableHandlers[$name] = $class;
+            } else {
+                $handler = new $class();
+
+                if($handler->canEnable()) {
+                    $availableHandlers[$name] = $class;
+                }
+            }
         }
 
         return $availableHandlers;

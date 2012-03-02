@@ -14,8 +14,6 @@ namespace Stash\Handler;
 use Stash;
 use Stash\Handler\Sub\Memcache as SubMemcache;
 use Stash\Handler\Sub\Memcached as SubMemcached;
-use Stash\Exception\InvalidArgumentException;
-use Stash\Exception\RuntimeException;
 
 /**
  * Memcache is a wrapper around the popular memcache server. Memcache supports both memcache php
@@ -32,6 +30,8 @@ class Memcache implements HandlerInterface
      * @var SubMemcache|SubMemcached
      */
     protected $memcache;
+
+    protected $disabled = false;
 
     /**
      *
@@ -54,16 +54,11 @@ class Memcache implements HandlerInterface
             $options['servers'] = array('127.0.0.1', 11211);
         }
 
-        if (!is_array($options['servers'])) {
-            throw new InvalidArgumentException('Server list required to be an array.');
-        }
-
         if (is_scalar($options['servers'][0])) {
             $servers = array($options['servers']);
         } else {
             $servers = $options['servers'];
         }
-
 
         if (!isset($options['extension'])) {
             $options['extension'] = 'any';
@@ -76,11 +71,13 @@ class Memcache implements HandlerInterface
         } elseif (class_exists('Memcache', false) && $extension != 'memcached') {
             $this->memcache = new SubMemcache();
         } else {
-            throw new RuntimeException('Unable to load either memcache extension.');
+            $this->disabled = true;
+            return;
         }
 
-        if ($this->memcache->initialize($servers, $options)) {
-            return;
+        $this->memcache->initialize($servers, $options);
+        if(!$this->canEnable()) {
+            $this->disabled = true;
         }
     }
 
@@ -98,6 +95,10 @@ class Memcache implements HandlerInterface
      */
     public function getData($key)
     {
+        if($this->disabled) {
+            return false;
+        }
+
         return $this->memcache->get($this->makeKeyString($key));
     }
 
@@ -110,6 +111,10 @@ class Memcache implements HandlerInterface
      */
     public function storeData($key, $data, $expiration)
     {
+        if($this->disabled) {
+            return false;
+        }
+
         return $this->memcache->set($this->makeKeyString($key), $data, $expiration);
     }
 
@@ -177,7 +182,11 @@ class Memcache implements HandlerInterface
 
     public function canEnable()
     {
-        // todo find a better way
-        return $this->memcache->canEnable();
+        return isset($this->memcache) ? $this->memcache->canEnable() : false;
+    }
+
+    public function isAvailable()
+    {
+        return isset($this->memcache) ? $this->memcache->isAvailable() : false;
     }
 }

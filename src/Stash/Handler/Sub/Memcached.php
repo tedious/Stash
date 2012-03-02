@@ -167,6 +167,11 @@ class Memcached implements UsableInterface
 
     public function canEnable()
     {
+        return $this->isAvailable();
+    }
+
+    public function isAvailable()
+    {
         return class_exists('Memcached', false);
     }
 }
