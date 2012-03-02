@@ -33,7 +33,7 @@ class BoxTest extends \PHPUnit_Framework_TestCase
     {
         $stash = Box::getCache('base', 'one');
         $this->assertInstanceOf('Stash\Cache', $stash, 'getCache returns a Stash\Cache object');
-        $stash->store($this->data);
+        $stash->set($this->data);
         $storedData = $stash->get();
         $this->assertEquals($this->data, $storedData, 'getCache returns working Stash\Cache object');
     }
@@ -41,7 +41,7 @@ class BoxTest extends \PHPUnit_Framework_TestCase
     public function testClearCache()
     {
         $stash = Box::getCache('base', 'one');
-        $stash->store($this->data, -600);
+        $stash->set($this->data, -600);
         $this->assertTrue(Box::clearCache('base', 'one'), 'clear returns true');
 
         $stash = Box::getCache('base', 'one');
@@ -52,7 +52,7 @@ class BoxTest extends \PHPUnit_Framework_TestCase
     public function testPurgeCache()
     {
         $stash = Box::getCache('base', 'one');
-        $stash->store($this->data, -600);
+        $stash->set($this->data, -600);
         $this->assertTrue(Box::purgeCache(), 'purge returns true');
 
         $stash = Box::getCache('base', 'one');

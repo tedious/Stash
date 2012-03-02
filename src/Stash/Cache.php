@@ -72,7 +72,7 @@ use Stash\Exception\InvalidArgumentException;
  *      $data = runExpensiveCode();
  *
  *      // Save the code for later.
- *      $cache->store($data);
+ *      $cache->set($data);
  * }
  * </code>
  *
@@ -529,17 +529,17 @@ class Cache
      * @param int|DateTime|null $time How long the item should be stored. Int is time (seconds), DateTime a future date
      * @return bool Returns whether the object was successfully stored or not.
      */
-    public function store($data, $time = null)
+    public function set($data, $time = null)
     {
         try {
-            return $this->executeStore($data, $time);
+            return $this->executeSet($data, $time);
         } catch (Exception $e) {
             $this->disable();
             return false;
         }
     }
 
-    private function executeStore($data, $time)
+    private function executeSet($data, $time)
     {
         if ($this->isDisabled()) {
             return false;
@@ -601,7 +601,7 @@ class Cache
             return false;
         }
 
-        return $this->store($this->get());
+        return $this->set($this->get());
     }
 
     /**
