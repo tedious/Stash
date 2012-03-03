@@ -36,7 +36,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     {
         $stash = Manager::getCache('base', 'one');
         $this->assertInstanceOf('Stash\Cache', $stash, 'getCache returns a Stash\Cache object');
-        $stash->store($this->data);
+        $stash->set($this->data);
         $storedData = $stash->get();
         $this->assertEquals($this->data, $storedData, 'getCache returns working Stash object');
     }
@@ -44,7 +44,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     public function testClearCache()
     {
         $stash = Manager::getCache('base', 'one');
-        $stash->store($this->data, -600);
+        $stash->set($this->data, -600);
         $this->assertTrue(Manager::clearCache('base', 'one'), 'clear returns true');
 
         $stash = Manager::getCache('base', 'one');
@@ -55,7 +55,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     public function testPurgeCache()
     {
         $stash = Manager::getCache('base', 'one');
-        $stash->store($this->data, -600);
+        $stash->set($this->data, -600);
         $this->assertTrue(Manager::purgeCache('base'), 'purge returns true');
 
         $stash = Manager::getCache('base', 'one');
