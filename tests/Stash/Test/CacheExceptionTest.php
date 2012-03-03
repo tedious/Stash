@@ -24,7 +24,7 @@ class CacheExceptionTest extends \PHPUnit_Framework_TestCase
     {
         $handler = new ExceptionTest();
         $stash = new Cache($handler);
-        $stash->setupKey('path', 'to', 'store');
+        $stash->setupKey(array('path', 'to', 'store'));
         $this->assertFalse($stash->isDisabled());
         $this->assertFalse($stash->set(array(1, 2, 3), 3600));
         $this->assertTrue($stash->isDisabled(), 'Is disabled after exception is thrown in handler');
@@ -42,7 +42,7 @@ class CacheExceptionTest extends \PHPUnit_Framework_TestCase
     public function testClear()
     {
         $stash = new Cache(new ExceptionTest());
-        $stash->setupKey('path', 'to', 'clear');
+        $stash->setupKey(array('path', 'to', 'clear'));
         $this->assertFalse($stash->isDisabled());
         $this->assertFalse($stash->clear());
         $this->assertTrue($stash->isDisabled(), 'Is disabled after exception is thrown in handler');

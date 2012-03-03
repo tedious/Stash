@@ -325,21 +325,23 @@ class Cache
      *
      * @param string $key, $key, $key...
      */
-    public function setupKey()
+    public function setupKey($key)
     {
-        if (func_num_args() == 0) {
-            throw new InvalidArgumentException('No key sent to the cache constructor.');
-        }
-
-        $key = func_get_args();
-        if (count($key) == 1 && is_array($key[0])) {
-            $key = $key[0];
+        if (is_array($key)) {
+            $this->keyString = implode('/', $key);
+        } else {
+            $this->keyString = $key;
+            $key = trim($key, '/');
+            $key = explode('/', $key);
         }
 
         array_unshift($key, 'cache');
-
         $this->key = array_map('strtolower', $key);
-        $this->keyString = implode(':::', $this->key);
+    }
+
+    public function getKey()
+    {
+        return isset($this->keyString) ? $this->keyString : false;
     }
 
     /**
