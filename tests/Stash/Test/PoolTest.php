@@ -41,7 +41,7 @@ class PoolTest extends \PHPUnit_Framework_TestCase
         $stash = $pool->getCache('base', 'one');
         $this->assertInstanceOf('Stash\Cache', $stash, 'getCache returns a Stash\Cache object');
 
-        $stash->store($this->data);
+        $stash->set($this->data);
         $storedData = $stash->get();
         $this->assertEquals($this->data, $storedData, 'getCache returns working Stash\Cache object');
     }
@@ -56,9 +56,9 @@ class PoolTest extends \PHPUnit_Framework_TestCase
         $keyData = $this->multiData;
         foreach($cacheIterator as $stash)
         {
-  //          $key = $stash->getKey();
+            $key = $stash->getKey();
             $this->assertTrue($stash->isMiss(), 'new Cache in iterator is empty');
-            $stash->store($keyData[$key]);
+            $stash->set($keyData[$key]);
             unset($keyData[$key]);
         }
         $this->assertCount(0, $keyData, 'all keys are accounted for the in cache iterator');
@@ -67,7 +67,7 @@ class PoolTest extends \PHPUnit_Framework_TestCase
         foreach($cacheIterator as $stash)
         {
             $key = $stash->getKey();
-    //        $data = $stash->get($key);
+            $data = $stash->get($key);
             $this->assertEquals($this->multiData[$key], $data, 'data put into the pool comes back the same through iterators.');
         }
     }
@@ -77,7 +77,7 @@ class PoolTest extends \PHPUnit_Framework_TestCase
         $pool = $this->getTestPool();
 
         $stash = $pool->getCache('base', 'one');
-        $stash->store($this->data);
+        $stash->set($this->data);
         $this->assertTrue($pool->flush(), 'clear returns true');
 
         $stash = $pool->getCache('base', 'one');
@@ -90,7 +90,7 @@ class PoolTest extends \PHPUnit_Framework_TestCase
         $pool = $this->getTestPool();
 
         $stash = $pool->getCache('base', 'one');
-        $stash->store($this->data, -600);
+        $stash->set($this->data, -600);
         $this->assertTrue($pool->purge(), 'purge returns true');
 
         $stash = $pool->getCache('base', 'one');
