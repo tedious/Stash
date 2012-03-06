@@ -47,9 +47,4 @@ class SqlitePdo extends Sqlite
         $db = new \PDO('sqlite:' . $this->path);
         return $db;
     }
-
-    protected function getDrivers()
-    {
-        return class_exists('\PDO', false) ? \PDO::getAvailableDrivers() : array();
-    }
 }
