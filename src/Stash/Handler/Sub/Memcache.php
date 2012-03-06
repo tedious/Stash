@@ -58,10 +58,10 @@ class Memcache extends Memcached
 
     public function canEnable()
     {
-        return $this->isAvailable();
+        return static::isAvailable();
     }
 
-    public function isAvailable()
+    static public function isAvailable()
     {
         return class_exists('Memcache', false);
     }

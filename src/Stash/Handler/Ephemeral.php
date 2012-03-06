@@ -86,10 +86,10 @@ class Ephemeral implements HandlerInterface
 
     public function canEnable()
     {
-        return $this->isAvailable();
+        return true;
     }
 
-    public function isAvailable()
+    static public function isAvailable()
     {
         return true;
     }

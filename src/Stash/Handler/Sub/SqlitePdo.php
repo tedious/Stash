@@ -26,9 +26,10 @@ class SqlitePdo extends Sqlite
         $this->responseCode = \PDO::FETCH_ASSOC;
     }
 
-    public function isAvailable()
+    static public function isAvailable()
     {
-        return in_array('sqlite', $this->getDrivers());
+        $drivers = class_exists('\PDO', false) ? \PDO::getAvailableDrivers() : array();
+        return in_array('sqlite', $drivers);
     }
 
     protected function setTimeout($milliseconds)

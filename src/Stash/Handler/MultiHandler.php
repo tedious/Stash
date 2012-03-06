@@ -176,7 +176,7 @@ class MultiHandler implements HandlerInterface
      *
      * @return bool true
      */
-    public function isAvailable()
+    static public function isAvailable()
     {
         return true;
     }

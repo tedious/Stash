@@ -185,8 +185,8 @@ class Memcache implements HandlerInterface
         return isset($this->memcache) ? $this->memcache->canEnable() : false;
     }
 
-    public function isAvailable()
+    static public function isAvailable()
     {
-        return isset($this->memcache) ? $this->memcache->isAvailable() : false;
+        return (class_exists('Memcache', false) || class_exists('Memcached', false));
     }
 }

@@ -66,7 +66,7 @@ class ExceptionTest implements HandlerInterface
         return (defined('TESTING') && TESTING);
     }
 
-    public function isAvailable()
+    static public function isAvailable()
     {
         return (defined('TESTING') && TESTING);
     }

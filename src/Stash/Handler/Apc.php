@@ -153,7 +153,7 @@ class Apc implements HandlerInterface
      */
     public function canEnable()
     {
-        return $this->isAvailable();
+        return static::isAvailable();
     }
 
     /**
@@ -161,7 +161,7 @@ class Apc implements HandlerInterface
      *
      * @return bool
      */
-    public function isAvailable()
+    static public function isAvailable()
     {
         return extension_loaded('apc') && ini_get('apc.enabled');
     }

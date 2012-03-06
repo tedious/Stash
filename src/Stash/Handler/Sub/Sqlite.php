@@ -132,7 +132,7 @@ class Sqlite implements UsableInterface
         return true;
     }
 
-    public function isAvailable()
+    static public function isAvailable()
     {
         return class_exists('SQLiteDatabase', false);
     }

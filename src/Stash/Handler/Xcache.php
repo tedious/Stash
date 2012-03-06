@@ -191,7 +191,7 @@ class Xcache extends Apc
 
     public function canEnable()
     {
-        return $this->isAvailable();
+        return static::isAvailable();
     }
 
     /**
@@ -199,7 +199,7 @@ class Xcache extends Apc
      *
      * @return bool true
      */
-    public function isAvailable()
+    static public function isAvailable()
     {
         return extension_loaded('xcache') && 'cli' !== php_sapi_name();
     }

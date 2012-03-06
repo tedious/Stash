@@ -34,5 +34,5 @@ interface UsableInterface
      *
      * @return bool
      */
-    public function isAvailable();
+    static public function isAvailable();
 }
