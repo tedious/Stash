@@ -11,12 +11,22 @@
 
 namespace Stash\Handler\Sub;
 
+use Stash\Exception\MemcacheException;
+use Stash\Handler\UsableInterface;
+use Stash\Exception\RuntimeException;
+
 /**
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class Memcache extends Memcached
+class Memcache implements UsableInterface
 {
+    /**
+     * @var Memcached
+     */
+    protected $memcached;
+
+
     public function initialize($servers, array $options = array())
     {
         $memcache = new \Memcache();
@@ -54,6 +64,17 @@ class Memcache extends Memcached
 
         $this->memcached->set($key, $value);
         return $value;
+    }
+
+    public function inc($key)
+    {
+        $this->cas($key, 0);
+        return $this->memcached->increment($key);
+    }
+
+    public function flush()
+    {
+        $this->memcached->flush();
     }
 
     public function canEnable()

@@ -26,10 +26,10 @@ use Stash\Exception\InvalidArgumentException;
  *
  * <code>
  * // Create backend handler
- * $handler = new StashFileSystem();
+ * $handler = new Stash\Handler\FileSystem();
  *
  * // Create Stash object and inject handler.
- * $stash = new Stash($handler);
+ * $stash = new Stash\Cache($handler);
  *
  * // Setup Key
  * $stash->setupKey('Path', 'To', 'Item');
@@ -43,16 +43,16 @@ use Stash\Exception\InvalidArgumentException;
  *
  * <code>
  *  // Create backend handler
- * $handler = new StashFileSystem();
+ * $handler = new Stash\Handler\FileSystem();
  *
  * // Set backend handler - this only has to be done once!
- * StashBox::setHandler($handler);
+ * Stash\Box::setHandler($handler);
  *
- * // Get Stash object, including optional key.
- * $stash = StashBox::getCache('Path', 'To', 'Item');
+ * // Get Cache object, including optional key.
+ * $cache = Stash\Box::getCache('Path', 'To', 'Item');
  *
- * // Get another, new Stash object without having to set a new handler.
- * $otherStash = StashBox::getCache('Object', 'Stored');
+ * // Get another, new Cache object without having to set a new handler.
+ * $otherCache = Stash\Box::getCache('Object', 'Stored');
  * </code>
  *
  * Using Stash is a simple process of getting data, checking if it is stale, and then storing the recalculated data
@@ -60,19 +60,19 @@ use Stash\Exception\InvalidArgumentException;
  *
  * <code>
  * // Grab a fresh Stash item.
- * $stash = StashBox::getCache('path', 'to', 'the','item');
+ * $cache = Stash\Box::getCache('path', 'to', 'the','item');
  *
  * // Pull the data from the cache.
- * $data = $stash->get();
+ * $data = $cache->get();
  *
  * // Check to see if the data is stale or didn't return at all.
- * if($stash->isMiss())
+ * if($cache->isMiss())
  * {
  *   // Run all the long running code.
  *      $data = runExpensiveCode();
  *
  *      // Save the code for later.
- *      $stash->store($data);
+ *      $cache->set($data);
  * }
  * </code>
  *
@@ -82,21 +82,21 @@ use Stash\Exception\InvalidArgumentException;
  *
  * Clearing data is very similar to getting it.
  * <code>
- * $handler = new StashFileSystem();
- * $stash = new Stash($handler);
- * $stash->setupKey('path', 'to', item');
- * $stash->clear();
+ * $handler = new Stash\Handler\FileSystem();
+ * $cache = new Stash\Cache($handler);
+ * $cache->setupKey('path', 'to', item');
+ * $cache->clear();
  * </code>
  *
  * The wrappers, like StashBox, offer a one function call to clear data.
  * <code>
- * $stash = StashBox::clearCache('path', 'to', 'item');
+ * $cache = Stash\Box::clearCache('path', 'to', 'item');
  *
  * // Clear out everything in the 'path' node, including 'path' and 'path' 'to' 'item'.
- * $stash = StashBox::clearCache('path');
+ * $cache = Stash\Box::clearCache('path');
  *
  * // Clear out everything in the cache.
- * $stash = StashBox::clearCache();
+ * $cache = Stash\Box::clearCache();
  * </code>
  *
  * * * * * * * *
@@ -108,14 +108,14 @@ use Stash\Exception\InvalidArgumentException;
  * of time, so it is best run in its own cleanup process.
  *
  * <code>
- * $handler = new StashFileSystem();
- * $stash = new Stash($handler);
- * $stash->purge();
+ * $handler = new Stash\Handler\FileSystem();
+ * $cache = new Stash\Cache($handler);
+ * $cache->purge();
  * </code>
  *
- * The wrappers, like StashBox, offer a one function call to clear data.
+ * The wrappers, like Stash\Box, offer a one function call to clear data.
  * <code>
- * StashBox::purgeCache();
+ * Stash\Box::purgeCache();
  * </code>
  *
  *
@@ -529,17 +529,17 @@ class Cache
      * @param int|DateTime|null $time How long the item should be stored. Int is time (seconds), DateTime a future date
      * @return bool Returns whether the object was successfully stored or not.
      */
-    public function store($data, $time = null)
+    public function set($data, $time = null)
     {
         try {
-            return $this->executeStore($data, $time);
+            return $this->executeSet($data, $time);
         } catch (Exception $e) {
             $this->disable();
             return false;
         }
     }
 
-    private function executeStore($data, $time)
+    private function executeSet($data, $time)
     {
         if ($this->isDisabled()) {
             return false;
@@ -601,7 +601,7 @@ class Cache
             return false;
         }
 
-        return $this->store($this->get());
+        return $this->set($this->get());
     }
 
     /**

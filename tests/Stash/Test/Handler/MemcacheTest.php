@@ -71,13 +71,13 @@ class MemcacheTest extends AbstractHandlerTest
 
         $stash = new Cache($handler);
         $stash->setupKey($key);
-        $this->assertTrue($stash->store($key), 'Able to load and store memcache handler using multiple servers');
+        $this->assertTrue($stash->set($key), 'Able to load and store memcache handler using multiple servers');
 
         $options = array();
         $options['extension'] = $this->extension;
         $handler = new Memcache($options);
         $stash = new Cache($handler);
         $stash->setupKey($key);
-        $this->assertTrue($stash->store($key), 'Able to load and store memcache handler using default server');
+        $this->assertTrue($stash->set($key), 'Able to load and store memcache handler using default server');
     }
 }

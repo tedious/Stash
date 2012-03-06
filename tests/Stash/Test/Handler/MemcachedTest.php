@@ -27,7 +27,6 @@ class MemcachedTest extends MemcacheTest
                                   'serializer' => 'php',
                                   'buffer_writes' => false,
                                   'connect_timeout' => 500,
-                                  'cache_lookups' => true,
                                   'prefix_key' => 'cheese'
         );
 

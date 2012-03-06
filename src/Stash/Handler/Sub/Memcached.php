@@ -119,7 +119,9 @@ class Memcached implements UsableInterface
                     break;
             }
 
-            $memcached->setOption(constant('\Memcached::OPT_' . $name), $value);
+            if(!@$memcached->setOption(constant('\Memcached::OPT_' . $name), $value)) {
+                throw new RuntimeException('Memcached option Memcached::OPT_' . $name . ' not accepted by memcached extension.');
+            }
         }
 
         $this->memcached = $memcached;
