@@ -71,19 +71,34 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
 
     public function testSetupKey()
     {
-        $key = array('this', 'is', 'the', 'key');
+        $keyString = 'this/is/the/key';
+        $keyArray = array('this', 'is', 'the', 'key');
+        $keyNormalized = array('cache', 'this', 'is', 'the', 'key');
 
-        $stash = $this->testConstruct();
-        $stash->setupKey(array('this', 'is', 'the', 'key'));
-        $this->assertAttributeInternalType('string', 'keyString', $stash, 'Argument based keys setup keystring');
-        $this->assertAttributeInternalType('array', 'key', $stash, 'Array based keys setup keu');
+        $stashArray = $this->testConstruct();
+        $stashArray->setupKey($keyArray);
+        $this->assertAttributeInternalType('string', 'keyString', $stashArray, 'Argument based keys setup keystring');
+        $this->assertAttributeInternalType('array', 'key', $stashArray, 'Array based keys setup key');
 
-/*
-        $stash = $this->testConstruct();
-        $stash->setupKey('this', 'is', 'the', 'key');
-        $this->assertAttributeInternalType('string', 'keyString', $stash, 'Argument based keys setup keystring');
-        $this->assertAttributeInternalType('array', 'key', $stash, 'Argument based keys setup key');
-*/
+        $returnedKey = $stashArray->getKey();
+        $this->assertEquals($keyString, $returnedKey, 'getKey returns properly normalized key from array argument.');
+
+        $stashString = $this->testConstruct();
+        $stashString->setupKey($keyString);
+        $this->assertAttributeInternalType('string', 'keyString', $stashString, 'Argument based keys setup keystring');
+        $this->assertAttributeInternalType('array', 'key', $stashString, 'Array based keys setup key');
+
+        $this->assertAttributeEquals($keyNormalized, 'key', $stashString, 'setupKey from string builds proper key array.');
+
+        $returnedKey = $stashString->getKey();
+        $this->assertEquals($keyString, $returnedKey, 'getKey returns the same key as initially passed via string.');
+
+
+        $stashString = $this->testConstruct();
+        $stashString->setupKey('/' . $keyString . '/');
+        $returnedKey = $stashString->getKey();
+        $this->assertEquals('/' . $keyString . '/', $returnedKey, 'getKey returns the same key as initially passed via string.');
+        $this->assertAttributeEquals($keyNormalized, 'key', $stashString, 'setupKey discards trailing and leading slashes.');
     }
 
     public function testSet()

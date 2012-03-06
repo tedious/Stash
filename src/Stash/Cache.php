@@ -335,6 +335,8 @@ class Cache
             $key = explode('/', $key);
         }
 
+        // We implant the namespace "cache" to the front of every stash object's key. This allows us to segment
+        // off the user data, and user other 'namespaces' for internal purposes.
         array_unshift($key, 'cache');
         $this->key = array_map('strtolower', $key);
     }
