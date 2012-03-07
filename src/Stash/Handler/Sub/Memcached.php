@@ -12,14 +12,13 @@
 namespace Stash\Handler\Sub;
 
 use Stash\Exception\MemcacheException;
-use Stash\Handler\UsableInterface;
 use Stash\Exception\RuntimeException;
 
 /**
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class Memcached implements UsableInterface
+class Memcached
 {
     /**
      * @var Memcached

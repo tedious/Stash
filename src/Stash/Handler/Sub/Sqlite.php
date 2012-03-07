@@ -12,13 +12,12 @@
 namespace Stash\Handler\Sub;
 
 use Stash\Exception\RuntimeException;
-use Stash\Handler\UsableInterface;
 
 /**
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class Sqlite implements UsableInterface
+class Sqlite
 {
     protected $path;
     protected $handler;
