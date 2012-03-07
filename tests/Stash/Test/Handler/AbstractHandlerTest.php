@@ -44,6 +44,11 @@ abstract class AbstractHandlerTest extends \PHPUnit_Framework_TestCase
     protected $startTime;
     private $setup = false;
 
+    public static function tearDownAfterClass()
+    {
+        Utilities::deleteRecursive(Utilities::getBaseDirectory());
+    }
+
     protected function setUp()
     {
         if (!$this->setup) {
@@ -208,15 +213,5 @@ abstract class AbstractHandlerTest extends \PHPUnit_Framework_TestCase
         foreach ($this->data as $type => $value) {
             $this->assertFalse($handler->getData(array('base', 'stale', $type)), 'purge removed stale data');
         }
-    }
-
-    /**
-     * @depends testStoreData
-     */
-    public function testDestructor($handler)
-    {
-        $handler->__destruct();
-        unset($handler);
-        Utilities::deleteRecursive(Utilities::getBaseDirectory());
     }
 }
