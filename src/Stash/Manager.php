@@ -12,6 +12,7 @@
 namespace Stash;
 
 use Stash\Handler\HandlerInterface;
+use Stash\Handler\Ephemeral;
 use Stash\Exception\InvalidArgumentException;
 
 /**
@@ -53,20 +54,17 @@ class Manager
         }
 
         $name = array_shift($args);
-        $group = '__StashManager_' . $name;
 
         // Check to see if keys were passed as an extended argument or a single array
         if (count($args) == 1 && is_array($args[0])) {
             $args = $args[0];
         }
 
-        if (isset(self::$handlers[$name]) && self::$handlers[$name] != false) {
-            $group .= '_' . get_class(self::$handlers[$name]) . '__';
-            $stash = new Cache(self::$handlers[$name], $group);
-        } else {
-            $group .= '_memory__';
-            $stash = new Cache(null, $group);
+        if (!isset(self::$handlers[$name])) {
+            self::$handlers[$name] = new Ephemeral();
         }
+
+        $stash = new Cache(self::$handlers[$name]);
 
         if (count($args) > 0) {
             $stash->setupKey($args);
@@ -134,4 +132,3 @@ class Manager
     }
 
 }
-
