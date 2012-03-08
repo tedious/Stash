@@ -22,7 +22,7 @@ class SqlitePdoSqlite2Test extends AbstractHandlerTest
     protected function setUp()
     {
         $handler = '\\' . $this->handlerClass;
-        if($handler::isAvailable()) {
+        if(!$handler::isAvailable()) {
             $this->markTestSkipped('Handler class unsuited for current environment');
         }
 
