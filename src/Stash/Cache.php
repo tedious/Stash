@@ -171,34 +171,6 @@ class Cache
     static $queryRecord;
 
     /**
-     * Holds a copy of all valid data (whether retrieved from or stored to the cacheHandler) in order to
-     * avoid unnecessary calls to the storage handler. The index of this array is the string version of the key, and
-     * the value is an exact copy of the data stored by the handlers. When items are added or removed this array gets
-     * updated automatically. It also gets purged over time to keep it from growing to large.
-     *
-     * @var string
-     */
-    protected static $memStore = array();
-
-    /**
-     * If set to true, the system stores a copy of the current cache data (key, data and expiration) stored to a static
-     * variable. This allows future requests to that object to bypass retriving it from the cachehandler, but the trade
-     * off is that scripts use a bit more memory. For large pieces of data not likely to be called multiple times in a
-     * script (template data, for instance) this should be set to false.
-     *
-     * @var bool
-     */
-    protected $storeMemory = true;
-
-    /**
-     * If this flag is set to true the cache record is only stored in the scripts memory, not persisted. If this is
-     * true and the storeMemory property is false then caching is effectively disabled.
-     *
-     * @var bool
-     */
-    protected $memoryOnly = false;
-
-    /**
      * Used internally to mark the class as disabled. Unlike the static runtimeDisable flag this is effective only for
      * the current instance.
      *
@@ -254,25 +226,13 @@ class Cache
      */
     private $isHit = false;
 
-    protected $group;
-
     /**
      * This constructor requires a StashHandler object.
      *
      * @param HandlerInterface If no handler is passed the cache is set to script time only.
      */
-    public function __construct(HandlerInterface $handler = null, $cacheGroup = null)
+    public function __construct(HandlerInterface $handler)
     {
-        if (!isset($cacheGroup)) {
-            $cacheGroup = '__global';
-            if (isset($handler)) {
-                $cacheGroup .= '_' . get_class($handler);
-            }
-
-            $cacheGroup .= '__';
-        }
-
-        $this->group = $cacheGroup;
         $this->handler = $handler;
     }
 
@@ -286,33 +246,6 @@ class Cache
     {
         $this->cacheEnabled = false;
         return true;
-    }
-
-    /**
-     * Tells the cache handler not to store the results of this particular request in the memory storage.
-     *
-     * @return bool
-     */
-    public function disableMemory()
-    {
-        $this->storeMemory = false;
-        return true;
-    }
-
-    /**
-     * Skips the cache handler and stores the result of this particular request only in the memory storage.
-     *
-     * @return bool
-     */
-    public function storeInMemoryOnly($memoryOnly = true)
-    {
-        $this->memoryOnly = (boolean) $memoryOnly;
-        return true;
-    }
-
-    public function isMemoryOnly()
-    {
-        return $this->handler === null || $this->memoryOnly || (defined('STASH_FORCE_MEM_ONLY') && STASH_FORCE_MEM_ONLY);
     }
 
     /**
@@ -367,28 +300,7 @@ class Cache
             return false;
         }
 
-        if (!$this->isMemoryOnly()) {
-            self::$memStore[$this->group] = array();
-            return $this->handler->clear(isset($this->key) ? $this->key : null);
-        }
-
-        // Typically speaking- when there is handler backing the Stash class- we just want to wipe the whole
-        // memCache out when it's cleared. However, when it is the only 'backend' available it makes sense
-        // to actually go through and only clear the items requested by the user, since any cache misses from
-        // script memory are then complete misses.
-        if (!isset($this->keyString)) {
-            self::$memStore[$this->group] = array();
-            return true;
-        }
-
-        $length = strlen($this->keyString);
-        foreach (self::$memStore[$this->group] as $name => $value) {
-            if (substr($name, 0, $length) == $this->keyString) {
-                unset(self::$memStore[$this->group][$name]);
-            }
-        }
-
-        return true;
+        return $this->handler->clear(isset($this->key) ? $this->key : null);
     }
 
     /**
@@ -411,12 +323,6 @@ class Cache
     {
         if ($this->isDisabled()) {
             return false;
-        }
-
-        self::$memStore[$this->group] = array();
-
-        if ($this->isMemoryOnly()) {
-            return true;
         }
 
         return $this->handler->purge();
@@ -470,6 +376,7 @@ class Cache
         }
 
         $record = $this->getRecord();
+
         $this->validateRecord($invalidation, $record);
 
         if ($this->isHit) {
@@ -504,10 +411,6 @@ class Cache
     public function lock($ttl = null)
     {
        if ($this->isDisabled()) {
-            return true;
-        }
-
-        if ($this->isMemoryOnly()) {
             return true;
         }
 
@@ -575,17 +478,9 @@ class Cache
             $expiration -= $expirationDiff;
         }
 
-        if ($this->storeMemory) {
-            self::$memStore[$this->group][$this->keyString] = array('expiration' => $expiration, 'data' => $store);
-        }
-
-        if ($this->isMemoryOnly()) {
-            return true;
-        }
-
         if ($this->stampedeRunning == true) {
             $spkey = $this->key;
-            $spkey[0] = 'sp';
+            $spkey[0] = 'sp'; // change "cache" data namespace to stampede namespace
             $this->handler->clear($spkey);
             $this->stampedeRunning = false;
         }
@@ -615,11 +510,7 @@ class Cache
      */
     protected function getStampedeFlag($key)
     {
-        if ($this->isMemoryOnly()) {
-            return false;
-        }
-
-        $key[0] = 'sp';
+        $key[0] = 'sp'; // change "cache" data namespace to stampede namespace
         $spReturn = $this->handler->getData($key);
         $sp = isset($spReturn['data']) ? $spReturn['data'] : false;
 
@@ -640,30 +531,10 @@ class Cache
      */
     protected function getRecord()
     {
-        if (isset(self::$memStore[$this->group][$this->keyString]) && is_array(self::$memStore[$this->group][$this->keyString])) {
-            return self::$memStore[$this->group][$this->keyString];
-        }
-
-        if ($this->isMemoryOnly()) {
-            return array();
-        }
-
         $record = $this->handler->getData($this->key);
 
         if (!is_array($record)) {
             return array();
-        }
-
-        // This is to keep the array from getting out of hand, particularly during long running processes
-        // as this would otherwise grow to huge amounts. Totally niave approach, will redo
-        if (isset(self::$memStore[$this->group]) && count(self::$memStore[$this->group]) > 900) {
-            foreach (array_rand(self::$memStore[$this->group], 600) as $removalKey) {
-                unset(self::$memStore[$this->group][$removalKey]);
-            }
-        }
-
-        if ($this->storeMemory) {
-            self::$memStore[$this->group][$this->keyString] = $record;
         }
 
         return $record;
