@@ -84,11 +84,6 @@ class Ephemeral implements HandlerInterface
         return true;
     }
 
-    public function canEnable()
-    {
-        return true;
-    }
-
     static public function isAvailable()
     {
         return true;

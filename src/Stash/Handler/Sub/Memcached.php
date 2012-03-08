@@ -166,11 +166,6 @@ class Memcached
         $this->memcached->flush();
     }
 
-    public function canEnable()
-    {
-        return static::isAvailable();
-    }
-
     static public function isAvailable()
     {
         return class_exists('Memcached', false);

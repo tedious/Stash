@@ -57,10 +57,6 @@ class Xcache extends Apc
      */
     public function getData($key)
     {
-        if($this->disabled) {
-            return false;
-        }
-
         $keyString = $this->makeKey($key);
         if (!$keyString) {
             return false;
@@ -86,10 +82,6 @@ class Xcache extends Apc
      */
     public function storeData($key, $data, $expiration)
     {
-        if($this->disabled) {
-            return false;
-        }
-
         $keyString = self::makeKey($key);
         if (!$keyString) {
             return false;
@@ -187,11 +179,6 @@ class Xcache extends Apc
 
         */
 
-    }
-
-    public function canEnable()
-    {
-        return static::isAvailable();
     }
 
     /**

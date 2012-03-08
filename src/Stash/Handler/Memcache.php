@@ -12,6 +12,7 @@
 namespace Stash\Handler;
 
 use Stash;
+use Stash\Exception\RuntimeException;
 use Stash\Handler\Sub\Memcache as SubMemcache;
 use Stash\Handler\Sub\Memcached as SubMemcached;
 
@@ -71,14 +72,10 @@ class Memcache implements HandlerInterface
         } elseif (class_exists('Memcache', false) && $extension != 'memcached') {
             $this->memcache = new SubMemcache();
         } else {
-            $this->disabled = true;
-            return;
+            throw new RuntimeException('No memcache extension available.');
         }
 
         $this->memcache->initialize($servers, $options);
-        if(!$this->canEnable()) {
-            $this->disabled = true;
-        }
     }
 
     /**
@@ -95,10 +92,6 @@ class Memcache implements HandlerInterface
      */
     public function getData($key)
     {
-        if($this->disabled) {
-            return false;
-        }
-
         return $this->memcache->get($this->makeKeyString($key));
     }
 
@@ -111,10 +104,6 @@ class Memcache implements HandlerInterface
      */
     public function storeData($key, $data, $expiration)
     {
-        if($this->disabled) {
-            return false;
-        }
-
         return $this->memcache->set($this->makeKeyString($key), $data, $expiration);
     }
 
@@ -178,11 +167,6 @@ class Memcache implements HandlerInterface
         }
 
         return $path ? $pathKey : md5($keyString);
-    }
-
-    public function canEnable()
-    {
-        return isset($this->memcache) ? $this->memcache->canEnable() : false;
     }
 
     static public function isAvailable()

@@ -12,6 +12,7 @@
 namespace Stash\Handler\Sub;
 
 use Stash\Exception\RuntimeException;
+use Stash\Exception\InvalidArgumentException;
 
 /**
  * @package Stash
@@ -118,17 +119,15 @@ class Sqlite
         return true;
     }
 
-    public function canEnable()
+    public function checkFileSystemPermissions()
     {
-        if(!$this->isAvailable() || !isset($this->path)) {
-            return false;
+        if(!isset($this->path)) {
+            throw new RuntimeException('No cache path is set.');
         }
 
         if(!is_writable($this->path) && !is_writable(dirname($this->path))) {
-            return false;
+            throw new InvalidArgumentException('The cache sqlite file is not writable.');
         }
-
-        return true;
     }
 
     static public function isAvailable()

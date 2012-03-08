@@ -36,7 +36,7 @@ class MultiHandler implements HandlerInterface
     public function __construct(array $options = array())
     {
         if (!isset($options['handlers']) || !is_array($options['handlers']) || count($options['handlers']) < 1) {
-            return;
+            throw new RuntimeException('One or more secondary handlers are required.');
         }
 
         foreach ($options['handlers'] as $handler) {
@@ -44,9 +44,7 @@ class MultiHandler implements HandlerInterface
                 continue;
             }
 
-            if ($handler->canEnable()) {
-                $this->handlers[] = $handler;
-            }
+            $this->handlers[] = $handler;
         }
 
         if (count($this->handlers) < 1) {
@@ -147,27 +145,6 @@ class MultiHandler implements HandlerInterface
         }
 
         return $return;
-    }
-
-    /**
-     * This function checks to see if this handler instance is usable; the answer is true as long as there's at least
-     * one other handler provided and all handlers can be enabled.
-     *
-     * @return bool true
-     */
-    public function canEnable()
-    {
-        if(count($this->handlers) == 0) {
-            return false;
-        }
-
-        foreach($this->handlers as $handler) {
-            if(!$handler->canEnable()) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     /**

@@ -11,7 +11,6 @@
 
 namespace Stash\Handler\Sub;
 
-use Stash\Exception\MemcacheException;
 use Stash\Exception\RuntimeException;
 
 /**
@@ -74,11 +73,6 @@ class Memcache
     public function flush()
     {
         $this->memcached->flush();
-    }
-
-    public function canEnable()
-    {
-        return static::isAvailable();
     }
 
     static public function isAvailable()

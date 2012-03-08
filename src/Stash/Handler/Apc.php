@@ -12,6 +12,7 @@
 namespace Stash\Handler;
 
 use Stash;
+use Stash\Exception\RuntimeException;
 
 /**
  * The StashApc is a wrapper for the APC extension, which allows developers to store data in memory.
@@ -21,8 +22,6 @@ use Stash;
  */
 class Apc implements HandlerInterface
 {
-    protected $disabled = false;
-
     protected $ttl = 300;
     protected $apcNamespace;
 
@@ -42,8 +41,8 @@ class Apc implements HandlerInterface
 
         $this->apcNamespace = isset($options['namespace']) ? $options['namespace'] : md5(__FILE__);
 
-        if(!$this->canEnable()) {
-            $this->disabled = true;
+        if(!static::isAvailable()) {
+            throw new RuntimeException('Extension is not installed.');
         }
     }
 
@@ -66,14 +65,7 @@ class Apc implements HandlerInterface
      */
     public function getData($key)
     {
-        if($this->disabled) {
-            return false;
-        }
-
         $keyString = self::makeKey($key);
-        if (!$keyString) {
-            return false;
-        }
 
         $data = apc_fetch($keyString, $success);
 
@@ -93,10 +85,6 @@ class Apc implements HandlerInterface
      */
     public function storeData($key, $data, $expiration)
     {
-        if($this->disabled) {
-            return false;
-        }
-
         $life = $this->getCacheTime($expiration);
         return apc_store($this->makeKey($key), array('data' => $data, 'expiration' => $expiration), $life);
     }
@@ -144,16 +132,6 @@ class Apc implements HandlerInterface
         }
 
         return true;
-    }
-
-    /**
-     * Instance-specific configuration options do not affect the usability of this handler.
-     *
-     * @return bool
-     */
-    public function canEnable()
-    {
-        return static::isAvailable();
     }
 
     /**
