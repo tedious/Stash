@@ -11,15 +11,13 @@
 
 namespace Stash\Handler\Sub;
 
-use Stash\Exception\MemcacheException;
-use Stash\Handler\UsableInterface;
 use Stash\Exception\RuntimeException;
 
 /**
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class Memcache implements UsableInterface
+class Memcache
 {
     /**
      * @var Memcached
@@ -77,12 +75,7 @@ class Memcache implements UsableInterface
         $this->memcached->flush();
     }
 
-    public function canEnable()
-    {
-        return $this->isAvailable();
-    }
-
-    public function isAvailable()
+    static public function isAvailable()
     {
         return class_exists('Memcache', false);
     }

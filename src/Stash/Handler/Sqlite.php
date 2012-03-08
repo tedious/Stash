@@ -12,6 +12,8 @@
 namespace Stash\Handler;
 
 use Stash;
+use Stash\Exception\RuntimeException;
+use Stash\Exception\InvalidArgumentException;
 
 /**
  * StashSqlite is a wrapper around one or more SQLite databases stored on the local system. While not as quick at at
@@ -51,18 +53,19 @@ class Sqlite implements HandlerInterface
         $path = isset($options['path']) ? $options['path'] : \Stash\Utilities::getBaseDirectory($this);
         $this->path = rtrim($path, '\\/') . '/';
 
+        $this->checkFileSystemPermissions();
+
         $extension = isset($options['extension']) ? strtolower($options['extension']) : 'any';
         $version = isset($options['version']) ? $options['version'] : 'any';
 
         $subhandlers = array();
-        $drivers = class_exists('\PDO', false) ? \PDO::getAvailableDrivers() : array();
-        if(in_array('sqlite', $drivers)) {
+        if(Sub\SqlitePdo::isAvailable()) {
             $subhandlers['pdo'] = '\Stash\Handler\Sub\SqlitePdo';
         }
-        if(class_exists('SQLiteDatabase', false)) {
+        if(Sub\Sqlite::isAvailable()) {
             $subhandlers['sqlite'] = '\Stash\Handler\Sub\Sqlite';
         }
-        if(in_array('sqlite2', $drivers)) {
+        if(Sub\SqlitePdo2::isAvailable()) {
             $subhandlers['pdo2'] = '\Stash\Handler\Sub\SqlitePdo2';
         }
 
@@ -84,9 +87,7 @@ class Sqlite implements HandlerInterface
         $this->busyTimeout = $options['busyTimeout'];
         $this->nesting = $options['nesting'];
 
-        if(!$this->canEnable()) {
-            $this->disabled = true;
-        }
+        $this->checkStatus();
     }
 
     /**
@@ -95,10 +96,6 @@ class Sqlite implements HandlerInterface
      */
     public function getData($key)
     {
-        if($this->disabled) {
-            return false;
-        }
-
         if (!($sqlHandler = $this->getSqliteHandler($key))) {
             return false;
         }
@@ -122,10 +119,6 @@ class Sqlite implements HandlerInterface
      */
     public function storeData($key, $data, $expiration)
     {
-        if($this->disabled) {
-            return false;
-        }
-
         if (!($sqlHandler = $this->getSqliteHandler($key))) {
             return false;
         }
@@ -263,23 +256,42 @@ class Sqlite implements HandlerInterface
     }
 
     /**
-     * Returns a value based on the current subhandler.
+     * Checks to see whether the requisite permissions are available on the specified path.
+     *
+     */
+    protected function checkFileSystemPermissions()
+    {
+        if(!isset($this->path)) {
+            throw new RuntimeException('Cache path was not set correctly.');
+        }
+
+        if(!is_dir($this->path)) {
+            throw new InvalidArgumentException('Cache path is not a directory.');
+        }
+
+        if(!is_writable($this->path)) {
+            throw new InvalidArgumentException('Cache path is not writable.');
+        }
+    }
+
+    /**
+     * Checks availability of the specified subhandler.
      *
      * @return bool
      */
-    public function canEnable()
+    protected function checkStatus()
     {
-        if(!$this->isAvailable()) {
-            return false;
+        if(!static::isAvailable()) {
+            throw new RuntimeException('No Sqlite extension is available.');
         }
 
         $handler = $this->getSqliteHandler(array('_none'));
 
         if(!$handler) {
-            return false;
+            throw new RuntimeException('No Sqlite handler could be loaded.');
         }
 
-        return $handler->canEnable();
+        $handler->checkFileSystemPermissions();
     }
 
     /**
@@ -288,7 +300,7 @@ class Sqlite implements HandlerInterface
      *
      * @return bool
      */
-    public function isAvailable()
+    static public function isAvailable()
     {
         $drivers = class_exists('\PDO', false) ? \PDO::getAvailableDrivers() : array();
         return (class_exists('SQLiteDatabase', false) || in_array('sqlite', $drivers) || in_array('sqlite2', $drivers));

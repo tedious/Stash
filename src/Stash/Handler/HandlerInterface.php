@@ -40,7 +40,7 @@ namespace Stash\Handler;
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
 
-interface HandlerInterface extends UsableInterface
+interface HandlerInterface
 {
     /**
      * Takes an array which is used to pass option values to the handler. As this is the only required function that is
@@ -101,4 +101,13 @@ interface HandlerInterface extends UsableInterface
      * @return bool
      */
     public function purge();
+
+    /**
+     * Returns whether the handler is able to run in the current environment or not. Any system checks - such as making
+     * sure any required extensions are missing - should be done here. This is a general check; if any instance of this
+     * handler can be used in the current environment it should return true.
+     *
+     * @return bool
+     */
+    static public function isAvailable();
 }

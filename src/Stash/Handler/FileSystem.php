@@ -13,6 +13,8 @@ namespace Stash\Handler;
 
 use Stash;
 use Stash\Exception\LogicException;
+use Stash\Exception\RuntimeException;
+use Stash\Exception\InvalidArgumentException;
 
 /**
  * StashFileSystem stores cache objects in the filesystem as native php, making the process of retrieving stored data
@@ -91,9 +93,7 @@ class FileSystem implements HandlerInterface
 
         $this->memStoreLimit = (int)$options['memKeyLimit'];
 
-        if(!$this->canEnable()) {
-            $this->disabled = true;
-        }
+        $this->checkFileSystemPermissions();
     }
 
     /**
@@ -122,10 +122,6 @@ class FileSystem implements HandlerInterface
      */
     public function getData($key)
     {
-        if($this->disabled) {
-            return false;
-        }
-
         return self::getDataFromFile($this->makePath($key));
     }
 
@@ -151,10 +147,6 @@ class FileSystem implements HandlerInterface
      */
     public function storeData($key, $data, $expiration)
     {
-        if($this->disabled) {
-            return false;
-        }
-
         $success = false;
 
         $path = $this->makePath($key);
@@ -355,15 +347,20 @@ class FileSystem implements HandlerInterface
     /**
      * Checks to see whether the requisite permissions are available on the specified path.
      *
-     * @return bool true
      */
-    public function canEnable()
+    protected function checkFileSystemPermissions()
     {
-        if(!isset($this->cachePath) || !is_dir($this->cachePath) || !is_writable($this->cachePath)) {
-            return false;
+        if(!isset($this->cachePath)) {
+            throw new RuntimeException('Cache path was not set correctly.');
         }
 
-        return true;
+        if(!is_dir($this->cachePath)) {
+            throw new InvalidArgumentException('Cache path is not a directory.');
+        }
+
+        if(!is_writable($this->cachePath)) {
+            throw new InvalidArgumentException('Cache path is not writable.');
+        }
     }
 
     /**
@@ -372,7 +369,7 @@ class FileSystem implements HandlerInterface
      *
      * @return bool true
      */
-    public function isAvailable()
+    static public function isAvailable()
     {
         return true;
     }
