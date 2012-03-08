@@ -18,12 +18,16 @@ namespace Stash\Test\Handler;
 class SqlitePdoSqlite2Test extends AbstractHandlerTest
 {
     protected $handlerClass = 'Stash\Handler\Sqlite';
+    protected $subHandlerClass = 'Stash\Handler\Sub\SqlitePdo2';
 
     protected function setUp()
     {
         $handler = '\\' . $this->handlerClass;
-        if($handler::isAvailable()) {
+        $subHandler = '\\' . $this->subHandlerClass;
+
+        if(!$handler::isAvailable() || !$subHandler::isAvailable()) {
             $this->markTestSkipped('Handler class unsuited for current environment');
+            return;
         }
 
         parent::setUp();
