@@ -17,9 +17,10 @@ namespace Stash\Handler\Sub;
  */
 class SqlitePdo2 extends SqlitePdo
 {
-    public function isAvailable()
+    static public function isAvailable()
     {
-        return in_array('sqlite2', $this->getDrivers());
+        $drivers = class_exists('\PDO', false) ? \PDO::getAvailableDrivers() : array();
+        return in_array('sqlite2', $drivers);
     }
 
     protected function buildHandler()

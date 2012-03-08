@@ -19,6 +19,16 @@ class SqliteSqlite2Test extends AbstractHandlerTest
 {
     protected $handlerClass = 'Stash\Handler\Sqlite';
 
+    protected function setUp()
+    {
+        $handler = '\\' . $this->handlerClass;
+        if($handler::isAvailable()) {
+            $this->markTestSkipped('Handler class unsuited for current environment');
+        }
+
+        parent::setUp();
+    }
+
     public function getOptions()
     {
         $options = parent::getOptions();

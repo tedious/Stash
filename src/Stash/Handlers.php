@@ -53,9 +53,7 @@ class Handlers
             if($name == 'MultiHandler') {
                 $availableHandlers[$name] = $class;
             } else {
-                $handler = new $class();
-
-                if($handler->canEnable()) {
+                if($class::isAvailable()) {
                     $availableHandlers[$name] = $class;
                 }
             }

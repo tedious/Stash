@@ -69,11 +69,12 @@ abstract class AbstractHandlerTest extends \PHPUnit_Framework_TestCase
     {
         $handlerClass = $this->handlerClass;
         $options = $this->getOptions();
-        $handler = new $handlerClass($options);
 
-        if (!$handler->canEnable()) {
+        if (!$handlerClass::isAvailable()) {
             return false;
         }
+
+        $handler = new $handlerClass($options);
 
         return $handler;
     }

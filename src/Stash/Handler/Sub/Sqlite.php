@@ -12,13 +12,13 @@
 namespace Stash\Handler\Sub;
 
 use Stash\Exception\RuntimeException;
-use Stash\Handler\UsableInterface;
+use Stash\Exception\InvalidArgumentException;
 
 /**
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class Sqlite implements UsableInterface
+class Sqlite
 {
     protected $path;
     protected $handler;
@@ -119,20 +119,18 @@ class Sqlite implements UsableInterface
         return true;
     }
 
-    public function canEnable()
+    public function checkFileSystemPermissions()
     {
-        if(!$this->isAvailable() || !isset($this->path)) {
-            return false;
+        if(!isset($this->path)) {
+            throw new RuntimeException('No cache path is set.');
         }
 
         if(!is_writable($this->path) && !is_writable(dirname($this->path))) {
-            return false;
+            throw new InvalidArgumentException('The cache sqlite file is not writable.');
         }
-
-        return true;
     }
 
-    public function isAvailable()
+    static public function isAvailable()
     {
         return class_exists('SQLiteDatabase', false);
     }
