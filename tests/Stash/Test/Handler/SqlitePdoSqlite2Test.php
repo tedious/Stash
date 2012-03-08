@@ -24,6 +24,7 @@ class SqlitePdoSqlite2Test extends AbstractHandlerTest
         $handler = '\\' . $this->handlerClass;
         if(!$handler::isAvailable()) {
             $this->markTestSkipped('Handler class unsuited for current environment');
+            return;
         }
 
         parent::setUp();
