@@ -302,8 +302,7 @@ class Sqlite implements HandlerInterface
      */
     static public function isAvailable()
     {
-        $drivers = class_exists('\PDO', false) ? \PDO::getAvailableDrivers() : array();
-        return (class_exists('SQLiteDatabase', false) || in_array('sqlite', $drivers) || in_array('sqlite2', $drivers));
+        return (Sub\SqlitePdo::isAvailable()) || (Sub\Sqlite::isAvailable()) || (Sub\SqlitePdo2::isAvailable());
     }
 
     /**
@@ -325,4 +324,3 @@ class Sqlite implements HandlerInterface
         return $path;
     }
 }
-
