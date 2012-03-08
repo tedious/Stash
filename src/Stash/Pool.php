@@ -46,7 +46,6 @@ class Pool
 
         $handler = $this->getHandler();
         $cache = new Cache($this->handler);
-        $cache->disableMemory();
         if (count($args) > 0) {
             $cache->setupKey($args);
         }
