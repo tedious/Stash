@@ -12,6 +12,7 @@
 namespace Stash\Handler;
 
 use Stash;
+use Stash\Exception\RuntimeException;
 
 /**
  * StashSqlite is a wrapper around the xcache php extension, which allows developers to store data in memory.
@@ -21,13 +22,18 @@ use Stash;
  *
  * @codeCoverageIgnore Just until I figure out how to get phpunit working over http, or xcache over cli
  */
-class Xcache extends Apc
+class Xcache implements HandlerInterface
 {
+    protected $ttl = 300;
     protected $user;
     protected $password;
 
     public function __construct(array $options = array())
     {
+        if(!static::isAvailable()) {
+            throw new RuntimeException('Extension is not installed.');
+        }
+
         if (isset($options['user'])) {
             $this->user = $options['user'];
         }
@@ -36,7 +42,9 @@ class Xcache extends Apc
             $this->password = $options['password'];
         }
 
-        parent::__construct($options);
+        if (isset($options['ttl']) && is_numeric($options['ttl'])) {
+            $this->ttl = (int)$options['ttl'];
+        }
     }
 
     /**
