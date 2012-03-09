@@ -249,14 +249,16 @@ class Cache
     }
 
     /**
-     * Takes a virtually unlimited number of arguments which represent the key, or path, of a cached object. These
-     * strings should be unique to the data you are being stored or retrieved and should be considered hierarchical-
-     * that is, each additional argument passed is considered a child of the one before it by the system.
-     * This function takes that passed data and uses it to create a key usable by the caching engines.
+     * Takes a string or an array that represents the location of a cached item in the cache pool. Keys are considered
+     * Stackable, in the sense that keys can be nested inside of other keys (similar to how folders are nested in an
+     * filesystem). This nesting can be represented using the slash delimiter ("path/to/item") or by using an array
+     * ("array('path', 'to', 'item')").
      *
-     * @example $cache = new Cache('permissions', 'user', '4', '2'); where 4 is the user id and 2 is the location id.
+     * @example $cache = new Cache(array('permissions', 'user', '4', '2')); where 4 is the user id and 2 is the location id.
+     * @example $cache = new Cache('permissions/user/' . '4' . '/' '2'); where 4 is the user id and 2 is the location id.
+     * @example $cache = new Cache("permissions/user/{$userId}/{$locationId"});
      *
-     * @param string $key, $key, $key...
+     * @param string|array $key
      */
     public function setupKey($key)
     {
@@ -274,6 +276,11 @@ class Cache
         $this->key = array_map('strtolower', $key);
     }
 
+    /**
+     * Returns the key as a string.
+     *
+     * @return string
+     */
     public function getKey()
     {
         return isset($this->keyString) ? $this->keyString : false;
