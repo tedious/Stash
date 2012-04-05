@@ -16,7 +16,7 @@ use Stash\Exception\InvalidArgumentException;
 use Stash\Exception\RuntimeException;
 
 /**
- * StashMultieHandler is a wrapper around one or more StashHandlers, allowing faster caching engines with size or
+ * StashMultiHandler is a wrapper around one or more StashHandlers, allowing faster caching engines with size or
  * persistance limitations to be backed up by slower but larger and more persistant caches. There are no artificial
  * limits placed on how many handlers can be staggered.
  *
