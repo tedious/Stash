@@ -33,7 +33,7 @@ class DataSizeStrategy implements InvocationStrategyInterface
 
     public function invokeStore($handlers, $key, $data, $expiration)
     {
-        $size = is_scalar($data['return']) ? strlen($data['return']) : strlen(serialize($data['return']));
+        $size = is_scalar($data) ? strlen($data) : strlen(serialize($data));
 
         $stored = false;
         foreach($this->ranked as $threshold => $name) {
