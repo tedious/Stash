@@ -128,6 +128,9 @@ class Memcached
 
     public function set($key, $value, $expire = null)
     {
+        if(isset($expire) && $expire < time()) {
+            return true;
+        }
         return $this->memcached->set($key, array('data' => $value, 'expiration' => $expire), $expire);
     }
 
