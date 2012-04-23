@@ -171,6 +171,6 @@ class Memcache implements HandlerInterface
 
     static public function isAvailable()
     {
-        return (class_exists('Memcache', false) || class_exists('Memcached', false));
+        return (SubMemcache::isAvailable() || SubMemcached::isAvailable());
     }
 }

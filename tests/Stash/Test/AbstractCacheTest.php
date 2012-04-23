@@ -403,6 +403,14 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         Cache::$runtimeDisable = false;
     }
 
+    public function testCacheWithoutKey()
+    {
+        $stash = new Cache($this->getMockedHandler());
+        $this->assertFalse($stash->set('true'));
+        $this->assertNull($stash->get());
+        $this->assertFalse($stash->lock(100));
+    }
+
     private function getMockedHandler()
     {
         $handler = $this->getMockBuilder('Stash\Handler\HandlerInterface')
