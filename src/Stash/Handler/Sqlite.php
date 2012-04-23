@@ -78,7 +78,7 @@ class Sqlite implements HandlerInterface
         } elseif(count($subhandlers) > 0 && $extension == 'any') {
             $handler = reset($subhandlers);
         } else {
-            $handler = null;
+            throw new RuntimeException('No sqlite extension available.');
         }
 
         $this->handlerClass = $handler;
