@@ -98,6 +98,15 @@ class PoolTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($stash->isMiss(), 'purge causes cache miss');
     }
 
+
+    public function testGetCacheArrayConversion()
+    {
+        $pool = $this->getTestPool();
+
+        $cache = $pool->getCache(array('base', 'one'));
+        $this->assertEquals($cache->getKey(), 'base/one');
+    }
+
     protected function getTestPool()
     {
         $handler = new Ephemeral(array());
