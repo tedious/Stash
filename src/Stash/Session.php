@@ -26,7 +26,7 @@ class Session implements SessionHandlerInterface
     
     static function registerHandler(Session $handler)
     {
-        if(PHP_VERSION_ID > 50400)
+        if(version_compare(PHP_VERSION, '5.4.0') >= 0)
         {
             return session_set_save_handler($handler, true);
         }else{
