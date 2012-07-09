@@ -24,6 +24,26 @@ class Session implements SessionHandlerInterface
     protected $path;
     protected $options = array();
     
+    static function registerHandler(Session $handler)
+    {
+        if(PHP_VERSION_ID > 50400)
+        {
+            return session_set_save_handler($handler, true);
+        }else{
+            session_set_save_handler(
+                array($handler, 'open'),
+                array($handler, 'close'),
+                array($handler, 'read'),
+                array($handler, 'write'),
+                array($handler, 'destroy'),
+                array($handler, 'gc')
+            );
+            
+            // the following prevents unexpected effects when using objects as save handlers
+            return register_shutdown_function('session_write_close');
+        }
+    }
+    
     public function __construct(Pool $pool)
     {
         $this->pool = $pool;
