@@ -18,7 +18,7 @@ use Stash\Pool;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class SessionHandler implements SessionHandlerInterface
+class Session implements SessionHandlerInterface
 {
     protected $pool;
     protected $path;
