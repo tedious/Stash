@@ -61,7 +61,7 @@ class Session implements SessionHandlerInterface
         {
             return session_set_save_handler($handler, true);
         }else{
-            session_set_save_handler(
+            $results = session_set_save_handler(
                 array($handler, 'open'),
                 array($handler, 'close'),
                 array($handler, 'read'),
@@ -70,8 +70,13 @@ class Session implements SessionHandlerInterface
                 array($handler, 'gc')
             );
             
+            if(!results)
+                return false;
+            
             // the following prevents unexpected effects when using objects as save handlers
-            return register_shutdown_function('session_write_close');
+            register_shutdown_function('session_write_close');
+            
+            return true;
         }
     }
     
