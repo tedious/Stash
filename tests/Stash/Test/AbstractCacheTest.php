@@ -252,10 +252,21 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
     {
         $stash = $this->testConstruct();
         $stash->setupKey(array('This', 'Should', 'Fail'));
-        $data = $stash->get();
-
-        $this->assertNull($data, 'getData returns null for missing data');
         $this->assertTrue($stash->isMiss(), 'isMiss returns true for missing data');
+        $data = $stash->get();
+        $this->assertNull($data, 'getData returns null for missing data');
+
+
+        $key = array('isMiss', 'test');
+
+        $stash = $this->testConstruct();
+        $stash->setupKey($key);
+        $stash->set('testString');
+
+        $stash = $this->testConstruct();
+        $stash->setupKey($key);
+        $this->assertTrue(!$stash->isMiss(), 'isMiss returns false for valid data');
+
     }
 
     public function testClear()
