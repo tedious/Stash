@@ -17,8 +17,14 @@ namespace Stash\Session;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
+
+// It's impossible to get complete code coverage because of the different
+// php versions involved.
+
+// @codeCoverageIgnoreStart
 if(version_compare(phpversion(), '5.4.0', '>=')){
     interface SessionHandlerInterface extends \SessionHandlerInterface {}
 }else{
     interface SessionHandlerInterface {}
 }
+//@codeCoverageIgnoreStart

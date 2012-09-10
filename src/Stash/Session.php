@@ -66,6 +66,9 @@ class Session implements SessionHandlerInterface
      */
     static function registerHandler(Session $handler)
     {
+        // this isn't possible to test with the CLI phpunit test
+        // @codeCoverageIgnoreStart
+
         if(version_compare(PHP_VERSION, '5.4.0') >= 0)
         {
             return session_set_save_handler($handler, true);
@@ -87,6 +90,8 @@ class Session implements SessionHandlerInterface
 
             return true;
         }
+
+        // @codeCoverageIgnoreStop
     }
 
     /**
@@ -113,7 +118,7 @@ class Session implements SessionHandlerInterface
      */
     public function setOptions($options = array())
     {
-        $this->options = array_merge_recursive($this->options, $options);
+        $this->options = array_merge($this->options, $options);
     }
 
 

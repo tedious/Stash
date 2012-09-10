@@ -101,7 +101,18 @@ class SessionTest extends \PHPUnit_Framework_TestCase
 
     public function testGarbageCollect()
     {
+        $pool = new Pool();
 
+        $sessionA = new Session($pool);
+        $sessionA->setOptions(array('ttl' => -30));
+        $sessionA->write('session_id', "session_a_data");
+
+        $sessionB = new Session($pool);
+        $sessionB->gc(null);
+
+        $sessionC = new Session($pool);
+        $this->assertSame('', $sessionC->read('session_id'),
+                          'Purged session returns empty string.');
     }
 
 }
