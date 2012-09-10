@@ -79,7 +79,7 @@ class Session implements SessionHandlerInterface
             return true;
         }
     }
-    
+
     /**
      * The constructor expects an initialed Pool object. The creation of this
      * object is up to the developer, but it should contain it's own unique
@@ -126,7 +126,7 @@ class Session implements SessionHandlerInterface
      */
     public function open($save_path, $session_id)
     {
-        $this->path = md5($save_path) . '/';
+        $this->path = base64_encode($save_path) . '/';
         return true;
     }
 
