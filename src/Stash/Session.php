@@ -37,7 +37,15 @@ class Session implements SessionHandlerInterface
      *
      * @var string
      */
-    protected $path;
+    protected $path = '__empty_save_path';
+
+    /**
+     * The name of the current session, used as part of the cache namespace.
+     *
+     * @var string
+     */
+    protected $name = '__empty_session_name';
+
 
     /**
      * Some options (such as the ttl of a session) can be set by the developers.
@@ -126,9 +134,22 @@ class Session implements SessionHandlerInterface
      */
     public function open($save_path, $session_name)
     {
-        $this->path = base64_encode($save_path) . '/'
-            . base64_encode($session_name) . '/';
+        if(isset($save_path) && $save_path !== '')
+            $this->path = $save_path;
+
+        if(isset($session_name) || $session_name == '')
+            $this->name = $session_name;
+
         return true;
+    }
+
+
+    protected function getPath($session_id)
+    {
+        return '/' .
+            base64_encode($this->path) . '/' .
+            base64_encode($this->name) . '/' .
+            base64_encode($session_id);
     }
 
     /**
@@ -140,7 +161,7 @@ class Session implements SessionHandlerInterface
      */
     public function read($session_id)
     {
-        $cache = $this->pool->getCache($this->path . $session_id);
+        $cache = $this->pool->getCache($this->getPath($session_id));
         return (!$cache->isMiss()) ? $cache->get() : '';
     }
 
@@ -154,8 +175,7 @@ class Session implements SessionHandlerInterface
      */
     public function write($session_id, $session_data)
     {
-        $id = $this->path . $session_id;
-        $cache = $this->pool->getCache($this->path . $session_id);
+        $cache = $this->pool->getCache($this->getPath($session_id));
         return $cache->store($session_data, $this->options['ttl']);
     }
 
