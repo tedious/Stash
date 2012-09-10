@@ -224,7 +224,7 @@ class Cache
      *
      * @var bool
      */
-    private $isHit = false;
+    private $isHit = null;
 
     /**
      * This constructor requires a StashHandler object.
@@ -356,6 +356,8 @@ class Cache
     {
         self::$cacheCalls++;
 
+        $this->isHit = false;
+
         if ($this->isDisabled()) {
             return null;
         }
@@ -403,6 +405,9 @@ class Cache
      */
     public function isMiss()
     {
+        if (!isset($this->isHit))
+            $this->get();
+            
         if ($this->isDisabled()) {
             return true;
         }
