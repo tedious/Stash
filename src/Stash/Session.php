@@ -36,23 +36,23 @@ class Session implements SessionHandlerInterface
      * systems. This class uses it as a namespace instead.
      *
      * @var string
-     */    
+     */
     protected $path;
-    
+
     /**
      * Some options (such as the ttl of a session) can be set by the developers.
      *
      * @var array
      */
     protected $options = array();
-    
-    
+
+
     /**
      * Registers a Session object with PHP as the session handler. This
      * eliminates some boilerplate code from projects while also helping with
      * the differences in php versions.
      *
-     * @param Stash\Session $handler 
+     * @param Stash\Session $handler
      * @return bool
      */
     static function registerHandler(Session $handler)
@@ -69,13 +69,13 @@ class Session implements SessionHandlerInterface
                 array($handler, 'destroy'),
                 array($handler, 'gc')
             );
-            
+
             if(!results)
                 return false;
-            
+
             // the following prevents unexpected effects when using objects as save handlers
             register_shutdown_function('session_write_close');
-            
+
             return true;
         }
     }
@@ -86,14 +86,14 @@ class Session implements SessionHandlerInterface
      * handlers or be appropriately namespaced to avoid conflicts with other
      * libraries.
      *
-     * @param Stash\Pool pool 
-     */    
+     * @param Stash\Pool pool
+     */
     public function __construct(Pool $pool)
     {
         $this->pool = $pool;
-        $this->options['ttl'] = (int) ini_get('session.gc_maxlifetime');        
+        $this->options['ttl'] = (int) ini_get('session.gc_maxlifetime');
     }
-    
+
     /**
      * Options can be set using an associative array. The only current option is
      * a "ttl" value, which represents the amount of time (in seconds) that each
@@ -106,15 +106,15 @@ class Session implements SessionHandlerInterface
     {
         $this->options = array_merge_recursive($this->options, $options);
     }
-    
-    
+
+
     /*
      * The functions below are all implemented according to the
      * SessionHandlerInterface interface.
      */
-    
-    
-    
+
+
+
     /**
      * This function is defined by the SessionHandlerInterface and is for PHP's
      * internal use. It takes the saved session path and turns it into a
@@ -129,7 +129,7 @@ class Session implements SessionHandlerInterface
         $this->path = md5($save_path) . '/';
         return true;
     }
-    
+
     /**
      * This function is defined by the SessionHandlerInterface and is for PHP's
      * internal use. It reads the session data from the caching system.
@@ -157,7 +157,7 @@ class Session implements SessionHandlerInterface
         $cache = $this->pool->getCache($this->path . $session_id);
         return $cache->store($session_data, $this->options['ttl']);
     }
-    
+
     /**
      * This function is defined by the SessionHandlerInterface and is for PHP's
      * internal use. It currently does nothing important, as there is no need to
