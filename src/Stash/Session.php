@@ -144,12 +144,14 @@ class Session implements SessionHandlerInterface
     }
 
 
-    protected function getPath($session_id)
+    protected function getCache($session_id)
     {
-        return '/' .
+        $path = '/' .
             base64_encode($this->path) . '/' .
             base64_encode($this->name) . '/' .
             base64_encode($session_id);
+
+        return $this->pool->getCache($path);
     }
 
     /**
@@ -161,7 +163,7 @@ class Session implements SessionHandlerInterface
      */
     public function read($session_id)
     {
-        $cache = $this->pool->getCache($this->getPath($session_id));
+        $cache = $this->getCache($session_id);
         $data = $cache->get();
         return $cache->isMiss() ? '' : $data;
     }
@@ -176,7 +178,7 @@ class Session implements SessionHandlerInterface
      */
     public function write($session_id, $session_data)
     {
-        $cache = $this->pool->getCache($this->getPath($session_id));
+        $cache = $this->getCache($session_id);
         return $cache->set($session_data, $this->options['ttl']);
     }
 
@@ -201,7 +203,7 @@ class Session implements SessionHandlerInterface
      */
     public function destroy($session_id)
     {
-        $cache = $this->pool->getCache($this->path . $session_id);
+        $cache = $this->getCache($session_id);
         return $cache->clear();
     }
 
