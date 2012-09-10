@@ -11,6 +11,7 @@
 namespace Stash;
 
 use Stash\Pool;
+use Stash\Session\SessionHandlerInterface as SessionHandlerInterface;
 
 /**
  * Stash\Session lets developers use Stash's Pool class to back session storage.
