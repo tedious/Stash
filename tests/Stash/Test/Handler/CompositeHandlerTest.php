@@ -12,22 +12,24 @@
 namespace Stash\Test\Handler;
 
 use Stash\Handler\Ephemeral;
+use Stash\Handler\Strategy\FallbackStrategy;
 
 /**
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class StashMultiHandlerTest extends AbstractHandlerTest
+class StashCompositeHandlerTest extends AbstractHandlerTest
 {
-    protected $handlerClass = 'Stash\Handler\MultiHandler';
+    protected $handlerClass = 'Stash\Handler\CompositeHandler';
     protected $subHandlers;
 
     protected function getOptions()
     {
         $options = array();
-        $options['handlers'][] = new Ephemeral(array());
-        $options['handlers'][] = new Ephemeral(array());
-        $options['handlers'][] = new Ephemeral(array());
+        $options['strategy'] = new FallbackStrategy();
+        $options['handlers']['e1'] = new Ephemeral(array());
+        $options['handlers']['e2'] = new Ephemeral(array());
+        $options['handlers']['e3'] = new Ephemeral(array());
         $this->subHandlers = $options['handlers'];
         return $options;
     }
@@ -35,9 +37,9 @@ class StashMultiHandlerTest extends AbstractHandlerTest
     public function testStaggeredStore()
     {
         $handler = $this->getFreshHandler();
-        $a = $this->subHandlers[0];
-        $b = $this->subHandlers[1];
-        $c = $this->subHandlers[2];
+        $a = $this->subHandlers['e1'];
+        $b = $this->subHandlers['e2'];
+        $c = $this->subHandlers['e3'];
 
         foreach ($this->data as $type => $value) {
             $key = array('base', $type);
@@ -63,9 +65,9 @@ class StashMultiHandlerTest extends AbstractHandlerTest
     public function testStaggeredGet()
     {
         $handler = $this->getFreshHandler();
-        $a = $this->subHandlers[0];
-        $b = $this->subHandlers[1];
-        $c = $this->subHandlers[2];
+        $a = $this->subHandlers['e1'];
+        $b = $this->subHandlers['e2'];
+        $c = $this->subHandlers['e3'];
 
         foreach ($this->data as $type => $value) {
             $key = array('base', $type);
