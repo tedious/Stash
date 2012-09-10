@@ -121,12 +121,13 @@ class Session implements SessionHandlerInterface
      * namespace.
      *
      * @param string $save_path
-     * @param string $session_id
+     * @param string $session_name
      * @return bool
      */
-    public function open($save_path, $session_id)
+    public function open($save_path, $session_name)
     {
-        $this->path = base64_encode($save_path) . '/';
+        $this->path = base64_encode($save_path) . '/'
+            . base64_encode($session_name) . '/';
         return true;
     }
 
