@@ -157,12 +157,13 @@ class Session implements SessionHandlerInterface
      * internal use. It reads the session data from the caching system.
      *
      * @param string $session_id
-     * @return bool
+     * @return string
      */
     public function read($session_id)
     {
         $cache = $this->pool->getCache($this->getPath($session_id));
-        return (!$cache->isMiss()) ? $cache->get() : '';
+        $data = $cache->get();
+        return $cache->isMiss() ? '' : $data;
     }
 
     /**
@@ -176,7 +177,7 @@ class Session implements SessionHandlerInterface
     public function write($session_id, $session_data)
     {
         $cache = $this->pool->getCache($this->getPath($session_id));
-        return $cache->store($session_data, $this->options['ttl']);
+        return $cache->set($session_data, $this->options['ttl']);
     }
 
     /**
