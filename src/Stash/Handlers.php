@@ -26,7 +26,7 @@ class Handlers
      */
     protected static $handlers = array('Apc' => '\Stash\Handler\Apc',
                                        'FileSystem' => '\Stash\Handler\FileSystem',
-                                       'Memcached' => '\Stash\Handler\Memcached',
+                                       'Memcache' => '\Stash\Handler\Memcache',
                                        'MultiHandler' => '\Stash\Handler\MultiHandler',
                                        'SQLite' => '\Stash\Handler\Sqlite',
                                        'Xcache' => '\Stash\Handler\Xcache',
