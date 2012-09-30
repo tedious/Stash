@@ -25,6 +25,7 @@ class Handlers
      * @var array
      */
     protected static $handlers = array('Apc' => '\Stash\Handler\Apc',
+                                       'Ephemeral' => '\Stash\Handler\Ephemeral',
                                        'FileSystem' => '\Stash\Handler\FileSystem',
                                        'Memcache' => '\Stash\Handler\Memcache',
                                        'MultiHandler' => '\Stash\Handler\MultiHandler',
