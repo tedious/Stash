@@ -197,6 +197,7 @@ class FileSystem implements HandlerInterface
 
             case 'string':
                 $dataString = sprintf('"%s"', addcslashes($data, "\t\"\$\\"));
+                break;
 
             case 'none':
             default :

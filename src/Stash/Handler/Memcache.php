@@ -43,7 +43,7 @@ class Memcache implements HandlerInterface
      * as a fallback.
      *
      * * Options can be passed to the "memcache" handler by adding them to the options array. The memcache extension
-     * defined options using contants, ie Memcached::OPT_*. By passing in the * portion ('compression' for
+     * defined options using constants, ie Memcached::OPT_*. By passing in the * portion ('compression' for
      * Memcached::OPT_COMPRESSION) and its respective option. Please see the php manual for the specific options
      * (http://us2.php.net/manual/en/memcache.constants.php)
      *

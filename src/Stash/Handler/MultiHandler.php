@@ -16,8 +16,8 @@ use Stash\Exception\InvalidArgumentException;
 use Stash\Exception\RuntimeException;
 
 /**
- * StashMultieHandler is a wrapper around one or more StashHandlers, allowing faster caching engines with size or
- * persistance limitations to be backed up by slower but larger and more persistant caches. There are no artificial
+ * MultiHandler is a wrapper around one or more StashHandlers, allowing faster caching engines with size or
+ * persistence limitations to be backed up by slower but larger and more persistent caches. There are no artificial
  * limits placed on how many handlers can be staggered.
  *
  * @package Stash
@@ -149,7 +149,7 @@ class MultiHandler implements HandlerInterface
 
     /**
      * This function checks to see if this handler is available. This always returns true because this
-     * handler has no dependencies, beign a wrapper around other classes.
+     * handler has no dependencies, begin a wrapper around other classes.
      *
      * @return bool true
      */
