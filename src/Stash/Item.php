@@ -124,7 +124,7 @@ use Stash\Exception\InvalidArgumentException;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class Cache
+class Item
 {
     const SP_NONE         = 0;
     const SP_OLD          = 1;
@@ -407,7 +407,7 @@ class Cache
     {
         if (!isset($this->isHit))
             $this->get();
-            
+
         if ($this->isDisabled()) {
             return true;
         }

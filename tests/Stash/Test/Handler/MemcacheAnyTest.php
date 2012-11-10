@@ -12,7 +12,7 @@
 namespace Stash\Test\Handler;
 
 use Stash\Handler\Memcache;
-use Stash\Cache;
+use Stash\Item;
 
 /**
  * @package Stash
@@ -49,7 +49,7 @@ class MemcacheAnyTest extends \PHPUnit_Framework_TestCase
         $options['servers'][] = array('127.0.0.1', '11211', '50');
         $handler = new Memcache($options);
 
-        $stash = new Cache($handler);
+        $stash = new Item($handler);
         $stash->setupKey($key);
         $this->assertTrue($stash->set($key), 'Able to load and store with unconfigured extension.');
     }

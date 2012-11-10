@@ -12,7 +12,7 @@
 namespace Stash\Test\Handler;
 
 use Stash\Handler\Sqlite;
-use Stash\Cache;
+use Stash\Item;
 use Stash\Utilities;
 
 /**
@@ -40,7 +40,7 @@ class SqliteAnyTest extends \PHPUnit_Framework_TestCase
         $options = array();
         $handler = new Sqlite($options);
 
-        $stash = new Cache($handler);
+        $stash = new Item($handler);
         $stash->setupKey($key);
         $this->assertTrue($stash->set($key), 'Able to load and store with unconfigured extension.');
     }

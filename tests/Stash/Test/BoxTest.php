@@ -32,10 +32,10 @@ class BoxTest extends \PHPUnit_Framework_TestCase
     public function testGetCache()
     {
         $stash = Box::getCache('base', 'one');
-        $this->assertInstanceOf('Stash\Cache', $stash, 'getCache returns a Stash\Cache object');
+        $this->assertInstanceOf('Stash\Item', $stash, 'getCache returns a Stash\Item object');
         $stash->set($this->data);
         $storedData = $stash->get();
-        $this->assertEquals($this->data, $storedData, 'getCache returns working Stash\Cache object');
+        $this->assertEquals($this->data, $storedData, 'getCache returns working Stash\Item object');
     }
 
     public function testClearCache()

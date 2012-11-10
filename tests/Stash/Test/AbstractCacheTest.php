@@ -11,7 +11,7 @@
 
 namespace Stash\Test;
 
-use Stash\Cache;
+use Stash\Item;
 use Stash\Utilities;
 use Stash\Handler\Ephemeral;
 
@@ -64,8 +64,8 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
             $this->handler = new Ephemeral(array());
         }
 
-        $stash = new Cache($this->handler);
-        $this->assertTrue(is_a($stash, 'Stash\Cache'), 'Test object is an instance of Stash');
+        $stash = new Item($this->handler);
+        $this->assertTrue(is_a($stash, 'Stash\Item'), 'Test object is an instance of Stash');
         return $stash;
     }
 
@@ -149,7 +149,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         $controlStash = $this->testConstruct();
         $controlStash->setupKey($key);
 
-        $return = $controlStash->get(Cache::SP_VALUE, $newValue);
+        $return = $controlStash->get(Item::SP_VALUE, $newValue);
         $this->assertEquals($oldValue, $return, 'Old value is returned');
         $this->assertTrue($controlStash->isMiss());
         unset($controlStash);
@@ -164,7 +164,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         $oldStash = $this->testConstruct();
         $oldStash->setupKey($key);
 
-        $return = $oldStash->get(Cache::SP_OLD);
+        $return = $oldStash->get(Item::SP_OLD);
         $this->assertEquals($oldValue, $return, 'Old value is returned');
         $this->assertFalse($oldStash->isMiss());
         unset($oldStash);
@@ -173,7 +173,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         $valueStash = $this->testConstruct();
         $valueStash->setupKey($key);
 
-        $return = $valueStash->get(Cache::SP_VALUE, $newValue);
+        $return = $valueStash->get(Item::SP_VALUE, $newValue);
         $this->assertEquals($newValue, $return, 'New value is returned');
         $this->assertFalse($valueStash->isMiss());
         unset($valueStash);
@@ -184,7 +184,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         $sleepStash->setupKey($key);
 
         $start = microtime(true);
-        $return = $sleepStash->get(array(Cache::SP_SLEEP, 250, 2));
+        $return = $sleepStash->get(array(Item::SP_SLEEP, 250, 2));
         $end = microtime(true);
 
         $this->assertTrue($sleepStash->isMiss());
@@ -216,7 +216,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         $precomputeStash = $this->testConstruct();
         $precomputeStash->setupKey($key);
 
-        $return = $precomputeStash->get(Cache::SP_PRECOMPUTE, 10);
+        $return = $precomputeStash->get(Item::SP_PRECOMPUTE, 10);
         $this->assertFalse($precomputeStash->isMiss(), 'Cache is marked as hit');
         unset($precomputeStash);
 
@@ -224,7 +224,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         $precomputeStash = $this->testConstruct();
         $precomputeStash->setupKey($key);
 
-        $return = $precomputeStash->get(Cache::SP_PRECOMPUTE, 35);
+        $return = $precomputeStash->get(Item::SP_PRECOMPUTE, 35);
         $this->assertTrue($precomputeStash->isMiss(), 'Cache is marked as miss');
         unset($precomputeStash);
 
@@ -399,7 +399,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
 
     public function testDisableCacheWillNeverCallHandler()
     {
-        $stash = new Cache($this->getMockedHandler());
+        $stash = new Item($this->getMockedHandler());
         $stash->disable();
         $this->assertTrue($stash->isDisabled());
         $this->assertDisabledStash($stash);
@@ -407,16 +407,16 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
 
     public function testDisableCacheGlobally()
     {
-        Cache::$runtimeDisable = true;
-        $stash = new Cache($this->getMockedHandler());
+        Item::$runtimeDisable = true;
+        $stash = new Item($this->getMockedHandler());
         $this->assertDisabledStash($stash);
         $this->assertTrue($stash->isDisabled());
-        Cache::$runtimeDisable = false;
+        Item::$runtimeDisable = false;
     }
 
     public function testCacheWithoutKey()
     {
-        $stash = new Cache($this->getMockedHandler());
+        $stash = new Item($this->getMockedHandler());
         $this->assertFalse($stash->set('true'));
         $this->assertNull($stash->get());
         $this->assertFalse($stash->lock(100));
@@ -434,7 +434,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         return $handler;
     }
 
-    private function assertDisabledStash(Cache $stash)
+    private function assertDisabledStash(Item $stash)
     {
         $this->assertFalse($stash->set('true'), 'storeData returns false for disabled cache');
         $this->assertNull($stash->get(), 'getData returns null for disabled cache');

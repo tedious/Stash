@@ -12,7 +12,7 @@
 namespace Stash\Test;
 
 use Stash\Test\Exception\ExceptionTest;
-use Stash\Cache;
+use Stash\Item;
 
 /**
  * @package Stash
@@ -23,7 +23,7 @@ class CacheExceptionTest extends \PHPUnit_Framework_TestCase
     public function testSet()
     {
         $handler = new ExceptionTest();
-        $stash = new Cache($handler);
+        $stash = new Item($handler);
         $stash->setupKey(array('path', 'to', 'store'));
         $this->assertFalse($stash->isDisabled());
         $this->assertFalse($stash->set(array(1, 2, 3), 3600));
@@ -32,7 +32,7 @@ class CacheExceptionTest extends \PHPUnit_Framework_TestCase
 
     public function testGet()
     {
-        $stash = new Cache(new ExceptionTest());
+        $stash = new Item(new ExceptionTest());
         $stash->setupKey('path', 'to', 'get');
         $this->assertFalse($stash->isDisabled());
         $this->assertNull($stash->get());
@@ -41,7 +41,7 @@ class CacheExceptionTest extends \PHPUnit_Framework_TestCase
 
     public function testClear()
     {
-        $stash = new Cache(new ExceptionTest());
+        $stash = new Item(new ExceptionTest());
         $stash->setupKey(array('path', 'to', 'clear'));
         $this->assertFalse($stash->isDisabled());
         $this->assertFalse($stash->clear());
@@ -50,7 +50,7 @@ class CacheExceptionTest extends \PHPUnit_Framework_TestCase
 
     public function testPurge()
     {
-        $stash = new Cache(new ExceptionTest());
+        $stash = new Item(new ExceptionTest());
         $this->assertFalse($stash->isDisabled());
         $this->assertFalse($stash->purge());
         $this->assertTrue($stash->isDisabled(), 'Is disabled after exception is thrown in handler');

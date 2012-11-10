@@ -36,12 +36,12 @@ class Pool
      * has been set for this class then it is used, otherwise the Stash object will be set to use script memory only.
      * Any Stash object set for this class uses the 'stashbox' namespace.
      *
-     * @example $cache = $pool->getCache('permissions', 'user', '4', '2');
+     * @example $cache = $pool->getItem('permissions', 'user', '4', '2');
      *
      * @param string|array $key, $key, $key...
      * @return Stash\Cache
      */
-    function getCache()
+    function getItem()
     {
         $args = func_get_args();
 
@@ -51,7 +51,7 @@ class Pool
         }
 
         $handler = $this->getHandler();
-        $cache = new Cache($this->handler);
+        $cache = new Item($this->handler);
         if (count($args) > 0) {
             $cache->setupKey($args);
         }
@@ -68,14 +68,14 @@ class Pool
      * @param array $keys
      * @return \Iterator
      */
-    function getCacheIterator($keys)
+    function getItemIterator($keys)
     {
         // temporarily cheating here by wrapping around single calls.
 
         $items = array();
         foreach($keys as $key)
         {
-            $items[] = $this->getCache($key);
+            $items[] = $this->getItem($key);
         }
 
          return new \ArrayIterator($items);

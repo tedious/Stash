@@ -64,7 +64,7 @@ class Manager
             self::$handlers[$name] = new Ephemeral();
         }
 
-        $stash = new Cache(self::$handlers[$name]);
+        $stash = new Item(self::$handlers[$name]);
 
         if (count($args) > 0) {
             $stash->setupKey($args);

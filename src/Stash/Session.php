@@ -157,7 +157,7 @@ class Session implements SessionHandlerInterface
             base64_encode($this->name) . '/' .
             base64_encode($session_id);
 
-        return $this->pool->getCache($path);
+        return $this->pool->getItem($path);
     }
 
     /**

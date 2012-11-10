@@ -46,7 +46,7 @@ class Box
         }
 
         $handler = (isset(self::$handler)) ? self::$handler : null;
-        $stash = new Cache($handler, 'stashbox');
+        $stash = new Item($handler, 'stashbox');
 
         if (count($args) > 0) {
             $stash->setupKey($args);

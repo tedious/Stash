@@ -12,7 +12,7 @@
 namespace Stash\Test\Handler;
 
 use Stash\Handler\Memcache;
-use Stash\Cache;
+use Stash\Item;
 
 /**
  * @package Stash
@@ -69,14 +69,14 @@ class MemcacheTest extends AbstractHandlerTest
         $options['extension'] = $this->extension;
         $handler = new Memcache($options);
 
-        $stash = new Cache($handler);
+        $stash = new Item($handler);
         $stash->setupKey($key);
         $this->assertTrue($stash->set($key), 'Able to load and store memcache handler using multiple servers');
 
         $options = array();
         $options['extension'] = $this->extension;
         $handler = new Memcache($options);
-        $stash = new Cache($handler);
+        $stash = new Item($handler);
         $stash->setupKey($key);
         $this->assertTrue($stash->set($key), 'Able to load and store memcache handler using default server');
     }
