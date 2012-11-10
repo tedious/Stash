@@ -19,6 +19,6 @@ use Stash\Handler\Ephemeral;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class CacheTest extends AbstractCacheTest
+class ItemTest extends AbstractCacheTest
 {
 }

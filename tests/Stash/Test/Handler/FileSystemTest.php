@@ -15,7 +15,7 @@ namespace Stash\Test\Handler;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class StashFileSystemTest extends AbstractHandlerTest
+class FileSystemTest extends AbstractHandlerTest
 {
     protected $handlerClass = 'Stash\Handler\FileSystem';
 
