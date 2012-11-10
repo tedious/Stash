@@ -11,8 +11,8 @@
 
 namespace Stash;
 
-use Stash\Handler\Ephemeral;
-use Stash\Handler\HandlerInterface;
+use Stash\Driver\Ephemeral;
+use Stash\Driver\DriverInterface;
 
 /**
  *
@@ -22,17 +22,17 @@ use Stash\Handler\HandlerInterface;
  */
 class Pool
 {
-    protected $handler;
+    protected $driver;
 
-    function __construct(HandlerInterface $handler = null)
+    function __construct(DriverInterface $driver = null)
     {
-        if (isset($handler)) {
-            $this->setHandler($handler);
+        if (isset($driver)) {
+            $this->setDriver($driver);
         }
     }
 
     /**
-     * Takes the same arguments as the Stash->setupKey() function and returns with a new Stash object. If a handler
+     * Takes the same arguments as the Stash->setupKey() function and returns with a new Stash object. If a driver
      * has been set for this class then it is used, otherwise the Stash object will be set to use script memory only.
      * Any Stash object set for this class uses the 'stashbox' namespace.
      *
@@ -50,8 +50,8 @@ class Pool
             $args = $args[0];
         }
 
-        $handler = $this->getHandler();
-        $cache = new Item($this->handler);
+        $driver = $this->getDriver();
+        $cache = new Item($this->driver);
         if (count($args) > 0) {
             $cache->setupKey($args);
         }
@@ -88,7 +88,7 @@ class Pool
      */
     function flush()
     {
-        return $this->getHandler()->clear();
+        return $this->getDriver()->clear();
     }
 
     /**
@@ -98,25 +98,25 @@ class Pool
      */
     function purge()
     {
-        return $this->getHandler()->purge();
+        return $this->getDriver()->purge();
     }
 
     /**
-     * Sets a handler for each Stash object created by this class. This allows
-     * the handlers to be created just once and reused, making it much easier to incorporate caching into any code.
+     * Sets a driver for each Stash object created by this class. This allows
+     * the drivers to be created just once and reused, making it much easier to incorporate caching into any code.
      *
-     * @param HandlerInterface $handler
+     * @param DriverInterface $driver
      */
-    function setHandler(HandlerInterface $handler)
+    function setDriver(DriverInterface $driver)
     {
-        $this->handler = $handler;
+        $this->driver = $driver;
     }
 
-    protected function getHandler()
+    protected function getDriver()
     {
-        if(!isset($this->handler))
-            $this->handler = new Ephemeral();
+        if(!isset($this->driver))
+            $this->driver = new Ephemeral();
 
-        return $this->handler;
+        return $this->driver;
     }
 }

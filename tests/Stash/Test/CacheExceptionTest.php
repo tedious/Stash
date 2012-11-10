@@ -22,12 +22,12 @@ class CacheExceptionTest extends \PHPUnit_Framework_TestCase
 {
     public function testSet()
     {
-        $handler = new ExceptionTest();
-        $stash = new Item($handler);
+        $driver = new ExceptionTest();
+        $stash = new Item($driver);
         $stash->setupKey(array('path', 'to', 'store'));
         $this->assertFalse($stash->isDisabled());
         $this->assertFalse($stash->set(array(1, 2, 3), 3600));
-        $this->assertTrue($stash->isDisabled(), 'Is disabled after exception is thrown in handler');
+        $this->assertTrue($stash->isDisabled(), 'Is disabled after exception is thrown in driver');
     }
 
     public function testGet()
@@ -36,7 +36,7 @@ class CacheExceptionTest extends \PHPUnit_Framework_TestCase
         $stash->setupKey('path', 'to', 'get');
         $this->assertFalse($stash->isDisabled());
         $this->assertNull($stash->get());
-        $this->assertTrue($stash->isDisabled(), 'Is disabled after exception is thrown in handler');
+        $this->assertTrue($stash->isDisabled(), 'Is disabled after exception is thrown in driver');
     }
 
     public function testClear()
@@ -45,7 +45,7 @@ class CacheExceptionTest extends \PHPUnit_Framework_TestCase
         $stash->setupKey(array('path', 'to', 'clear'));
         $this->assertFalse($stash->isDisabled());
         $this->assertFalse($stash->clear());
-        $this->assertTrue($stash->isDisabled(), 'Is disabled after exception is thrown in handler');
+        $this->assertTrue($stash->isDisabled(), 'Is disabled after exception is thrown in driver');
     }
 
     public function testPurge()
@@ -53,6 +53,6 @@ class CacheExceptionTest extends \PHPUnit_Framework_TestCase
         $stash = new Item(new ExceptionTest());
         $this->assertFalse($stash->isDisabled());
         $this->assertFalse($stash->purge());
-        $this->assertTrue($stash->isDisabled(), 'Is disabled after exception is thrown in handler');
+        $this->assertTrue($stash->isDisabled(), 'Is disabled after exception is thrown in driver');
     }
 }

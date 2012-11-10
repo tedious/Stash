@@ -9,16 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Stash\Test;
-
-use Stash\Item;
-use Stash\Utilities;
-use Stash\Driver\Ephemeral;
+namespace Stash\Test\Driver;
 
 /**
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class ItemTest extends AbstractCacheTest
+class EphemeralTest extends AbstractDriverTest
 {
+    protected $driverClass = 'Stash\Driver\Ephemeral';
 }

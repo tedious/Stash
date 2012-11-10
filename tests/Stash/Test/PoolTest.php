@@ -12,7 +12,7 @@
 namespace Stash\Test;
 
 use Stash\Pool;
-use Stash\Handler\Ephemeral;
+use Stash\Driver\Ephemeral;
 
 /**
  * @package Stash
@@ -26,12 +26,12 @@ class PoolTest extends \PHPUnit_Framework_TestCase
                                  'key2' => 'value2',
                                  'key3' => 'value3');
 
-    public function testSetHandler()
+    public function testSetDriver()
     {
         $pool = $this->getTestPool();
 
         $stash = $pool->getItem('test');
-        $this->assertAttributeInstanceOf('Stash\Handler\Ephemeral', 'handler', $stash, 'set handler is pushed to new stash objects');
+        $this->assertAttributeInstanceOf('Stash\Driver\Ephemeral', 'driver', $stash, 'set driver is pushed to new stash objects');
     }
 
     public function testGetItem()
@@ -109,9 +109,9 @@ class PoolTest extends \PHPUnit_Framework_TestCase
 
     protected function getTestPool()
     {
-        $handler = new Ephemeral(array());
+        $driver = new Ephemeral(array());
         $pool = new Pool();
-        $pool->setHandler($handler);
+        $pool->setDriver($driver);
         return $pool;
     }
 }

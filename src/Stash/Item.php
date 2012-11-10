@@ -11,7 +11,7 @@
 
 namespace Stash;
 
-use Stash\Handler\HandlerInterface;
+use Stash\Driver\DriverInterface;
 use Stash\Exception\Exception;
 use Stash\Exception\InvalidArgumentException;
 
@@ -25,11 +25,11 @@ use Stash\Exception\InvalidArgumentException;
  * * *
  *
  * <code>
- * // Create backend handler
- * $handler = new Stash\Handler\FileSystem();
+ * // Create backend driver
+ * $driver = new Stash\Driver\FileSystem();
  *
- * // Create Stash object and inject handler.
- * $stash = new Stash\Cache($handler);
+ * // Create Stash object and inject driver.
+ * $stash = new Stash\Cache($driver);
  *
  * // Setup Key
  * $stash->setupKey('Path', 'To', 'Item');
@@ -42,16 +42,16 @@ use Stash\Exception\InvalidArgumentException;
  * * *
  *
  * <code>
- *  // Create backend handler
- * $handler = new Stash\Handler\FileSystem();
+ *  // Create backend driver
+ * $driver = new Stash\Driver\FileSystem();
  *
- * // Set backend handler - this only has to be done once!
- * Stash\Box::setHandler($handler);
+ * // Set backend driver - this only has to be done once!
+ * Stash\Box::setDriver($driver);
  *
  * // Get Cache object, including optional key.
  * $cache = Stash\Box::getCache('Path', 'To', 'Item');
  *
- * // Get another, new Cache object without having to set a new handler.
+ * // Get another, new Cache object without having to set a new driver.
  * $otherCache = Stash\Box::getCache('Object', 'Stored');
  * </code>
  *
@@ -82,8 +82,8 @@ use Stash\Exception\InvalidArgumentException;
  *
  * Clearing data is very similar to getting it.
  * <code>
- * $handler = new Stash\Handler\FileSystem();
- * $cache = new Stash\Cache($handler);
+ * $driver = new Stash\Driver\FileSystem();
+ * $cache = new Stash\Cache($driver);
  * $cache->setupKey('path', 'to', item');
  * $cache->clear();
  * </code>
@@ -104,12 +104,12 @@ use Stash\Exception\InvalidArgumentException;
  * * *
  *
  * Running the purge function cleans out any stale data, lowering the size of the cache pool. It also allows the
- * handlers to run their own handler specific cleanup functions. For larger caches this function can take quite a bit
+ * drivers to run their own driver specific cleanup functions. For larger caches this function can take quite a bit
  * of time, so it is best run in its own cleanup process.
  *
  * <code>
- * $handler = new Stash\Handler\FileSystem();
- * $cache = new Stash\Cache($handler);
+ * $driver = new Stash\Driver\FileSystem();
+ * $cache = new Stash\Cache($driver);
  * $cache->purge();
  * </code>
  *
@@ -211,12 +211,12 @@ class Item
     protected $stampedeRunning = false;
 
     /**
-     * The cacheHandler being used by the system. While this class handles all of the higher functions, it's the cache
-     * handler here that handles all of the storage/retrieval functionality. This value is set by the constructor.
+     * The cacheDriver being used by the system. While this class handles all of the higher functions, it's the cache
+     * driver here that handles all of the storage/retrieval functionality. This value is set by the constructor.
      *
-     * @var cacheHandler
+     * @var cacheDriver
      */
-    protected $handler;
+    protected $driver;
 
     /**
      * This is a flag to see if a valid response is returned. It is set by the getData function and is used by the
@@ -227,17 +227,17 @@ class Item
     private $isHit = null;
 
     /**
-     * This constructor requires a StashHandler object.
+     * This constructor requires a StashDriver object.
      *
-     * @param HandlerInterface If no handler is passed the cache is set to script time only.
+     * @param DriverInterface If no driver is passed the cache is set to script time only.
      */
-    public function __construct(HandlerInterface $handler)
+    public function __construct(DriverInterface $driver)
     {
-        $this->handler = $handler;
+        $this->driver = $driver;
     }
 
     /**
-     * Disables the specific instance of the cache handler. This makes it simpler to embed the cache handling code in
+     * Disables the specific instance of the cache driver. This makes it simpler to embed the cache handling code in
      * places where it may not always want the results stored.
      *
      * @return bool
@@ -307,12 +307,12 @@ class Item
             return false;
         }
 
-        return $this->handler->clear(isset($this->key) ? $this->key : null);
+        return $this->driver->clear(isset($this->key) ? $this->key : null);
     }
 
     /**
      * Removes all expired or stale data from the cache system. It may also perform other cleanup actions depending on
-     * the cache handler used.
+     * the cache driver used.
      *
      * @return bool
      */
@@ -332,7 +332,7 @@ class Item
             return false;
         }
 
-        return $this->handler->purge();
+        return $this->driver->purge();
     }
 
     /**
@@ -437,7 +437,7 @@ class Item
 
         $spkey = $this->key;
         $spkey[0] = 'sp';
-        return $this->handler->storeData($spkey, true, time() + $expiration);
+        return $this->driver->storeData($spkey, true, time() + $expiration);
     }
 
     /**
@@ -493,11 +493,11 @@ class Item
         if ($this->stampedeRunning == true) {
             $spkey = $this->key;
             $spkey[0] = 'sp'; // change "cache" data namespace to stampede namespace
-            $this->handler->clear($spkey);
+            $this->driver->clear($spkey);
             $this->stampedeRunning = false;
         }
 
-        return $this->handler->storeData($this->key, $store, $expiration);
+        return $this->driver->storeData($this->key, $store, $expiration);
     }
 
     /**
@@ -523,7 +523,7 @@ class Item
     protected function getStampedeFlag($key)
     {
         $key[0] = 'sp'; // change "cache" data namespace to stampede namespace
-        $spReturn = $this->handler->getData($key);
+        $spReturn = $this->driver->getData($key);
         $sp = isset($spReturn['data']) ? $spReturn['data'] : false;
 
 
@@ -536,14 +536,14 @@ class Item
     }
 
     /**
-     * Returns the record for the current key, whether that record is pulled from memory or a handler. If there is no
+     * Returns the record for the current key, whether that record is pulled from memory or a driver. If there is no
      * record than an empty array is returned.
      *
      * @return array
      */
     protected function getRecord()
     {
-        $record = $this->handler->getData($this->key);
+        $record = $this->driver->getData($this->key);
 
         if (!is_array($record)) {
             return array();

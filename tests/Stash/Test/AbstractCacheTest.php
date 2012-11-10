@@ -13,7 +13,7 @@ namespace Stash\Test;
 
 use Stash\Item;
 use Stash\Utilities;
-use Stash\Handler\Ephemeral;
+use Stash\Driver\Ephemeral;
 
 /**
  * @package Stash
@@ -42,7 +42,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
     protected $expiration;
     protected $startTime;
     private $setup = false;
-    protected $handler;
+    protected $driver;
 
     public static function tearDownAfterClass()
     {
@@ -60,11 +60,11 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
 
     public function testConstruct()
     {
-        if (!isset($this->handler)) {
-            $this->handler = new Ephemeral(array());
+        if (!isset($this->driver)) {
+            $this->driver = new Ephemeral(array());
         }
 
-        $stash = new Item($this->handler);
+        $stash = new Item($this->driver);
         $this->assertTrue(is_a($stash, 'Stash\Item'), 'Test object is an instance of Stash');
         return $stash;
     }
@@ -110,7 +110,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
             $this->assertAttributeInternalType('string', 'keyString', $stash, 'Argument based keys setup keystring');
             $this->assertAttributeInternalType('array', 'key', $stash, 'Argument based keys setup key');
 
-            $this->assertTrue($stash->set($value), 'Handler class able to store data type ' . $type);
+            $this->assertTrue($stash->set($value), 'Driver class able to store data type ' . $type);
         }
     }
 
@@ -280,7 +280,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
             $this->assertAttributeInternalType('string', 'keyString', $stash, 'Argument based keys setup keystring');
             $this->assertAttributeInternalType('array', 'key', $stash, 'Argument based keys setup key');
 
-            $this->assertTrue($stash->set($value), 'Handler class able to store data type ' . $type);
+            $this->assertTrue($stash->set($value), 'Driver class able to store data type ' . $type);
         }
 
         foreach ($this->data as $type => $value) {
@@ -364,7 +364,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
 
     public function testExtendCache()
     {
-        unset($this->handler);
+        unset($this->driver);
         foreach ($this->data as $type => $value) {
             $key = array('base', $type);
 
@@ -397,9 +397,9 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
 
     }
 
-    public function testDisableCacheWillNeverCallHandler()
+    public function testDisableCacheWillNeverCallDriver()
     {
-        $stash = new Item($this->getMockedHandler());
+        $stash = new Item($this->getMockedDriver());
         $stash->disable();
         $this->assertTrue($stash->isDisabled());
         $this->assertDisabledStash($stash);
@@ -408,7 +408,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
     public function testDisableCacheGlobally()
     {
         Item::$runtimeDisable = true;
-        $stash = new Item($this->getMockedHandler());
+        $stash = new Item($this->getMockedDriver());
         $this->assertDisabledStash($stash);
         $this->assertTrue($stash->isDisabled());
         Item::$runtimeDisable = false;
@@ -416,22 +416,22 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
 
     public function testCacheWithoutKey()
     {
-        $stash = new Item($this->getMockedHandler());
+        $stash = new Item($this->getMockedDriver());
         $this->assertFalse($stash->set('true'));
         $this->assertNull($stash->get());
         $this->assertFalse($stash->lock(100));
     }
 
-    private function getMockedHandler()
+    private function getMockedDriver()
     {
-        $handler = $this->getMockBuilder('Stash\Handler\HandlerInterface')
+        $driver = $this->getMockBuilder('Stash\Driver\DriverInterface')
                         ->getMock();
-        foreach (get_class_methods($handler) as $methodName) {
-            $handler->expects($this->never())
+        foreach (get_class_methods($driver) as $methodName) {
+            $driver->expects($this->never())
                     ->method($methodName);
         }
 
-        return $handler;
+        return $driver;
     }
 
     private function assertDisabledStash(Item $stash)
