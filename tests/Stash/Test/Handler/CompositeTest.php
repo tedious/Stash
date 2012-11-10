@@ -17,9 +17,9 @@ use Stash\Handler\Ephemeral;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class StashMultiHandlerTest extends AbstractHandlerTest
+class CompositeTest extends AbstractHandlerTest
 {
-    protected $handlerClass = 'Stash\Handler\MultiHandler';
+    protected $handlerClass = 'Stash\Handler\Composite';
     protected $subHandlers;
 
     protected function getOptions()

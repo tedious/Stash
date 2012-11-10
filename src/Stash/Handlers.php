@@ -28,7 +28,7 @@ class Handlers
                                        'Ephemeral' => '\Stash\Handler\Ephemeral',
                                        'FileSystem' => '\Stash\Handler\FileSystem',
                                        'Memcache' => '\Stash\Handler\Memcache',
-                                       'MultiHandler' => '\Stash\Handler\MultiHandler',
+                                       'Composite' => '\Stash\Handler\Composite',
                                        'SQLite' => '\Stash\Handler\Sqlite',
                                        'Xcache' => '\Stash\Handler\Xcache',
     );

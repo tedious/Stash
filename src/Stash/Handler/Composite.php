@@ -16,14 +16,14 @@ use Stash\Exception\InvalidArgumentException;
 use Stash\Exception\RuntimeException;
 
 /**
- * MultiHandler is a wrapper around one or more StashHandlers, allowing faster caching engines with size or
+ * Composite is a wrapper around one or more StashHandlers, allowing faster caching engines with size or
  * persistence limitations to be backed up by slower but larger and more persistent caches. There are no artificial
  * limits placed on how many handlers can be staggered.
  *
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class MultiHandler implements HandlerInterface
+class Composite implements HandlerInterface
 {
 
     protected $handlers = array();
