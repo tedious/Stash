@@ -24,6 +24,12 @@ class Pool
 {
     protected $handler;
 
+    function __construct(HandlerInterface $handler = null)
+    {
+        if (isset($handler)) {
+            $this->setHandler($handler);
+        }
+    }
 
     /**
      * Takes the same arguments as the Stash->setupKey() function and returns with a new Stash object. If a handler
