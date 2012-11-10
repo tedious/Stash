@@ -75,7 +75,7 @@ class Apc implements HandlerInterface
     /**
      * This function takes an array as its first argument and the expiration time as the second. This array contains two
      * items, "createdOn" describing the first time the item was called and "return", which is the data that needs to be
-     * stored. This function needs to store that data in such a way that it can be retrieced exactly as it was sent. The
+     * stored. This function needs to store that data in such a way that it can be retrieved exactly as it was sent. The
      * expiration time needs to be stored with this data.
      *
      * @param array $key

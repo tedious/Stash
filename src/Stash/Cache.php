@@ -140,7 +140,7 @@ class Cache
     static public $cacheTime = 432000; // five days
 
     /**
-     * Disbles the cache system wide. It is used internally when the storage engine fails or if the cache is being
+     * Disables the cache system wide. It is used internally when the storage engine fails or if the cache is being
      * cleared. This differs from the cacheEnabled property in that it affects all instances of the cache, not just one.
      *
      * @var bool
@@ -186,7 +186,7 @@ class Cache
     protected $defaults = array('precompute_time' => 40, // time, in seconds, before expiration
                                 'sleep_time' => 500, // time, in microseconds, to sleep
                                 'sleep_attempts' => 1, // number of times to sleep, wake up, and recheck cache
-                                'stampede_ttl' => 30, // How long a stampede flag will be aknowledged
+                                'stampede_ttl' => 30, // How long a stampede flag will be acknowledged
     );
 
     /**

@@ -21,16 +21,16 @@ namespace Stash\Handler;
  * A few important notes when implementing this interface-
  *
  * * Unlike with the Stash class itself, instances of handlers are meant to be reused over and over again, allowing them
- * to avoid the overhead of repeadtedly opening and closing resources. There are times when multiple instances of an
+ * to avoid the overhead of repeatedly opening and closing resources. There are times when multiple instances of an
  * engine will be created though (where a developer wants two separate cache pools for example) so static caching
  * techniques should be avoided- the StashHandler will be kept open and reused by the developers, so instance properties
  * will persist in a useful way.
  *
  * * Each storage engine must be able to handle multiple requests with the same object, meaning functions like
- * getData can be called multiple times in sequence while storeData may be mixed in at random frequences, all using
+ * getData can be called multiple times in sequence while storeData may be mixed in at random frequencies, all using
  * different keys.
  *
- * * Keys are passed as arrays that represent a hierarchal 'location' where the cached data is virtually stored, with
+ * * Keys are passed as arrays that represent a hierarchical 'location' where the cached data is virtually stored, with
  *  each item in the array being a deeper level of that hierarchy. In other words $key[0] is the root of the cache tree
  *  and $key[2] is the child of $key[0] + $key[1]. Each level can be both a piece of data and a parent location, which
  *  is particularly important for purge and delete operations.
@@ -65,7 +65,7 @@ interface HandlerInterface
      * Takes in data from the exposed Stash class and stored it for later retrieval.
      *
      * *The first argument is an array which should map to a specific, unique location for that array, This location
-     * should also be able to handle recursive deletes, where the removal of an item represented by an identicle, but
+     * should also be able to handle recursive deletes, where the removal of an item represented by an identical, but
      * truncated, key causes all of the 'children' keys to be removed.
      *
      * *The second argument is the data itself. This is an array which contains the raw storage as well as meta data

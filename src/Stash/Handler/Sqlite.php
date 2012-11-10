@@ -17,7 +17,7 @@ use Stash\Exception\InvalidArgumentException;
 
 /**
  * StashSqlite is a wrapper around one or more SQLite databases stored on the local system. While not as quick at at
- * reading as the StashFilesystem handler this class is signifigantly better when it comes to clearing multiple keys
+ * reading as the StashFilesystem handler this class is significantly better when it comes to clearing multiple keys
  * at once.
  *
  * @package Stash

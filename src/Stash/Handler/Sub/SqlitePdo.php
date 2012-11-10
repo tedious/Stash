@@ -17,11 +17,11 @@ namespace Stash\Handler\Sub;
  */
 class SqlitePdo extends Sqlite
 {
-    public function __construct($path, $directoryPermissiom, $filePermission, $busyTimeout)
+    public function __construct($path, $directoryPermission, $filePermission, $busyTimeout)
     {
         $this->path = $path;
         $this->filePermissions = $filePermission;
-        $this->dirPermissions = $directoryPermissiom;
+        $this->dirPermissions = $directoryPermission;
         $this->busyTimeout = $busyTimeout;
         $this->responseCode = \PDO::FETCH_ASSOC;
     }
