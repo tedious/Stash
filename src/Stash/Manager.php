@@ -16,7 +16,7 @@ use Stash\Handler\Ephemeral;
 use Stash\Exception\InvalidArgumentException;
 
 /**
- * StashManager is a collection of static functions used to make certain repetitive tasks easier by consilidating their
+ * StashManager is a collection of static functions used to make certain repetitive tasks easier by consolidating their
  * steps. Unlike the StashBox class StashManager can work with multiple distinct cache pools.
  *
  * @package Stash

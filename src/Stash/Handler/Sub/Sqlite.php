@@ -37,11 +37,11 @@ class Sqlite
     protected $busyTimeout;
     protected $responseCode;
 
-    public function __construct($path, $directoryPermissiom, $filePermission, $busyTimeout)
+    public function __construct($path, $directoryPermission, $filePermission, $busyTimeout)
     {
         $this->path = $path;
         $this->filePermissions = $filePermission;
-        $this->dirPermissions = $directoryPermissiom;
+        $this->dirPermissions = $directoryPermission;
         $this->busyTimeout = $busyTimeout;
         $this->responseCode = 1; // SQLITE_ASSOC
     }
@@ -180,7 +180,7 @@ class Sqlite
         $db = $this->buildHandler();
 
         if ($runInstall && !$db->query($this->creationSql)) {
-            unlink($path);
+            unlink($this->path);
             throw new RuntimeException('Unable to set SQLite: structure');
         }
         $this->handler = $db;

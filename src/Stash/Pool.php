@@ -56,7 +56,7 @@ class Pool
     /**
      * Returns a group of cache objects as an \Iterator
      *
-     * Bulk lookups can often by steamlined by backend cache systems. The
+     * Bulk lookups can often by streamlined by backend cache systems. The
      * returned iterator will contain a Cache\Item for each key passed.
      *
      * @param array $keys

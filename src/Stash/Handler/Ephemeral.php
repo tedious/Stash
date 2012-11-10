@@ -14,7 +14,7 @@ namespace Stash\Handler;
 use Stash;
 
 /**
- * The ephemeral class exists to assist with testing the main Stash class. Since this is a very mininal handler we can
+ * The ephemeral class exists to assist with testing the main Stash class. Since this is a very minimal handler we can
  * test Stash without having to worry about underlying problems interfering.
  *
  * @package Stash

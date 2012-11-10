@@ -90,7 +90,7 @@ class Utilities
     /**
      * Returns the default base directory for the system when one isn't provided by the developer. This is a directory
      * of last resort and can cause problems if one library is shared by multiple projects. The directory returned
-     * resides in the system's temap folder and is specific to each Stash installation and handler.
+     * resides in the system's temp folder and is specific to each Stash installation and handler.
      *
      * @param HandlerInterface $handler
      * @return string Path for Stash files
