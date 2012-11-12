@@ -20,107 +20,6 @@ use Stash\Exception\InvalidArgumentException;
  * connection. This class can store any native php datatype, as long as it can be serialized (so when creating classes
  * that you wish to store instances of, remember the __sleep and __wake magic functions).
  *
- * * * * * * * * * * * *
- * Creating Stash Object
- * * *
- *
- * <code>
- * // Create backend driver
- * $driver = new Stash\Driver\FileSystem();
- *
- * // Create Stash object and inject driver.
- * $stash = new Stash\Cache($driver);
- *
- * // Setup Key
- * $stash->setupKey('Path', 'To', 'Item');
- * </code>
- *
- * This can also be accomplished using one of the Stash wrappers, like StashBox.
- *
- * * * * * * * *
- * Getting and Storing Data
- * * *
- *
- * <code>
- *  // Create backend driver
- * $driver = new Stash\Driver\FileSystem();
- *
- * // Set backend driver - this only has to be done once!
- * Stash\Box::setDriver($driver);
- *
- * // Get Cache object, including optional key.
- * $cache = Stash\Box::getCache('Path', 'To', 'Item');
- *
- * // Get another, new Cache object without having to set a new driver.
- * $otherCache = Stash\Box::getCache('Object', 'Stored');
- * </code>
- *
- * Using Stash is a simple process of getting data, checking if it is stale, and then storing the recalculated data
- * if it was.
- *
- * <code>
- * // Grab a fresh Stash item.
- * $cache = Stash\Box::getCache('path', 'to', 'the','item');
- *
- * // Pull the data from the cache.
- * $data = $cache->get();
- *
- * // Check to see if the data is stale or didn't return at all.
- * if($cache->isMiss())
- * {
- *   // Run all the long running code.
- *      $data = runExpensiveCode();
- *
- *      // Save the code for later.
- *      $cache->set($data);
- * }
- * </code>
- *
- * * * * * * * * *
- * Clearing Data
- * * *
- *
- * Clearing data is very similar to getting it.
- * <code>
- * $driver = new Stash\Driver\FileSystem();
- * $cache = new Stash\Cache($driver);
- * $cache->setupKey('path', 'to', item');
- * $cache->clear();
- * </code>
- *
- * The wrappers, like StashBox, offer a one function call to clear data.
- * <code>
- * $cache = Stash\Box::clearCache('path', 'to', 'item');
- *
- * // Clear out everything in the 'path' node, including 'path' and 'path' 'to' 'item'.
- * $cache = Stash\Box::clearCache('path');
- *
- * // Clear out everything in the cache.
- * $cache = Stash\Box::clearCache();
- * </code>
- *
- * * * * * * * *
- * Purging Stale Data
- * * *
- *
- * Running the purge function cleans out any stale data, lowering the size of the cache pool. It also allows the
- * drivers to run their own driver specific cleanup functions. For larger caches this function can take quite a bit
- * of time, so it is best run in its own cleanup process.
- *
- * <code>
- * $driver = new Stash\Driver\FileSystem();
- * $cache = new Stash\Cache($driver);
- * $cache->purge();
- * </code>
- *
- * The wrappers, like Stash\Box, offer a one function call to clear data.
- * <code>
- * Stash\Box::purgeCache();
- * </code>
- *
- *
- *
- *
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
@@ -214,7 +113,7 @@ class Item
      * The cacheDriver being used by the system. While this class handles all of the higher functions, it's the cache
      * driver here that handles all of the storage/retrieval functionality. This value is set by the constructor.
      *
-     * @var cacheDriver
+     * @var Stash\Driver\DriverInterface
      */
     protected $driver;
 
@@ -227,8 +126,10 @@ class Item
     private $isHit = null;
 
     /**
-     * This constructor requires a StashDriver object.
+     * This constructor is an internal function used by the Pool object when
+     * creating new Item objects. It should not be called directly.
      *
+     * @internal
      * @param DriverInterface If no driver is passed the cache is set to script time only.
      */
     public function __construct(DriverInterface $driver)
@@ -237,8 +138,8 @@ class Item
     }
 
     /**
-     * Disables the specific instance of the cache driver. This makes it simpler to embed the cache handling code in
-     * places where it may not always want the results stored.
+     * This disables any IO operations by this object, effectively preventing
+     * the reading and writing of new data.
      *
      * @return bool
      */
@@ -249,37 +150,10 @@ class Item
     }
 
     /**
-     * Takes a string or an array that represents the location of a cached item in the cache pool. Keys are considered
-     * Stackable, in the sense that keys can be nested inside of other keys (similar to how folders are nested in an
-     * filesystem). This nesting can be represented using the slash delimiter ("path/to/item") or by using an array
-     * ("array('path', 'to', 'item')").
+     * Returns the key as a string. This is particularly useful when the Item is
+     * returned as a group of Items in an Iterator.
      *
-     * @example $cache = new Cache(array('permissions', 'user', '4', '2')); where 4 is the user id and 2 is the location id.
-     * @example $cache = new Cache('permissions/user/' . '4' . '/' '2'); where 4 is the user id and 2 is the location id.
-     * @example $cache = new Cache("permissions/user/{$userId}/{$locationId"});
-     *
-     * @param string|array $key
-     */
-    public function setupKey($key)
-    {
-        if (is_array($key)) {
-            $this->keyString = implode('/', $key);
-        } else {
-            $this->keyString = $key;
-            $key = trim($key, '/');
-            $key = explode('/', $key);
-        }
-
-        // We implant the namespace "cache" to the front of every stash object's key. This allows us to segment
-        // off the user data, and user other 'namespaces' for internal purposes.
-        array_unshift($key, 'cache');
-        $this->key = array_map('strtolower', $key);
-    }
-
-    /**
-     * Returns the key as a string.
-     *
-     * @return string
+     * @return string|bool Returns false if no key is set.
      */
     public function getKey()
     {
@@ -287,7 +161,8 @@ class Item
     }
 
     /**
-     * Clears the current Stash item and all of its children. If no key is set it clears the entire cache.
+     * Clears the current Item. If hierarchical or "stackable" caching is being
+     * used this function will also remove children Items.
      *
      * @return bool
      */
@@ -311,9 +186,11 @@ class Item
     }
 
     /**
-     * Returns the data retrieved from the cache. Since this can return false or null as a correctly cached value, the
-     * return value should not be used to determine successful retrieval of data- for that use the "isMiss()" function
-     * after call this one. If no value is stored at all then this function will return null.
+     * Returns the data retrieved from the cache. Since this can return false or
+     * null as a correctly cached value, the return value should not be used to
+     * determine successful retrieval of data- for that use the "isMiss()"
+     * function after call this one. If no value is stored at all then this
+     * function will return null.
      *
      * @return mixed|null
      */
@@ -391,7 +268,8 @@ class Item
     }
 
     /**
-     * Enables stampede protection by marking this specific instance of Stash as the one regenerating the cache.
+     * Enables stampede protection by marking this specific instance of the Item
+     * as the one regenerating the cache.
      *
      * @return bool
      */
@@ -416,17 +294,18 @@ class Item
     }
 
     /**
-     * Takes and stores data for later retrieval. This data can be any php data, including arrays and object, except
-     * resources and objects which are unable to be serialized.
+     * Takes and stores data for later retrieval. This data can be any php data,
+     * including arrays and object, except resources and objects which are
+     * unable to be serialized.
      *
      * @param mixed $data bool
-     * @param int|DateTime|null $time How long the item should be stored. Int is time (seconds), DateTime a future date
+     * @param int|DateTime|null $ttl Int is time (seconds), DateTime a future expiration date
      * @return bool Returns whether the object was successfully stored or not.
      */
-    public function set($data, $time = null)
+    public function set($data, $ttl = null)
     {
         try {
-            return $this->executeSet($data, $time);
+            return $this->executeSet($data, $ttl);
         } catch (Exception $e) {
             $this->disable();
             return false;
@@ -476,8 +355,8 @@ class Item
     }
 
     /**
-     * Extends the expiration on the current cached item. For some engines this can be faster than storing the item
-     * again.
+     * Extends the expiration on the current cached item. For some engines this
+     * can be faster than storing the item again.
      *
      * @return bool
      */
@@ -491,7 +370,18 @@ class Item
     }
 
     /**
-     * Returns true is another instance of Stash is currently recalculating the cache.
+     * Return true if caching is disabled
+     */
+    public function isDisabled()
+    {
+        return self::$runtimeDisable
+                || !$this->cacheEnabled
+                || (defined('STASH_DISABLE_CACHE') && STASH_DISABLE_CACHE);
+    }
+
+
+    /**
+     * Returns true is another Item is currently recalculating the cache.
      *
      * @return bool
      */
@@ -612,10 +502,26 @@ class Item
     }
 
     /**
-     * Return true if caching is disabled
+     * This function is used by the Pool object while creating this object. It
+     * is an internal function an should not be called directly.
+     *
+     * @internal
+     * @param string|array $key
      */
-    public function isDisabled()
+    public function setupKey($key)
     {
-        return self::$runtimeDisable || !$this->cacheEnabled || (defined('STASH_DISABLE_CACHE') && STASH_DISABLE_CACHE);
+        if (is_array($key)) {
+            $this->keyString = implode('/', $key);
+        } else {
+            $this->keyString = $key;
+            $key = trim($key, '/');
+            $key = explode('/', $key);
+        }
+
+        // We implant the namespace "cache" to the front of every stash object's key. This allows us to segment
+        // off the user data, and user other 'namespaces' for internal purposes.
+        array_unshift($key, 'cache');
+        $this->key = array_map('strtolower', $key);
     }
+
 }

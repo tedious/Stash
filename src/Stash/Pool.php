@@ -112,7 +112,13 @@ class Pool
     }
 
     /**
+     * The Purge function allows drivers to perform basic maintenance tasks,
+     * such as removing stale or expired items from storage. Not all drivers
+     * need this, as many interact with systems that handle that automatically.
      *
+     * It's important that this function is not called from inside a normal
+     * request, as the maintenance tasks this allows can occasionally take some
+     * time.
      *
      * @return bool success
      */
