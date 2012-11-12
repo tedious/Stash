@@ -23,6 +23,7 @@ use Stash\Driver\DriverInterface;
 class Pool
 {
     protected $driver;
+    protected $isDisabled = false;
 
     /**
      * The constructor takes a Driver class which is used for persistant
@@ -63,6 +64,9 @@ class Pool
             $cache->setupKey($args);
         }
 
+        if($this->isDisabled)
+            $cache->disable();
+
         return $cache;
     }
 
@@ -95,7 +99,16 @@ class Pool
      */
     function flush()
     {
-        return $this->getDriver()->clear();
+        if($this->isDisabled)
+            return false;
+
+        try{
+            $results = $this->getDriver()->clear();
+        }catch(\Exception $e){
+            $this->isDisabled = true;
+            return false;
+        }
+        return $results;
     }
 
     /**
@@ -105,7 +118,16 @@ class Pool
      */
     function purge()
     {
-        return $this->getDriver()->purge();
+        if($this->isDisabled)
+            return false;
+
+        try{
+            $results = $this->getDriver()->purge();
+        }catch(\Exception $e){
+            $this->isDisabled = true;
+            return false;
+        }
+        return $results;
     }
 
     /**
@@ -119,7 +141,7 @@ class Pool
         $this->driver = $driver;
     }
 
-    protected function getDriver()
+    function getDriver()
     {
         if(!isset($this->driver))
             $this->driver = new Ephemeral();

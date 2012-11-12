@@ -12,6 +12,7 @@
 namespace Stash\Test;
 
 use Stash\Test\Exception\ExceptionTest;
+use Stash\Pool;
 use Stash\Item;
 
 /**
@@ -50,9 +51,12 @@ class CacheExceptionTest extends \PHPUnit_Framework_TestCase
 
     public function testPurge()
     {
-        $stash = new Item(new ExceptionTest());
+        $pool = new Pool(new ExceptionTest());
+        $stash = $pool->getItem('test');
         $this->assertFalse($stash->isDisabled());
-        $this->assertFalse($stash->purge());
+        $this->assertFalse($pool->purge());
+
+        $stash = $pool->getItem('test');
         $this->assertTrue($stash->isDisabled(), 'Is disabled after exception is thrown in driver');
     }
 }
