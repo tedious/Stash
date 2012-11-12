@@ -311,31 +311,6 @@ class Item
     }
 
     /**
-     * Removes all expired or stale data from the cache system. It may also perform other cleanup actions depending on
-     * the cache driver used.
-     *
-     * @return bool
-     */
-    public function purge()
-    {
-        try {
-            return $this->executePurge();
-        } catch (Exception $e) {
-            $this->disable();
-            return false;
-        }
-    }
-
-    private function executePurge()
-    {
-        if ($this->isDisabled()) {
-            return false;
-        }
-
-        return $this->driver->purge();
-    }
-
-    /**
      * Returns the data retrieved from the cache. Since this can return false or null as a correctly cached value, the
      * return value should not be used to determine successful retrieval of data- for that use the "isMiss()" function
      * after call this one. If no value is stored at all then this function will return null.
