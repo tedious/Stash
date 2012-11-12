@@ -333,35 +333,6 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function testPurge()
-    {
-        foreach ($this->data as $type => $value) {
-            $key = array('base', 'fresh', $type);
-            $stash = $this->testConstruct();
-            $stash->setupKey($key);
-            $stash->set($value);
-        }
-
-        foreach ($this->data as $type => $value) {
-            $key = array('base', 'stale', $type);
-            $stash = $this->testConstruct();
-            $stash->setupKey($key);
-            $stash->set($value, -600);
-        }
-
-        $this->assertTrue($stash->purge());
-
-
-        foreach ($this->data as $type => $value) {
-            $key = array('base', 'stale', $type);
-            $stash = $this->testConstruct();
-            $stash->setupKey($key);
-            $data = $stash->get();
-            $this->assertNull($data, 'getData ' . $type . ' returns null once purged');
-            $this->assertTrue($stash->isMiss(), 'isMiss returns true for purged data');
-        }
-    }
-
     public function testExtendCache()
     {
         unset($this->driver);
@@ -439,7 +410,6 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($stash->set('true'), 'storeData returns false for disabled cache');
         $this->assertNull($stash->get(), 'getData returns null for disabled cache');
         $this->assertFalse($stash->clear(), 'clear returns false for disabled cache');
-        $this->assertFalse($stash->purge(), 'purge returns false for disabled cache');
         $this->assertTrue($stash->isMiss(), 'isMiss returns true for disabled cache');
         $this->assertFalse($stash->extendCache(), 'extendCache returns false for disabled cache');
         $this->assertTrue($stash->lock(100), 'lock returns true for disabled cache');
