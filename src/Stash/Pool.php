@@ -24,6 +24,13 @@ class Pool
 {
     protected $driver;
 
+    /**
+     * The constructor takes a Driver class which is used for persistant
+     * storage. If no driver is provided then the Ephemeral driver is used by
+     * default.
+     *
+     * @param DriverInterface $driver
+     */
     function __construct(DriverInterface $driver = null)
     {
         if (isset($driver)) {
