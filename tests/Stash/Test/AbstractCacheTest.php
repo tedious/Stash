@@ -336,6 +336,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
     {
         $stash = $this->testConstruct(array('path', 'to', 'key'));
         $stash->disable();
+        $this->assertDisabledStash($stash);
     }
 
     public function testDisableCacheWillNeverCallDriver()
