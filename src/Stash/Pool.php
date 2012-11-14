@@ -26,7 +26,7 @@ class Pool
     protected $isDisabled = false;
 
     /**
-     * The constructor takes a Driver class which is used for persistant
+     * The constructor takes a Driver class which is used for persistent
      * storage. If no driver is provided then the Ephemeral driver is used by
      * default.
      *
@@ -42,12 +42,11 @@ class Pool
     /**
      * Takes the same arguments as the Stash->setupKey() function and returns with a new Stash object. If a driver
      * has been set for this class then it is used, otherwise the Stash object will be set to use script memory only.
-     * Any Stash object set for this class uses the 'stashbox' namespace.
      *
      * @example $cache = $pool->getItem('permissions', 'user', '4', '2');
      *
      * @param string|array $key, $key, $key...
-     * @return Stash\Cache
+     * @return Stash\Item
      */
     function getItem()
     {
@@ -59,10 +58,7 @@ class Pool
         }
 
         $driver = $this->getDriver();
-        $cache = new Item($this->driver);
-        if (count($args) > 0) {
-            $cache->setupKey($args);
-        }
+        $cache = new Item($this->driver, $args);
 
         if($this->isDisabled)
             $cache->disable();
@@ -74,7 +70,7 @@ class Pool
      * Returns a group of cache objects as an \Iterator
      *
      * Bulk lookups can often by streamlined by backend cache systems. The
-     * returned iterator will contain a Cache\Item for each key passed.
+     * returned iterator will contain a Stash\Item for each key passed.
      *
      * @param array $keys
      * @return \Iterator

@@ -132,9 +132,14 @@ class Item
      * @internal
      * @param DriverInterface If no driver is passed the cache is set to script time only.
      */
-    public function __construct(DriverInterface $driver)
+    public function __construct(DriverInterface $driver, $key = null)
     {
         $this->driver = $driver;
+
+        if (isset($key)) {
+            $this->setupKey($key);
+        }
+
     }
 
     /**
@@ -508,7 +513,7 @@ class Item
      * @internal
      * @param string|array $key
      */
-    public function setupKey($key)
+    protected function setupKey($key)
     {
         if (is_array($key)) {
             $this->keyString = implode('/', $key);

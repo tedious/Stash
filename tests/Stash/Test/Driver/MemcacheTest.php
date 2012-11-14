@@ -69,15 +69,13 @@ class MemcacheTest extends AbstractDriverTest
         $options['extension'] = $this->extension;
         $driver = new Memcache($options);
 
-        $stash = new Item($driver);
-        $stash->setupKey($key);
+        $stash = new Item($driver, $key);
         $this->assertTrue($stash->set($key), 'Able to load and store memcache driver using multiple servers');
 
         $options = array();
         $options['extension'] = $this->extension;
         $driver = new Memcache($options);
-        $stash = new Item($driver);
-        $stash->setupKey($key);
+        $stash = new Item($driver, $key);
         $this->assertTrue($stash->set($key), 'Able to load and store memcache driver using default server');
     }
 }

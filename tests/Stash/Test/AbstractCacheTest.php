@@ -58,13 +58,13 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function testConstruct()
+    public function testConstruct($key = array())
     {
         if (!isset($this->driver)) {
             $this->driver = new Ephemeral(array());
         }
 
-        $stash = new Item($this->driver);
+        $stash = new Item($this->driver, $key);
         $this->assertTrue(is_a($stash, 'Stash\Item'), 'Test object is an instance of Stash');
         return $stash;
     }
@@ -75,16 +75,14 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         $keyArray = array('this', 'is', 'the', 'key');
         $keyNormalized = array('cache', 'this', 'is', 'the', 'key');
 
-        $stashArray = $this->testConstruct();
-        $stashArray->setupKey($keyArray);
+        $stashArray = $this->testConstruct($keyArray);
         $this->assertAttributeInternalType('string', 'keyString', $stashArray, 'Argument based keys setup keystring');
         $this->assertAttributeInternalType('array', 'key', $stashArray, 'Array based keys setup key');
 
         $returnedKey = $stashArray->getKey();
         $this->assertEquals($keyString, $returnedKey, 'getKey returns properly normalized key from array argument.');
 
-        $stashString = $this->testConstruct();
-        $stashString->setupKey($keyString);
+        $stashString = $this->testConstruct($keyString);
         $this->assertAttributeInternalType('string', 'keyString', $stashString, 'Argument based keys setup keystring');
         $this->assertAttributeInternalType('array', 'key', $stashString, 'Array based keys setup key');
 
@@ -94,8 +92,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($keyString, $returnedKey, 'getKey returns the same key as initially passed via string.');
 
 
-        $stashString = $this->testConstruct();
-        $stashString->setupKey('/' . $keyString . '/');
+        $stashString = $this->testConstruct('/' . $keyString . '/');
         $returnedKey = $stashString->getKey();
         $this->assertEquals('/' . $keyString . '/', $returnedKey, 'getKey returns the same key as initially passed via string.');
         $this->assertAttributeEquals($keyNormalized, 'key', $stashString, 'setupKey discards trailing and leading slashes.');
@@ -105,8 +102,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
     {
         foreach ($this->data as $type => $value) {
             $key = array('base', $type);
-            $stash = $this->testConstruct();
-            $stash->setupKey($key);
+            $stash = $this->testConstruct($key);
             $this->assertAttributeInternalType('string', 'keyString', $stash, 'Argument based keys setup keystring');
             $this->assertAttributeInternalType('array', 'key', $stash, 'Argument based keys setup key');
 
@@ -121,13 +117,11 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
     {
         foreach ($this->data as $type => $value) {
             $key = array('base', $type);
-            $stash = $this->testConstruct();
-            $stash->setupKey($key);
+            $stash = $this->testConstruct($key);
             $stash->set($value);
 
             // new object, but same backend
-            $stash = $this->testConstruct();
-            $stash->setupKey($key);
+            $stash = $this->testConstruct($key);
             $data = $stash->get();
             $this->assertEquals($value, $data, 'getData ' . $type . ' returns same item as stored');
         }
@@ -140,14 +134,12 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         $newValue = 'newValue';
 
 
-        $runningStash = $this->testConstruct();
-        $runningStash->setupKey($key);
+        $runningStash = $this->testConstruct($key);
         $runningStash->set($oldValue, -300);
 
 
         // Test without stampede
-        $controlStash = $this->testConstruct();
-        $controlStash->setupKey($key);
+        $controlStash = $this->testConstruct($key);
 
         $return = $controlStash->get(Item::SP_VALUE, $newValue);
         $this->assertEquals($oldValue, $return, 'Old value is returned');
@@ -161,8 +153,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
 
 
         // Old
-        $oldStash = $this->testConstruct();
-        $oldStash->setupKey($key);
+        $oldStash = $this->testConstruct($key);
 
         $return = $oldStash->get(Item::SP_OLD);
         $this->assertEquals($oldValue, $return, 'Old value is returned');
@@ -170,8 +161,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         unset($oldStash);
 
         // Value
-        $valueStash = $this->testConstruct();
-        $valueStash->setupKey($key);
+        $valueStash = $this->testConstruct($key);
 
         $return = $valueStash->get(Item::SP_VALUE, $newValue);
         $this->assertEquals($newValue, $return, 'New value is returned');
@@ -180,8 +170,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
 
 
         // Sleep
-        $sleepStash = $this->testConstruct();
-        $sleepStash->setupKey($key);
+        $sleepStash = $this->testConstruct($key);
 
         $start = microtime(true);
         $return = $sleepStash->get(array(Item::SP_SLEEP, 250, 2));
@@ -197,8 +186,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
 
 
         // Unknown - if a random, unknown method is passed for invalidation we should rely on the default method
-        $unknownStash = $this->testConstruct();
-        $unknownStash->setupKey($key);
+        $unknownStash = $this->testConstruct($key);
 
         $return = $unknownStash->get(78);
         $this->assertEquals($$oldValue, $return, 'Old value is returned');
@@ -213,16 +201,14 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
 
 
         // Precompute - test outside limit
-        $precomputeStash = $this->testConstruct();
-        $precomputeStash->setupKey($key);
+        $precomputeStash = $this->testConstruct($key);
 
         $return = $precomputeStash->get(Item::SP_PRECOMPUTE, 10);
         $this->assertFalse($precomputeStash->isMiss(), 'Cache is marked as hit');
         unset($precomputeStash);
 
         // Precompute - test inside limit
-        $precomputeStash = $this->testConstruct();
-        $precomputeStash->setupKey($key);
+        $precomputeStash = $this->testConstruct($key);
 
         $return = $precomputeStash->get(Item::SP_PRECOMPUTE, 35);
         $this->assertTrue($precomputeStash->isMiss(), 'Cache is marked as miss');
@@ -237,12 +223,10 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         $expiration->add(new \DateInterval('P1D'));
 
         $key = array('base', 'expiration', 'test');
-        $stash = $this->testConstruct();
-        $stash->setupKey($key);
+        $stash = $this->testConstruct($key);
         $stash->set(array(1, 2, 3, 'apples'), $expiration);
 
-        $stash = $this->testConstruct();
-        $stash->setupKey($key);
+        $stash = $this->testConstruct($key);
         $data = $stash->get();
         $this->assertEquals(array(1, 2, 3, 'apples'), $data, 'getData returns data stores using a datetime expiration');
 
@@ -250,8 +234,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
 
     public function testIsMiss()
     {
-        $stash = $this->testConstruct();
-        $stash->setupKey(array('This', 'Should', 'Fail'));
+        $stash = $this->testConstruct(array('This', 'Should', 'Fail'));
         $this->assertTrue($stash->isMiss(), 'isMiss returns true for missing data');
         $data = $stash->get();
         $this->assertNull($data, 'getData returns null for missing data');
@@ -259,12 +242,10 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
 
         $key = array('isMiss', 'test');
 
-        $stash = $this->testConstruct();
-        $stash->setupKey($key);
+        $stash = $this->testConstruct($key);
         $stash->set('testString');
 
-        $stash = $this->testConstruct();
-        $stash->setupKey($key);
+        $stash = $this->testConstruct($key);
         $this->assertTrue(!$stash->isMiss(), 'isMiss returns false for valid data');
 
     }
@@ -274,8 +255,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         // repopulate
         foreach ($this->data as $type => $value) {
             $key = array('base', $type);
-            $stash = $this->testConstruct();
-            $stash->setupKey($key);
+            $stash = $this->testConstruct($key);
             $stash->set($value);
             $this->assertAttributeInternalType('string', 'keyString', $stash, 'Argument based keys setup keystring');
             $this->assertAttributeInternalType('array', 'key', $stash, 'Argument based keys setup key');
@@ -288,21 +268,18 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
 
             // Make sure its actually populated. This has the added bonus of making sure one clear doesn't empty the
             // entire cache.
-            $stash = $this->testConstruct();
-            $stash->setupKey($key);
+            $stash = $this->testConstruct($key);
             $data = $stash->get();
             $this->assertEquals($value, $data, 'getData ' . $type . ' returns same item as stored after other data is cleared');
 
 
             // Run the clear, make sure it says it works.
-            $stash = $this->testConstruct();
-            $stash->setupKey($key);
+            $stash = $this->testConstruct($key);
             $this->assertTrue($stash->clear(), 'clear returns true');
 
 
             // Finally verify that the data has actually been removed.
-            $stash = $this->testConstruct();
-            $stash->setupKey($key);
+            $stash = $this->testConstruct($key);
             $data = $stash->get();
             $this->assertNull($data, 'getData ' . $type . ' returns null once deleted');
             $this->assertTrue($stash->isMiss(), 'isMiss returns true for deleted data');
@@ -311,8 +288,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         // repopulate
         foreach ($this->data as $type => $value) {
             $key = array('base', $type);
-            $stash = $this->testConstruct();
-            $stash->setupKey($key);
+            $stash = $this->testConstruct($key);
             $stash->set($value);
         }
 
@@ -325,8 +301,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
             $key = array('base', $type);
 
             // Finally verify that the data has actually been removed.
-            $stash = $this->testConstruct();
-            $stash->setupKey($key);
+            $stash = $this->testConstruct($key);
             $data = $stash->get();
             $this->assertNull($data, 'getData ' . $type . ' returns null once deleted');
             $this->assertTrue($stash->isMiss(), 'isMiss returns true for deleted data');
@@ -343,16 +318,13 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
             $stash->clear();
 
 
-            $stash = $this->testConstruct();
-            $stash->setupKey($key);
+            $stash = $this->testConstruct($key);
             $stash->set($value, -600);
 
-            $stash = $this->testConstruct();
-            $stash->setupKey($key);
+            $stash = $this->testConstruct($key);
             $this->assertTrue($stash->extendCache(), 'extendCache returns true');
 
-            $stash = $this->testConstruct();
-            $stash->setupKey($key);
+            $stash = $this->testConstruct($key);
             $data = $stash->get();
             $this->assertEquals($value, $data, 'getData ' . $type . ' returns same item as stored and extended');
             $this->assertFalse($stash->isMiss(), 'getData ' . $type . ' returns false for isMiss');
@@ -362,15 +334,13 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
 
     public function testDisable()
     {
-        $stash = $this->testConstruct();
+        $stash = $this->testConstruct(array('path', 'to', 'key'));
         $stash->disable();
-        $stash->setupKey(array('path', 'to', 'key'));
-
     }
 
     public function testDisableCacheWillNeverCallDriver()
     {
-        $stash = new Item($this->getMockedDriver());
+        $stash = new Item($this->getMockedDriver(), array('test', 'key'));
         $stash->disable();
         $this->assertTrue($stash->isDisabled());
         $this->assertDisabledStash($stash);
@@ -379,7 +349,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
     public function testDisableCacheGlobally()
     {
         Item::$runtimeDisable = true;
-        $stash = new Item($this->getMockedDriver());
+        $stash = new Item($this->getMockedDriver(), array('test', 'key'));
         $this->assertDisabledStash($stash);
         $this->assertTrue($stash->isDisabled());
         Item::$runtimeDisable = false;

@@ -49,8 +49,7 @@ class MemcacheAnyTest extends \PHPUnit_Framework_TestCase
         $options['servers'][] = array('127.0.0.1', '11211', '50');
         $driver = new Memcache($options);
 
-        $stash = new Item($driver);
-        $stash->setupKey($key);
+        $stash = new Item($driver, $key);
         $this->assertTrue($stash->set($key), 'Able to load and store with unconfigured extension.');
     }
 }
