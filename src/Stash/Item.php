@@ -132,14 +132,10 @@ class Item
      * @internal
      * @param DriverInterface If no driver is passed the cache is set to script time only.
      */
-    public function __construct(DriverInterface $driver, $key = null)
+    public function __construct(DriverInterface $driver, $key)
     {
         $this->driver = $driver;
-
-        if (isset($key)) {
-            $this->setupKey($key);
-        }
-
+        $this->setupKey($key);
     }
 
     /**

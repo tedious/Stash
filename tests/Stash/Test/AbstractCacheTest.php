@@ -356,14 +356,6 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         Item::$runtimeDisable = false;
     }
 
-    public function testCacheWithoutKey()
-    {
-        $stash = new Item($this->getMockedDriver());
-        $this->assertFalse($stash->set('true'));
-        $this->assertNull($stash->get());
-        $this->assertFalse($stash->lock(100));
-    }
-
     private function getMockedDriver()
     {
         $driver = $this->getMockBuilder('Stash\Driver\DriverInterface')

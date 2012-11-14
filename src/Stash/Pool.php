@@ -51,9 +51,13 @@ class Pool
     function getItem()
     {
         $args = func_get_args();
+        $argCount = count($args);
 
+        if ($argCount < 1) {
+            throw new InvalidArgumentException('Item constructor requires valid key.');
+        }
         // check to see if a single array was used instead of multiple arguments
-        if (count($args) == 1 && is_array($args[0])) {
+        if ($argCount == 1 && is_array($args[0])) {
             $args = $args[0];
         }
 
