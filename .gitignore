@@ -1,2 +1,6 @@
 phpunit.xml
 Stash.komodoproject
+
+vendor
+report
+.idea
