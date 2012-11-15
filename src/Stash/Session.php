@@ -16,8 +16,8 @@ use Stash\Session\SessionHandlerInterface as SessionHandlerInterface;
 /**
  * Stash\Session lets developers use Stash's Pool class to back session storage.
  * By injecting a Pool class into a Session object, and registering that Session
- * with PHP, developers can utilize any of Stash's handlers (including the
- * composite handler) and special features.
+ * with PHP, developers can utilize any of Stash's drivers (including the
+ * composite driver) and special features.
  *
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
@@ -97,7 +97,7 @@ class Session implements SessionHandlerInterface
     /**
      * The constructor expects an initialed Pool object. The creation of this
      * object is up to the developer, but it should contain it's own unique
-     * handlers or be appropriately namespaced to avoid conflicts with other
+     * drivers or be appropriately namespaced to avoid conflicts with other
      * libraries.
      *
      * @param Stash\Pool pool
@@ -157,7 +157,7 @@ class Session implements SessionHandlerInterface
             base64_encode($this->name) . '/' .
             base64_encode($session_id);
 
-        return $this->pool->getCache($path);
+        return $this->pool->getItem($path);
     }
 
     /**
@@ -217,7 +217,7 @@ class Session implements SessionHandlerInterface
      * This function is defined by the SessionHandlerInterface and is for PHP's
      * internal use. It is called randomly based on the session.gc_divisor,
      * session.gc_probability and session.gc_lifetime settings, which should be
-     * set according to the handlers used. Those with built in eviction
+     * set according to the drivers used. Those with built in eviction
      * mechanisms will not need this functionality, while those without it will.
      * It is also possible to disable the built in garbage collection (place
      * gc_probability as zero) and call the "purge" function on the Stash\Pool
