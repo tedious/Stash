@@ -1,6 +1,7 @@
-phpunit.xml
-Stash.komodoproject
-
-vendor
-report
-.idea
+/.idea
+/.settings
+/.buildpath
+/.project
+/composer.lock
+/vendor
+/report
