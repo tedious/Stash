@@ -104,7 +104,7 @@
     <api>beta</api>
    </stability>
    <date>2012-11-25</date>
-   <license uri="http://www.opensource.org/licenses/mit-license.php">MIT</license>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD Style</license>
    <notes>
 -
    </notes>
