@@ -310,7 +310,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
 
     public function testExtendCache()
     {
-        unset($this->driver);
+        $this->driver = null;
         foreach ($this->data as $type => $value) {
             $key = array('base', $type);
 

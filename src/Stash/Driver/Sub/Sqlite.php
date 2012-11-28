@@ -48,7 +48,7 @@ class Sqlite
 
     public function __destruct()
     {
-        unset($this->driver);
+        $this->driver = null;
     }
 
     public function get($key)
@@ -99,7 +99,7 @@ class Sqlite
 
         if (!isset($key)) {
             unset($driver);
-            unset($this->driver);
+            $this->driver = null;
             $this->driver = false;
             \Stash\Utilities::deleteRecursive($this->path);
         } else {
