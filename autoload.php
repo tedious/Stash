@@ -11,7 +11,14 @@
 
 spl_autoload_register(function($class)
 {
-    $file = __DIR__.'/src/'.strtr($class, '\\', '/').'.php';
+    $base = '/src/';
+
+    if(strpos($class, 'Stash\Test') === 0)
+    {
+        $base = '/tests/';
+    }
+
+    $file = __DIR__.$base.strtr($class, '\\', '/').'.php';
     if (file_exists($file)) {
         require $file;
         return true;
