@@ -132,7 +132,7 @@ class FileSystem implements DriverInterface
         }
 
         include($path);
-        return !isset($data) && !@is_null($data) ? false : array('data' => $data, 'expiration' => $expiration);
+        return !isset($data) || !@is_null($data) ? false : array('data' => $data, 'expiration' => $expiration);
     }
 
 
