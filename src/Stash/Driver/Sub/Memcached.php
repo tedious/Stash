@@ -21,7 +21,7 @@ use Stash\Exception\RuntimeException;
 class Memcached
 {
     /**
-     * @var Memcached
+     * @var \Memcached
      */
     protected $memcached;
 
