@@ -12,7 +12,7 @@
 namespace Stash\Test\Exception;
 
 use Stash;
-use Stash\Handler\HandlerInterface;
+use Stash\Driver\DriverInterface;
 
 /**
  * ExceptionTest is used for testing how Stash reacts to thrown errors. Every function but the constructor throws
@@ -23,7 +23,7 @@ use Stash\Handler\HandlerInterface;
  *
  * @codeCoverageIgnore
  */
-class ExceptionTest implements HandlerInterface
+class ExceptionTest implements DriverInterface
 {
     protected $store = array();
 

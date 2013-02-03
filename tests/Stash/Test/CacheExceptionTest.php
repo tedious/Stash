@@ -12,7 +12,8 @@
 namespace Stash\Test;
 
 use Stash\Test\Exception\ExceptionTest;
-use Stash\Cache;
+use Stash\Pool;
+use Stash\Item;
 
 /**
  * @package Stash
@@ -22,37 +23,37 @@ class CacheExceptionTest extends \PHPUnit_Framework_TestCase
 {
     public function testSet()
     {
-        $handler = new ExceptionTest();
-        $stash = new Cache($handler);
-        $stash->setupKey(array('path', 'to', 'store'));
+        $driver = new ExceptionTest();
+        $stash = new Item($driver, array('path', 'to', 'store'));
         $this->assertFalse($stash->isDisabled());
         $this->assertFalse($stash->set(array(1, 2, 3), 3600));
-        $this->assertTrue($stash->isDisabled(), 'Is disabled after exception is thrown in handler');
+        $this->assertTrue($stash->isDisabled(), 'Is disabled after exception is thrown in driver');
     }
 
     public function testGet()
     {
-        $stash = new Cache(new ExceptionTest());
-        $stash->setupKey('path', 'to', 'get');
+        $stash = new Item(new ExceptionTest(), array('path', 'to', 'get'));
         $this->assertFalse($stash->isDisabled());
         $this->assertNull($stash->get());
-        $this->assertTrue($stash->isDisabled(), 'Is disabled after exception is thrown in handler');
+        $this->assertTrue($stash->isDisabled(), 'Is disabled after exception is thrown in driver');
     }
 
     public function testClear()
     {
-        $stash = new Cache(new ExceptionTest());
-        $stash->setupKey(array('path', 'to', 'clear'));
+        $stash = new Item(new ExceptionTest(), array('path', 'to', 'clear'));
         $this->assertFalse($stash->isDisabled());
         $this->assertFalse($stash->clear());
-        $this->assertTrue($stash->isDisabled(), 'Is disabled after exception is thrown in handler');
+        $this->assertTrue($stash->isDisabled(), 'Is disabled after exception is thrown in driver');
     }
 
     public function testPurge()
     {
-        $stash = new Cache(new ExceptionTest());
+        $pool = new Pool(new ExceptionTest());
+        $stash = $pool->getItem('test');
         $this->assertFalse($stash->isDisabled());
-        $this->assertFalse($stash->purge());
-        $this->assertTrue($stash->isDisabled(), 'Is disabled after exception is thrown in handler');
+        $this->assertFalse($pool->purge());
+
+        $stash = $pool->getItem('test');
+        $this->assertTrue($stash->isDisabled(), 'Is disabled after exception is thrown in driver');
     }
 }

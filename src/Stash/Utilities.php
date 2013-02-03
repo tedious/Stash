@@ -11,11 +11,11 @@
 
 namespace Stash;
 
-use Stash\Handler\HandlerInterface;
+use Stash\Driver\DriverInterface;
 use Stash\Exception\RuntimeException;
 
 /**
- * StashUtilities contains static functions used throughout the Stash project, both by core classes and handlers.
+ * StashUtilities contains static functions used throughout the Stash project, both by core classes and drivers.
  *
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
@@ -23,7 +23,7 @@ use Stash\Exception\RuntimeException;
 class Utilities
 {
     /**
-     * Various handlers use this to define what kind of encoding to use on objects being cached. It needs to be revamped
+     * Various drivers use this to define what kind of encoding to use on objects being cached. It needs to be revamped
      * a bit.
      */
     static function encoding($data)
@@ -90,18 +90,18 @@ class Utilities
     /**
      * Returns the default base directory for the system when one isn't provided by the developer. This is a directory
      * of last resort and can cause problems if one library is shared by multiple projects. The directory returned
-     * resides in the system's temap folder and is specific to each Stash installation and handler.
+     * resides in the system's temp folder and is specific to each Stash installation and driver.
      *
-     * @param HandlerInterface $handler
+     * @param DriverInterface $driver
      * @return string Path for Stash files
      */
-    static function getBaseDirectory(HandlerInterface $handler = null)
+    static function getBaseDirectory(DriverInterface $driver = null)
     {
         $tmp = rtrim(sys_get_temp_dir(), '/\\') . '/';
 
         $baseDir = $tmp . 'stash/' . md5(__DIR__) . '/';
-        if (isset($handler)) {
-            $baseDir .= str_replace(array('/', '\\'), '_', get_class($handler)) . '/';
+        if (isset($driver)) {
+            $baseDir .= str_replace(array('/', '\\'), '_', get_class($driver)) . '/';
         }
 
         if (!is_dir($baseDir)) {

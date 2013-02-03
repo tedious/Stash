@@ -12,7 +12,7 @@
 namespace Stash\Test;
 
 use Stash\Utilities;
-use Stash\Handler\FileSystem;
+use Stash\Driver\FileSystem;
 
 /**
  * @package Stash

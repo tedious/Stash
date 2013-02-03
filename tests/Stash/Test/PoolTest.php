@@ -12,7 +12,7 @@
 namespace Stash\Test;
 
 use Stash\Pool;
-use Stash\Handler\Ephemeral;
+use Stash\Driver\Ephemeral;
 
 /**
  * @package Stash
@@ -26,33 +26,33 @@ class PoolTest extends \PHPUnit_Framework_TestCase
                                  'key2' => 'value2',
                                  'key3' => 'value3');
 
-    public function testSetHandler()
+    public function testSetDriver()
     {
         $pool = $this->getTestPool();
 
-        $stash = $pool->getCache('test');
-        $this->assertAttributeInstanceOf('Stash\Handler\Ephemeral', 'handler', $stash, 'set handler is pushed to new stash objects');
+        $stash = $pool->getItem('test');
+        $this->assertAttributeInstanceOf('Stash\Driver\Ephemeral', 'driver', $stash, 'set driver is pushed to new stash objects');
     }
 
-    public function testGetCache()
+    public function testGetItem()
     {
         $pool = $this->getTestPool();
 
-        $stash = $pool->getCache('base', 'one');
-        $this->assertInstanceOf('Stash\Cache', $stash, 'getCache returns a Stash\Cache object');
+        $stash = $pool->getItem('base', 'one');
+        $this->assertInstanceOf('Stash\Item', $stash, 'getItem returns a Stash\Item object');
 
         $stash->set($this->data);
         $storedData = $stash->get();
-        $this->assertEquals($this->data, $storedData, 'getCache returns working Stash\Cache object');
+        $this->assertEquals($this->data, $storedData, 'getItem returns working Stash\Item object');
     }
 
-    public function testGetCacheIterator()
+    public function testGetItemIterator()
     {
         $pool = $this->getTestPool();
 
         $keys = array_keys($this->multiData);
 
-        $cacheIterator = $pool->getCacheIterator($keys);
+        $cacheIterator = $pool->getItemIterator($keys);
         $keyData = $this->multiData;
         foreach($cacheIterator as $stash)
         {
@@ -63,7 +63,7 @@ class PoolTest extends \PHPUnit_Framework_TestCase
         }
         $this->assertCount(0, $keyData, 'all keys are accounted for the in cache iterator');
 
-        $cacheIterator = $pool->getCacheIterator($keys);
+        $cacheIterator = $pool->getItemIterator($keys);
         foreach($cacheIterator as $stash)
         {
             $key = $stash->getKey();
@@ -76,11 +76,11 @@ class PoolTest extends \PHPUnit_Framework_TestCase
     {
         $pool = $this->getTestPool();
 
-        $stash = $pool->getCache('base', 'one');
+        $stash = $pool->getItem('base', 'one');
         $stash->set($this->data);
         $this->assertTrue($pool->flush(), 'clear returns true');
 
-        $stash = $pool->getCache('base', 'one');
+        $stash = $pool->getItem('base', 'one');
         $this->assertNull($stash->get(), 'clear removes item');
         $this->assertTrue($stash->isMiss(), 'clear causes cache miss');
     }
@@ -89,29 +89,29 @@ class PoolTest extends \PHPUnit_Framework_TestCase
     {
         $pool = $this->getTestPool();
 
-        $stash = $pool->getCache('base', 'one');
+        $stash = $pool->getItem('base', 'one');
         $stash->set($this->data, -600);
         $this->assertTrue($pool->purge(), 'purge returns true');
 
-        $stash = $pool->getCache('base', 'one');
+        $stash = $pool->getItem('base', 'one');
         $this->assertNull($stash->get(), 'purge removes item');
         $this->assertTrue($stash->isMiss(), 'purge causes cache miss');
     }
 
 
-    public function testGetCacheArrayConversion()
+    public function testgetItemArrayConversion()
     {
         $pool = $this->getTestPool();
 
-        $cache = $pool->getCache(array('base', 'one'));
+        $cache = $pool->getItem(array('base', 'one'));
         $this->assertEquals($cache->getKey(), 'base/one');
     }
 
     protected function getTestPool()
     {
-        $handler = new Ephemeral(array());
+        $driver = new Ephemeral(array());
         $pool = new Pool();
-        $pool->setHandler($handler);
+        $pool->setDriver($driver);
         return $pool;
     }
 }
