@@ -96,7 +96,7 @@ class FileSystem implements DriverInterface
             $this->keyHashFunction = $options['keyHashFunction'];
         }
         else {
-            $this->keyHashFunction = 'md5';
+            throw new RuntimeException('Key Hash Function does not exist');
         }
 
         $this->memStoreLimit = (int)$options['memKeyLimit'];
