@@ -11,6 +11,8 @@
 
 namespace Stash\Test\Driver;
 
+use Stash\Driver\FileSystem;
+
 /**
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
@@ -22,5 +24,18 @@ class FileSystemTest extends AbstractDriverTest
     protected function getOptions()
     {
         return array('memKeyLimit' => 2);
+    }
+    
+    /**
+     * @expectedException Stash\Exception\RuntimeException
+     */
+    public function testOptionKeyHashFunctionException()
+    {
+        $driver = new FileSystem(array('keyHashFunction' => 'foobar_'.mt_rand()));
+    }
+    
+    public function testOptionKeyHashFunction()
+    {
+        $driver = new FileSystem(array('keyHashFunction' => 'md5'));
     }
 }
