@@ -68,7 +68,8 @@ class FileSystem implements DriverInterface
     protected $defaultOptions = array('filePermissions' => 0660,
                                       'dirPermissions' => 0770,
                                       'dirSplit' => 2,
-                                      'memKeyLimit' => 20
+                                      'memKeyLimit' => 20,
+                                      'keyHashFunction' => 'md5'
     );
 
     public function __construct(array $options = array())
@@ -89,6 +90,13 @@ class FileSystem implements DriverInterface
 
         if (!is_numeric($options['memKeyLimit']) || $options['memKeyLimit'] < 1) {
             $options['memKeyLimit'] = 0;
+        }
+
+        if (function_exists($options['keyHashFunction'])) {
+            $this->keyHashFunction = $options['keyHashFunction'];
+        }
+        else {
+            throw new RuntimeException('Key Hash Function does not exist');
         }
 
         $this->memStoreLimit = (int)$options['memKeyLimit'];
@@ -248,7 +256,7 @@ class FileSystem implements DriverInterface
             $pathPieces = array();
             $path = $basePath;
             $len = floor(32 / $this->directorySplit);
-            $key = \Stash\Utilities::normalizeKeys($key);
+            $key = \Stash\Utilities::normalizeKeys($key, $this->keyHashFunction);
 
             foreach ($key as $index => $value) {
                 if (strpos($value, '@') === 0) {
