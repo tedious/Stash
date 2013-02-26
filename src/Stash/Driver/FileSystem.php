@@ -136,7 +136,8 @@ class FileSystem implements DriverInterface
         // If the item does not exist we should return false. However, it's
         // possible that the item exists as null, so we have to make sure that
         // it's both unset and not null. The downside to this is that the
-        // is_null function will issue a warning on an item that
+        // is_null function will issue a warning on an item that isn't set.
+        // So we're stuck testing and surpressing the warning.
 
         // Item exists
         // isset + is_null = true + false = true
