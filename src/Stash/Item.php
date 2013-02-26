@@ -382,7 +382,7 @@ class Item
 
 
     /**
-     * Returns true is another Item is currently recalculating the cache.
+     * Returns true if another Item is currently recalculating the cache.
      *
      * @return bool
      */
