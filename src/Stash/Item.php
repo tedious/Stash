@@ -255,8 +255,8 @@ class Item
         } else {
             self::$queryRecord[$this->keyString][] = 0;
         }
-        //var_dump($record);
 
+        //Save the record back to the class for use later
         $this->record = $record;
 
         return isset($record['data']['return']) ? $record['data']['return'] : null;
@@ -396,10 +396,7 @@ class Item
      */
     public function getCreatedOn()
     {
-        if(isset($this->record['data']['createdOn']))
-            return $this->record['data']['createdOn']; 
-
-        return false;
+        return isset($record['data']['createdOn']) ? $record['data']['createdOn'] : null;
     }
 
     /**
@@ -407,10 +404,7 @@ class Item
      */
     public function getExpiresOn()
     {
-        if(isset($this->record['expiration']))
-            return $this->record['expiration']; 
-
-        return false;
+        return isset($record['expiration']) ? $record['expiration'] : null;
     }
 
 
