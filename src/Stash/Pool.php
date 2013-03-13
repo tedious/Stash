@@ -46,7 +46,7 @@ class Pool
      * @example $cache = $pool->getItem('permissions', 'user', '4', '2');
      *
      * @param string|array $key, $key, $key...
-     * @return Stash\Item
+     * @return \Stash\Item
      */
     function getItem()
     {
