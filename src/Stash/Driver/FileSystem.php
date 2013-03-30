@@ -384,8 +384,8 @@ class FileSystem implements DriverInterface
             throw new RuntimeException('Cache path was not set correctly.');
         }
 
-        if(!is_dir($this->cachePath)) {
-            throw new InvalidArgumentException('Cache path is not a directory.');
+        if(!is_dir($this->cachePath) && !@mkdir( $this->cachePath, $this->dirPermissions, true )) {
+            throw new InvalidArgumentException('Failed to create cache path.');
         }
 
         if(!is_writable($this->cachePath)) {
