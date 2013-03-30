@@ -30,9 +30,9 @@ class Memcache
         $memcache = new \Memcache();
 
         foreach ($servers as $server) {
-            $host = $server[0];
-            $port = isset($server[1]) ? $server[1] : 11211;
-            $weight = isset($server[2]) ? (int)$server[2] : null;
+            $host = $server['server'];
+            $port = isset($server['port']) ? $server['port'] : 11211;
+            $weight = isset($server['weight']) ? (int)$server['weight'] : null;
 
             if (is_integer($weight)) {
                 $memcache->addServer($host, $port, true, $weight);
