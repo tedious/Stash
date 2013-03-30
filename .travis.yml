@@ -6,7 +6,7 @@ php:
 
 before_script:
     - composer install --dev
-    - php tests/travis.setup.php
+    - phpenv config-add tests/php_extensions.ini
 
 script: phpunit --verbose --coverage-text
 
