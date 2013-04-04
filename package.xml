@@ -10,11 +10,11 @@
   <email>tedivm@tedivm.com</email>
   <active>yes</active>
  </lead>
- <date>2013-02-25</date>
- <time>23:41:37</time>
+ <date>2013-04-03</date>
+ <time>22:16:17</time>
  <version>
-  <release>0.10.2</release>
-  <api>0.10.2</api>
+  <release>0.10.3</release>
+  <api>0.10.3</api>
  </version>
  <stability>
   <release>beta</release>
@@ -22,19 +22,13 @@
  </stability>
  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD Style</license>
  <notes>
-* No longer requires composer to run the test suites (although it is recommended)
-
-* Multiple areas cleaned up, including unset usage, driver code, and tests.
-
-* Makes the algorithm used to generate path names by the Filesystem selectable.
-
-* Many other small edits and changes.
+Updated tests, corrected bugs, and made some backend enhanceements.
  </notes>
  <contents>
   <dir baseinstalldir="/" name="/">
-   <file baseinstalldir="/" md5sum="5aca3702b81525a787512a7f9f537b11" name="src/Stash/Drivers.php" role="php" />
-   <file baseinstalldir="/" md5sum="2c72d8e7a8e90738c87adc1b1102eb89" name="src/Stash/Item.php" role="php" />
-   <file baseinstalldir="/" md5sum="a0dd1a31da36ed29ba13de43ed3820b5" name="src/Stash/Pool.php" role="php" />
+   <file baseinstalldir="/" md5sum="ad47e96bcd4672463264c8fb56578a56" name="src/Stash/Drivers.php" role="php" />
+   <file baseinstalldir="/" md5sum="453a2853821346fd6abbdbcbcc8b452f" name="src/Stash/Item.php" role="php" />
+   <file baseinstalldir="/" md5sum="8795da6cf7d1f7c48a465a2553ce6cb7" name="src/Stash/Pool.php" role="php" />
    <file baseinstalldir="/" md5sum="d20077a3efebab1738de2fc36d3ef550" name="src/Stash/Session.php" role="php" />
    <file baseinstalldir="/" md5sum="e234492ba4a8f3336f11df7d6ecdb239" name="src/Stash/Utilities.php" role="php" />
    <file baseinstalldir="/" md5sum="5ec6a44988211b16d73bcaf9f01fc5b5" name="src/Stash/Driver/Apc.php" role="php" />
@@ -42,7 +36,7 @@
    <file baseinstalldir="/" md5sum="8fb5ce50863be99f4cdca71e101b1c4d" name="src/Stash/Driver/Composite.php" role="php" />
    <file baseinstalldir="/" md5sum="c1cb27ab011841f66d54f4c482f92dcf" name="src/Stash/Driver/DriverInterface.php" role="php" />
    <file baseinstalldir="/" md5sum="24eb915e74c94bbc2191fba2029b70f2" name="src/Stash/Driver/Ephemeral.php" role="php" />
-   <file baseinstalldir="/" md5sum="3ba6770a37263f7c98f3f3488673def8" name="src/Stash/Driver/FileSystem.php" role="php" />
+   <file baseinstalldir="/" md5sum="813d6f9ba95c58351e79c1d87e283140" name="src/Stash/Driver/FileSystem.php" role="php" />
    <file baseinstalldir="/" md5sum="98f81e59ce10c67f5cc287f81ebd285e" name="src/Stash/Driver/Memcache.php" role="php" />
    <file baseinstalldir="/" md5sum="05a7bdfa55af34a0736a8c87abe11c46" name="src/Stash/Driver/Sqlite.php" role="php" />
    <file baseinstalldir="/" md5sum="6313c103300c072d2c42969a5b54c273" name="src/Stash/Driver/Xcache.php" role="php" />
@@ -56,8 +50,9 @@
    <file baseinstalldir="/" md5sum="4e23dff442ce8dfe4b1562ae01a2b198" name="src/Stash/Exception/LogicException.php" role="php" />
    <file baseinstalldir="/" md5sum="7a9eecd211f2146f1f5e113ee641b395" name="src/Stash/Exception/RuntimeException.php" role="php" />
    <file baseinstalldir="/" md5sum="bc2279aea716422d4183a0504f243da4" name="src/Stash/Session/SessionHandlerInterface.php" role="php" />
-   <file baseinstalldir="/" md5sum="7d33cd7c824a4225cbc0d1521f7e97c4" name="tests/bootstrap.php" role="test" />
-   <file baseinstalldir="/" md5sum="4b5303cf0db560e71d38dccf7a7fe508" name="tests/travis.setup.php" role="test" />
+   <file baseinstalldir="/" md5sum="e3072c8c619e7a124b8d36241a04a143" name="tests/bootstrap.php" role="test" />
+   <file baseinstalldir="/" md5sum="1887f710bfa3fb34f51c4228a174d6d1" name="tests/php_extensions.ini" role="test" />
+   <file baseinstalldir="/" md5sum="743876aaf2c26c012a473a8ecaae995c" name="tests/travis.setup.php" role="test" />
    <file baseinstalldir="/" md5sum="098d02320eb83d8bc76294599f24e192" name="tests/Stash/Test/AbstractCacheTest.php" role="test" />
    <file baseinstalldir="/" md5sum="890214e02714eb7ca3bbaa80587c5001" name="tests/Stash/Test/CacheExceptionTest.php" role="test" />
    <file baseinstalldir="/" md5sum="1345ba24f8a7c209e6bddc3dd60b6897" name="tests/Stash/Test/DriversTest.php" role="test" />
@@ -82,7 +77,7 @@
    <file baseinstalldir="/" md5sum="56746b83adf64d3f2ac31c45b60f6fab" name="tests/Stash/Test/Exception/ExceptionTest.php" role="test" />
    <file baseinstalldir="/" md5sum="21c67ccf261a62f440f0a2910cbff266" name="tests/Stash/Test/Exception/TestException.php" role="test" />
    <file baseinstalldir="/" md5sum="c30864b6de4ca53b9a646195f7b8bb28" name="autoload.php" role="php" />
-   <file baseinstalldir="/" md5sum="5e0e0fbc82330f04db520b342e2dd40c" name="composer.json" role="data" />
+   <file baseinstalldir="/" md5sum="366abbb9fa6b6be354fd8de7d1b94523" name="composer.json" role="data" />
    <file baseinstalldir="/" md5sum="0a8fd596034db85a8ae22c1d2330edfb" name="LICENSE" role="doc" />
    <file baseinstalldir="/" md5sum="275eef1e6481c37c390b0233271f9044" name="phpunit.xml.dist" role="data" />
    <file baseinstalldir="/" md5sum="4108c0f74048e2fd44fdd15bb0672aa9" name="README.md" role="data" />
@@ -149,6 +144,21 @@
 * Makes the algorithm used to generate path names by the Filesystem selectable.
 
 * Many other small edits and changes.
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>0.10.3</release>
+    <api>0.10.3</api>
+   </version>
+   <stability>
+    <release>beta</release>
+    <api>beta</api>
+   </stability>
+   <date>2013-04-03</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD Style</license>
+   <notes>
+Updated tests, corrected bugs, and made some backend enhanceements.
    </notes>
   </release>
  </changelog>
