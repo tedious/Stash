@@ -35,7 +35,7 @@ class Sqlite implements DriverInterface
     protected $filePerms;
     protected $dirPerms;
     protected $busyTimeout;
-    protected $path;
+    protected $cachePath;
     protected $driverClass;
     protected $nesting;
     protected $subDrivers;
@@ -50,8 +50,8 @@ class Sqlite implements DriverInterface
     {
         $options = array_merge($this->defaultOptions, $options);
 
-        $path = isset($options['path']) ? $options['path'] : \Stash\Utilities::getBaseDirectory($this);
-        $this->path = rtrim($path, '\\/') . '/';
+        $cachePath = isset($options['path']) ? $options['path'] : \Stash\Utilities::getBaseDirectory($this);
+        $this->cachePath = rtrim($cachePath, '\\/') . '/';
 
         $this->checkFileSystemPermissions();
 
@@ -207,7 +207,7 @@ class Sqlite implements DriverInterface
                 $fileName .= $key[$i - 1] . '_';
             }
 
-            $file = $this->path . rtrim($fileName, '_') . '.sqlite';
+            $file = $this->cachePath . rtrim($fileName, '_') . '.sqlite';
         }
 
         if (isset($this->subDrivers[$file])) {
@@ -245,7 +245,7 @@ class Sqlite implements DriverInterface
      */
     protected function getCacheList()
     {
-        $filePath = $this->path;
+        $filePath = $this->cachePath;
         $caches = array();
         $databases = glob($filePath . '*.sqlite');
         foreach ($databases as $database) {
@@ -261,15 +261,19 @@ class Sqlite implements DriverInterface
      */
     protected function checkFileSystemPermissions()
     {
-        if(!isset($this->path)) {
+        if(!isset($this->cachePath)) {
             throw new RuntimeException('Cache path was not set correctly.');
         }
 
-        if(!is_dir($this->path)) {
+        if(file_exists($this->cachePath) && !is_dir($this->cachePath)) {
             throw new InvalidArgumentException('Cache path is not a directory.');
         }
 
-        if(!is_writable($this->path)) {
+        if(!is_dir($this->cachePath) && !@mkdir( $this->cachePath, $this->dirPermissions, true )) {
+            throw new InvalidArgumentException('Failed to create cache path.');
+        }
+
+        if(!is_writable($this->cachePath)) {
             throw new InvalidArgumentException('Cache path is not writable.');
         }
     }
