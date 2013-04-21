@@ -82,7 +82,7 @@ class Session implements SessionHandlerInterface
                 array($handler, 'gc')
             );
 
-            if(!results)
+            if(!$results)
                 return false;
 
             // the following prevents unexpected effects when using objects as save handlers
@@ -95,7 +95,7 @@ class Session implements SessionHandlerInterface
     }
 
     /**
-     * The constructor expects an initialed Pool object. The creation of this
+     * The constructor expects an initialized Pool object. The creation of this
      * object is up to the developer, but it should contain it's own unique
      * drivers or be appropriately namespaced to avoid conflicts with other
      * libraries.
