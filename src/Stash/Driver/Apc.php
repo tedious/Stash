@@ -141,7 +141,8 @@ class Apc implements DriverInterface
      */
     static public function isAvailable()
     {
-        return extension_loaded('apc') && ini_get('apc.enabled');
+        return (extension_loaded('apc') && ini_get('apc.enabled'))
+            && ((php_sapi_name() !== 'cli') || ini_get('apc.enable_cli'));
     }
 
     protected function makeKey($key)
