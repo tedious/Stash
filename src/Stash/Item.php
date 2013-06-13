@@ -125,6 +125,14 @@ class Item
      */
     private $isHit = null;
 
+
+    /**
+     * Store the record raw data, useful for getting the created at and expires on for page caching
+     *
+     * @var bool
+     */
+    private $record = null;
+
     /**
      * This constructor is an internal function used by the Pool object when
      * creating new Item objects. It should not be called directly.
@@ -247,6 +255,9 @@ class Item
         } else {
             self::$queryRecord[$this->keyString][] = 0;
         }
+
+        //Save the record back to the class for use later
+        $this->record = $record;
 
         return isset($record['data']['return']) ? $record['data']['return'] : null;
     }
@@ -378,6 +389,22 @@ class Item
         return self::$runtimeDisable
                 || !$this->cacheEnabled
                 || (defined('STASH_DISABLE_CACHE') && STASH_DISABLE_CACHE);
+    }
+
+    /**
+     * Return the createdOn timestamp
+     */
+    public function getCreatedOn()
+    {
+        return isset($record['data']['createdOn']) ? $record['data']['createdOn'] : null;
+    }
+
+    /**
+     * Return  the expires on timestamp
+     */
+    public function getExpiresOn()
+    {
+        return isset($record['expiration']) ? $record['expiration'] : null;
     }
 
 
