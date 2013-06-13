@@ -46,28 +46,6 @@ class Item
      */
     static $runtimeDisable = false;
 
-    /**
-     * Running count of how many times the cache has been called.
-     *
-     * @var int
-     */
-    static $cacheCalls = 0;
-
-    /**
-     * Running count of how many times the cache was able to successfully retrieve current data from the
-     * cache. Combined with the $cacheCalls static variable this can be used to calculate a hit/miss ratio.
-     *
-     * @var int
-     */
-    static $cacheReturns = 0;
-
-    /**
-     * Keeps track of how many times a specific cache item is called. The array index is the string version of the key
-     * and the value is the number of times it has been called.
-     *
-     * @var array
-     */
-    static $queryRecord;
 
     /**
      * Used internally to mark the class as disabled. Unlike the static runtimeDisable flag this is effective only for
@@ -207,8 +185,6 @@ class Item
 
     private function executeGet($invalidation, $arg, $arg2)
     {
-        self::$cacheCalls++;
-
         $this->isHit = false;
 
         if ($this->isDisabled()) {
@@ -240,13 +216,6 @@ class Item
         $record = $this->getRecord();
 
         $this->validateRecord($invalidation, $record);
-
-        if ($this->isHit) {
-            self::$cacheReturns++;
-            self::$queryRecord[$this->keyString][] = 1;
-        } else {
-            self::$queryRecord[$this->keyString][] = 0;
-        }
 
         return isset($record['data']['return']) ? $record['data']['return'] : null;
     }
