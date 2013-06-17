@@ -10,3 +10,6 @@ before_script:
 
 script: phpunit --verbose --coverage-text
 
+services:
+  - redis-server
+  - memcached
