@@ -45,7 +45,7 @@ class Redis implements DriverInterface
             unset($options['servers']);
 
         }else{
-            $servers = array(array('host' => '127.0.0.1', 'port' => '6379', 'ttl' => 0.1));
+            $servers = array(array('server' => '127.0.0.1', 'port' => '6379', 'ttl' => 0.1));
         }
 
         // Merge in default values.
