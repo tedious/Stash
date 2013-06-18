@@ -132,7 +132,7 @@ class Redis implements DriverInterface
             return true;
         }
 
-        $keyString = $this->makeKeyString($key);
+        $keyString = $this->makeKeyString($key, true);
         $keyReal = $this->makeKeyString($key);
         $this->redis->incr($keyString); // increment index for children items
         $this->redis->delete($keyReal); // remove direct item.
@@ -183,7 +183,7 @@ class Redis implements DriverInterface
             if (isset($this->keyCache[$pathKey])) {
                 $index = $this->keyCache[$pathKey];
             } else {
-                $index = $this->redis->incr($pathKey);
+                $index = $this->redis->get($pathKey);
                 $this->keyCache[$pathKey] = $index;
             }
 
