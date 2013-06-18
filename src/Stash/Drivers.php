@@ -26,10 +26,11 @@ class Drivers
      */
     protected static $drivers = array('Apc' => '\Stash\Driver\Apc',
                                        'BlackHole' => '\Stash\Driver\BlackHole',
+                                       'Composite' => '\Stash\Driver\Composite',
                                        'Ephemeral' => '\Stash\Driver\Ephemeral',
                                        'FileSystem' => '\Stash\Driver\FileSystem',
                                        'Memcache' => '\Stash\Driver\Memcache',
-                                       'Composite' => '\Stash\Driver\Composite',
+                                       'Redis' => '\Stash\Driver\Redis',
                                        'SQLite' => '\Stash\Driver\Sqlite',
                                        'Xcache' => '\Stash\Driver\Xcache',
     );
@@ -52,7 +53,7 @@ class Drivers
                 continue;
             }
 
-            if($name == 'MultiDriver') {
+            if($name == 'Composite') {
                 $availableDrivers[$name] = $class;
             } else {
                 if($class::isAvailable()) {
