@@ -111,9 +111,16 @@ class Redis implements DriverInterface
         $store = serialize(array('data' => $data, 'expiration' => $expiration));
         if(is_null($expiration))
         {
-            return $this->redis->setex($this->makeKeyString($key), $store, $expiration);
+            return $this->redis->setex($this->makeKeyString($key), $store);
         }else{
-            return $this->redis->set($this->makeKeyString($key), $store);
+            $ttl = $expiration - time();
+
+            // Prevent us from even passing a negative ttl'd item to redis,
+            // since it will just round up to zero and cache forever.
+            if($ttl < 1)
+                return true;
+
+            return $this->redis->set($this->makeKeyString($key), $store, $ttl);
         }
     }
 
