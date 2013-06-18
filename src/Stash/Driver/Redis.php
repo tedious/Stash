@@ -65,12 +65,12 @@ class Redis implements DriverInterface
 
 
 
-        if(isset($server['socket'])) {
+        if(isset($server['socket']) && $server['socket']) {
             $redis->connect($server['socket']);
         }else{
-            $port = isset($server['port']) ? $server['port'] : 6369;
+            $port = isset($server['port']) ? $server['port'] : 6379;
             $ttl = isset($server['ttl']) ? $server['ttl'] : 0.1;
-            $redis->connect($server['host'], $port, $ttl);
+            $redis->connect($server['server'], $port, $ttl);
         }
 
         // auth - just password
