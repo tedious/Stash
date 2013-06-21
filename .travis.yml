@@ -1,13 +1,14 @@
 language: php
 
-php: 
+php:
     - 5.3
     - 5.4
+    - 5.5
 
 before_script:
     - composer install --dev
-    - tests/php_setup.sh
-    - phpenv config-add tests/php_extensions.ini
+    - tests/travis/php_setup.sh
+    - phpenv config-add tests/travis/php_extensions.ini
 
 script: phpunit --verbose --coverage-text
 
