@@ -59,23 +59,40 @@ class Redis implements DriverInterface
         // most of the class will be the same even after the changes.
 
 
-        $server = $servers[0];
+        if(count($servers) == 1)
+        {
+            $server = $servers[0];
+            $redis = new \Redis();
 
-        $redis = new \Redis();
+            if(isset($server['socket']) && $server['socket']) {
+                $redis->connect($server['socket']);
+            }else{
+                $port = isset($server['port']) ? $server['port'] : 6379;
+                $ttl = isset($server['ttl']) ? $server['ttl'] : 0.1;
+                $redis->connect($server['server'], $port, $ttl);
+            }
+
+            // auth - just password
+            if(isset($options['password']))
+                $redis->auth($options['password']);
+
+            $this->redis = $redis;
 
 
-
-        if(isset($server['socket']) && $server['socket']) {
-            $redis->connect($server['socket']);
         }else{
-            $port = isset($server['port']) ? $server['port'] : 6379;
-            $ttl = isset($server['ttl']) ? $server['ttl'] : 0.1;
-            $redis->connect($server['server'], $port, $ttl);
-        }
 
-        // auth - just password
-        if(isset($options['password']))
-            $redis->auth($options['password']);
+            $serverArray = array();
+            foreach($servers as $server)
+            {
+                $serverString = $server['server'];
+                if(isset($server['port']))
+                    $serverString .= ':' . $server['port'];
+
+                $serverArray[] = $serverString;
+            }
+
+            $redis = new \RedisArray($serverArray);
+        }
 
 
         // select database
@@ -83,8 +100,6 @@ class Redis implements DriverInterface
             $redis->select($options['database']);
 
         $this->redis = $redis;
-
-
     }
 
     /**
