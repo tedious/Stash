@@ -6,7 +6,11 @@ php:
 
 before_script:
     - composer install --dev
+    - tests/php_setup.sh
     - phpenv config-add tests/php_extensions.ini
 
 script: phpunit --verbose --coverage-text
 
+services:
+  - redis-server
+  - memcached
