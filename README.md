@@ -1,6 +1,6 @@
 # Stash
 
-[![Build Status](https://secure.travis-ci.org/tedivm/Stash.png?branch=master)](http://travis-ci.org/tedivm/Stash)
+[![Build Status](https://travis-ci.org/tedivm/Stash.png?branch=master)](https://travis-ci.org/tedivm/Stash)
 
 Stash makes it easy to speed up your code by caching the results of expensive
 functions or code. Certain actions, like database queries or calls to external
