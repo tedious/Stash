@@ -12,12 +12,16 @@ echo ""
 echo "Copying Configuration..."
 
 CONFIGPATH=${TRAVIS_BUILD_DIR}/tests/travis/files/redis
-cp ${CONFIGPATH}/redis-server2 /etc/init.d/redis-server2
-cp ${CONFIGPATH}/redis-server2.conf /etc/redis/redis-server2.conf
+sudo cp ${CONFIGPATH}/redis-server2 /etc/init.d/redis-server2
+sudo cp ${CONFIGPATH}/redis-server2.conf /etc/redis/redis-server2.conf
 
+echo "Creating Data Directory..."
+
+sudo mkdir /var/lib/redis2
+sudo chown redis:redis /var/lib/redis2
 
 
 echo "Starting Second Service..."
 
-service redis-server2 start
+sudo service redis-server2 start
 echo "Finished setup of second redis server."
