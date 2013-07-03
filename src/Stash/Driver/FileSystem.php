@@ -268,7 +268,7 @@ class FileSystem implements DriverInterface
         // Please don't look at me like that.
         $memkey = '';
         foreach ($key as $group) {
-            $memkey .= $group . '/';
+            $memkey .= str_replace('#', ':', $group) . '#';
         }
 
         if (isset($this->memStore['keys'][$memkey])) {
