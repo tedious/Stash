@@ -36,7 +36,8 @@ abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
                                                               )
                                                               )
                             ),
-                            '@node' => 'stuff'
+                            '@node' => 'stuff',
+                            'test/of/really/long/key/with/lots/of/children/keys' => true
     );
 
     protected $expiration;
