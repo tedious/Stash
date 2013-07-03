@@ -1,7 +1,16 @@
 {
   "name": "tedivm/stash",
-  "description": "A place to keep your cache",
-  "keywords": ["caching","performance","scalability","sessions"],
+  "description": "The place to keep your cache.",
+  "keywords": [
+    "cache",
+    "caching",
+    "performance",
+    "scalability",
+    "sessions",
+    "memcached",
+    "redis",
+    "apc"
+  ],
   "homepage": "http://github.com/tedivm/Stash",
   "type": "library",
   "license": "BSD-3-Clause",
@@ -21,6 +30,6 @@
   "autoload": {
     "psr-0": {
      	"Stash": "src/"
-     }
+    }
   }
 }
