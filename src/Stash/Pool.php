@@ -22,8 +22,26 @@ use Stash\Driver\DriverInterface;
  */
 class Pool
 {
+
+    /**
+     * The cacheDriver being used by the system. While this class handles all of the higher functions, it's the cache
+     * driver here that handles all of the storage/retrieval functionality. This value is set by the constructor.
+     *
+     * @var Stash\Driver\DriverInterface
+     */
     protected $driver;
+
+
     protected $isDisabled = false;
+
+    /**
+     * If set various then errors and exceptions will get passed to the PSR Compliant logging library. This
+     * can be set using the setLogger() function in this class.
+     *
+     * @var Psr\Log\LoggerInterface
+     */
+    protected $logger;
+
 
     /**
      * The constructor takes a Driver class which is used for persistent
@@ -66,6 +84,9 @@ class Pool
 
         if($this->isDisabled)
             $cache->disable();
+
+        if(isset($this->logger))
+            $cache->setLogger($this->logger);
 
         return $cache;
     }
@@ -153,5 +174,13 @@ class Pool
             $this->driver = new Ephemeral();
 
         return $this->driver;
+    }
+
+    /**
+     * Return true if caching is disabled
+     */
+    public function setLogger($logger)
+    {
+        $this->logger = $logger;
     }
 }
