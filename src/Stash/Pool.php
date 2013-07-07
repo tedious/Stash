@@ -72,15 +72,31 @@ class Pool
         $argCount = count($args);
 
         if ($argCount < 1) {
-            throw new InvalidArgumentException('Item constructor requires valid key.');
+            throw new \InvalidArgumentException('Item constructor requires a key.');
         }
+
         // check to see if a single array was used instead of multiple arguments
         if ($argCount == 1 && is_array($args[0])) {
             $args = $args[0];
+            $argCount = count($args);
+        }
+
+        if($argCount == 1) {
+            $keyString = trim($args[0], '/');
+            $key = explode('/', $keyString);
+        }else{
+            $key = $args;
+        }
+
+        foreach($key as $node)
+        {
+            if(strlen($node) < 1) {
+                throw new \InvalidArgumentException('Invalid or Empty Node passed to getItem constructor.');
+            }
         }
 
         $driver = $this->getDriver();
-        $cache = new Item($this->driver, $args);
+        $cache = new Item($this->driver, $key);
 
         if($this->isDisabled)
             $cache->disable();

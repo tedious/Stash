@@ -46,6 +46,27 @@ class PoolTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->data, $storedData, 'getItem returns working Stash\Item object');
     }
 
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Item constructor requires a key.
+     */
+    public function testGetItemInvalidKey()
+    {
+        $pool = $this->getTestPool();
+        $item = $pool->getItem();
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Invalid or Empty Node passed to getItem constructor.
+     */
+    public function testGetItemInvalidKeyMissingNode()
+    {
+        $pool = $this->getTestPool();
+        $item = $pool->getItem('This/Test//Fail');
+    }
+
+
     public function testGetItemIterator()
     {
         $pool = $this->getTestPool();
