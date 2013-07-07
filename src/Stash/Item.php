@@ -375,7 +375,9 @@ class Item
         if(!isset($this->logger))
             return false;
 
-        $this->logger->critical($message, array('exception' => $exception));
+        $this->logger->critical($message,
+                                array('exception' => $exception,
+                                      'key' => $this->keyString));
         return true;
     }
 
