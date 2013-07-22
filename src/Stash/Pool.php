@@ -22,8 +22,26 @@ use Stash\Driver\DriverInterface;
  */
 class Pool
 {
+
+    /**
+     * The cacheDriver being used by the system. While this class handles all of the higher functions, it's the cache
+     * driver here that handles all of the storage/retrieval functionality. This value is set by the constructor.
+     *
+     * @var Stash\Driver\DriverInterface
+     */
     protected $driver;
+
+
     protected $isDisabled = false;
+
+    /**
+     * If set various then errors and exceptions will get passed to the PSR Compliant logging library. This
+     * can be set using the setLogger() function in this class.
+     *
+     * @var Psr\Log\LoggerInterface
+     */
+    protected $logger;
+
 
     /**
      * The constructor takes a Driver class which is used for persistent
@@ -54,18 +72,37 @@ class Pool
         $argCount = count($args);
 
         if ($argCount < 1) {
-            throw new InvalidArgumentException('Item constructor requires valid key.');
+            throw new \InvalidArgumentException('Item constructor requires a key.');
         }
+
         // check to see if a single array was used instead of multiple arguments
         if ($argCount == 1 && is_array($args[0])) {
             $args = $args[0];
+            $argCount = count($args);
+        }
+
+        if($argCount == 1) {
+            $keyString = trim($args[0], '/');
+            $key = explode('/', $keyString);
+        }else{
+            $key = $args;
+        }
+
+        foreach($key as $node)
+        {
+            if(strlen($node) < 1) {
+                throw new \InvalidArgumentException('Invalid or Empty Node passed to getItem constructor.');
+            }
         }
 
         $driver = $this->getDriver();
-        $cache = new Item($this->driver, $args);
+        $cache = new Item($this->driver, $key);
 
         if($this->isDisabled)
             $cache->disable();
+
+        if(isset($this->logger))
+            $cache->setLogger($this->logger);
 
         return $cache;
     }
@@ -106,6 +143,7 @@ class Pool
             $results = $this->getDriver()->clear();
         }catch(\Exception $e){
             $this->isDisabled = true;
+            $this->logException('Flushing Cache Pool caused exception.', $e);
             return false;
         }
         return $results;
@@ -131,6 +169,7 @@ class Pool
             $results = $this->getDriver()->purge();
         }catch(\Exception $e){
             $this->isDisabled = true;
+            $this->logException('Purging Cache Pool caused exception.', $e);
             return false;
         }
         return $results;
@@ -153,5 +192,23 @@ class Pool
             $this->driver = new Ephemeral();
 
         return $this->driver;
+    }
+
+    /**
+     * Return true if caching is disabled
+     */
+    public function setLogger($logger)
+    {
+        $this->logger = $logger;
+    }
+
+    protected function logException($message, $exception)
+    {
+        if(!isset($this->logger))
+            return false;
+
+        $this->logger->critical($message,
+                                array('exception' => $exception));
+        return true;
     }
 }
