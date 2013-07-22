@@ -13,6 +13,7 @@ namespace Stash;
 
 use Stash\Driver\Ephemeral;
 use Stash\Interfaces\DriverInterface;
+use Stash\Interfaces\PoolInterface;
 
 /**
  *
@@ -20,7 +21,7 @@ use Stash\Interfaces\DriverInterface;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class Pool
+class Pool implements PoolInterface
 {
 
     /**

@@ -14,6 +14,8 @@ namespace Stash;
 use Stash\Exception\Exception;
 use Stash\Exception\InvalidArgumentException;
 use Stash\Interfaces\DriverInterface;
+use Stash\Interfaces\ItemInterface;
+
 
 /**
  * Stash caches data that has a high generation cost, such as template preprocessing or code that requires a database
@@ -23,7 +25,7 @@ use Stash\Interfaces\DriverInterface;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class Item
+class Item implements ItemInterface
 {
     const SP_NONE         = 0;
     const SP_OLD          = 1;
