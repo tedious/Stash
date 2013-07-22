@@ -28,7 +28,7 @@ interface ItemInterface
 
     public function set($data, $ttl = null);
 
-    public function extendCache();
+    public function extend($ttl = null);
 
     public function isDisabled();
 
