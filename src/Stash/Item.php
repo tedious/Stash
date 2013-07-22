@@ -343,13 +343,13 @@ class Item implements ItemInterface
      *
      * @return bool
      */
-    public function extendCache()
+    public function extend($ttl = null)
     {
         if ($this->isDisabled()) {
             return false;
         }
 
-        return $this->set($this->get());
+        return $this->set($this->get(), $ttl);
     }
 
     /**
