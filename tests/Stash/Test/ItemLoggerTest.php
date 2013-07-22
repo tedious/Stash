@@ -11,8 +11,8 @@
 
 namespace Stash\Test;
 
-use Stash\Test\Stubs\LoggerStub as LoggerStub;
-use Stash\Test\Exception\ExceptionTest as ExceptionTest;
+use Stash\Test\Stubs\LoggerStub;
+use Stash\Test\Stubs\DriverExceptionStub;
 
 use Stash\Item;
 use Stash\Utilities;
@@ -38,7 +38,7 @@ class ItemLoggerTest extends \PHPUnit_Framework_TestCase
 
     public function testGet()
     {
-        $driver = new ExceptionTest();
+        $driver = new DriverExceptionStub();
         $item = new Item($driver, array('path', 'to', 'get'));
         $logger = new LoggerStub();
         $item->setLogger($logger);
@@ -55,7 +55,7 @@ class ItemLoggerTest extends \PHPUnit_Framework_TestCase
 
     public function testSet()
     {
-        $driver = new ExceptionTest();
+        $driver = new DriverExceptionStub();
         $item = new Item($driver, array('path', 'to', 'set'));
         $logger = new LoggerStub();
         $item->setLogger($logger);
@@ -71,7 +71,7 @@ class ItemLoggerTest extends \PHPUnit_Framework_TestCase
 
     public function testClear()
     {
-        $driver = new ExceptionTest();
+        $driver = new DriverExceptionStub();
         $item = new Item($driver, array('path', 'to', 'clear'));
         $logger = new LoggerStub();
         $item->setLogger($logger);
