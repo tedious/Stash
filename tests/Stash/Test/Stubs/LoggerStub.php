@@ -15,8 +15,7 @@ use Stash;
 use Stash\Driver\DriverInterface;
 
 /**
- * ExceptionTest is used for testing how Stash reacts to thrown errors. Every function but the constructor throws
- * an exception.
+ * LoggerStub is used to test that logging events are being triggered when they should be.
  *
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>

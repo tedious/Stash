@@ -11,7 +11,7 @@
 
 namespace Stash\Test;
 
-use Stash\Test\Exception\ExceptionTest;
+use Stash\Test\Stubs\DriverExceptionStub;
 use Stash\Pool;
 use Stash\Item;
 
@@ -23,7 +23,7 @@ class CacheExceptionTest extends \PHPUnit_Framework_TestCase
 {
     public function testSet()
     {
-        $driver = new ExceptionTest();
+        $driver = new DriverExceptionStub();
         $stash = new Item($driver, array('path', 'to', 'store'));
         $this->assertFalse($stash->isDisabled());
         $this->assertFalse($stash->set(array(1, 2, 3), 3600));
@@ -32,7 +32,7 @@ class CacheExceptionTest extends \PHPUnit_Framework_TestCase
 
     public function testGet()
     {
-        $stash = new Item(new ExceptionTest(), array('path', 'to', 'get'));
+        $stash = new Item(new DriverExceptionStub(), array('path', 'to', 'get'));
         $this->assertFalse($stash->isDisabled());
         $this->assertNull($stash->get());
         $this->assertTrue($stash->isDisabled(), 'Is disabled after exception is thrown in driver');
@@ -40,7 +40,7 @@ class CacheExceptionTest extends \PHPUnit_Framework_TestCase
 
     public function testClear()
     {
-        $stash = new Item(new ExceptionTest(), array('path', 'to', 'clear'));
+        $stash = new Item(new DriverExceptionStub(), array('path', 'to', 'clear'));
         $this->assertFalse($stash->isDisabled());
         $this->assertFalse($stash->clear());
         $this->assertTrue($stash->isDisabled(), 'Is disabled after exception is thrown in driver');
@@ -48,7 +48,7 @@ class CacheExceptionTest extends \PHPUnit_Framework_TestCase
 
     public function testPurge()
     {
-        $pool = new Pool(new ExceptionTest());
+        $pool = new Pool(new DriverExceptionStub());
         $stash = $pool->getItem('test');
         $this->assertFalse($stash->isDisabled());
         $this->assertFalse($pool->purge());
