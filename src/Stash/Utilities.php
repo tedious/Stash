@@ -11,8 +11,8 @@
 
 namespace Stash;
 
-use Stash\Driver\DriverInterface;
 use Stash\Exception\RuntimeException;
+use Stash\Interfaces\DriverInterface;
 
 /**
  * StashUtilities contains static functions used throughout the Stash project, both by core classes and drivers.

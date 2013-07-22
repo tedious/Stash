@@ -11,9 +11,9 @@
 
 namespace Stash;
 
-use Stash\Driver\DriverInterface;
 use Stash\Exception\Exception;
 use Stash\Exception\InvalidArgumentException;
+use Stash\Interfaces\DriverInterface;
 
 /**
  * Stash caches data that has a high generation cost, such as template preprocessing or code that requires a database

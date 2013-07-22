@@ -12,7 +12,7 @@
 namespace Stash;
 
 use Stash\Driver\Ephemeral;
-use Stash\Driver\DriverInterface;
+use Stash\Interfaces\DriverInterface;
 
 /**
  *

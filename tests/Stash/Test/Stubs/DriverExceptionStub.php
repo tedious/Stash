@@ -12,9 +12,8 @@
 namespace Stash\Test\Stubs;
 
 use Stash;
-use Stash\Driver\DriverInterface;
 use Stash\Test\Exception\TestException;
-
+use Stash\Interfaces\DriverInterface;
 
 /**
  * DriverExceptionStub is used for testing how Stash reacts to thrown errors. Every function but the constructor throws
