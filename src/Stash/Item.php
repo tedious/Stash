@@ -96,6 +96,14 @@ class Item
     protected $driver;
 
     /**
+     * If set various then errors and exceptions will get passed to the PSR Compliant logging library. This
+     * can be set using the setLogger() function in this class.
+     *
+     * @var Psr\Log\LoggerInterface
+     */
+    protected $logger;
+
+    /**
      * This is a flag to see if a valid response is returned. It is set by the getData function and is used by the
      * isMiss function.
      *
@@ -150,6 +158,7 @@ class Item
         try {
             return $this->executeClear();
         } catch (Exception $e) {
+            $this->logException('Clearing cache caused exception.', $e);
             $this->disable();
             return false;
         }
@@ -178,6 +187,7 @@ class Item
         try {
             return $this->executeGet($invalidation, $arg, $arg2);
         } catch (Exception $e) {
+            $this->logException('Retrieving from cache caused exception.', $e);
             $this->disable();
             return null;
         }
@@ -277,6 +287,7 @@ class Item
         try {
             return $this->executeSet($data, $ttl);
         } catch (Exception $e) {
+            $this->logException('Setting value in cache caused exception.', $e);
             $this->disable();
             return false;
         }
@@ -341,6 +352,8 @@ class Item
 
     /**
      * Return true if caching is disabled
+     *
+     * @return bool True if caching is disabled.
      */
     public function isDisabled()
     {
@@ -349,6 +362,24 @@ class Item
                 || (defined('STASH_DISABLE_CACHE') && STASH_DISABLE_CACHE);
     }
 
+    /**
+     * Return true if caching is disabled
+     */
+    public function setLogger($logger)
+    {
+        $this->logger = $logger;
+    }
+
+    protected function logException($message, $exception)
+    {
+        if(!isset($this->logger))
+            return false;
+
+        $this->logger->critical($message,
+                                array('exception' => $exception,
+                                      'key' => $this->keyString));
+        return true;
+    }
 
     /**
      * Returns true if another Item is currently recalculating the cache.
@@ -371,8 +402,7 @@ class Item
     }
 
     /**
-     * Returns the record for the current key, whether that record is pulled from memory or a driver. If there is no
-     * record than an empty array is returned.
+     * Returns the record for the current key. If there is no record than an empty array is returned.
      *
      * @return array
      */
@@ -391,8 +421,10 @@ class Item
      * Decides whether the current data is fresh according to the supplied validation technique. As some techniques
      * actively change the record this function takes that in as a reference.
      *
+     * This function has the ability to change the isHit property as well as the record passed.
+     *
      * @param array $validation
-     * @param array $record
+     * @param array $&record
      */
     protected function validateRecord($validation, &$record)
     {
