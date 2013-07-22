@@ -15,6 +15,7 @@ use Stash;
 use Stash\Exception\LogicException;
 use Stash\Exception\RuntimeException;
 use Stash\Exception\InvalidArgumentException;
+use Stash\Interfaces\DriverInterface;
 
 /**
  * StashFileSystem stores cache objects in the filesystem as native php, making the process of retrieving stored data

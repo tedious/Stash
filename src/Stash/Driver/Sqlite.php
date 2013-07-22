@@ -14,6 +14,7 @@ namespace Stash\Driver;
 use Stash;
 use Stash\Exception\RuntimeException;
 use Stash\Exception\InvalidArgumentException;
+use Stash\Interfaces\DriverInterface;
 
 /**
  * StashSqlite is a wrapper around one or more SQLite databases stored on the local system. While not as quick at at

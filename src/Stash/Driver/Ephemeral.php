@@ -12,6 +12,7 @@
 namespace Stash\Driver;
 
 use Stash;
+use Stash\Interfaces\DriverInterface;
 
 /**
  * The ephemeral class exists to assist with testing the main Stash class. Since this is a very minimal driver we can
