@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Stash\Driver;
+namespace Stash\Interfaces;
 
 /**
  * Stash Drivers are the engines behind the Stash library. These classes handle the low level operations- retrieving,

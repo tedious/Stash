@@ -10,7 +10,7 @@
 
 namespace Stash;
 
-use Stash\Pool;
+use Stash\Interfaces\PoolInterface;
 use Stash\Session\SessionHandlerInterface as SessionHandlerInterface;
 
 /**
@@ -102,7 +102,7 @@ class Session implements SessionHandlerInterface
      *
      * @param Stash\Pool pool
      */
-    public function __construct(Pool $pool)
+    public function __construct(PoolInterface $pool)
     {
         $this->pool = $pool;
         $this->options['ttl'] = (int) ini_get('session.gc_maxlifetime');

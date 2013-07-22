@@ -12,7 +12,8 @@
 namespace Stash;
 
 use Stash\Driver\Ephemeral;
-use Stash\Driver\DriverInterface;
+use Stash\Interfaces\DriverInterface;
+use Stash\Interfaces\PoolInterface;
 
 /**
  *
@@ -20,14 +21,14 @@ use Stash\Driver\DriverInterface;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class Pool
+class Pool implements PoolInterface
 {
 
     /**
      * The cacheDriver being used by the system. While this class handles all of the higher functions, it's the cache
      * driver here that handles all of the storage/retrieval functionality. This value is set by the constructor.
      *
-     * @var Stash\Driver\DriverInterface
+     * @var Stash\Interfaces\DriverInterface
      */
     protected $driver;
 
@@ -64,7 +65,7 @@ class Pool
      * @example $cache = $pool->getItem('permissions', 'user', '4', '2');
      *
      * @param string|array $key, $key, $key...
-     * @return \Stash\Item
+     * @return \Stash\Interaces\ItemInterface
      */
     function getItem()
     {

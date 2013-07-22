@@ -358,7 +358,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
 
     private function getMockedDriver()
     {
-        $driver = $this->getMockBuilder('Stash\Driver\DriverInterface')
+        $driver = $this->getMockBuilder('Stash\Interfaces\DriverInterface')
                         ->getMock();
         foreach (get_class_methods($driver) as $methodName) {
             $driver->expects($this->never())

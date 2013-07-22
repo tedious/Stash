@@ -49,7 +49,7 @@ class Drivers
                 continue;
             }
 
-            if (!in_array('Stash\Driver\DriverInterface', class_implements($class))) {
+            if (!in_array('Stash\Interfaces\DriverInterface', class_implements($class))) {
                 continue;
             }
 

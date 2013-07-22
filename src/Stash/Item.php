@@ -11,9 +11,11 @@
 
 namespace Stash;
 
-use Stash\Driver\DriverInterface;
 use Stash\Exception\Exception;
 use Stash\Exception\InvalidArgumentException;
+use Stash\Interfaces\DriverInterface;
+use Stash\Interfaces\ItemInterface;
+
 
 /**
  * Stash caches data that has a high generation cost, such as template preprocessing or code that requires a database
@@ -23,7 +25,7 @@ use Stash\Exception\InvalidArgumentException;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class Item
+class Item implements ItemInterface
 {
     const SP_NONE         = 0;
     const SP_OLD          = 1;
@@ -91,7 +93,7 @@ class Item
      * The cacheDriver being used by the system. While this class handles all of the higher functions, it's the cache
      * driver here that handles all of the storage/retrieval functionality. This value is set by the constructor.
      *
-     * @var Stash\Driver\DriverInterface
+     * @var Stash\Interfaces\DriverInterface
      */
     protected $driver;
 
