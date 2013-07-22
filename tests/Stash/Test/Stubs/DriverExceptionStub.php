@@ -9,13 +9,15 @@
  * file that was distributed with this source code.
  */
 
-namespace Stash\Test\Exception;
+namespace Stash\Test\Stubs;
 
 use Stash;
 use Stash\Driver\DriverInterface;
+use Stash\Test\Exception\TestException;
+
 
 /**
- * ExceptionTest is used for testing how Stash reacts to thrown errors. Every function but the constructor throws
+ * DriverExceptionStub is used for testing how Stash reacts to thrown errors. Every function but the constructor throws
  * an exception.
  *
  * @package Stash
@@ -23,7 +25,7 @@ use Stash\Driver\DriverInterface;
  *
  * @codeCoverageIgnore
  */
-class ExceptionTest implements DriverInterface
+class DriverExceptionStub implements DriverInterface
 {
     protected $store = array();
 

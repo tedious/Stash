@@ -11,8 +11,8 @@
 
 namespace Stash\Test;
 
-use Stash\Test\Stubs\LoggerStub as LoggerStub;
-use Stash\Test\Exception\ExceptionTest as ExceptionTest;
+use Stash\Test\Stubs\LoggerStub;
+use Stash\Test\Stubs\DriverExceptionStub;
 
 use Stash\Pool;
 use Stash\Utilities;
@@ -38,7 +38,7 @@ class PoolLoggerTest extends \PHPUnit_Framework_TestCase
 
     public function testFlush()
     {
-        $driver = new ExceptionTest();
+        $driver = new DriverExceptionStub();
         $pool = new Pool($driver);
         $logger = new LoggerStub();
         $pool->setLogger($logger);
@@ -55,7 +55,7 @@ class PoolLoggerTest extends \PHPUnit_Framework_TestCase
 
     public function testPurge()
     {
-        $driver = new ExceptionTest();
+        $driver = new DriverExceptionStub();
         $pool = new Pool($driver);
         $logger = new LoggerStub();
         $pool->setLogger($logger);
