@@ -308,7 +308,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function testExtendCache()
+    public function testExtend()
     {
         $this->driver = null;
         foreach ($this->data as $type => $value) {
@@ -322,7 +322,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
             $stash->set($value, -600);
 
             $stash = $this->testConstruct($key);
-            $this->assertTrue($stash->extendCache(), 'extendCache returns true');
+            $this->assertTrue($stash->extend(), 'extend returns true');
 
             $stash = $this->testConstruct($key);
             $data = $stash->get();
@@ -374,7 +374,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($stash->get(), 'getData returns null for disabled cache');
         $this->assertFalse($stash->clear(), 'clear returns false for disabled cache');
         $this->assertTrue($stash->isMiss(), 'isMiss returns true for disabled cache');
-        $this->assertFalse($stash->extendCache(), 'extendCache returns false for disabled cache');
+        $this->assertFalse($stash->extend(), 'extend returns false for disabled cache');
         $this->assertTrue($stash->lock(100), 'lock returns true for disabled cache');
     }
 }
