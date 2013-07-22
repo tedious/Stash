@@ -402,8 +402,7 @@ class Item
     }
 
     /**
-     * Returns the record for the current key, whether that record is pulled from memory or a driver. If there is no
-     * record than an empty array is returned.
+     * Returns the record for the current key. If there is no record than an empty array is returned.
      *
      * @return array
      */
@@ -422,8 +421,10 @@ class Item
      * Decides whether the current data is fresh according to the supplied validation technique. As some techniques
      * actively change the record this function takes that in as a reference.
      *
+     * This function has the ability to change the isHit property as well as the record passed.
+     *
      * @param array $validation
-     * @param array $record
+     * @param array $&record
      */
     protected function validateRecord($validation, &$record)
     {
