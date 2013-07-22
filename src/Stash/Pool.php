@@ -143,6 +143,7 @@ class Pool
             $results = $this->getDriver()->clear();
         }catch(\Exception $e){
             $this->isDisabled = true;
+            $this->logException('Flushing Cache Pool caused exception.', $e);
             return false;
         }
         return $results;
@@ -168,6 +169,7 @@ class Pool
             $results = $this->getDriver()->purge();
         }catch(\Exception $e){
             $this->isDisabled = true;
+            $this->logException('Purging Cache Pool caused exception.', $e);
             return false;
         }
         return $results;
@@ -198,5 +200,15 @@ class Pool
     public function setLogger($logger)
     {
         $this->logger = $logger;
+    }
+
+    protected function logException($message, $exception)
+    {
+        if(!isset($this->logger))
+            return false;
+
+        $this->logger->critical($message,
+                                array('exception' => $exception));
+        return true;
     }
 }
