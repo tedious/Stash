@@ -78,7 +78,7 @@ class FileSystem implements DriverInterface
         $options = array_merge($this->defaultOptions, $options);
 
         $this->cachePath = isset($options['path']) ? $options['path'] : \Stash\Utilities::getBaseDirectory($this);
-        $this->cachePath = rtrim($this->cachePath, '\\/') . '/';
+        $this->cachePath = rtrim($this->cachePath, '\\/') . DIRECTORY_SEPARATOR;
 
         $this->filePermissions = $options['filePermissions'];
         $this->dirPermissions = $options['dirPermissions'];
@@ -181,11 +181,23 @@ class FileSystem implements DriverInterface
 
         $path = $this->makePath($key);
 
+
+
         if (!file_exists($path)) {
             if (!is_dir(dirname($path))) {
+                // MAX_PATH is 260 - http://msdn.microsoft.com/en-us/library/aa365247(VS.85).aspx
+                if (strlen(dirname($path)) > 259 && stristr(PHP_OS,'WIN')) {
+                    throw new Stash\Exception\WindowsPathMaxLengthException();
+                }
+
                 if (!mkdir(dirname($path), $this->dirPermissions, true)) {
                     return false;
                 }
+            }
+
+            // MAX_PATH is 260 - http://msdn.microsoft.com/en-us/library/aa365247(VS.85).aspx
+            if (strlen($path) > 259 &&  stristr(PHP_OS,'WIN')) {
+                throw new Stash\Exception\WindowsPathMaxLengthException();
             }
 
             if (!(touch($path) && chmod($path, $this->filePermissions))) {
@@ -282,7 +294,7 @@ class FileSystem implements DriverInterface
 
             foreach ($key as $index => $value) {
                 if (strpos($value, '@') === 0) {
-                    $path .= substr($value, 1) . '/';
+                    $path .= substr($value, 1) . DIRECTORY_SEPARATOR;
                     continue;
                 }
 
@@ -293,11 +305,11 @@ class FileSystem implements DriverInterface
                     if ($i == $this->directorySplit) {
                         $len = $sLen - $start;
                     }
-                    $path .= substr($value, $start, $len) . '/';
+                    $path .= substr($value, $start, $len) . DIRECTORY_SEPARATOR;
                 }
             }
 
-            $path = rtrim($path, '/') . '.php';
+            $path = rtrim($path, DIRECTORY_SEPARATOR) . '.php';
             $this->memStore['keys'][$memkey] = $path;
 
             // in most cases the key will be used almost immediately or not at all, so it doesn't need to grow too large

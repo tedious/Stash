@@ -84,9 +84,17 @@ class FileSystemTest extends AbstractDriverTest
      * Test creation of directories with long paths (Windows issue)
      *
      * Regression test for https://github.com/tedivm/Stash/issues/61
+     *
+     * There are currently no short term plans to allow long paths in PHP windows
+     * http://www.mail-archive.com/internals@lists.php.net/msg62672.html
+     *
      */
     public function testLongPathFolderCreation()
     {
+        if (stristr(PHP_OS,"WIN") === false) {
+            $this->markTestSkipped('Driver class unsuited for current environment');
+        }
+
         $cachePath = sys_get_temp_dir().DIRECTORY_SEPARATOR.'stash';
 
         $driver = new FileSystem(array(
@@ -96,14 +104,15 @@ class FileSystemTest extends AbstractDriverTest
         ));
         $key=array();
 
-        // Max path length seems to be around 255 or 256
-        while(strlen($cachePath . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR,$key)) < 255) {
+        // MAX_PATH is 260 - http://msdn.microsoft.com/en-us/library/aa365247(VS.85).aspx
+        while(strlen($cachePath . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR,$key)) < 259) {
             // 32 character string typical of an md5 sum
             $key[]="abcdefghijklmnopqrstuvwxyz123456";
         }
         $key[]="abcdefghijklmnopqrstuvwxyz123456";
-
         $this->expiration = time() + 3600;
+
+        $this->setExpectedException('\Stash\Exception\WindowsPathMaxLengthException');
         $driver->storeData($key,"test",$this->expiration);
     }
 
@@ -111,9 +120,17 @@ class FileSystemTest extends AbstractDriverTest
      * Test creation of file with long paths (Windows issue)
      *
      * Regression test for https://github.com/tedivm/Stash/issues/61
+     *
+     * There are currently no short term plans to allow long paths in PHP windows
+     * http://www.mail-archive.com/internals@lists.php.net/msg62672.html
+     *
      */
     public function testLongPathFileCreation()
     {
+        if (stristr(PHP_OS,"WIN") === false) {
+            $this->markTestSkipped('Driver class unsuited for current environment');
+        }
+
         $cachePath = sys_get_temp_dir().DIRECTORY_SEPARATOR.'stash';
 
         $driver = new FileSystem(array(
@@ -123,13 +140,14 @@ class FileSystemTest extends AbstractDriverTest
         ));
         $key=array();
 
-        // Max path length seems to be around 255 or 256
-        while(strlen($cachePath . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR,$key)) < 255) {
+        // MAX_PATH is 260 - http://msdn.microsoft.com/en-us/library/aa365247(VS.85).aspx
+        while(strlen($cachePath . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR,$key)) < 259) {
             // 32 character string typical of an md5 sum
             $key[]="abcdefghijklmnopqrstuvwxyz123456";
         }
-
         $this->expiration = time() + 3600;
+
+        $this->setExpectedException('\Stash\Exception\WindowsPathMaxLengthException');
         $driver->storeData($key,"test",$this->expiration);
     }
 }
