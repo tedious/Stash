@@ -1,11 +1,14 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: jonathan
- * Date: 7/25/13
- * Time: 11:49 AM
- * To change this template use File | Settings | File Templates.
+
+/*
+ * This file is part of the Stash package.
+ *
+ * (c) Robert Hafner <tedivm@tedivm.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
+
 
 namespace Stash\Exception;
 
@@ -25,6 +28,7 @@ namespace Stash\Exception;
  *
  * Class WindowsPathMaxLengthException
  * @package Stash\Exception
+ * @author Jonathan Chan <jc@jmccc.com>
  */
 class WindowsPathMaxLengthException extends \Exception implements Exception {
     public function __construct($message="",$code=0,$previous=null) {
