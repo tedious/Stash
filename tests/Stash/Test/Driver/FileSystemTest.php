@@ -79,4 +79,57 @@ class FileSystemTest extends AbstractDriverTest
             $this->assertFileExists($predicted);
         }
     }
+
+    /**
+     * Test creation of directories with long paths (Windows issue)
+     *
+     * Regression test for https://github.com/tedivm/Stash/issues/61
+     */
+    public function testLongPathFolderCreation()
+    {
+        $cachePath = sys_get_temp_dir().DIRECTORY_SEPARATOR.'stash';
+
+        $driver = new FileSystem(array(
+            'keyHashFunction' => 'Stash\Test\Driver\strdup',
+            'path' => $cachePath,
+            'dirSplit' => 1
+        ));
+        $key=array();
+
+        // Max path length seems to be around 255 or 256
+        while(strlen($cachePath . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR,$key)) < 255) {
+            // 32 character string typical of an md5 sum
+            $key[]="abcdefghijklmnopqrstuvwxyz123456";
+        }
+        $key[]="abcdefghijklmnopqrstuvwxyz123456";
+
+        $this->expiration = time() + 3600;
+        $driver->storeData($key,"test",$this->expiration);
+    }
+
+    /**
+     * Test creation of file with long paths (Windows issue)
+     *
+     * Regression test for https://github.com/tedivm/Stash/issues/61
+     */
+    public function testLongPathFileCreation()
+    {
+        $cachePath = sys_get_temp_dir().DIRECTORY_SEPARATOR.'stash';
+
+        $driver = new FileSystem(array(
+            'keyHashFunction' => 'Stash\Test\Driver\strdup',
+            'path' => $cachePath,
+            'dirSplit' => 1
+        ));
+        $key=array();
+
+        // Max path length seems to be around 255 or 256
+        while(strlen($cachePath . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR,$key)) < 255) {
+            // 32 character string typical of an md5 sum
+            $key[]="abcdefghijklmnopqrstuvwxyz123456";
+        }
+
+        $this->expiration = time() + 3600;
+        $driver->storeData($key,"test",$this->expiration);
+    }
 }
