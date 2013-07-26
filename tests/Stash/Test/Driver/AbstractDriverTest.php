@@ -211,5 +211,15 @@ abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
         foreach ($this->data as $type => $value) {
             $this->assertFalse($driver->getData(array('base', 'stale', $type)), 'purge removed stale data');
         }
+
+        return $driver;
+    }
+
+    /**
+     * @depends testPurge
+     */
+    public function testDestructor($driver) {
+        $driver->__destruct();
+        $driver=null;
     }
 }

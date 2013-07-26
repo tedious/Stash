@@ -104,6 +104,14 @@ class Redis implements DriverInterface
     }
 
     /**
+     * Properly close the connection
+     */
+    public function __destruct()
+    {
+        $this->redis->close();
+    }
+
+    /**
      *
      *
      * @param array $key
