@@ -1,7 +1,7 @@
 # Stash
 
-[![Latest Stable Version](https://poser.pugx.org/tedivm/stash/v/stable.png)](https://packagist.org/packages/tedivm/stash)
 [![Build Status](https://travis-ci.org/tedivm/Stash.png?branch=master)](https://travis-ci.org/tedivm/Stash)
+[![Latest Stable Version](https://poser.pugx.org/tedivm/stash/v/stable.png)](https://packagist.org/packages/tedivm/stash)
 [![Total Downloads](https://poser.pugx.org/tedivm/stash/downloads.png)](https://packagist.org/packages/tedivm/stash)
 
 Stash makes it easy to speed up your code by caching the results of expensive
