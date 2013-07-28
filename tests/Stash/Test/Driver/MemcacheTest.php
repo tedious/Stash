@@ -41,16 +41,19 @@ class MemcacheTest extends AbstractDriverTest
 
             if (!$driverClass::isAvailable()) {
                 $this->markTestSkipped('Driver class unsuited for current environment');
+
                 return;
             }
 
             if (!class_exists(ucfirst($this->extension))) {
                 $this->markTestSkipped('Test requires ' . $this->extension . ' extension');
+
                 return;
             }
 
             if (!($sock = @fsockopen($this->servers[0], $this->servers[1], $errno, $errstr, 1))) {
                 $this->markTestSkipped('Memcache tests require memcache server');
+
                 return;
             }
 

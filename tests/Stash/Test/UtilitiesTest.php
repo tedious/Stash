@@ -102,7 +102,6 @@ class UtilitiesTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(Utilities::deleteRecursive($dirTwo . '/test3'), 'deleteRecursive returned true when removing single file.');
         $this->assertFileNotExists($dirTwo . '/test3', 'deleteRecursive removed single file');
 
-
         $this->assertTrue(Utilities::deleteRecursive($tmp), 'deleteRecursive returned true when removing directories.');
         $this->assertFileNotExists($tmp, 'deleteRecursive cleared out the directory');
 

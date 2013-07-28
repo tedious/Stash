@@ -66,7 +66,6 @@ class PoolTest extends \PHPUnit_Framework_TestCase
         $item = $pool->getItem('This/Test//Fail');
     }
 
-
     public function testGetItemIterator()
     {
         $pool = $this->getTestPool();
@@ -75,8 +74,7 @@ class PoolTest extends \PHPUnit_Framework_TestCase
 
         $cacheIterator = $pool->getItemIterator($keys);
         $keyData = $this->multiData;
-        foreach($cacheIterator as $stash)
-        {
+        foreach ($cacheIterator as $stash) {
             $key = $stash->getKey();
             $this->assertTrue($stash->isMiss(), 'new Cache in iterator is empty');
             $stash->set($keyData[$key]);
@@ -85,8 +83,7 @@ class PoolTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(0, $keyData, 'all keys are accounted for the in cache iterator');
 
         $cacheIterator = $pool->getItemIterator($keys);
-        foreach($cacheIterator as $stash)
-        {
+        foreach ($cacheIterator as $stash) {
             $key = $stash->getKey();
             $data = $stash->get($key);
             $this->assertEquals($this->multiData[$key], $data, 'data put into the pool comes back the same through iterators.');
@@ -119,7 +116,6 @@ class PoolTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($stash->isMiss(), 'purge causes cache miss');
     }
 
-
     public function testgetItemArrayConversion()
     {
         $pool = $this->getTestPool();
@@ -133,6 +129,7 @@ class PoolTest extends \PHPUnit_Framework_TestCase
         $driver = new Ephemeral(array());
         $pool = new Pool();
         $pool->setDriver($driver);
+
         return $pool;
     }
 }

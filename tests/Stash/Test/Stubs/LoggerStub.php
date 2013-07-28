@@ -12,7 +12,6 @@
 namespace Stash\Test\Stubs;
 
 use Stash;
-use Stash\Driver\DriverInterface;
 
 /**
  * LoggerStub is used to test that logging events are being triggered when they should be.

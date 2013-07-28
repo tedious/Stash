@@ -105,6 +105,7 @@ abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
             $key = array('base', $type);
             $this->assertTrue($driver->storeData($key, $value, $this->expiration), 'Driver class able to store data type ' . $type);
         }
+
         return $driver;
     }
 
@@ -119,7 +120,6 @@ abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
 
             $this->assertTrue(is_array($return), 'getData ' . $type . ' returns array');
 
-
             $this->assertArrayHasKey('expiration', $return, 'getData ' . $type . ' has expiration');
             $this->assertLessThanOrEqual($this->expiration, $return['expiration'], 'getData ' . $type . ' returns same expiration that is equal to or sooner than the one passed.');
 
@@ -128,6 +128,7 @@ abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
             $this->assertArrayHasKey('data', $return, 'getData ' . $type . ' has data');
             $this->assertEquals($value, $return['data'], 'getData ' . $type . ' returns same item as stored');
         }
+
         return $driver;
     }
 
@@ -165,7 +166,6 @@ abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
         foreach ($this->data as $type => $value) {
             $this->assertFalse($driver->getData(array('base', $type)), 'clear of base node removed data');
         }
-
 
         // repopulate
         foreach ($this->data as $type => $value) {
@@ -218,7 +218,8 @@ abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
     /**
      * @depends testPurge
      */
-    public function testDestructor($driver) {
+    public function testDestructor($driver)
+    {
         $driver->__destruct();
         $driver=null;
     }

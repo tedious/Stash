@@ -19,5 +19,4 @@ class RedisTest extends AbstractDriverTest
 {
     protected $driverClass = 'Stash\Driver\Redis';
 
-
 }
