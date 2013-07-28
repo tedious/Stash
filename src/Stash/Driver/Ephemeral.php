@@ -54,6 +54,7 @@ class Ephemeral implements DriverInterface
     public function storeData($key, $data, $expiration)
     {
         $this->store[$this->getKeyIndex($key)] = array('data' => $data, 'expiration' => $expiration);
+
         return true;
     }
 
@@ -85,7 +86,7 @@ class Ephemeral implements DriverInterface
         return true;
     }
 
-    static public function isAvailable()
+    public static function isAvailable()
     {
         return true;
     }

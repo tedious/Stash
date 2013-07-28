@@ -12,7 +12,6 @@
 namespace Stash\Driver;
 
 use Stash;
-use Stash\Exception\InvalidArgumentException;
 use Stash\Exception\RuntimeException;
 use Stash\Interfaces\DriverInterface;
 
@@ -116,7 +115,7 @@ class Composite implements DriverInterface
      * This function should clear the cache tree using the key array provided. If called with no arguments the entire
      * cache needs to be cleared.
      *
-     * @param null|array $key
+     * @param  null|array $key
      * @return bool
      */
     public function clear($key = null)
@@ -154,7 +153,7 @@ class Composite implements DriverInterface
      *
      * @return bool true
      */
-    static public function isAvailable()
+    public static function isAvailable()
     {
         return true;
     }

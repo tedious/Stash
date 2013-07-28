@@ -31,7 +31,7 @@ class FileSystemTest extends AbstractDriverTest
     {
         return array('memKeyLimit' => 2);
     }
-    
+
     /**
      * @expectedException Stash\Exception\RuntimeException
      */
@@ -39,12 +39,12 @@ class FileSystemTest extends AbstractDriverTest
     {
         $driver = new FileSystem(array('keyHashFunction' => 'foobar_'.mt_rand()));
     }
-    
+
     public function testOptionKeyHashFunction()
     {
         $driver = new FileSystem(array('keyHashFunction' => 'md5'));
     }
-    
+
     /**
      * Test that the paths are created using the key hash function.
      */
@@ -52,30 +52,29 @@ class FileSystemTest extends AbstractDriverTest
     {
         $hashfunctions = array('Stash\Test\Driver\strdup', 'strrev', 'md5');
         $paths = array('one', 'two', 'three', 'four');
-        
-        
-        foreach($hashfunctions as $hashfunction) {
-            
+
+        foreach ($hashfunctions as $hashfunction) {
+
             $driver = new FileSystem(array(
                 'keyHashFunction' => $hashfunction,
                 'path' => sys_get_temp_dir().DIRECTORY_SEPARATOR.'stash',
                 'dirSplit' => 1
             ));
-            
+
             $rand = str_repeat(uniqid(), 32);
-            
+
             $item = new Item($driver, $paths);
             $item->set($rand);
-            
+
             $allpaths = array_merge(array('cache'), $paths);
             $predicted = sys_get_temp_dir().
                             DIRECTORY_SEPARATOR.
                             'stash'.
                             DIRECTORY_SEPARATOR.
-                            implode(DIRECTORY_SEPARATOR, 
+                            implode(DIRECTORY_SEPARATOR,
                                 array_map($hashfunction, $allpaths)).
                             '.php';
-            
+
             $this->assertFileExists($predicted);
         }
     }
@@ -105,7 +104,7 @@ class FileSystemTest extends AbstractDriverTest
         $key=array();
 
         // MAX_PATH is 260 - http://msdn.microsoft.com/en-us/library/aa365247(VS.85).aspx
-        while(strlen($cachePath . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR,$key)) < 259) {
+        while (strlen($cachePath . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR,$key)) < 259) {
             // 32 character string typical of an md5 sum
             $key[]="abcdefghijklmnopqrstuvwxyz123456";
         }
@@ -141,7 +140,7 @@ class FileSystemTest extends AbstractDriverTest
         $key=array();
 
         // MAX_PATH is 260 - http://msdn.microsoft.com/en-us/library/aa365247(VS.85).aspx
-        while(strlen($cachePath . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR,$key)) < 259) {
+        while (strlen($cachePath . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR,$key)) < 259) {
             // 32 character string typical of an md5 sum
             $key[]="abcdefghijklmnopqrstuvwxyz123456";
         }

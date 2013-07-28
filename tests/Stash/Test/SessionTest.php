@@ -13,7 +13,6 @@ namespace Stash\Test;
 
 use Stash\Session;
 use Stash\Pool;
-use Stash\Handler\Ephemeral;
 
 /**
  * @package Stash
@@ -57,7 +56,6 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($DataA != $DataB,
                           'Sessions with different paths do not share data.');
 
-
         $pool = new Pool();
 
         $sessionA = new Session($pool);
@@ -74,7 +72,6 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($DataA != $DataB,
                           'Sessions with different names do not share data.');
     }
-
 
     public function testClose()
     {

@@ -26,9 +26,10 @@ class SqlitePdo extends Sqlite
         $this->responseCode = \PDO::FETCH_ASSOC;
     }
 
-    static public function isAvailable()
+    public static function isAvailable()
     {
         $drivers = class_exists('\PDO', false) ? \PDO::getAvailableDrivers() : array();
+
         return in_array('sqlite', $drivers);
     }
 
@@ -45,6 +46,7 @@ class SqlitePdo extends Sqlite
     protected function buildDriver()
     {
         $db = new \PDO('sqlite:' . $this->path);
+
         return $db;
     }
 }

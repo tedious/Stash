@@ -23,13 +23,10 @@ class RedisArrayTest extends AbstractDriverTest
     {
         parent::setUp();
 
-
         $redis = new \Redis();
         if($redis->connect('127.0.0.1', 6380, 0.1) == false)
             $this->markTestSkipped('Second Redis Server needed for more tests.');
 
-
     }
-
 
 }

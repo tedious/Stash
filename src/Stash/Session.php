@@ -47,7 +47,6 @@ class Session implements SessionHandlerInterface
      */
     protected $name = '__empty_session_name';
 
-
     /**
      * Some options (such as the ttl of a session) can be set by the developers.
      *
@@ -55,24 +54,22 @@ class Session implements SessionHandlerInterface
      */
     protected $options = array();
 
-
     /**
      * Registers a Session object with PHP as the session handler. This
      * eliminates some boilerplate code from projects while also helping with
      * the differences in php versions.
      *
-     * @param Stash\Session $handler
+     * @param  Stash\Session $handler
      * @return bool
      */
-    static function registerHandler(Session $handler)
+    public static function registerHandler(Session $handler)
     {
         // this isn't possible to test with the CLI phpunit test
         // @codeCoverageIgnoreStart
 
-        if(version_compare(PHP_VERSION, '5.4.0') >= 0)
-        {
+        if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
             return session_set_save_handler($handler, true);
-        }else{
+        } else {
             $results = session_set_save_handler(
                 array($handler, 'open'),
                 array($handler, 'close'),
@@ -83,6 +80,7 @@ class Session implements SessionHandlerInterface
             );
 
             if(!$results)
+
                 return false;
 
             // the following prevents unexpected effects when using objects as save handlers
@@ -113,7 +111,7 @@ class Session implements SessionHandlerInterface
      * a "ttl" value, which represents the amount of time (in seconds) that each
      * session should last.
      *
-     * @param array $options
+     * @param  array $options
      * @return bool
      */
     public function setOptions($options = array())
@@ -121,21 +119,18 @@ class Session implements SessionHandlerInterface
         $this->options = array_merge($this->options, $options);
     }
 
-
     /*
      * The functions below are all implemented according to the
      * SessionHandlerInterface interface.
      */
-
-
 
     /**
      * This function is defined by the SessionHandlerInterface and is for PHP's
      * internal use. It takes the saved session path and turns it into a
      * namespace.
      *
-     * @param string $save_path
-     * @param string $session_name
+     * @param  string $save_path
+     * @param  string $session_name
      * @return bool
      */
     public function open($save_path, $session_name)
@@ -164,13 +159,14 @@ class Session implements SessionHandlerInterface
      * This function is defined by the SessionHandlerInterface and is for PHP's
      * internal use. It reads the session data from the caching system.
      *
-     * @param string $session_id
+     * @param  string $session_id
      * @return string
      */
     public function read($session_id)
     {
         $cache = $this->getCache($session_id);
         $data = $cache->get();
+
         return $cache->isMiss() ? '' : $data;
     }
 
@@ -178,13 +174,14 @@ class Session implements SessionHandlerInterface
      * This function is defined by the SessionHandlerInterface and is for PHP's
      * internal use. It writes the session data to the caching system.
      *
-     * @param string $session_id
-     * @param string $session_data
+     * @param  string $session_id
+     * @param  string $session_data
      * @return bool
      */
     public function write($session_id, $session_data)
     {
         $cache = $this->getCache($session_id);
+
         return $cache->set($session_data, $this->options['ttl']);
     }
 
@@ -204,12 +201,13 @@ class Session implements SessionHandlerInterface
      * This function is defined by the SessionHandlerInterface and is for PHP's
      * internal use. It clears the current session.
      *
-     * @param string $session_id
+     * @param  string $session_id
      * @return bool
      */
     public function destroy($session_id)
     {
         $cache = $this->getCache($session_id);
+
         return $cache->clear();
     }
 
@@ -223,7 +221,7 @@ class Session implements SessionHandlerInterface
      * gc_probability as zero) and call the "purge" function on the Stash\Pool
      * class directly.
      *
-     * @param int $maxlifetime
+     * @param  int  $maxlifetime
      * @return bool
      */
     public function gc($maxlifetime)

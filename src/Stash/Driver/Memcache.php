@@ -98,9 +98,9 @@ class Memcache implements DriverInterface
 
     /**
      *
-     * @param array $key
-     * @param array $data
-     * @param int $expiration
+     * @param  array $key
+     * @param  array $data
+     * @param  int   $expiration
      * @return bool
      */
     public function storeData($key, $data, $expiration)
@@ -110,7 +110,7 @@ class Memcache implements DriverInterface
 
     /**
      *
-     * @param null|array $key
+     * @param  null|array $key
      * @return bool
      */
     public function clear($key = null)
@@ -125,6 +125,7 @@ class Memcache implements DriverInterface
             $this->makeKeyString($key);
         }
         $this->keyCache = array();
+
         return true;
     }
 
@@ -170,7 +171,7 @@ class Memcache implements DriverInterface
         return $path ? $pathKey : md5($keyString);
     }
 
-    static public function isAvailable()
+    public static function isAvailable()
     {
         return (SubMemcache::isAvailable() || SubMemcached::isAvailable());
     }
