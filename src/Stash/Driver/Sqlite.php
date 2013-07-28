@@ -60,23 +60,23 @@ class Sqlite implements DriverInterface
         $version = isset($options['version']) ? $options['version'] : 'any';
 
         $subdrivers = array();
-        if(Sub\SqlitePdo::isAvailable()) {
+        if (Sub\SqlitePdo::isAvailable()) {
             $subdrivers['pdo'] = '\Stash\Driver\Sub\SqlitePdo';
         }
-        if(Sub\Sqlite::isAvailable()) {
+        if (Sub\Sqlite::isAvailable()) {
             $subdrivers['sqlite'] = '\Stash\Driver\Sub\Sqlite';
         }
-        if(Sub\SqlitePdo2::isAvailable()) {
+        if (Sub\SqlitePdo2::isAvailable()) {
             $subdrivers['pdo2'] = '\Stash\Driver\Sub\SqlitePdo2';
         }
 
-        if($extension == 'pdo' && $version != '2' && isset($subdrivers['pdo'])) {
+        if ($extension == 'pdo' && $version != '2' && isset($subdrivers['pdo'])) {
             $driver = $subdrivers['pdo'];
-        } elseif($extension == 'sqlite' && isset($subdrivers['sqlite'])) {
+        } elseif ($extension == 'sqlite' && isset($subdrivers['sqlite'])) {
             $driver = $subdrivers['sqlite'];
-        } elseif($extension == 'pdo' && $version != '3' && isset($subdrivers['pdo2'])) {
+        } elseif ($extension == 'pdo' && $version != '3' && isset($subdrivers['pdo2'])) {
             $driver = $subdrivers['pdo2'];
-        } elseif(count($subdrivers) > 0 && $extension == 'any') {
+        } elseif (count($subdrivers) > 0 && $extension == 'any') {
             $driver = reset($subdrivers);
         } else {
             throw new RuntimeException('No sqlite extension available.');
@@ -92,7 +92,7 @@ class Sqlite implements DriverInterface
     }
 
     /**
-     * @param array $key
+     * @param  array $key
      * @return array
      */
     public function getData($key)
@@ -113,9 +113,9 @@ class Sqlite implements DriverInterface
     }
 
     /**
-     * @param array $key
-     * @param array $data
-     * @param int $expiration
+     * @param  array $key
+     * @param  array $data
+     * @param  int   $expiration
      * @return bool
      */
     public function storeData($key, $data, $expiration)
@@ -134,7 +134,7 @@ class Sqlite implements DriverInterface
 
     /**
      *
-     * @param null|array $key
+     * @param  null|array $key
      * @return bool
      */
     public function clear($key = null)
@@ -177,13 +177,14 @@ class Sqlite implements DriverInterface
                 $driver->purge();
             }
         }
+
         return true;
     }
 
     /**
      *
-     * @param null|array $key
-     * @param bool $name = false
+     * @param  null|array               $key
+     * @param  bool                     $name = false
      * @return \Stash\Driver\Sub\Sqlite
      */
     protected function getSqliteDriver($key, $name = false)
@@ -218,11 +219,13 @@ class Sqlite implements DriverInterface
         $driverClass = $this->driverClass;
 
         if(is_null($driverClass))
+
             return false;
 
         $driver = new $driverClass($file, $this->dirPerms, $this->filePerms, $this->busyTimeout);
 
         $this->subDrivers[$file] = $driver;
+
         return $driver;
     }
 
@@ -262,19 +265,19 @@ class Sqlite implements DriverInterface
      */
     protected function checkFileSystemPermissions()
     {
-        if(!isset($this->cachePath)) {
+        if (!isset($this->cachePath)) {
             throw new RuntimeException('Cache path was not set correctly.');
         }
 
-        if(file_exists($this->cachePath) && !is_dir($this->cachePath)) {
+        if (file_exists($this->cachePath) && !is_dir($this->cachePath)) {
             throw new InvalidArgumentException('Cache path is not a directory.');
         }
 
-        if(!is_dir($this->cachePath) && !@mkdir( $this->cachePath, $this->dirPermissions, true )) {
+        if (!is_dir($this->cachePath) && !@mkdir( $this->cachePath, $this->dirPermissions, true )) {
             throw new InvalidArgumentException('Failed to create cache path.');
         }
 
-        if(!is_writable($this->cachePath)) {
+        if (!is_writable($this->cachePath)) {
             throw new InvalidArgumentException('Cache path is not writable.');
         }
     }
@@ -286,13 +289,13 @@ class Sqlite implements DriverInterface
      */
     protected function checkStatus()
     {
-        if(!static::isAvailable()) {
+        if (!static::isAvailable()) {
             throw new RuntimeException('No Sqlite extension is available.');
         }
 
         $driver = $this->getSqliteDriver(array('_none'));
 
-        if(!$driver) {
+        if (!$driver) {
             throw new RuntimeException('No Sqlite driver could be loaded.');
         }
 
@@ -305,7 +308,7 @@ class Sqlite implements DriverInterface
      *
      * @return bool
      */
-    static public function isAvailable()
+    public static function isAvailable()
     {
         return (Sub\SqlitePdo::isAvailable()) || (Sub\Sqlite::isAvailable()) || (Sub\SqlitePdo2::isAvailable());
     }
@@ -315,10 +318,10 @@ class Sqlite implements DriverInterface
      * array, running the string through sqlite_escape_string() and then combining that string to the keystring with a
      * delimiter.
      *
-     * @param array $key
+     * @param  array  $key
      * @return string
      */
-    static function makeSqlKey($key)
+    public static function makeSqlKey($key)
     {
         $key = \Stash\Utilities::normalizeKeys($key, 'base64_encode');
         $path = '';

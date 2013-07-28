@@ -87,7 +87,7 @@ class FileSystem implements DriverInterface
             $options['dirSplit'] = 1;
         }
 
-        $this->directorySplit = (int)$options['dirSplit'];
+        $this->directorySplit = (int) $options['dirSplit'];
 
         if (!is_numeric($options['memKeyLimit']) || $options['memKeyLimit'] < 1) {
             $options['memKeyLimit'] = 0;
@@ -95,12 +95,11 @@ class FileSystem implements DriverInterface
 
         if (function_exists($options['keyHashFunction'])) {
             $this->keyHashFunction = $options['keyHashFunction'];
-        }
-        else {
+        } else {
             throw new RuntimeException('Key Hash Function does not exist');
         }
 
-        $this->memStoreLimit = (int)$options['memKeyLimit'];
+        $this->memStoreLimit = (int) $options['memKeyLimit'];
 
         $this->checkFileSystemPermissions();
     }
@@ -119,6 +118,7 @@ class FileSystem implements DriverInterface
         foreach ($key as $group) {
             $keyString .= $group . '/';
         }
+
         return $keyString;
     }
 
@@ -134,7 +134,7 @@ class FileSystem implements DriverInterface
         return self::getDataFromFile($this->makePath($key));
     }
 
-    static protected function getDataFromFile($path)
+    protected static function getDataFromFile($path)
     {
         if (!file_exists($path)) {
             return false;
@@ -150,13 +150,12 @@ class FileSystem implements DriverInterface
 
         // Item exists
         // isset + is_null = true + false = true
-        if(isset($data))
-        {
+        if (isset($data)) {
             return array('data' => $data, 'expiration' => $expiration);
 
         // Item is null
         // isset + is_null = false + true = true
-        }elseif(@is_null($data)){
+        } elseif (@is_null($data)) {
             return array('data' => null, 'expiration' => $expiration);
         }
 
@@ -170,9 +169,9 @@ class FileSystem implements DriverInterface
      * This function takes the data and stores it to the path specified. If the directory leading up to the path does
      * not exist, it creates it.
      *
-     * @param array $key
-     * @param array $data
-     * @param int $expiration
+     * @param  array $key
+     * @param  array $data
+     * @param  int   $expiration
      * @return bool
      */
     public function storeData($key, $data, $expiration)
@@ -230,7 +229,7 @@ class FileSystem implements DriverInterface
     {
         switch (\Stash\Utilities::encoding($data)) {
             case 'bool':
-                $dataString = (bool)$data ? 'true' : 'false';
+                $dataString = (bool) $data ? 'true' : 'false';
                 break;
 
             case 'serialize':
@@ -244,12 +243,13 @@ class FileSystem implements DriverInterface
             case 'none':
             default :
                 if (is_numeric($data)) {
-                    $dataString = (string)$data;
+                    $dataString = (string) $data;
                 } else {
                     $dataString = 'base64_decode(\'' . base64_encode($data) . '\')';
                 }
                 break;
         }
+
         return $dataString;
     }
 
@@ -259,7 +259,7 @@ class FileSystem implements DriverInterface
      * of the array as a directory (after putting the element through md5(), which was the most efficient way to make
      * sure it was filesystem safe). The last element of the array gets a php extension attached to it.
      *
-     * @param array $key Null arguments return the base directory.
+     * @param  array  $key Null arguments return the base directory.
      * @return string
      */
     protected function makePath($key = null)
@@ -327,7 +327,7 @@ class FileSystem implements DriverInterface
      * This function clears the data from a key. If a key points to both a directory and a file, both are erased. If
      * passed null, the entire cache directory is removed.
      *
-     * @param null|array $key
+     * @param  null|array $key
      * @return bool
      */
     public function clear($key = null)
@@ -384,6 +384,7 @@ class FileSystem implements DriverInterface
 
         }
         unset($directoryIt);
+
         return true;
     }
 
@@ -393,19 +394,19 @@ class FileSystem implements DriverInterface
      */
     protected function checkFileSystemPermissions()
     {
-        if(!isset($this->cachePath)) {
+        if (!isset($this->cachePath)) {
             throw new RuntimeException('Cache path was not set correctly.');
         }
 
-        if(file_exists($this->cachePath) && !is_dir($this->cachePath)) {
+        if (file_exists($this->cachePath) && !is_dir($this->cachePath)) {
             throw new InvalidArgumentException('Cache path is not a directory.');
         }
 
-        if(!is_dir($this->cachePath) && !@mkdir( $this->cachePath, $this->dirPermissions, true )) {
+        if (!is_dir($this->cachePath) && !@mkdir( $this->cachePath, $this->dirPermissions, true )) {
             throw new InvalidArgumentException('Failed to create cache path.');
         }
 
-        if(!is_writable($this->cachePath)) {
+        if (!is_writable($this->cachePath)) {
             throw new InvalidArgumentException('Cache path is not writable.');
         }
     }
@@ -416,7 +417,7 @@ class FileSystem implements DriverInterface
      *
      * @return bool true
      */
-    static public function isAvailable()
+    public static function isAvailable()
     {
         return true;
     }

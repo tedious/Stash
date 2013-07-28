@@ -31,7 +31,6 @@ class Sqlite
                               );
                               CREATE INDEX keyIndex ON cacheStore (key);';
 
-
     protected $filePermissions;
     protected $dirPermissions;
     protected $busyTimeout;
@@ -105,6 +104,7 @@ class Sqlite
         } else {
             $query = $driver->query("DELETE FROM cacheStore WHERE key LIKE '{$key}%'");
         }
+
         return true;
     }
 
@@ -116,21 +116,22 @@ class Sqlite
 
         $driver->query('DELETE FROM cacheStore WHERE expiration < ' . time());
         $driver->query('VACUUM');
+
         return true;
     }
 
     public function checkFileSystemPermissions()
     {
-        if(!isset($this->path)) {
+        if (!isset($this->path)) {
             throw new RuntimeException('No cache path is set.');
         }
 
-        if(!is_writable($this->path) && !is_writable(dirname($this->path))) {
+        if (!is_writable($this->path) && !is_writable(dirname($this->path))) {
             throw new InvalidArgumentException('The cache sqlite file is not writable.');
         }
     }
 
-    static public function isAvailable()
+    public static function isAvailable()
     {
         return class_exists('SQLiteDatabase', false);
     }
@@ -196,6 +197,7 @@ class Sqlite
         if (!$db = new \SQLiteDatabase($this->path, $this->filePermissions, $errorMessage)) {
             throw new RuntimeException('Unable to open SQLite Database: ' . $errorMessage);
         }
+
         return $db;
     }
 }

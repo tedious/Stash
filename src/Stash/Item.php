@@ -12,10 +12,8 @@
 namespace Stash;
 
 use Stash\Exception\Exception;
-use Stash\Exception\InvalidArgumentException;
 use Stash\Interfaces\DriverInterface;
 use Stash\Interfaces\ItemInterface;
-
 
 /**
  * Stash caches data that has a high generation cost, such as template preprocessing or code that requires a database
@@ -38,7 +36,7 @@ class Item implements ItemInterface
      *
      * @var int seconds
      */
-    static public $cacheTime = 432000; // five days
+    public static $cacheTime = 432000; // five days
 
     /**
      * Disables the cache system wide. It is used internally when the storage engine fails or if the cache is being
@@ -46,8 +44,7 @@ class Item implements ItemInterface
      *
      * @var bool
      */
-    static $runtimeDisable = false;
-
+    public static $runtimeDisable = false;
 
     /**
      * Used internally to mark the class as disabled. Unlike the static runtimeDisable flag this is effective only for
@@ -135,6 +132,7 @@ class Item implements ItemInterface
     public function disable()
     {
         $this->cacheEnabled = false;
+
         return true;
     }
 
@@ -162,6 +160,7 @@ class Item implements ItemInterface
         } catch (Exception $e) {
             $this->logException('Clearing cache caused exception.', $e);
             $this->disable();
+
             return false;
         }
     }
@@ -191,6 +190,7 @@ class Item implements ItemInterface
         } catch (Exception $e) {
             $this->logException('Retrieving from cache caused exception.', $e);
             $this->disable();
+
             return null;
         }
     }
@@ -267,11 +267,12 @@ class Item implements ItemInterface
 
         $this->stampedeRunning = true;
 
-        $expiration = isset($ttl) && is_numeric($ttl) ? (int)$ttl : $this->defaults['stampede_ttl'];
+        $expiration = isset($ttl) && is_numeric($ttl) ? (int) $ttl : $this->defaults['stampede_ttl'];
 
 
         $spkey = $this->key;
         $spkey[0] = 'sp';
+
         return $this->driver->storeData($spkey, true, time() + $expiration);
     }
 
@@ -280,9 +281,9 @@ class Item implements ItemInterface
      * including arrays and object, except resources and objects which are
      * unable to be serialized.
      *
-     * @param mixed $data bool
-     * @param int|DateTime|null $ttl Int is time (seconds), DateTime a future expiration date
-     * @return bool Returns whether the object was successfully stored or not.
+     * @param  mixed             $data bool
+     * @param  int|DateTime|null $ttl  Int is time (seconds), DateTime a future expiration date
+     * @return bool              Returns whether the object was successfully stored or not.
      */
     public function set($data, $ttl = null)
     {
@@ -291,6 +292,7 @@ class Item implements ItemInterface
         } catch (Exception $e) {
             $this->logException('Setting value in cache caused exception.', $e);
             $this->disable();
+
             return false;
         }
     }
@@ -375,11 +377,13 @@ class Item implements ItemInterface
     protected function logException($message, $exception)
     {
         if(!isset($this->logger))
+
             return false;
 
         $this->logger->critical($message,
                                 array('exception' => $exception,
                                       'key' => $this->keyString));
+
         return true;
     }
 
@@ -400,6 +404,7 @@ class Item implements ItemInterface
                 $sp = false;
             }
         }
+
         return $sp;
     }
 
@@ -454,7 +459,7 @@ class Item implements ItemInterface
                 // If stampede control is on it means another cache is already processing, so we return
                 // true for the hit.
                 if ($ttl < $time) {
-                    $this->isHit = (bool)$this->getStampedeFlag($this->key);
+                    $this->isHit = (bool) $this->getStampedeFlag($this->key);
                 }
             }
 
@@ -464,11 +469,13 @@ class Item implements ItemInterface
 
         if (!isset($invalidation) || $invalidation == self::SP_NONE) {
             $this->isHit = false;
+
             return;
         }
 
         if (!$this->getStampedeFlag($this->key)) {
             $this->isHit = false;
+
             return;
         }
 

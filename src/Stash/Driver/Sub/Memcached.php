@@ -11,7 +11,6 @@
 
 namespace Stash\Driver\Sub;
 
-use Stash\Exception\MemcacheException;
 use Stash\Exception\RuntimeException;
 
 /**
@@ -118,7 +117,7 @@ class Memcached
                     break;
             }
 
-            if(!@$memcached->setOption(constant('\Memcached::OPT_' . $name), $value)) {
+            if (!@$memcached->setOption(constant('\Memcached::OPT_' . $name), $value)) {
                 throw new RuntimeException('Memcached option Memcached::OPT_' . $name . ' not accepted by memcached extension.');
             }
         }
@@ -128,9 +127,10 @@ class Memcached
 
     public function set($key, $value, $expire = null)
     {
-        if(isset($expire) && $expire < time()) {
+        if (isset($expire) && $expire < time()) {
             return true;
         }
+
         return $this->memcached->set($key, array('data' => $value, 'expiration' => $expire), $expire);
     }
 
@@ -155,12 +155,14 @@ class Memcached
         } else {
             $this->memcached->cas($token, $key, $value);
         }
+
         return $value;
     }
 
     public function inc($key)
     {
         $this->cas($key, 0);
+
         return $this->memcached->increment($key);
     }
 
@@ -169,7 +171,7 @@ class Memcached
         $this->memcached->flush();
     }
 
-    static public function isAvailable()
+    public static function isAvailable()
     {
         return class_exists('Memcached', false);
     }
