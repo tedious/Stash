@@ -66,6 +66,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
 
         $stash = new Item($this->driver, $key);
         $this->assertTrue(is_a($stash, 'Stash\Item'), 'Test object is an instance of Stash');
+
         return $stash;
     }
 
@@ -90,7 +91,6 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
 
         $returnedKey = $stashString->getKey();
         $this->assertEquals($keyString, $returnedKey, 'getKey returns the same key as initially passed via string.');
-
 
         $stashString = $this->testConstruct('/' . $keyString . '/');
         $returnedKey = $stashString->getKey();
@@ -133,10 +133,8 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         $oldValue = 'oldValue';
         $newValue = 'newValue';
 
-
         $runningStash = $this->testConstruct($key);
         $runningStash->set($oldValue, -300);
-
 
         // Test without stampede
         $controlStash = $this->testConstruct($key);
@@ -146,11 +144,9 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($controlStash->isMiss());
         unset($controlStash);
 
-
         // Enable stampede control
         $runningStash->lock();
         $this->assertAttributeEquals(true, 'stampedeRunning', $runningStash, 'Stampede flag is set.');
-
 
         // Old
         $oldStash = $this->testConstruct($key);
@@ -168,7 +164,6 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($valueStash->isMiss());
         unset($valueStash);
 
-
         // Sleep
         $sleepStash = $this->testConstruct($key);
 
@@ -184,7 +179,6 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
 
         unset($sleepStash);
 
-
         // Unknown - if a random, unknown method is passed for invalidation we should rely on the default method
         $unknownStash = $this->testConstruct($key);
 
@@ -193,12 +187,10 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($unknownStash->isMiss(), 'Cache is marked as miss');
         unset($unknownStash);
 
-
         // Test that storing the cache turns off stampede mode.
         $runningStash->set($newValue, 30);
         $this->assertAttributeEquals(false, 'stampedeRunning', $runningStash, 'Stampede flag is off.');
         unset($runningStash);
-
 
         // Precompute - test outside limit
         $precomputeStash = $this->testConstruct($key);
@@ -238,7 +230,6 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($stash->isMiss(), 'isMiss returns true for missing data');
         $data = $stash->get();
         $this->assertNull($data, 'getData returns null for missing data');
-
 
         $key = array('isMiss', 'test');
 

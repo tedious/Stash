@@ -21,29 +21,29 @@ class BlackHoleTest extends \PHPUnit_Framework_TestCase
     /**
      * @var Stash\Driver\BlackHole
      */
-	private $driver = null;
-    
+    private $driver = null;
+
     public function setUp()
     {
         $this->driver = new BlackHole();
     }
-    
+
     public function testPurge()
     {
         $this->assertTrue($this->driver->purge());
     }
-    
+
     public function testStoreData()
     {
         $this->assertTrue($this->driver->storeData("test", "data", 0));
         $this->assertFalse($this->driver->getData("test"));
     }
-    
+
     public function testGetData()
     {
         $this->assertFalse($this->driver->getData("test"));
     }
-    
+
     public function testClear()
     {
         $this->assertTrue($this->driver->clear());

@@ -35,13 +35,12 @@ class Drivers
                                        'Xcache' => '\Stash\Driver\Xcache',
     );
 
-
     /**
      * Returns a list of build-in cache drivers that are also supported by this system.
      *
      * @return array Driver Name => Class Name
      */
-    static function getDrivers()
+    public static function getDrivers()
     {
         $availableDrivers = array();
         foreach (self::$drivers as $name => $class) {
@@ -53,10 +52,10 @@ class Drivers
                 continue;
             }
 
-            if($name == 'Composite') {
+            if ($name == 'Composite') {
                 $availableDrivers[$name] = $class;
             } else {
-                if($class::isAvailable()) {
+                if ($class::isAvailable()) {
                     $availableDrivers[$name] = $class;
                 }
             }
@@ -65,12 +64,12 @@ class Drivers
         return $availableDrivers;
     }
 
-    static function registerDriver($name, $class)
+    public static function registerDriver($name, $class)
     {
         self::$drivers[$name] = $class;
     }
 
-    static function getDriverClass($name)
+    public static function getDriverClass($name)
     {
         if (!isset(self::$drivers[$name])) {
             return false;

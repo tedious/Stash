@@ -37,12 +37,12 @@ class Apc implements DriverInterface
     public function __construct(array $options = array())
     {
         if (isset($options['ttl']) && is_numeric($options['ttl'])) {
-            $this->ttl = (int)$options['ttl'];
+            $this->ttl = (int) $options['ttl'];
         }
 
         $this->apcNamespace = isset($options['namespace']) ? $options['namespace'] : md5(__FILE__);
 
-        if(!static::isAvailable()) {
+        if (!static::isAvailable()) {
             throw new RuntimeException('Extension is not installed.');
         }
     }
@@ -61,7 +61,7 @@ class Apc implements DriverInterface
      * is not present. This array should have a value for "createdOn" and for "return", which should be the data the
      * main script is trying to store.
      *
-     * @param array $key
+     * @param  array $key
      * @return array
      */
     public function getData($key)
@@ -79,14 +79,15 @@ class Apc implements DriverInterface
      * stored. This function needs to store that data in such a way that it can be retrieved exactly as it was sent. The
      * expiration time needs to be stored with this data.
      *
-     * @param array $key
-     * @param array $data
-     * @param int $expiration
+     * @param  array $key
+     * @param  array $data
+     * @param  int   $expiration
      * @return bool
      */
     public function storeData($key, $data, $expiration)
     {
         $life = $this->getCacheTime($expiration);
+
         return apc_store($this->makeKey($key), array('data' => $data, 'expiration' => $expiration), $life);
     }
 
@@ -94,7 +95,7 @@ class Apc implements DriverInterface
      * This function should clear the cache tree using the key array provided. If called with no arguments the entire
      * cache needs to be cleared.
      *
-     * @param null|array $key
+     * @param  null|array $key
      * @return bool
      */
     public function clear($key = null)
@@ -109,6 +110,7 @@ class Apc implements DriverInterface
                 apc_delete($key);
             }
         }
+
         return true;
     }
 
@@ -140,7 +142,7 @@ class Apc implements DriverInterface
      *
      * @return bool
      */
-    static public function isAvailable()
+    public static function isAvailable()
     {
         return (extension_loaded('apc') && ini_get('apc.enabled'))
             && ((php_sapi_name() !== 'cli') || ini_get('apc.enable_cli'));

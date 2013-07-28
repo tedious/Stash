@@ -56,7 +56,7 @@ interface DriverInterface
      * two keys- a 'data' key and an 'expiration' key. The 'data' key should be exactly the same as the value passed to
      * storeData.
      *
-     * @param array $key
+     * @param  array $key
      * @return array
      */
     public function getData($key);
@@ -75,9 +75,9 @@ interface DriverInterface
      * *The third parameter is the expiration date of the item as a timestamp. This should also be stored, as it is
      * needed by the getData function.
      *
-     * @param array $key
-     * @param array $data
-     * @param int $expiration
+     * @param  array $key
+     * @param  array $data
+     * @param  int   $expiration
      * @return bool
      */
     public function storeData($key, $data, $expiration);
@@ -86,7 +86,7 @@ interface DriverInterface
      * Clears the cache tree using the key array provided as the key. If called with no arguments the entire cache gets
      * cleared.
      *
-     * @param null|array $key
+     * @param  null|array $key
      * @return bool
      */
     public function clear($key = null);
@@ -109,5 +109,5 @@ interface DriverInterface
      *
      * @return bool
      */
-    static public function isAvailable();
+    public static function isAvailable();
 }

@@ -67,7 +67,7 @@ class DriverExceptionStub implements DriverInterface
         return (defined('TESTING') && TESTING);
     }
 
-    static public function isAvailable()
+    public static function isAvailable()
     {
         return (defined('TESTING') && TESTING);
     }

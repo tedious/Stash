@@ -51,7 +51,7 @@ class Pool implements PoolInterface
      *
      * @param DriverInterface $driver
      */
-    function __construct(DriverInterface $driver = null)
+    public function __construct(DriverInterface $driver = null)
     {
         if (isset($driver)) {
             $this->setDriver($driver);
@@ -64,10 +64,10 @@ class Pool implements PoolInterface
      *
      * @example $cache = $pool->getItem('permissions', 'user', '4', '2');
      *
-     * @param string|array $key, $key, $key...
+     * @param  string|array                   $key, $key, $key...
      * @return \Stash\Interaces\ItemInterface
      */
-    function getItem()
+    public function getItem()
     {
         $args = func_get_args();
         $argCount = count($args);
@@ -82,16 +82,15 @@ class Pool implements PoolInterface
             $argCount = count($args);
         }
 
-        if($argCount == 1) {
+        if ($argCount == 1) {
             $keyString = trim($args[0], '/');
             $key = explode('/', $keyString);
-        }else{
+        } else {
             $key = $args;
         }
 
-        foreach($key as $node)
-        {
-            if(strlen($node) < 1) {
+        foreach ($key as $node) {
+            if (strlen($node) < 1) {
                 throw new \InvalidArgumentException('Invalid or Empty Node passed to getItem constructor.');
             }
         }
@@ -114,16 +113,15 @@ class Pool implements PoolInterface
      * Bulk lookups can often by streamlined by backend cache systems. The
      * returned iterator will contain a Stash\Item for each key passed.
      *
-     * @param array $keys
+     * @param  array     $keys
      * @return \Iterator
      */
-    function getItemIterator($keys)
+    public function getItemIterator($keys)
     {
         // temporarily cheating here by wrapping around single calls.
 
         $items = array();
-        foreach($keys as $key)
-        {
+        foreach ($keys as $key) {
             $items[] = $this->getItem($key);
         }
 
@@ -135,18 +133,21 @@ class Pool implements PoolInterface
      *
      * @return bool success
      */
-    function flush()
+    public function flush()
     {
         if($this->isDisabled)
+
             return false;
 
-        try{
+        try {
             $results = $this->getDriver()->clear();
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             $this->isDisabled = true;
             $this->logException('Flushing Cache Pool caused exception.', $e);
+
             return false;
         }
+
         return $results;
     }
 
@@ -161,18 +162,21 @@ class Pool implements PoolInterface
      *
      * @return bool success
      */
-    function purge()
+    public function purge()
     {
         if($this->isDisabled)
+
             return false;
 
-        try{
+        try {
             $results = $this->getDriver()->purge();
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             $this->isDisabled = true;
             $this->logException('Purging Cache Pool caused exception.', $e);
+
             return false;
         }
+
         return $results;
     }
 
@@ -182,12 +186,12 @@ class Pool implements PoolInterface
      *
      * @param DriverInterface $driver
      */
-    function setDriver(DriverInterface $driver)
+    public function setDriver(DriverInterface $driver)
     {
         $this->driver = $driver;
     }
 
-    function getDriver()
+    public function getDriver()
     {
         if(!isset($this->driver))
             $this->driver = new Ephemeral();
@@ -206,10 +210,12 @@ class Pool implements PoolInterface
     protected function logException($message, $exception)
     {
         if(!isset($this->logger))
+
             return false;
 
         $this->logger->critical($message,
                                 array('exception' => $exception));
+
         return true;
     }
 }

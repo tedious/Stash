@@ -26,7 +26,7 @@ class Utilities
      * Various drivers use this to define what kind of encoding to use on objects being cached. It needs to be revamped
      * a bit.
      */
-    static function encoding($data)
+    public static function encoding($data)
     {
         if (is_scalar($data)) {
             if (is_bool($data)) {
@@ -50,7 +50,7 @@ class Utilities
     /**
      * Uses the encoding function to define an encoding and uses it on the data. This system is going to be revamped.
      */
-    static function encode($data)
+    public static function encode($data)
     {
         switch (self::encoding($data)) {
             case 'bool':
@@ -63,6 +63,7 @@ class Utilities
             case 'none':
             default:
         }
+
         return $data;
     }
 
@@ -70,7 +71,7 @@ class Utilities
      * Takes a piece of data encoded with the 'encode' function and returns it's actual value.
      *
      */
-    static function decode($data, $method)
+    public static function decode($data, $method)
     {
         switch ($method) {
             case 'bool':
@@ -84,6 +85,7 @@ class Utilities
             case 'none':
             default:
         }
+
         return $data;
     }
 
@@ -92,10 +94,10 @@ class Utilities
      * of last resort and can cause problems if one library is shared by multiple projects. The directory returned
      * resides in the system's temp folder and is specific to each Stash installation and driver.
      *
-     * @param DriverInterface $driver
-     * @return string Path for Stash files
+     * @param  DriverInterface $driver
+     * @return string          Path for Stash files
      */
-    static function getBaseDirectory(DriverInterface $driver = null)
+    public static function getBaseDirectory(DriverInterface $driver = null)
     {
         $tmp = rtrim(sys_get_temp_dir(), '/\\') . '/';
 
@@ -114,10 +116,10 @@ class Utilities
     /**
      * Deletes a directory and all of its contents.
      *
-     * @param string $file Path to file or directory.
-     * @return bool Returns true on success, false otherwise.
+     * @param  string $file Path to file or directory.
+     * @return bool   Returns true on success, false otherwise.
      */
-    static function deleteRecursive($file)
+    public static function deleteRecursive($file)
     {
         if (substr($file, 0, 1) !== '/' && substr($file, 1, 2) !== ':\\') {
             throw new RuntimeException('deleteRecursive function requires an absolute path.');
@@ -165,7 +167,7 @@ class Utilities
         return false;
     }
 
-    static function normalizeKeys($keys, $hash = 'md5')
+    public static function normalizeKeys($keys, $hash = 'md5')
     {
         $pKey = array();
         foreach ($keys as $keyPiece) {
@@ -174,6 +176,7 @@ class Utilities
             $pKeyPiece = $prefix . $hash($keyPiece);
             $pKey[] = $pKeyPiece;
         }
+
         return $pKey;
     }
 }

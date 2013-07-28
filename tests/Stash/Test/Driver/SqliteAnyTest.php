@@ -29,6 +29,7 @@ class SqliteAnyTest extends \PHPUnit_Framework_TestCase
 
         if (!$driverClass::isAvailable()) {
             $this->markTestSkipped('Driver class unsuited for current environment');
+
             return;
         }
     }

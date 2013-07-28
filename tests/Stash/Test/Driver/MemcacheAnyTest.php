@@ -30,11 +30,13 @@ class MemcacheAnyTest extends \PHPUnit_Framework_TestCase
 
         if (!$driverClass::isAvailable()) {
             $this->markTestSkipped('Driver class unsuited for current environment');
+
             return;
         }
 
         if (!($sock = @fsockopen($this->servers[0], $this->servers[1], $errno, $errstr, 1))) {
             $this->markTestSkipped('Memcache tests require memcache server');
+
             return;
         }
 

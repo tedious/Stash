@@ -25,8 +25,9 @@ class SqlitePdoSqlite2Test extends AbstractDriverTest
         $driver = '\\' . $this->driverClass;
         $subDriver = '\\' . $this->subDriverClass;
 
-        if(!$driver::isAvailable() || !$subDriver::isAvailable()) {
+        if (!$driver::isAvailable() || !$subDriver::isAvailable()) {
             $this->markTestSkipped('Driver class unsuited for current environment');
+
             return;
         }
 
@@ -39,6 +40,7 @@ class SqlitePdoSqlite2Test extends AbstractDriverTest
         $options['extension'] = 'pdo';
         $options['nesting'] = 2;
         $options['version'] = 2;
+
         return $options;
     }
 }

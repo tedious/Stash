@@ -15,10 +15,7 @@ use Stash\Test\Stubs\LoggerStub;
 use Stash\Test\Stubs\DriverExceptionStub;
 
 use Stash\Item;
-use Stash\Utilities;
 use Stash\Driver\Ephemeral as Ephemeral;
-
-
 
 /**
  * @package Stash

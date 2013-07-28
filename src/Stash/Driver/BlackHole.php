@@ -21,17 +21,16 @@ use Stash\Interfaces\DriverInterface;
 class BlackHole implements DriverInterface
 {
 
-	/**
-	 * NOOP constructor
-	 */
-	public function __construct(array $options = array())
-	{
-		// empty
-	}
+    /**
+     * NOOP constructor
+     */
+    public function __construct(array $options = array())
+    {
+        // empty
+    }
 
-
-	/*
-	 * (non-PHPdoc)
+    /*
+     * (non-PHPdoc)
      * @see \Stash\Driver\DriverInterface::clear()
      */
     public function clear($key = null)
@@ -39,31 +38,31 @@ class BlackHole implements DriverInterface
         return true;
     }
 
-	/*
-	 * (non-PHPdoc)
+    /*
+     * (non-PHPdoc)
      * @see \Stash\Driver\DriverInterface::getData()
      */
     public function getData($key)
     {
         return false;
-	}
+    }
 
-	/*
-	 * (non-PHPdoc)
+    /*
+     * (non-PHPdoc)
      * @see \Stash\Driver\DriverInterface::purge()
      */
     public function purge()
     {
-		return true;
-	}
+        return true;
+    }
 
-	/*
-	 * (non-PHPdoc)
+    /*
+     * (non-PHPdoc)
      * @see \Stash\Driver\DriverInterface::storeData()
      */
     public function storeData($key, $data, $expiration)
     {
-		return true;
+        return true;
     }
 
     /*
