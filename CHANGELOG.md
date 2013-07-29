@@ -16,3 +16,5 @@
 *   Extend Cache renamed and given a ttl
 
     The Stash\Item::extendCache() function is now Stash\Item::extend($ttl = null).
+
+*   Formatting changes, PSR-1 and PSR-2 compliant.
