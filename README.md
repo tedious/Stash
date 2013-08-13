@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/tedivm/Stash.png?branch=master)](https://travis-ci.org/tedivm/Stash)
 [![Latest Stable Version](https://poser.pugx.org/tedivm/stash/v/stable.png)](https://packagist.org/packages/tedivm/stash)
 [![Total Downloads](https://poser.pugx.org/tedivm/stash/downloads.png)](https://packagist.org/packages/tedivm/stash)
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/tedivm/Stash/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
 Stash makes it easy to speed up your code by caching the results of expensive
 functions or code. Certain actions, like database queries or calls to external
