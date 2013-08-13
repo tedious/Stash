@@ -14,3 +14,7 @@ Visit [stash.tedivm.com](http://stash.tedivm.com) for the current documentation.
 
 The [development documentation](http://stash.tedivm.com/dev/) is available for
 testing new releases, but is not considered stable.
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/tedivm/Stash/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
