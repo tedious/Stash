@@ -171,7 +171,6 @@ class Sqlite implements DriverInterface
             return true;
         }
 
-        $expiration = time();
         foreach ($databases as $database) {
             if ($driver = $this->getSqliteDriver($database, true)) {
                 $driver->purge();

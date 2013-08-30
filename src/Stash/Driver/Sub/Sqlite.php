@@ -76,14 +76,12 @@ class Sqlite
 
         $data = base64_encode(serialize($value));
 
-        $resetBusy = false;
         $contentLength = strlen($data);
         if ($contentLength > 100000) {
-            $resetBusy = true;
             $this->setTimeout($this->busyTimeout * (ceil($contentLength / 100000))); // .5s per 100k
         }
 
-        $query = $driver->query("INSERT INTO cacheStore (key, expiration, data)
+        $driver->query("INSERT INTO cacheStore (key, expiration, data)
                                   VALUES ('{$key}', '{$expiration}', '{$data}')");
 
         return true;
@@ -102,7 +100,7 @@ class Sqlite
             $this->driver = false;
             \Stash\Utilities::deleteRecursive($this->path);
         } else {
-            $query = $driver->query("DELETE FROM cacheStore WHERE key LIKE '{$key}%'");
+            $driver->query("DELETE FROM cacheStore WHERE key LIKE '{$key}%'");
         }
 
         return true;
@@ -159,13 +157,6 @@ class Sqlite
             $pos2 = strrpos($this->path, '\\');
 
             if ($pos1 || $pos2) {
-                if ($pos1 === false) {
-                    $pos = $pos2;
-                }
-                if ($pos2 === false) {
-                    $pos = $pos1;
-                }
-
                 $pos = $pos1 >= $pos2 ? $pos1 : $pos2;
                 $dir = substr($this->path, 0, $pos);
             }
