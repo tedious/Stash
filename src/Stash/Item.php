@@ -324,7 +324,6 @@ class Item implements ItemInterface
         $expiration = $store['createdOn'] + $cacheTime;
 
         if ($cacheTime > 0) {
-            $diff = $cacheTime * 0.15;
             $expirationDiff = rand(0, floor($cacheTime * .15));
             $expiration -= $expirationDiff;
         }

@@ -95,7 +95,7 @@ class Pool implements PoolInterface
             }
         }
 
-        $driver = $this->getDriver();
+        $this->getDriver();
         $cache = new Item($this->driver, $key);
 
         if($this->isDisabled)
