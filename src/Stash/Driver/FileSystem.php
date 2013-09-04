@@ -176,11 +176,7 @@ class FileSystem implements DriverInterface
      */
     public function storeData($key, $data, $expiration)
     {
-        $success = false;
-
         $path = $this->makePath($key);
-
-
 
         if (!file_exists($path)) {
             if (!is_dir(dirname($path))) {
@@ -287,12 +283,10 @@ class FileSystem implements DriverInterface
         if (isset($this->memStore['keys'][$memkey])) {
             return $this->memStore['keys'][$memkey];
         } else {
-            $pathPieces = array();
             $path = $basePath;
-            $len = floor(32 / $this->directorySplit);
             $key = \Stash\Utilities::normalizeKeys($key, $this->keyHashFunction);
 
-            foreach ($key as $index => $value) {
+            foreach ($key as $value) {
                 if (strpos($value, '@') === 0) {
                     $path .= substr($value, 1) . DIRECTORY_SEPARATOR;
                     continue;
