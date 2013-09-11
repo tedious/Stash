@@ -55,6 +55,8 @@ class Pool implements PoolInterface
     {
         if (isset($driver)) {
             $this->setDriver($driver);
+        } else {
+            $this->driver = new Ephemeral();
         }
     }
 
@@ -95,7 +97,6 @@ class Pool implements PoolInterface
             }
         }
 
-        $this->getDriver();
         $cache = new Item($this->driver, $key);
 
         if($this->isDisabled)
