@@ -1,6 +1,5 @@
 
-
-### 0.11.1
+### 0.11.0
 
 
 *   Logging Support
@@ -17,4 +16,10 @@
 
     The Stash\Item::extendCache() function is now Stash\Item::extend($ttl = null).
 
+
 *   Formatting changes, PSR-1 and PSR-2 compliant.
+
+
+*   Added "setItemClass" function to the Pool class
+
+    This allows new Item classes to be generated, as long as they following the new interface.
