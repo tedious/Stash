@@ -200,7 +200,7 @@ class FileSystem implements DriverInterface
             }
         }
 
-        $storeString = '<?php ' . PHP_EOL . '/* Cachekey: ' . $this->makeKeyString($key) . ' */' . PHP_EOL . '/* Type: ' . gettype($data) . ' */' . PHP_EOL . '$expiration = ' . $expiration . ';' . PHP_EOL;
+        $storeString = '<?php ' . PHP_EOL . '/* Cachekey: ' . str_replace('*/', '', $this->makeKeyString($key)) . ' */' . PHP_EOL . '/* Type: ' . gettype($data) . ' */' . PHP_EOL . '$expiration = ' . $expiration . ';' . PHP_EOL;
 
         if (is_array($data)) {
             $storeString .= "\$data = array();" . PHP_EOL;
