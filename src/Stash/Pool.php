@@ -90,7 +90,7 @@ class Pool implements PoolInterface
      * @example $cache = $pool->getItem('permissions', 'user', '4', '2');
      *
      * @param  string|array                   $key, $key, $key...
-     * @return \Stash\Interaces\ItemInterface
+     * @return \Stash\Interfaces\ItemInterface
      */
     public function getItem()
     {
