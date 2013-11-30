@@ -1,11 +1,11 @@
-### 0.11.1
+### 0.11.2
 
 *   Fixed Bug which prevented some file based caches from purging or flushing on Windows based systems.
 
 *   Fixed Bug in the Filesystem cache which caused a fatal error when certain keys were used.
 
 
-### 0.11.0
+### 0.11.1
 
 
 *   Logging Support
