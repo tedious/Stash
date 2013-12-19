@@ -32,8 +32,7 @@ class Memcache implements DriverInterface
      * @var SubMemcache|SubMemcached
      */
     protected $memcache;
-
-    protected $disabled = false;
+    protected $keyCache = array();
 
     /**
      *
