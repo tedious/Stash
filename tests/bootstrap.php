@@ -14,6 +14,8 @@ define('TESTING', true);// this is basically used by the StashArray driver to de
                         // use this anywhere else in the project since that would defeat the point of testing.
 error_reporting(-1);
 
+date_default_timezone_set('UTC');
+
 $filename = __DIR__ .'/../vendor/autoload.php';
 
 if (!file_exists($filename)) {
