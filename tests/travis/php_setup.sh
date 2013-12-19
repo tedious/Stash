@@ -2,6 +2,8 @@
 
 set -e
 
+echo $TRAVIS_PHP_VERSION
+
 if which phpize > /dev/null; then
     echo "******************************"
     echo "Installing phpredis extension."
