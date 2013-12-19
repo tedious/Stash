@@ -9,7 +9,7 @@ echo "**************************"
 echo ""
 echo "PHP Version: $TRAVIS_PHP_VERSION"
 
-if ["$TRAVIS_PHP_VERSION" == "hhvm"]; then
+if [ "$TRAVIS_PHP_VERSION" == "hhvm" ]; then
     echo "Unable to install php extensions on current system"
 
 else
