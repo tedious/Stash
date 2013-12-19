@@ -10,7 +10,6 @@ before_script:
     - composer install --dev
     - tests/travis/php_setup.sh
     - tests/travis/redis_setup.sh
-    - phpenv config-add tests/travis/php_extensions.ini
 
 script: phpunit --verbose --coverage-text
 

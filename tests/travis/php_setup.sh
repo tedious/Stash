@@ -32,4 +32,12 @@ else
     cd ..
     echo "Finished installing phpredis extension."
 
+    echo ""
+    echo "*********************"
+    echo "Updating php.ini file"
+    echo "*********************"
+    echo ""
+    echo ""
+    phpenv config-add tests/travis/php_extensions.ini
+
 fi
