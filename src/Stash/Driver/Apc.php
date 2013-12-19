@@ -165,7 +165,7 @@ class Apc implements DriverInterface
 
     protected function getCacheTime($expiration)
     {
-        $life = $expiration - time(true);
+        $life = $expiration - time();
 
         return $this->ttl > $life ? $this->ttl : $life;
     }
