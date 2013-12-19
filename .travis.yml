@@ -4,6 +4,7 @@ php:
     - 5.3
     - 5.4
     - 5.5
+    - hhvm
 
 before_script:
     - composer install --dev
@@ -16,3 +17,7 @@ script: phpunit --verbose --coverage-text
 services:
   - redis-server
   - memcached
+
+matrix:
+  allow_failures:
+    - php: hhvm
