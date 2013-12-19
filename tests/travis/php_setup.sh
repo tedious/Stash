@@ -2,9 +2,19 @@
 
 set -e
 
-echo $TRAVIS_PHP_VERSION
 
-if which phpize > /dev/null; then
+echo "**************************"
+echo "Setting up PHP Extensions."
+echo "**************************"
+echo ""
+echo "PHP Version: $TRAVIS_PHP_VERSION"
+
+if ["$TRAVIS_PHP_VERSION" -eq "hhvm"]
+    echo "Unable to install php extensions on current system"
+
+else
+
+    echo ""
     echo "******************************"
     echo "Installing phpredis extension."
     echo "******************************"
@@ -21,6 +31,5 @@ if which phpize > /dev/null; then
     make install
     cd ..
     echo "Finished installing phpredis extension."
-else
-    echo "Unable to install php extensions on current system"
+
 fi
