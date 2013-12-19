@@ -46,7 +46,7 @@ class Ephemeral implements DriverInterface
     {
         $index = '';
         foreach ($key as $value) {
-            $index .= str_replace('#', ':', $value) . '#';
+            $index .= str_replace('#', '#:', $value) . '#';
         }
 
         return $index;
