@@ -117,4 +117,4 @@ drivers that use a variety of back ends.
 
 ## License
 
-Monolog is licensed under the BSD License. See the LICENSE file for details.
+Stash is licensed under the BSD License. See the LICENSE file for details.

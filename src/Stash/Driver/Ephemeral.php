@@ -38,14 +38,15 @@ class Ephemeral implements DriverInterface
 
     public function getData($key)
     {
-        return isset($this->store[$this->getKeyIndex($key)]) ? $this->store[$this->getKeyIndex($key)] : false;
+        $key = $this->getKeyIndex($key);
+        return isset($this->store[$key]) ? $this->store[$key] : false;
     }
 
     protected function getKeyIndex($key)
     {
         $index = '';
         foreach ($key as $value) {
-            $index .= str_replace('#', ':', $value) . '#';
+            $index .= str_replace('#', '#:', $value) . '#';
         }
 
         return $index;

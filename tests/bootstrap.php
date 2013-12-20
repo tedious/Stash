@@ -26,5 +26,5 @@ if (!file_exists($filename)) {
     $filename = __DIR__ .'/../autoload.php';
 }
 
-$loader = require_once $filename;
+$loader = require $filename;
 $loader->add('Stash\\Test', __DIR__);

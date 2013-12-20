@@ -121,7 +121,7 @@ class Utilities
      */
     public static function deleteRecursive($file)
     {
-        if (substr($file, 0, 1) !== '/' && substr($file, 1, 2) !== ':\\') {
+        if (!preg_match('/^(?:\/|\\\\|\w:\\\\|\w:\/).*$/', $file)) {
             throw new RuntimeException('deleteRecursive function requires an absolute path.');
         }
 
