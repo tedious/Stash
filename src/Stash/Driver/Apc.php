@@ -171,7 +171,7 @@ class Apc implements DriverInterface
     {
         $life = $expiration - time();
 
-        return $this->ttl > $life ? $this->ttl : $life;
+        return $this->ttl < $life ? $this->ttl : $life;
     }
 
 }
