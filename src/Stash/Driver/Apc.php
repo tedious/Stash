@@ -144,6 +144,10 @@ class Apc implements DriverInterface
      */
     public static function isAvailable()
     {
+        // HHVM has some of the APC extension, but not all of it.
+        if(!class_exists('\APCIterator'))
+            return false;
+
         return (extension_loaded('apc') && ini_get('apc.enabled'))
             && ((php_sapi_name() !== 'cli') || ini_get('apc.enable_cli'));
     }
