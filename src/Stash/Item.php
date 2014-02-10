@@ -512,6 +512,35 @@ class Item implements ItemInterface
     }
 
     /**
+     * Returns the record's createdOn timestamp or null if no createdOn timestamp is set
+     *
+     * @return int timestamp
+     */
+    public function getCreatedOn()
+    {
+        $record = $this->getRecord();
+        if (!isset($record['data']['createdOn'])) {
+            return null;
+        }
+        return $record['data']['createdOn'];
+    }
+
+    /**
+     * Returns the record's expiration timestamp or null if no expiration timestamp is set
+     *
+     * @return int timestamp
+     */
+    public function getExpiration()
+    {
+        $record = $this->getRecord();
+        if (!isset($record['expiration'])) {
+            return null;
+        }
+        return $record['expiration'];
+    }
+
+
+    /**
      * This function is used by the Pool object while creating this object. It
      * is an internal function an should not be called directly.
      *
