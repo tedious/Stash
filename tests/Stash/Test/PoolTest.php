@@ -34,6 +34,16 @@ class PoolTest extends \PHPUnit_Framework_TestCase
         $this->assertAttributeInstanceOf('Stash\Driver\Ephemeral', 'driver', $stash, 'set driver is pushed to new stash objects');
     }
 
+    public function testSetItemClass()
+    {
+        $mockItem = $this->getMock('Stash\Interfaces\ItemInterface');
+        $mockClassName = get_class($mockItem);
+        $pool = $this->getTestPool();
+
+        $this->assertTrue($pool->setItemClass($mockClassName));
+        $this->assertAttributeEquals($mockClassName, 'itemClass', $pool);
+    }
+
     public function testGetItem()
     {
         $pool = $this->getTestPool();
