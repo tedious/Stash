@@ -115,6 +115,14 @@ number of the above drivers. This allows developers to created multitiered
 drivers that use a variety of back ends.
 
 
+## Symfony Integration
+
+The [Stash Bundle](https://github.com/tedivm/TedivmStashBundle) makes using
+Stash inside of Symfony projects significantly easier. This bundle exposes
+Stash as a Service for developers to use, and allows Symfony to use Stash
+as a session handler. 
+
+
 ## License
 
 Stash is licensed under the BSD License. See the LICENSE file for details.
