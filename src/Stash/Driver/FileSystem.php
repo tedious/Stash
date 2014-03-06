@@ -181,7 +181,7 @@ class FileSystem implements DriverInterface
         if (!file_exists($path)) {
             if (!is_dir(dirname($path))) {
                 // MAX_PATH is 260 - http://msdn.microsoft.com/en-us/library/aa365247(VS.85).aspx
-                if (strlen(dirname($path)) > 259 && stristr(PHP_OS,'WIN')) {
+                if (strlen(dirname($path)) > 259 && stripos(PHP_OS,'WIN') === 0) {
                     throw new Stash\Exception\WindowsPathMaxLengthException();
                 }
 
@@ -191,7 +191,7 @@ class FileSystem implements DriverInterface
             }
 
             // MAX_PATH is 260 - http://msdn.microsoft.com/en-us/library/aa365247(VS.85).aspx
-            if (strlen($path) > 259 &&  stristr(PHP_OS,'WIN')) {
+            if (strlen($path) > 259 &&  stripos(PHP_OS,'WIN') === 0) {
                 throw new Stash\Exception\WindowsPathMaxLengthException();
             }
 
