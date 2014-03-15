@@ -139,8 +139,9 @@ class FileSystem implements DriverInterface
         if (!file_exists($path)) {
             return false;
         }
-
-        include($path);
+        
+        // include doesn't work in certain edge cases
+        eval('?>' . file_get_contents($path));
 
         // If the item does not exist we should return false. However, it's
         // possible that the item exists as null, so we have to make sure that
