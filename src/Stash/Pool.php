@@ -149,7 +149,7 @@ class Pool implements PoolInterface
 
         $items = array();
         foreach ($keys as $key) {
-            $items[] = $this->getItem($key);
+            $items[$key] = $this->getItem($key);
         }
 
          return new \ArrayIterator($items);
