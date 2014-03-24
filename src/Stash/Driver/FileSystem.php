@@ -93,10 +93,10 @@ class FileSystem implements DriverInterface
             $options['memKeyLimit'] = 0;
         }
 
-        if (function_exists($options['keyHashFunction'])) {
+        if (is_callable($options['keyHashFunction'])) {
             $this->keyHashFunction = $options['keyHashFunction'];
         } else {
-            throw new RuntimeException('Key Hash Function does not exist');
+            throw new RuntimeException('Key Hash Function is not callable');
         }
 
         $this->memStoreLimit = (int) $options['memKeyLimit'];
