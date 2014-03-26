@@ -140,8 +140,11 @@ class FileSystem implements DriverInterface
             return false;
         }
         
-        // include doesn't work in certain edge cases
-        eval('?>' . file_get_contents($path));
+        // Invalidate the opcode cache for this file
+        if (function_exists('opcache_invalidate')) {
+           opcache_invalidate($path, true); 
+        }
+        include($path);
 
         // If the item does not exist we should return false. However, it's
         // possible that the item exists as null, so we have to make sure that
