@@ -140,10 +140,6 @@ class FileSystem implements DriverInterface
             return false;
         }
         
-        // Invalidate the opcode cache for this file
-        if (function_exists('opcache_invalidate')) {
-           opcache_invalidate($path, true); 
-        }
         include($path);
 
         // If the item does not exist we should return false. However, it's
@@ -221,8 +217,18 @@ class FileSystem implements DriverInterface
             $storeString .= '/* Type: ' . gettype($data) . ' */' . PHP_EOL;
             $storeString .= "\$data = {$dataString};" . PHP_EOL;
         }
+        
+        $result = file_put_contents($path, $storeString, LOCK_EX);
+        
+        // If opcache is switched on, it will try to cache the PHP data file, essentially "caching the cache"
+        // This can cause problems since when we try to retrieve the cache data, it might not equal the data source.
+        // Therefore we have to invalidate the opcode cache for all PHP "data" files
+        // This is only relevant to data files serialised as PHP scripts
+        if (function_exists('opcache_invalidate')) {
+            opcache_invalidate($path, true);
+        }
 
-        return false !== file_put_contents($path, $storeString, LOCK_EX);
+        return false !== $result;
     }
 
     protected function encode($data)
