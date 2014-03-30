@@ -220,10 +220,11 @@ class FileSystem implements DriverInterface
         
         $result = file_put_contents($path, $storeString, LOCK_EX);
         
-        // If opcache is switched on, it will try to cache the PHP data file, essentially "caching the cache"
-        // This can cause problems since when we try to retrieve the cache data, it might not equal the data source.
-        // Therefore we have to invalidate the opcode cache for all PHP "data" files
-        // This is only relevant to data files serialised as PHP scripts
+        // If opcache is switched on, it will try to cache the PHP data file
+        // The new php opcode caching system only revalidates against the source files once every few seconds, 
+        // so some changes will not be caught. 
+        // This fix immediately invalidates that opcode cache after a file is written, 
+        // so that future includes are not using the stale opcode cached file.
         if (function_exists('opcache_invalidate')) {
             opcache_invalidate($path, true);
         }
