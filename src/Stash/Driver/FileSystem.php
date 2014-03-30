@@ -139,7 +139,7 @@ class FileSystem implements DriverInterface
         if (!file_exists($path)) {
             return false;
         }
-
+        
         include($path);
 
         // If the item does not exist we should return false. However, it's
@@ -217,8 +217,19 @@ class FileSystem implements DriverInterface
             $storeString .= '/* Type: ' . gettype($data) . ' */' . PHP_EOL;
             $storeString .= "\$data = {$dataString};" . PHP_EOL;
         }
+        
+        $result = file_put_contents($path, $storeString, LOCK_EX);
+        
+        // If opcache is switched on, it will try to cache the PHP data file
+        // The new php opcode caching system only revalidates against the source files once every few seconds, 
+        // so some changes will not be caught. 
+        // This fix immediately invalidates that opcode cache after a file is written, 
+        // so that future includes are not using the stale opcode cached file.
+        if (function_exists('opcache_invalidate')) {
+            opcache_invalidate($path, true);
+        }
 
-        return false !== file_put_contents($path, $storeString, LOCK_EX);
+        return false !== $result;
     }
 
     protected function encode($data)
