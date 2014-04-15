@@ -7,7 +7,7 @@ php:
     - hhvm
 
 before_script:
-    - composer install --dev
+    - composer self-update && composer install --dev
     - tests/travis/php_setup.sh
     - tests/travis/redis_setup.sh
 
