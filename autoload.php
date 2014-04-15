@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-spl_autoload_register(function($class) {
+spl_autoload_register(function ($class) {
     $base = '/src/';
 
     if (strpos($class, 'Stash\Test') === 0) {

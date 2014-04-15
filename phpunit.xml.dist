@@ -6,15 +6,12 @@
             <directory suffix="Test.php">./tests/Stash/</directory>
         </testsuite>
     </testsuites>
-
     <filter>
         <whitelist>
             <directory suffix=".php">./src/Stash/</directory>
         </whitelist>
     </filter>
-
     <logging>
         <log type="coverage-text" target="php://stdout" showUncoveredFiles="false"/>
     </logging>
-
 </phpunit>
