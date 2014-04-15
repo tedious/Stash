@@ -11,7 +11,7 @@ before_script:
     - tests/travis/php_setup.sh
     - tests/travis/redis_setup.sh
 
-script: phpunit --verbose --coverage-clover build/logs/clover.xml
+script: ./tests/runTests.sh
 
 after_script:
   - php vendor/bin/coveralls -v
