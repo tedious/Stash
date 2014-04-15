@@ -14,7 +14,7 @@
     </filter>
 
     <logging>
-        <log type="coverage-text" charset="UTF-8"/>
+        <log type="coverage-text" target="php://stdout" showUncoveredFiles="false"/>
     </logging>
 
 </phpunit>
