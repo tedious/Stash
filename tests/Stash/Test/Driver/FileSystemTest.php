@@ -90,7 +90,7 @@ class FileSystemTest extends AbstractDriverTest
      */
     public function testLongPathFolderCreation()
     {
-        if (stristr(PHP_OS,"WIN") === false) {
+        if (strtolower(substr(PHP_OS, 0, 3)) !== 'win') {
             $this->markTestSkipped('Driver class unsuited for current environment');
         }
 
@@ -126,7 +126,7 @@ class FileSystemTest extends AbstractDriverTest
      */
     public function testLongPathFileCreation()
     {
-        if (stristr(PHP_OS,"WIN") === false) {
+        if (strtolower(substr(PHP_OS, 0, 3)) !== 'win') {
             $this->markTestSkipped('Driver class unsuited for current environment');
         }
 
