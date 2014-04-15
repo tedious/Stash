@@ -2,6 +2,7 @@
 
 [![Latest Stable Version](https://poser.pugx.org/tedivm/stash/v/stable.png)](https://packagist.org/packages/tedivm/stash)
 [![Total Downloads](https://poser.pugx.org/tedivm/stash/downloads.png)](https://packagist.org/packages/tedivm/stash)
+[![Coverage Status](https://coveralls.io/repos/tedivm/Stash/badge.png?branch=master)](https://coveralls.io/r/tedivm/Stash?branch=master)
 
 Stash makes it easy to speed up your code by caching the results of expensive
 functions or code. Certain actions, like database queries or calls to external
