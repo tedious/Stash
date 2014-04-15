@@ -89,14 +89,11 @@ class Composite implements DriverInterface
     }
 
     /**
-     * This function takes an array as its first argument and the expiration time as the second. This array contains two
-     * items, "expiration" describing when the data expires and "data", which is the item that needs to be
-     * stored. This function needs to store that data in such a way that it can be retrieved exactly as it was sent. The
-     * expiration time needs to be stored with this data.
      *
      * @param array $key
      * @param array $data
-     * @param $expiration
+     * @param int   $expiration
+     *
      * @return bool
      */
     public function storeData($key, $data, $expiration)
