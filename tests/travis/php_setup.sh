@@ -29,6 +29,7 @@ else
     echo "Installing..."
     make
     make install
+    rm -Rf phpredis
     cd ..
     echo "Finished installing phpredis extension."
 
