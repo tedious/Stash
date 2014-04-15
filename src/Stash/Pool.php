@@ -83,6 +83,7 @@ class Pool implements PoolInterface
                     . ' must inherit from \Stash\Interfaces\ItemInterface');
 
         $this->itemClass = $class;
+
         return true;
     }
 
@@ -92,7 +93,7 @@ class Pool implements PoolInterface
      *
      * @example $cache = $pool->getItem('permissions', 'user', '4', '2');
      *
-     * @param  string|array                   $key, $key, $key...
+     * @param  string|array                    $key, $key, $key...
      * @return \Stash\Interfaces\ItemInterface
      */
     public function getItem()
@@ -236,8 +237,9 @@ class Pool implements PoolInterface
 
     protected function logException($message, $exception)
     {
-        if(!isset($this->logger))
+        if (!isset($this->logger)) {
             return false;
+        }
 
         $this->logger->critical($message,
                                 array('exception' => $exception));

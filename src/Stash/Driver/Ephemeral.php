@@ -39,6 +39,7 @@ class Ephemeral implements DriverInterface
     public function getData($key)
     {
         $key = $this->getKeyIndex($key);
+
         return isset($this->store[$key]) ? $this->store[$key] : false;
     }
 
