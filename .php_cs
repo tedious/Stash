@@ -2,7 +2,7 @@
 
 $finder = Symfony\CS\Finder\DefaultFinder::create()
     ->notName('SessionHandlerInterface*')
-    ->in('src/Stash/Session/')
+    ->in(__DIR__)
 ;
 
 return Symfony\CS\Config\Config::create()
