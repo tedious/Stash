@@ -341,22 +341,17 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
     public function testDisableCacheGlobally()
     {
         Item::$runtimeDisable = true;
-        $stash = new Item($this->getMockedDriver(), array('test', 'key'));
+        $testDriver = $this->getMockedDriver();
+        $stash = new Item($testDriver, array('test', 'key'));
         $this->assertDisabledStash($stash);
         $this->assertTrue($stash->isDisabled());
+        $this->assertFalse($testDriver->wasCalled(), 'Driver was not called after Item was disabled.');
         Item::$runtimeDisable = false;
     }
 
     private function getMockedDriver()
     {
-        $driver = $this->getMockBuilder('Stash\Interfaces\DriverInterface')
-                        ->getMock();
-        foreach (get_class_methods($driver) as $methodName) {
-            $driver->expects($this->never())
-                    ->method($methodName);
-        }
-
-        return $driver;
+        return new \Stash\Test\Stubs\DriverCallCheckStub();
     }
 
     private function assertDisabledStash(Item $stash)
