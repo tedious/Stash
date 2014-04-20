@@ -12,7 +12,6 @@
 namespace Stash\Test\Stubs;
 
 use Stash;
-use Stash\Test\Exception\TestException;
 use Stash\Interfaces\DriverInterface;
 
 /**
