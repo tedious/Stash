@@ -47,8 +47,10 @@ class Memcache implements DriverInterface
      * Memcached::OPT_COMPRESSION) and its respective option. Please see the php manual for the specific options
      * (http://us2.php.net/manual/en/memcache.constants.php)
      *
+     *
      * @param array $options
-     * @throws \Stash\Exception\RuntimeException
+     *
+     * @throws RuntimeException
      */
     public function __construct(array $options = array())
     {
@@ -87,7 +89,7 @@ class Memcache implements DriverInterface
 
     /**
      *
-     * @param array $key
+     * @param  array $key
      * @return array
      */
     public function getData($key)
