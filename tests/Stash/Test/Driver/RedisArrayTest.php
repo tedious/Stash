@@ -31,7 +31,7 @@ class RedisArrayTest extends RedisTest
         }
         fclose($sock);
 
-        if(!($sock = @fsockopen($this->$redisSecondServer, $this->$redisSecondPort, $errno, $errstr, 1))) {
+        if(!($sock = @fsockopen($this->redisSecondServer, $this->redisSecondPort, $errno, $errstr, 1))) {
             $this->markTestSkipped('Second Redis Server needed for more tests.');
         }
         fclose($sock);
