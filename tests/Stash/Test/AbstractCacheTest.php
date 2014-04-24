@@ -224,6 +224,46 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
 
     }
 
+    public function testGetCreatedOn()
+    {
+
+        $expiration = new \DateTime('now');
+        $expiration->add(new \DateInterval('PT10S')); // expire 10 seconds after createdOn
+        $expirationTS = $expiration->getTimestamp();
+
+        $key = array('getCreatedOn', 'test');
+        $stash = $this->testConstruct($key);
+
+        $this->assertNull($stash->getCreatedOn(), 'no record exists yet, return null');
+
+        $stash->set(array('stuff'), $expiration);
+
+        $stash = $this->testConstruct($key);
+        $createdOn = $stash->getCreatedOn();
+        $this->assertEquals($expirationTS - 10, $createdOn, 'createdOn is 10 seconds before expiration');
+
+    }
+
+    public function testGetExpiration()
+    {
+
+        $expiration = new \DateTime('now');
+        $expiration->add(new \DateInterval('P1D'));
+        $expirationTS = $expiration->getTimestamp();
+
+        $key = array('getExpiration', 'test');
+        $stash = $this->testConstruct($key);
+
+        $this->assertNull($stash->getExpiration(), 'no record exists yet, return null');
+
+        $stash->set(array('stuff'), $expiration);
+
+        $stash = $this->testConstruct($key);
+        $itemExpiration = $stash->getExpiration();
+        $this->assertLessThanOrEqual($expirationTS, $itemExpiration, 'sometime before explicitly set expiration');
+
+    }
+
     public function testIsMiss()
     {
         $stash = $this->testConstruct(array('This', 'Should', 'Fail'));
