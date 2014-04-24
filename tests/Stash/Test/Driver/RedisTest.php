@@ -28,7 +28,7 @@ class RedisTest extends AbstractDriverTest
             $this->startTime = time();
             $this->expiration = $this->startTime + 3600;
 
-            if(!($sock = @fsockopen($this->redisServer, $this->redisPort, $errno, $errstr, 1))) {
+            if (!($sock = @fsockopen($this->redisServer, $this->redisPort, $errno, $errstr, 1))) {
                 $this->markTestSkipped('Redis server unavailable for testing.');
             }
             fclose($sock);

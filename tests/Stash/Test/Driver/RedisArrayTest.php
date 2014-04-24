@@ -26,12 +26,12 @@ class RedisArrayTest extends RedisTest
     {
         parent::setUp();
 
-        if(!($sock = @fsockopen($this->redisServer, $this->redisPort, $errno, $errstr, 1))) {
+        if (!($sock = @fsockopen($this->redisServer, $this->redisPort, $errno, $errstr, 1))) {
             $this->markTestSkipped('Redis server unavailable for testing.');
         }
         fclose($sock);
 
-        if(!($sock = @fsockopen($this->redisSecondServer, $this->redisSecondPort, $errno, $errstr, 1))) {
+        if (!($sock = @fsockopen($this->redisSecondServer, $this->redisSecondPort, $errno, $errstr, 1))) {
             $this->markTestSkipped('Second Redis Server needed for more tests.');
         }
         fclose($sock);
@@ -44,6 +44,5 @@ class RedisArrayTest extends RedisTest
             array('server' => $this->redisSecondServer, 'port' => $this->redisSecondPort, 'ttl' => 0.1),
         );
     }
-
 
 }
