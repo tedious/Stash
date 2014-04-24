@@ -89,7 +89,7 @@ class Session implements SessionHandlerInterface
             return true;
         }
 
-        // @codeCoverageIgnoreStop
+        // @codeCoverageIgnoreEnd
     }
 
     /**

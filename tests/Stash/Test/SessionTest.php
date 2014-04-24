@@ -20,6 +20,15 @@ use Stash\Pool;
  */
 class SessionTest extends \PHPUnit_Framework_TestCase
 {
+
+    protected function setUp()
+    {
+        if (defined('HHVM_VERSION') && version_compare(HHVM_VERSION, '3.0.0', '<')) {
+            $this->markTestSkipped('Sessions not supported on older versions of HHVM.');
+        }
+
+    }
+
     public function testRegisterHandler()
     {
 
