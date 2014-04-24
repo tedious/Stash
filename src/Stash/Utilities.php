@@ -172,7 +172,6 @@ class Utilities
         $pKey = array();
         foreach ($keys as $keyPiece) {
             $prefix = substr($keyPiece, 0, 1) == '@' ? '@' : '';
-            //$pKeyPiece = $prefix . dechex(crc32($keyPiece));
             $pKeyPiece = $prefix . $hash($keyPiece);
             $pKey[] = $pKeyPiece;
         }

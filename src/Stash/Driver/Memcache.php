@@ -139,9 +139,6 @@ class Memcache implements DriverInterface
 
     protected function makeKeyString($key, $path = false)
     {
-        // array(name, sub);
-        // a => name, b => sub;
-
         $key = \Stash\Utilities::normalizeKeys($key);
 
         $keyString = 'cache:::';
