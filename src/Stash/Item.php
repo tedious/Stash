@@ -522,6 +522,7 @@ class Item implements ItemInterface
         if (!isset($record['data']['createdOn'])) {
             return null;
         }
+
         return $record['data']['createdOn'];
     }
 
@@ -536,6 +537,7 @@ class Item implements ItemInterface
         if (!isset($record['expiration'])) {
             return null;
         }
+
         return $record['expiration'];
     }
 

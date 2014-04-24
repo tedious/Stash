@@ -50,7 +50,7 @@ class FileSystemTest extends AbstractDriverTest
      */
     public function testOptionKeyHashFunctionDirs()
     {
-        $hashfunctions = array('Stash\Test\Driver\strdup', 'strrev', 'md5', function($value) {
+        $hashfunctions = array('Stash\Test\Driver\strdup', 'strrev', 'md5', function ($value) {
             return abs(crc32($value));
         });
         $paths = array('one', 'two', 'three', 'four');
