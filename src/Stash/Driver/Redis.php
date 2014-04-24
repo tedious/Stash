@@ -169,7 +169,6 @@ class Redis implements DriverInterface
      */
     public function purge()
     {
-        // @todo when the RedisArray class is used run the rehash function here
         return true;
     }
 
