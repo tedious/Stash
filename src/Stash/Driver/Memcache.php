@@ -48,6 +48,7 @@ class Memcache implements DriverInterface
      * (http://us2.php.net/manual/en/memcache.constants.php)
      *
      * @param array $options
+     * @throws \Stash\Exception\RuntimeException
      */
     public function __construct(array $options = array())
     {
@@ -68,14 +69,12 @@ class Memcache implements DriverInterface
         $extension = strtolower($options['extension']);
 
         if (class_exists('Memcached', false) && $extension != 'memcache') {
-            $this->memcache = new SubMemcached();
+            $this->memcache = new SubMemcached($servers, $options);
         } elseif (class_exists('Memcache', false) && $extension != 'memcached') {
-            $this->memcache = new SubMemcache();
+            $this->memcache = new SubMemcache($servers);
         } else {
             throw new RuntimeException('No memcache extension available.');
         }
-
-        $this->memcache->initialize($servers, $options);
     }
 
     /**
@@ -88,6 +87,7 @@ class Memcache implements DriverInterface
 
     /**
      *
+     * @param array $key
      * @return array
      */
     public function getData($key)

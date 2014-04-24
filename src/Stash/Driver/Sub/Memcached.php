@@ -14,6 +14,7 @@ namespace Stash\Driver\Sub;
 use Stash\Exception\RuntimeException;
 
 /**
+ * @internal
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
@@ -24,7 +25,7 @@ class Memcached
      */
     protected $memcached;
 
-    public function initialize($servers, array $options = array())
+    public function __construct($servers = array(), $options = array())
     {
         // build this array here instead of as a class variable since the constants are only defined if the extension
         // exists
