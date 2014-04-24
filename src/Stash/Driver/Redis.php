@@ -169,7 +169,6 @@ class Redis implements DriverInterface
      */
     public function purge()
     {
-        // @todo when the RedisArray class is used run the rehash function here
         return true;
     }
 
@@ -186,9 +185,6 @@ class Redis implements DriverInterface
 
     protected function makeKeyString($key, $path = false)
     {
-        // array(name, sub);
-        // a => name, b => sub;
-
         $key = \Stash\Utilities::normalizeKeys($key);
 
         $keyString = 'cache:::';

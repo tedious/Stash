@@ -47,7 +47,10 @@ class Memcache implements DriverInterface
      * Memcached::OPT_COMPRESSION) and its respective option. Please see the php manual for the specific options
      * (http://us2.php.net/manual/en/memcache.constants.php)
      *
+     *
      * @param array $options
+     *
+     * @throws RuntimeException
      */
     public function __construct(array $options = array())
     {
@@ -68,14 +71,12 @@ class Memcache implements DriverInterface
         $extension = strtolower($options['extension']);
 
         if (class_exists('Memcached', false) && $extension != 'memcache') {
-            $this->memcache = new SubMemcached();
+            $this->memcache = new SubMemcached($servers, $options);
         } elseif (class_exists('Memcache', false) && $extension != 'memcached') {
-            $this->memcache = new SubMemcache();
+            $this->memcache = new SubMemcache($servers);
         } else {
             throw new RuntimeException('No memcache extension available.');
         }
-
-        $this->memcache->initialize($servers, $options);
     }
 
     /**
@@ -88,6 +89,7 @@ class Memcache implements DriverInterface
 
     /**
      *
+     * @param  array $key
      * @return array
      */
     public function getData($key)
@@ -139,9 +141,6 @@ class Memcache implements DriverInterface
 
     protected function makeKeyString($key, $path = false)
     {
-        // array(name, sub);
-        // a => name, b => sub;
-
         $key = \Stash\Utilities::normalizeKeys($key);
 
         $keyString = 'cache:::';

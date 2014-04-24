@@ -12,6 +12,7 @@
 namespace Stash\Driver\Sub;
 
 /**
+ * @internal
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
@@ -22,7 +23,7 @@ class Memcache
      */
     protected $memcached;
 
-    public function initialize($servers, array $options = array())
+    public function __construct($servers)
     {
         $memcache = new \Memcache();
 
