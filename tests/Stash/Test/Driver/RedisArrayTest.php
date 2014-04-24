@@ -41,7 +41,7 @@ class RedisArrayTest extends RedisTest
     {
         return array(
             array('server' => $this->redisServer, 'port' => $this->redisPort, 'ttl' => 0.1),
-            array('server' => $this->$redisSecondServer, 'port' => $this->$redisSecondPort, 'ttl' => 0.1),
+            array('server' => $this->redisSecondServer, 'port' => $this->redisSecondPort, 'ttl' => 0.1),
         );
     }
 
