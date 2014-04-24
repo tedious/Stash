@@ -19,7 +19,3 @@ after_script:
 services:
   - redis-server
   - memcached
-
-matrix:
-  allow_failures:
-    - php: hhvm
