@@ -3,7 +3,7 @@
 [![License](http://img.shields.io/packagist/l/tedivm/stash.svg)](https://github.com/tedivm/Stash/blob/master/LICENSE)
 [![Latest Stable Version](http://img.shields.io/github/release/tedivm/stash.svg)](https://packagist.org/packages/tedivm/stash)
 [![Coverage Status](http://img.shields.io/coveralls/tedivm/Stash.svg)](https://coveralls.io/r/tedivm/Stash?branch=master)
-[![Total Downloads](https://poser.pugx.org/tedivm/stash/downloads.png)](https://packagist.org/packages/tedivm/stash)
+[![Total Downloads](http://img.shields.io/packagist/dt/tedivm/stash.svg)](https://packagist.org/packages/tedivm/stash)
 
 Stash makes it easy to speed up your code by caching the results of expensive
 functions or code. Certain actions, like database queries or calls to external
