@@ -13,6 +13,7 @@ namespace Stash;
 
 use Stash\Driver\Ephemeral;
 use Stash\Interfaces\DriverInterface;
+use Stash\Interfaces\ItemInterface;
 use Stash\Interfaces\PoolInterface;
 
 /**
@@ -32,8 +33,9 @@ class Pool implements PoolInterface
      */
     protected $driver;
 
-
     protected $isDisabled = false;
+
+    protected $itemClass = '\Stash\Item';
 
     /**
      * If set various then errors and exceptions will get passed to the PSR Compliant logging library. This
@@ -43,8 +45,7 @@ class Pool implements PoolInterface
      */
     protected $logger;
 
-    protected $itemClass = '\Stash\Item';
-
+    protected $namespace;
 
     /**
      * The constructor takes a Driver class which is used for persistent
@@ -94,7 +95,7 @@ class Pool implements PoolInterface
      * @example $cache = $pool->getItem('permissions', 'user', '4', '2');
      *
      * @param  string|array                    $key, $key, $key...
-     * @return \Stash\Interfaces\ItemInterface
+     * @return ItemInterface
      */
     public function getItem()
     {
@@ -118,13 +119,22 @@ class Pool implements PoolInterface
             $key = $args;
         }
 
+        if(!($namespace = $this->getNamespace())) {
+            $namespace = 'stash_default';
+        }
+
+        array_unshift($key, $namespace);
+
         foreach ($key as $node) {
             if (strlen($node) < 1) {
                 throw new \InvalidArgumentException('Invalid or Empty Node passed to getItem constructor.');
             }
         }
 
-        $cache = new $this->itemClass($this->driver, $key);
+        /** @var ItemInterface $cache */
+        $cache = new $this->itemClass();
+        $cache->setDriver($this->driver);
+        $cache->setKey($key, $namespace);
 
         if($this->isDisabled)
             $cache->disable();
@@ -144,6 +154,7 @@ class Pool implements PoolInterface
      * @param  array     $keys
      * @return \Iterator
      */
+
     public function getItemIterator($keys)
     {
         // temporarily cheating here by wrapping around single calls.
@@ -225,6 +236,27 @@ class Pool implements PoolInterface
             $this->driver = new Ephemeral();
 
         return $this->driver;
+    }
+
+    public function setNamespace($namespace = null)
+    {
+        if(is_null($namespace)) {
+            unset($this->namespace);
+            return true;
+        }
+
+        if(!ctype_alnum($namespace)) {
+            throw new \InvalidArgumentException('Namespace must be alphanumeric.');
+        }
+
+        $this->namespace = $namespace;
+
+        return true;
+    }
+
+    public function getNamespace()
+    {
+        return isset($this->namespace) ? $this->namespace : false;
     }
 
     /**
