@@ -180,11 +180,14 @@ class Pool implements PoolInterface
         }
 
         try {
-
+            $driver = $this->getDriver();
             if (isset($this->namespace)) {
-                $results = $this->getDriver()->clear(array($this->namespace));
+                $normalizedNamespace = strtolower($this->namespace);
+                $results = $driver->clear(array('cache', $normalizedNamespace))
+                        && $driver->clear(array('sp', $normalizedNamespace));
+
             } else {
-                $results = $this->getDriver()->clear();
+                $results = $driver->clear();
             }
 
         } catch (\Exception $e) {
