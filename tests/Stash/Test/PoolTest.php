@@ -115,48 +115,11 @@ class PoolTest extends \PHPUnit_Framework_TestCase
 
         $stash = $pool->getItem('base', 'one');
         $stash->set($this->data);
-        $this->assertTrue($pool->flush(), 'clear returns true');
+        $this->assertTrue($pool->flush(), 'flush returns true');
 
         $stash = $pool->getItem('base', 'one');
         $this->assertNull($stash->get(), 'clear removes item');
-        $this->assertTrue($stash->isMiss(), 'clear causes cache miss');
-    }
-
-    public function testFlushNamespacedCache()
-    {
-        $pool = $this->getTestPool();
-
-        // No Namespace
-        $item = $pool->getItem(array('base', 'one'));
-        $item->set($this->data);
-
-        // TestNamespace
-        $pool->setNamespace('TestNamespace');
-        $item = $pool->getItem(array('test', 'one'));
-        $item->set($this->data);
-
-        // TestNamespace2
-        $pool->setNamespace('TestNamespace2');
-        $item = $pool->getItem(array('test', 'one'));
-        $item->set($this->data);
-
-        // Flush TestNamespace
-        $pool->setNamespace('TestNamespace');
-        $this->assertTrue($pool->flush(), 'Flush succeeds with namespace selected.');
-
-        // Return to No Namespace
-        $pool->setNamespace();
-        $item = $pool->getItem(array('base', 'one'));
-        $this->assertFalse($item->isMiss(), 'Base item exists after other namespace was flushed.');
-        $this->assertEquals($this->data, $item->get(), 'Base item returns data after other namespace was flushed.');
-
-        // Flush All
-        $this->assertTrue($pool->flush(), 'Flush succeeds with no namespace.');
-
-        // Return to TestNamespace2
-        $pool->setNamespace('TestNamespace2');
-        $item = $pool->getItem(array('base', 'one'));
-        $this->assertTrue($item->isMiss(), 'Namespaced item disappears after complete flush.');
+        $this->assertTrue($stash->isMiss(), 'flush causes cache miss');
     }
 
     public function testPurgeCache()
