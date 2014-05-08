@@ -31,5 +31,9 @@ interface PoolInterface
 
     public function getDriver();
 
+    public function setNamespace($namespace = null);
+
+    public function getNamespace();
+
     public function setLogger($logger);
 }

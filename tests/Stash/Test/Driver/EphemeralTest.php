@@ -24,9 +24,15 @@ class EphemeralTest extends AbstractDriverTest
     public function testKeyCollisions1()
     {
         $driver = new $this->driverClass;
-        $item1 = new Item($driver, '##/#');
+
+        $item1 = new Item();
+        $item1->setDriver(($driver));
+        $item1->setKey(array('##' , '#'));
         $item1->set('X');
-        $item2 = new Item($driver, '#/##');
+
+        $item2 = new Item();
+        $item2->setDriver(($driver));
+        $item2->setKey(array('#' , '##'));
         $item2->set('Y');
 
         $this->assertEquals('X', $item1->get());
@@ -35,9 +41,15 @@ class EphemeralTest extends AbstractDriverTest
     public function testKeyCollisions2()
     {
         $driver = new $this->driverClass;
-        $item1 = new Item($driver, '#');
+
+        $item1 = new Item();
+        $item1->setDriver(($driver));
+        $item1->setKey(array('#'));
         $item1->set('X');
-        $item2 = new Item($driver, ':');
+
+        $item2 = new Item();
+        $item2->setDriver(($driver));
+        $item2->setKey(array(':'));
         $item2->set('Y');
 
         $this->assertEquals('X', $item1->get());

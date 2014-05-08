@@ -65,7 +65,9 @@ class FileSystemTest extends AbstractDriverTest
 
             $rand = str_repeat(uniqid(), 32);
 
-            $item = new Item($driver, $paths);
+            $item = new Item();
+            $item->setDriver($driver);
+            $item->setKey($paths);
             $item->set($rand);
 
             $allpaths = array_merge(array('cache'), $paths);

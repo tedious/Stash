@@ -9,6 +9,11 @@
     <filter>
         <whitelist>
             <directory suffix=".php">./src/Stash/</directory>
+            <exclude>
+                <directory>./src/Stash/Exception</directory>
+                <directory>./src/Stash/Interfaces</directory>
+                <directory>./src/Stash/Driver/Xcache.php</directory>
+            </exclude>
         </whitelist>
     </filter>
     <logging>

@@ -13,6 +13,9 @@ namespace Stash\Interfaces;
 
 interface ItemInterface
 {
+    public function setDriver(DriverInterface $driver);
+
+    public function setKey($key, $namespace = null);
 
     public function disable();
 

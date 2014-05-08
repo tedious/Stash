@@ -41,7 +41,9 @@ class SqliteAnyTest extends \PHPUnit_Framework_TestCase
         $options = array();
         $driver = new Sqlite($options);
 
-        $stash = new Item($driver, $key);
+        $stash = new Item();
+        $stash->setDriver($driver);
+        $stash->setKey($key);
         $this->assertTrue($stash->set($key), 'Able to load and store with unconfigured extension.');
     }
 

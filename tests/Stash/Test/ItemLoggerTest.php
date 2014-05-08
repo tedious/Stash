@@ -23,21 +23,35 @@ use Stash\Driver\Ephemeral as Ephemeral;
  */
 class ItemLoggerTest extends \PHPUnit_Framework_TestCase
 {
+    protected function getItem($key, $exceptionDriver = false)
+    {
+        if ($exceptionDriver) {
+            $fullDriver = 'Stash\Test\Stubs\DriverExceptionStub';
+        } else {
+            $fullDriver = 'Stash\Driver\Ephemeral';
+        }
+
+        $item = new Item();
+        $item->setDriver(new $fullDriver());
+        $item->setKey($key);
+
+        return $item;
+    }
+
     public function testSetLogger()
     {
-        $driver = new Ephemeral();
-        $item = new Item($driver, array('path', 'to', 'constructor'));
+        $item = $this->getItem(array('path', 'to', 'constructor'));
+
         $logger = new LoggerStub();
         $item->setLogger($logger);
-
         $this->assertAttributeInstanceOf('Stash\Test\Stubs\LoggerStub', 'logger', $item, 'setLogger injects logger into Item.');
     }
 
     public function testGet()
     {
-        $driver = new DriverExceptionStub();
-        $item = new Item($driver, array('path', 'to', 'get'));
         $logger = new LoggerStub();
+
+        $item = $this->getItem(array('path', 'to', 'get'), true);
         $item->setLogger($logger);
 
         // triggerlogging
@@ -52,9 +66,9 @@ class ItemLoggerTest extends \PHPUnit_Framework_TestCase
 
     public function testSet()
     {
-        $driver = new DriverExceptionStub();
-        $item = new Item($driver, array('path', 'to', 'set'));
         $logger = new LoggerStub();
+
+        $item = $this->getItem(array('path', 'to', 'set'), true);
         $item->setLogger($logger);
 
         // triggerlogging
@@ -68,9 +82,9 @@ class ItemLoggerTest extends \PHPUnit_Framework_TestCase
 
     public function testClear()
     {
-        $driver = new DriverExceptionStub();
-        $item = new Item($driver, array('path', 'to', 'clear'));
         $logger = new LoggerStub();
+
+        $item = $this->getItem(array('path', 'to', 'clear'), true);
         $item->setLogger($logger);
 
         // triggerlogging

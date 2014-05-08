@@ -64,10 +64,13 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
             $this->driver = new Ephemeral(array());
         }
 
-        $stash = new Item($this->driver, $key);
-        $this->assertTrue(is_a($stash, 'Stash\Item'), 'Test object is an instance of Stash');
+        $item = new Item();
+        $this->assertTrue(is_a($item, 'Stash\Item'), 'Test object is an instance of Stash');
 
-        return $stash;
+        $item->setDriver($this->driver);
+        $item->setKey($key);
+
+        return $item;
     }
 
     public function testSetupKey()
@@ -82,20 +85,6 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
 
         $returnedKey = $stashArray->getKey();
         $this->assertEquals($keyString, $returnedKey, 'getKey returns properly normalized key from array argument.');
-
-        $stashString = $this->testConstruct($keyString);
-        $this->assertAttributeInternalType('string', 'keyString', $stashString, 'Argument based keys setup keystring');
-        $this->assertAttributeInternalType('array', 'key', $stashString, 'Array based keys setup key');
-
-        $this->assertAttributeEquals($keyNormalized, 'key', $stashString, 'setupKey from string builds proper key array.');
-
-        $returnedKey = $stashString->getKey();
-        $this->assertEquals($keyString, $returnedKey, 'getKey returns the same key as initially passed via string.');
-
-        $stashString = $this->testConstruct('/' . $keyString . '/');
-        $returnedKey = $stashString->getKey();
-        $this->assertEquals('/' . $keyString . '/', $returnedKey, 'getKey returns the same key as initially passed via string.');
-        $this->assertAttributeEquals($keyNormalized, 'key', $stashString, 'setupKey discards trailing and leading slashes.');
     }
 
     public function testSet()
@@ -108,6 +97,10 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
 
             $this->assertTrue($stash->set($value), 'Driver class able to store data type ' . $type);
         }
+
+        $item = new Item();
+        $item->setDriver(new Ephemeral(array()));
+        $this->assertFalse($item->set($this->data), 'Item without key returns false for set.');
     }
 
     /**
@@ -125,6 +118,33 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
             $data = $stash->get();
             $this->assertEquals($value, $data, 'getData ' . $type . ' returns same item as stored');
         }
+
+        if (!isset($this->driver)) {
+            $this->driver = new Ephemeral(array());
+        }
+
+        $item = new Item();
+        $item->setDriver(new Ephemeral(array()));
+        $this->assertEquals(null, $item->get(), 'Item without key returns null for get.');
+
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Item requires keys as arrays.
+     */
+    public function testGetItemInvalidKey()
+    {
+        $item = new Item();
+        $item->setDriver(new Ephemeral(array()));
+        $item->setKey('This is not an array');
+    }
+
+    public function testLock()
+    {
+        $item = new Item();
+        $item->setDriver(new Ephemeral(array()));
+        $this->assertFalse($item->lock(), 'Item without key returns false for lock.');
     }
 
     public function testInvalidation()
@@ -183,7 +203,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         $unknownStash = $this->testConstruct($key);
 
         $return = $unknownStash->get(78);
-        $this->assertEquals($$oldValue, $return, 'Old value is returned');
+        $this->assertEquals($oldValue, $return, 'Old value is returned');
         $this->assertTrue($unknownStash->isMiss(), 'Cache is marked as miss');
         unset($unknownStash);
 
@@ -206,6 +226,12 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($precomputeStash->isMiss(), 'Cache is marked as miss');
         unset($precomputeStash);
 
+        // Test Stampede Flag Expiration
+        $key = array('stampede', 'expire');
+        $Item_SPtest = $this->testConstruct($key);
+        $Item_SPtest->set($oldValue, -300);
+        $Item_SPtest->lock(-5);
+        $this->assertEquals($oldValue, $Item_SPtest->get(Item::SP_VALUE, $newValue), 'Expired lock is ignored');
     }
 
     public function testSetWithDateTime()
@@ -372,7 +398,9 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
 
     public function testDisableCacheWillNeverCallDriver()
     {
-        $stash = new Item($this->getMockedDriver(), array('test', 'key'));
+        $stash = new Item();
+        $stash->setDriver($this->getMockedDriver());
+        $stash->setKey(array('test', 'key'));
         $stash->disable();
         $this->assertTrue($stash->isDisabled());
         $this->assertDisabledStash($stash);
@@ -382,7 +410,11 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
     {
         Item::$runtimeDisable = true;
         $testDriver = $this->getMockedDriver();
-        $stash = new Item($testDriver, array('test', 'key'));
+
+        $stash = new Item();
+        $stash->setDriver($testDriver);
+        $stash->setKey(array('test', 'key'));
+
         $this->assertDisabledStash($stash);
         $this->assertTrue($stash->isDisabled());
         $this->assertFalse($testDriver->wasCalled(), 'Driver was not called after Item was disabled.');
