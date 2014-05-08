@@ -185,7 +185,7 @@ class FileSystem implements DriverInterface
                     throw new Stash\Exception\WindowsPathMaxLengthException();
                 }
 
-                if (!mkdir(dirname($path), $this->dirPermissions, true)) {
+                if (!is_dir(dirname($path)) && !mkdir(dirname($path), $this->dirPermissions, true)) {
                     return false;
                 }
             }
