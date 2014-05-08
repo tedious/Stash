@@ -226,7 +226,6 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($precomputeStash->isMiss(), 'Cache is marked as miss');
         unset($precomputeStash);
 
-
         // Test Stampede Flag Expiration
         $key = array('stampede', 'expire');
         $Item_SPtest = $this->testConstruct($key);
