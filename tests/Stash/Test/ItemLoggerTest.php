@@ -25,16 +25,16 @@ class ItemLoggerTest extends \PHPUnit_Framework_TestCase
 {
     protected function getItem($key, $exceptionDriver = false)
     {
-        if($exceptionDriver)
-        {
+        if ($exceptionDriver) {
             $fullDriver = 'Stash\Test\Stubs\DriverExceptionStub';
-        }else{
+        } else {
             $fullDriver = 'Stash\Driver\Ephemeral';
         }
 
         $item = new Item();
         $item->setDriver(new $fullDriver());
         $item->setKey($key);
+
         return $item;
     }
 

@@ -94,7 +94,7 @@ class Pool implements PoolInterface
      *
      * @example $cache = $pool->getItem('permissions', 'user', '4', '2');
      *
-     * @param  string|array                    $key, $key, $key...
+     * @param  string|array  $key, $key, $key...
      * @return ItemInterface
      */
     public function getItem()
@@ -119,7 +119,7 @@ class Pool implements PoolInterface
             $key = $args;
         }
 
-        if(!($namespace = $this->getNamespace())) {
+        if (!($namespace = $this->getNamespace())) {
             $namespace = 'stash_default';
         }
 
@@ -240,12 +240,13 @@ class Pool implements PoolInterface
 
     public function setNamespace($namespace = null)
     {
-        if(is_null($namespace)) {
+        if (is_null($namespace)) {
             unset($this->namespace);
+
             return true;
         }
 
-        if(!ctype_alnum($namespace)) {
+        if (!ctype_alnum($namespace)) {
             throw new \InvalidArgumentException('Namespace must be alphanumeric.');
         }
 

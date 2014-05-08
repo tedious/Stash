@@ -135,7 +135,7 @@ class Item implements ItemInterface
      *
      * Typically called by Pool directly, and *must* be called before running caching functions.
      *
-     * @param array $key
+     * @param array       $key
      * @param string|null $namespace
      */
     public function setKey($key, $namespace = null)
@@ -568,17 +568,17 @@ class Item implements ItemInterface
      * is an internal function an should not be called directly.
      *
      * @internal
-     * @param array $key
+     * @param  array                     $key
      * @throws \InvalidArgumentException
      */
     protected function setupKey($key)
     {
-        if(!is_array($key)) {
+        if (!is_array($key)) {
             throw new \InvalidArgumentException('Item requires keys as arrays.');
         }
 
         $keyStringTmp = $key;
-        if(isset($this->namespace)) {
+        if (isset($this->namespace)) {
             array_shift($keyStringTmp);
         }
 
