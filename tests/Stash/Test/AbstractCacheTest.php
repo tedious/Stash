@@ -203,7 +203,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         $unknownStash = $this->testConstruct($key);
 
         $return = $unknownStash->get(78);
-        $this->assertEquals($$oldValue, $return, 'Old value is returned');
+        $this->assertEquals($oldValue, $return, 'Old value is returned');
         $this->assertTrue($unknownStash->isMiss(), 'Cache is marked as miss');
         unset($unknownStash);
 
@@ -226,6 +226,13 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($precomputeStash->isMiss(), 'Cache is marked as miss');
         unset($precomputeStash);
 
+
+        // Test Stampede Flag Expiration
+        $key = array('stampede', 'expire');
+        $Item_SPtest = $this->testConstruct($key);
+        $Item_SPtest->set($oldValue, -300);
+        $Item_SPtest->lock(-5);
+        $this->assertEquals($oldValue, $Item_SPtest->get(Item::SP_VALUE, $newValue), 'Expired lock is ignored');
     }
 
     public function testSetWithDateTime()
