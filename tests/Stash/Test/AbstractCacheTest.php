@@ -85,21 +85,6 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
 
         $returnedKey = $stashArray->getKey();
         $this->assertEquals($keyString, $returnedKey, 'getKey returns properly normalized key from array argument.');
-
-    /*    $stashString = $this->testConstruct($keyString);
-        $this->assertAttributeInternalType('string', 'keyString', $stashString, 'Argument based keys setup keystring');
-        $this->assertAttributeInternalType('array', 'key', $stashString, 'Array based keys setup key');
-
-        $this->assertAttributeEquals($keyNormalized, 'key', $stashString, 'setupKey from string builds proper key array.');
-
-        $returnedKey = $stashString->getKey();
-        $this->assertEquals($keyString, $returnedKey, 'getKey returns the same key as initially passed via string.');
-
-        $stashString = $this->testConstruct('/' . $keyString . '/');
-        $returnedKey = $stashString->getKey();
-        $this->assertEquals('/' . $keyString . '/', $returnedKey, 'getKey returns the same key as initially passed via string.');
-        $this->assertAttributeEquals($keyNormalized, 'key', $stashString, 'setupKey discards trailing and leading slashes.');
-*/
     }
 
     public function testSet()
@@ -112,6 +97,10 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
 
             $this->assertTrue($stash->set($value), 'Driver class able to store data type ' . $type);
         }
+
+        $item = new Item();
+        $item->setDriver(new Ephemeral(array()));
+        $this->assertFalse($item->set($this->data), 'Item without key returns false for set.');
     }
 
     /**
@@ -129,6 +118,33 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
             $data = $stash->get();
             $this->assertEquals($value, $data, 'getData ' . $type . ' returns same item as stored');
         }
+
+        if (!isset($this->driver)) {
+            $this->driver = new Ephemeral(array());
+        }
+
+        $item = new Item();
+        $item->setDriver(new Ephemeral(array()));
+        $this->assertEquals(null, $item->get(), 'Item without key returns null for get.');
+
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Item requires keys as arrays.
+     */
+    public function testGetItemInvalidKey()
+    {
+        $item = new Item();
+        $item->setDriver(new Ephemeral(array()));
+        $item->setKey('This is not an array');
+    }
+
+    public function testLock()
+    {
+        $item = new Item();
+        $item->setDriver(new Ephemeral(array()));
+        $this->assertFalse($item->lock(), 'Item without key returns false for lock.');
     }
 
     public function testInvalidation()

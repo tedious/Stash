@@ -63,5 +63,19 @@ class CacheExceptionTest extends \PHPUnit_Framework_TestCase
 
         $stash = $pool->getItem('test');
         $this->assertTrue($stash->isDisabled(), 'Is disabled after exception is thrown in driver');
+        $this->assertFalse($pool->purge());
     }
+
+    public function testFlush()
+    {
+        $pool = new Pool(new DriverExceptionStub());
+        $stash = $pool->getItem('test');
+        $this->assertFalse($stash->isDisabled());
+        $this->assertFalse($pool->flush());
+
+        $stash = $pool->getItem('test');
+        $this->assertTrue($stash->isDisabled(), 'Is disabled after exception is thrown in driver');
+        $this->assertFalse($pool->flush());
+    }
+
 }

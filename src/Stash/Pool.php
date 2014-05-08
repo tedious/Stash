@@ -74,14 +74,12 @@ class Pool implements PoolInterface
     public function setItemClass($class)
     {
         if(!class_exists($class))
-            throw new \InvalidArgumentException('Item class ' . $class
-                                                . ' does not exist');
+            throw new \InvalidArgumentException('Item class ' . $class . ' does not exist');
 
         $interfaces = class_implements($class, true);
 
         if(!in_array('Stash\Interfaces\ItemInterface', $interfaces))
-            throw new \InvalidArgumentException('Item class ' . $class
-                    . ' must inherit from \Stash\Interfaces\ItemInterface');
+            throw new \InvalidArgumentException('Item class ' . $class . ' must inherit from \Stash\Interfaces\ItemInterface');
 
         $this->itemClass = $class;
 
@@ -212,9 +210,9 @@ class Pool implements PoolInterface
      */
     public function purge()
     {
-        if($this->isDisabled)
-
+        if ($this->isDisabled) {
             return false;
+        }
 
         try {
             $results = $this->getDriver()->purge();
