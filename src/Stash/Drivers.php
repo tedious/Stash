@@ -44,11 +44,7 @@ class Drivers
     {
         $availableDrivers = array();
         foreach (self::$drivers as $name => $class) {
-            if (!class_exists($class)) {
-                continue;
-            }
-
-            if (!in_array('Stash\Interfaces\DriverInterface', class_implements($class))) {
+            if (!class_exists($class) || !in_array('Stash\Interfaces\DriverInterface', class_implements($class))) {
                 continue;
             }
 

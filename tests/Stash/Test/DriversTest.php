@@ -36,9 +36,10 @@ class DriversTest extends \PHPUnit_Framework_TestCase
 
     public function testGetDriverClass()
     {
-        Drivers::getDriverClass('Array');
-
         $this->assertEquals('Stash\Driver\Ephemeral', Drivers::getDriverClass('Array'), 'getDriverClass returns proper classname for Array driver');
+
+        $this->assertFalse(Drivers::getDriverClass('FakeName'), 'getDriverClass returns false for nonexistent class.');
+
     }
 
 }
