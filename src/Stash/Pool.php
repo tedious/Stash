@@ -270,9 +270,6 @@ class Pool implements PoolInterface
         return isset($this->namespace) ? $this->namespace : false;
     }
 
-    /**
-     * Return true if caching is disabled
-     */
     public function setLogger($logger)
     {
         $this->logger = $logger;

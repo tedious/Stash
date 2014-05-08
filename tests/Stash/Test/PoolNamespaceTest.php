@@ -18,14 +18,12 @@ use Stash\Driver\Ephemeral;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class PoolNamespaceTest extends PoolTest
+class PoolNamespaceTest extends AbstractPoolTest
 {
 
     protected function getTestPool($skipNametest = false)
     {
-        $driver = new Ephemeral(array());
-        $pool = new Pool();
-        $pool->setDriver($driver);
+        $pool = parent::getTestPool();
 
         if (!$skipNametest) {
             $pool->setNamespace('TestSpace');
