@@ -27,7 +27,7 @@ class PoolNamespaceTest extends PoolTest
         $pool = new Pool();
         $pool->setDriver($driver);
 
-        if(!$skipNametest) {
+        if (!$skipNametest) {
             $pool->setNamespace('TestSpace');
         }
 
