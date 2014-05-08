@@ -250,7 +250,7 @@ class Pool implements PoolInterface
     public function setNamespace($namespace = null)
     {
         if (is_null($namespace)) {
-            unset($this->namespace);
+            $this->namespace = null;
 
             return true;
         }
