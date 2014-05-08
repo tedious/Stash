@@ -170,16 +170,25 @@ class Pool implements PoolInterface
     /**
      * Empties the entire cache pool of all items.
      *
+     * If no namespace is defined everything is cleared, otherwise just the
+     * namespace itself gets emptied.
+     *
      * @return bool success
      */
     public function flush()
     {
-        if($this->isDisabled)
-
+        if ($this->isDisabled) {
             return false;
+        }
 
         try {
-            $results = $this->getDriver()->clear();
+
+            if (isset($this->namespace)) {
+                $results = $this->getDriver()->clear(array($this->namespace));
+            } else {
+                $results = $this->getDriver()->clear();
+            }
+
         } catch (\Exception $e) {
             $this->isDisabled = true;
             $this->logException('Flushing Cache Pool caused exception.', $e);
