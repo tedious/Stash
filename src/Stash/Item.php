@@ -90,7 +90,7 @@ class Item implements ItemInterface
      * The cacheDriver being used by the system. While this class handles all of the higher functions, it's the cache
      * driver here that handles all of the storage/retrieval functionality. This value is set by the constructor.
      *
-     * @var Stash\Interfaces\DriverInterface
+     * @var \Stash\Interfaces\DriverInterface
      */
     protected $driver;
 
@@ -98,9 +98,16 @@ class Item implements ItemInterface
      * If set various then errors and exceptions will get passed to the PSR Compliant logging library. This
      * can be set using the setLogger() function in this class.
      *
-     * @var Psr\Log\LoggerInterface
+     * @var \Psr\Log\LoggerInterface
      */
     protected $logger;
+
+    /**
+     * Defines the namespace the item lives in.
+     *
+     * @var string|null
+     */
+    protected $namespace = null;
 
     /**
      * This is a flag to see if a valid response is returned. It is set by the getData function and is used by the
@@ -110,16 +117,30 @@ class Item implements ItemInterface
      */
     private $isHit = null;
 
+
     /**
-     * This constructor is an internal function used by the Pool object when
-     * creating new Item objects. It should not be called directly.
+     * Sets the driver for the Item class to use.
      *
-     * @internal
-     * @param DriverInterface If no driver is passed the cache is set to script time only.
+     * Typically called by Pool directly, and *must* be called before running caching functions.
+     *
+     * @param DriverInterface $driver
      */
-    public function __construct(DriverInterface $driver, $key)
+    public function setDriver(DriverInterface $driver)
     {
         $this->driver = $driver;
+    }
+
+    /**
+     * Takes and sets the key and namespace.
+     *
+     * Typically called by Pool directly, and *must* be called before running caching functions.
+     *
+     * @param array $key
+     * @param string|null $namespace
+     */
+    public function setKey($key, $namespace = null)
+    {
+        $this->namespace = $namespace;
         $this->setupKey($key);
     }
 
@@ -547,20 +568,24 @@ class Item implements ItemInterface
      * is an internal function an should not be called directly.
      *
      * @internal
-     * @param string|array $key
+     * @param array $key
+     * @throws \InvalidArgumentException
      */
     protected function setupKey($key)
     {
-        if (is_array($key)) {
-            $this->keyString = implode('/', $key);
-        } else {
-            $this->keyString = $key;
-            $key = trim($key, '/');
-            $key = explode('/', $key);
+        if(!is_array($key)) {
+            throw new \InvalidArgumentException('Item requires keys as arrays.');
         }
 
+        $keyStringTmp = $key;
+        if(isset($this->namespace)) {
+            array_shift($keyStringTmp);
+        }
+
+        $this->keyString = implode('/', $keyStringTmp);
+
         // We implant the namespace "cache" to the front of every stash object's key. This allows us to segment
-        // off the user data, and user other 'namespaces' for internal purposes.
+        // off the user data, and use other 'namespaces' for internal purposes.
         array_unshift($key, 'cache');
         $this->key = array_map('strtolower', $key);
     }
