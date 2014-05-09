@@ -36,18 +36,15 @@ class Drivers
     );
 
     /**
-     * Returns a list of build-in cache drivers that are also supported by this system.
+     * Returns a list of cache drivers that are also supported by this system.
      *
      * @return array Driver Name => Class Name
      */
     public static function getDrivers()
     {
         $availableDrivers = array();
-        foreach (self::$drivers as $name => $class) {
-            if (!class_exists($class) || !in_array('Stash\Interfaces\DriverInterface', class_implements($class))) {
-                continue;
-            }
-
+        $allDrivers = self::getAllDrivers();
+        foreach ($allDrivers as $name => $class) {
             if ($name == 'Composite') {
                 $availableDrivers[$name] = $class;
             } else {
@@ -58,6 +55,24 @@ class Drivers
         }
 
         return $availableDrivers;
+    }
+
+    /**
+     * Returns a list of all registered cache drivers, regardless of system support.
+     *
+     * @return array Driver Name => Class Name
+     */
+    public static function getAllDrivers()
+    {
+        $driverList = array();
+        foreach (self::$drivers as $name => $class) {
+            if (!class_exists($class) || !in_array('Stash\Interfaces\DriverInterface', class_implements($class))) {
+                continue;
+            }
+            $driverList[$name] = $class;
+        }
+
+        return $driverList;
     }
 
     public static function registerDriver($name, $class)
