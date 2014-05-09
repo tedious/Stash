@@ -21,7 +21,7 @@ use Stash\Driver\Ephemeral;
  *
  * @todo find out why this has to be abstract to work (see https://github.com/tedivm/Stash/pull/10)
  */
-abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
+abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
 {
     protected $data = array('string' => 'Hello world!',
                             'complexString' => "\t\t\t\tHello\r\n\rWorld!",
@@ -44,6 +44,8 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
     private $setup = false;
     protected $driver;
 
+    protected $itemClass = '\Stash\Item';
+
     public static function tearDownAfterClass()
     {
         Utilities::deleteRecursive(Utilities::getBaseDirectory());
@@ -58,13 +60,24 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    /**
+     * This just makes it slightly easier to extend AbstractCacheTest to
+     * other Item types.
+     *
+     * @return \Stash\Interfaces\ItemInterface
+     */
+    protected function getItem()
+    {
+        return new $this->itemClass();
+    }
+
     public function testConstruct($key = array())
     {
         if (!isset($this->driver)) {
             $this->driver = new Ephemeral(array());
         }
 
-        $item = new Item();
+        $item = $this->getItem();
         $this->assertTrue(is_a($item, 'Stash\Item'), 'Test object is an instance of Stash');
 
         $item->setDriver($this->driver);
@@ -98,7 +111,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
             $this->assertTrue($stash->set($value), 'Driver class able to store data type ' . $type);
         }
 
-        $item = new Item();
+        $item = $this->getItem();
         $item->setDriver(new Ephemeral(array()));
         $this->assertFalse($item->set($this->data), 'Item without key returns false for set.');
     }
@@ -123,7 +136,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
             $this->driver = new Ephemeral(array());
         }
 
-        $item = new Item();
+        $item = $this->getItem();
         $item->setDriver(new Ephemeral(array()));
         $this->assertEquals(null, $item->get(), 'Item without key returns null for get.');
 
@@ -135,14 +148,14 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetItemInvalidKey()
     {
-        $item = new Item();
+        $item = $this->getItem();
         $item->setDriver(new Ephemeral(array()));
         $item->setKey('This is not an array');
     }
 
     public function testLock()
     {
-        $item = new Item();
+        $item = $this->getItem();
         $item->setDriver(new Ephemeral(array()));
         $this->assertFalse($item->lock(), 'Item without key returns false for lock.');
     }
@@ -398,7 +411,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
 
     public function testDisableCacheWillNeverCallDriver()
     {
-        $stash = new Item();
+        $stash = $this->getItem();
         $stash->setDriver($this->getMockedDriver());
         $stash->setKey(array('test', 'key'));
         $stash->disable();
@@ -411,7 +424,7 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         Item::$runtimeDisable = true;
         $testDriver = $this->getMockedDriver();
 
-        $stash = new Item();
+        $stash = $this->getItem();
         $stash->setDriver($testDriver);
         $stash->setKey(array('test', 'key'));
 
@@ -426,13 +439,13 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
         return new \Stash\Test\Stubs\DriverCallCheckStub();
     }
 
-    private function assertDisabledStash(Item $stash)
+    private function assertDisabledStash(\Stash\Interfaces\ItemInterface $item)
     {
-        $this->assertFalse($stash->set('true'), 'storeData returns false for disabled cache');
-        $this->assertNull($stash->get(), 'getData returns null for disabled cache');
-        $this->assertFalse($stash->clear(), 'clear returns false for disabled cache');
-        $this->assertTrue($stash->isMiss(), 'isMiss returns true for disabled cache');
-        $this->assertFalse($stash->extend(), 'extend returns false for disabled cache');
-        $this->assertTrue($stash->lock(100), 'lock returns true for disabled cache');
+        $this->assertFalse($item->set('true'), 'storeData returns false for disabled cache');
+        $this->assertNull($item->get(), 'getData returns null for disabled cache');
+        $this->assertFalse($item->clear(), 'clear returns false for disabled cache');
+        $this->assertTrue($item->isMiss(), 'isMiss returns true for disabled cache');
+        $this->assertFalse($item->extend(), 'extend returns false for disabled cache');
+        $this->assertTrue($item->lock(100), 'lock returns true for disabled cache');
     }
 }
