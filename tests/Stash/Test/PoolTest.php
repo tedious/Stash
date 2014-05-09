@@ -11,9 +11,6 @@
 
 namespace Stash\Test;
 
-use Stash\Pool;
-use Stash\Driver\Ephemeral;
-
 /**
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>

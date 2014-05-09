@@ -16,7 +16,6 @@ use Stash\Driver\Ephemeral;
 use Stash\Test\Stubs\LoggerStub;
 use Stash\Test\Stubs\DriverExceptionStub;
 
-
 /**
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
@@ -172,8 +171,6 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($cache->getKey(), 'base/one');
     }
 
-
-
     public function testSetLogger()
     {
         $pool = $this->getTestPool();
@@ -225,7 +222,6 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(strlen($logger->lastMessage) > 0, 'Logger message set after "set" exception.');
         $this->assertEquals('critical', $logger->lastLevel, 'Exceptions logged as critical.');
     }
-
 
     protected function getTestPool()
     {

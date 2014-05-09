@@ -12,7 +12,6 @@
 namespace Stash\Test;
 
 use Stash\Pool;
-use Stash\Driver\Ephemeral;
 
 /**
  * @package Stash
