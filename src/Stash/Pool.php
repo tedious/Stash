@@ -150,7 +150,7 @@ class Pool implements PoolInterface
      * returned iterator will contain a Stash\Item for each key passed.
      *
      * @param  array     $keys
-     * @return \Iterator
+     * @return \Iterator|\Stash\Item[]
      */
 
     public function getItemIterator($keys)
@@ -159,10 +159,11 @@ class Pool implements PoolInterface
 
         $items = array();
         foreach ($keys as $key) {
-            $items[] = $this->getItem($key);
+            $item = $this->getItem($key);
+            $items[$item->getKey()] = $item;
         }
 
-         return new \ArrayIterator($items);
+        return new \ArrayIterator($items);
     }
 
     /**
