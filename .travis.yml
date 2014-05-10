@@ -4,7 +4,9 @@ php:
     - 5.3
     - 5.4
     - 5.5
+    - 5.6
     - hhvm
+    - hhvm-nightly
 
 before_script:
     - composer self-update && composer install --dev
@@ -19,3 +21,7 @@ after_script:
 services:
   - redis-server
   - memcached
+
+matrix:
+    allow_failures:
+      - php: hhvm-nightly
