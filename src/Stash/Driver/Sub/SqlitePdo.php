@@ -17,6 +17,8 @@ namespace Stash\Driver\Sub;
  */
 class SqlitePdo extends Sqlite
 {
+    protected static $pdoDriver = 'sqlite';
+
     protected $responseCode = \PDO::FETCH_ASSOC;
 
     public function __construct($path, $directoryPermission, $filePermission, $busyTimeout)
@@ -29,7 +31,7 @@ class SqlitePdo extends Sqlite
     {
         $drivers = class_exists('\PDO', false) ? \PDO::getAvailableDrivers() : array();
 
-        return in_array('sqlite', $drivers);
+        return in_array(static::$pdoDriver, $drivers);
     }
 
     protected function setTimeout($milliseconds)
@@ -44,7 +46,7 @@ class SqlitePdo extends Sqlite
 
     protected function buildDriver()
     {
-        $db = new \PDO('sqlite:' . $this->path);
+        $db = new \PDO(static::$pdoDriver . ':' . $this->path);
 
         return $db;
     }
