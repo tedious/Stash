@@ -328,6 +328,7 @@ class Item implements ItemInterface
             return false;
         }
 
+        $store = array();
         $store['return'] = $data;
         $store['createdOn'] = time();
 

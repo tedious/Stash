@@ -127,6 +127,7 @@ class Composite implements DriverInterface
     {
         $drivers = array_reverse($this->drivers);
         $return = true;
+        $results = false;
         foreach ($drivers as $driver) {
             switch ($action) {
                 case 'purge':
