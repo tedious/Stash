@@ -466,6 +466,8 @@ class Item implements ItemInterface
             if (isset($argArray[2])) {
                 $arg2 = $argArray[2];
             }
+        } else {
+            $invalidation = self::SP_NONE;
         }
 
         $curTime = microtime(true);
@@ -501,8 +503,13 @@ class Item implements ItemInterface
 
         switch ($invalidation) {
             case self::SP_VALUE:
-                $record['data']['return'] = $arg;
-                $this->isHit = true;
+                if(!isset($arg)) {
+                    $this->isHit = false;
+                    return;
+                } else {
+                    $record['data']['return'] = $arg;
+                    $this->isHit = true;
+                }
                 break;
 
             case self::SP_SLEEP:
