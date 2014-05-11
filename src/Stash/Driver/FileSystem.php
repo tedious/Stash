@@ -277,7 +277,7 @@ class FileSystem implements DriverInterface
 
         $basePath = $this->cachePath;
 
-        if (count($key) == 0) {
+        if (!is_array($key) || count($key) == 0) {
             return $basePath;
         }
 

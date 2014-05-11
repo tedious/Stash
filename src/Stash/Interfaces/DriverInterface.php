@@ -76,7 +76,7 @@ interface DriverInterface
      * needed by the getData function.
      *
      * @param  array $key
-     * @param  array $data
+     * @param  mixed $data
      * @param  int   $expiration
      * @return bool
      */
