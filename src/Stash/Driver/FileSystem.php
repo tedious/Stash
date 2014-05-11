@@ -12,6 +12,7 @@
 namespace Stash\Driver;
 
 use Stash;
+use Stash\Utilities;
 use Stash\Exception\LogicException;
 use Stash\Exception\RuntimeException;
 use Stash\Exception\InvalidArgumentException;
@@ -77,7 +78,7 @@ class FileSystem implements DriverInterface
     {
         $options = array_merge($this->defaultOptions, $options);
 
-        $this->cachePath = isset($options['path']) ? $options['path'] : \Stash\Utilities::getBaseDirectory($this);
+        $this->cachePath = isset($options['path']) ? $options['path'] : Utilities::getBaseDirectory($this);
         $this->cachePath = rtrim($this->cachePath, '\\/') . DIRECTORY_SEPARATOR;
 
         $this->filePermissions = $options['filePermissions'];
@@ -101,7 +102,7 @@ class FileSystem implements DriverInterface
 
         $this->memStoreLimit = (int) $options['memKeyLimit'];
 
-        $this->checkFileSystemPermissions();
+        Utilities::checkFileSystemPermissions($this->cachePath, $this->dirPermissions);
     }
 
     /**
@@ -178,21 +179,17 @@ class FileSystem implements DriverInterface
     {
         $path = $this->makePath($key);
 
+        // MAX_PATH is 260 - http://msdn.microsoft.com/en-us/library/aa365247(VS.85).aspx
+        if (strlen($path) > 259 &&  stripos(PHP_OS,'WIN') === 0) {
+            throw new Stash\Exception\WindowsPathMaxLengthException();
+        }
+
+
         if (!file_exists($path)) {
             if (!is_dir(dirname($path))) {
-                // MAX_PATH is 260 - http://msdn.microsoft.com/en-us/library/aa365247(VS.85).aspx
-                if (strlen(dirname($path)) > 259 && stripos(PHP_OS,'WIN') === 0) {
-                    throw new Stash\Exception\WindowsPathMaxLengthException();
-                }
-
                 if (!mkdir(dirname($path), $this->dirPermissions, true)) {
                     return false;
                 }
-            }
-
-            // MAX_PATH is 260 - http://msdn.microsoft.com/en-us/library/aa365247(VS.85).aspx
-            if (strlen($path) > 259 &&  stripos(PHP_OS,'WIN') === 0) {
-                throw new Stash\Exception\WindowsPathMaxLengthException();
             }
 
             if (!(touch($path) && chmod($path, $this->filePermissions))) {
@@ -234,7 +231,7 @@ class FileSystem implements DriverInterface
 
     protected function encode($data)
     {
-        switch (\Stash\Utilities::encoding($data)) {
+        switch (Utilities::encoding($data)) {
             case 'bool':
                 $dataString = (bool) $data ? 'true' : 'false';
                 break;
@@ -295,7 +292,7 @@ class FileSystem implements DriverInterface
             return $this->memStore['keys'][$memkey];
         } else {
             $path = $basePath;
-            $key = \Stash\Utilities::normalizeKeys($key, $this->keyHashFunction);
+            $key = Utilities::normalizeKeys($key, $this->keyHashFunction);
 
             foreach ($key as $value) {
                 if (strpos($value, '@') === 0) {
@@ -348,7 +345,7 @@ class FileSystem implements DriverInterface
         }
 
         if (is_dir($path)) {
-            return \Stash\Utilities::deleteRecursive($path);
+            return Utilities::deleteRecursive($path);
         }
 
         return isset($return);
@@ -393,28 +390,6 @@ class FileSystem implements DriverInterface
         return true;
     }
 
-    /**
-     * Checks to see whether the requisite permissions are available on the specified path.
-     *
-     */
-    protected function checkFileSystemPermissions()
-    {
-        if (!isset($this->cachePath)) {
-            throw new RuntimeException('Cache path was not set correctly.');
-        }
-
-        if (file_exists($this->cachePath) && !is_dir($this->cachePath)) {
-            throw new InvalidArgumentException('Cache path is not a directory.');
-        }
-
-        if (!is_dir($this->cachePath) && !@mkdir( $this->cachePath, $this->dirPermissions, true )) {
-            throw new InvalidArgumentException('Failed to create cache path.');
-        }
-
-        if (!is_writable($this->cachePath)) {
-            throw new InvalidArgumentException('Cache path is not writable.');
-        }
-    }
 
     /**
      * This function checks to see if it is possible to enable this driver. This returns true no matter what, since

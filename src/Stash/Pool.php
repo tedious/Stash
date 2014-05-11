@@ -152,7 +152,6 @@ class Pool implements PoolInterface
      * @param  array     $keys
      * @return \Iterator
      */
-
     public function getItemIterator($keys)
     {
         // temporarily cheating here by wrapping around single calls.
