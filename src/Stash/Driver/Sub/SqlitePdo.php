@@ -17,12 +17,11 @@ namespace Stash\Driver\Sub;
  */
 class SqlitePdo extends Sqlite
 {
+    protected $responseCode = \PDO::FETCH_ASSOC;
+
     public function __construct($path, $directoryPermission, $filePermission, $busyTimeout)
     {
-        $this->path = $path;
-        $this->filePermissions = $filePermission;
-        $this->dirPermissions = $directoryPermission;
-        $this->busyTimeout = $busyTimeout;
+        parent::__construct($path, $directoryPermission, $filePermission, $busyTimeout);
         $this->responseCode = \PDO::FETCH_ASSOC;
     }
 
