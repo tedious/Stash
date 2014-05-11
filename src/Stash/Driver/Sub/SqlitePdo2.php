@@ -17,17 +17,5 @@ namespace Stash\Driver\Sub;
  */
 class SqlitePdo2 extends SqlitePdo
 {
-    public static function isAvailable()
-    {
-        $drivers = class_exists('\PDO', false) ? \PDO::getAvailableDrivers() : array();
-
-        return in_array('sqlite2', $drivers);
-    }
-
-    protected function buildDriver()
-    {
-        $db = new \PDO('sqlite2:' . $this->path);
-
-        return $db;
-    }
+    protected static $pdoDriver = 'sqlite2';
 }

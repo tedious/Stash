@@ -12,11 +12,10 @@
             <exclude>
                 <directory>./src/Stash/Exception</directory>
                 <directory>./src/Stash/Interfaces</directory>
-                <directory>./src/Stash/Driver/Xcache.php</directory>
             </exclude>
         </whitelist>
     </filter>
     <logging>
-        <log type="coverage-text" target="php://stdout" showUncoveredFiles="false"/>
+        <log type="coverage-text" target="php://stdout" showUncoveredFiles="true"/>
     </logging>
 </phpunit>

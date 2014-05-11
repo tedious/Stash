@@ -12,9 +12,9 @@
 namespace Stash\Driver;
 
 use Stash;
+use Stash\Utilities;
 use Stash\Exception\LogicException;
 use Stash\Exception\RuntimeException;
-use Stash\Exception\InvalidArgumentException;
 use Stash\Interfaces\DriverInterface;
 
 /**
@@ -63,7 +63,7 @@ class FileSystem implements DriverInterface
     protected $filePermissions;
     protected $dirPermissions;
     protected $directorySplit;
-
+    protected $keyHashFunction;
     protected $disabled = false;
 
     protected $defaultOptions = array('filePermissions' => 0660,
@@ -77,7 +77,7 @@ class FileSystem implements DriverInterface
     {
         $options = array_merge($this->defaultOptions, $options);
 
-        $this->cachePath = isset($options['path']) ? $options['path'] : \Stash\Utilities::getBaseDirectory($this);
+        $this->cachePath = isset($options['path']) ? $options['path'] : Utilities::getBaseDirectory($this);
         $this->cachePath = rtrim($this->cachePath, '\\/') . DIRECTORY_SEPARATOR;
 
         $this->filePermissions = $options['filePermissions'];
@@ -101,7 +101,7 @@ class FileSystem implements DriverInterface
 
         $this->memStoreLimit = (int) $options['memKeyLimit'];
 
-        $this->checkFileSystemPermissions();
+        Utilities::checkFileSystemPermissions($this->cachePath, $this->dirPermissions);
     }
 
     /**
@@ -142,26 +142,25 @@ class FileSystem implements DriverInterface
 
         include($path);
 
+        if (!isset($loaded)) {
+            return false;
+        }
+
+        if (!isset($expiration)) {
+            $expiration = null;
+        }
+
+
         // If the item does not exist we should return false. However, it's
         // possible that the item exists as null, so we have to make sure that
         // it's both unset and not null. The downside to this is that the
         // is_null function will issue a warning on an item that isn't set.
-        // So we're stuck testing and surpressing the warning.
-
-        // Item exists
-        // isset + is_null = true + false = true
-        if (isset($data)) {
-            return array('data' => $data, 'expiration' => $expiration);
-
-        // Item is null
-        // isset + is_null = false + true = true
-        } elseif (@is_null($data)) {
+        // So we're stuck testing and suppressing the warning.
+        if (!isset($data) || @is_null($data)) {
             return array('data' => null, 'expiration' => $expiration);
+        } else {
+            return array('data' => $data, 'expiration' => $expiration);
         }
-
-        // Item does not exist
-        // isset + is_null = false + notice/false = false
-        return false;
     }
 
 
@@ -178,21 +177,17 @@ class FileSystem implements DriverInterface
     {
         $path = $this->makePath($key);
 
+        // MAX_PATH is 260 - http://msdn.microsoft.com/en-us/library/aa365247(VS.85).aspx
+        if (strlen($path) > 259 &&  stripos(PHP_OS,'WIN') === 0) {
+            throw new Stash\Exception\WindowsPathMaxLengthException();
+        }
+
+
         if (!file_exists($path)) {
             if (!is_dir(dirname($path))) {
-                // MAX_PATH is 260 - http://msdn.microsoft.com/en-us/library/aa365247(VS.85).aspx
-                if (strlen(dirname($path)) > 259 && stripos(PHP_OS,'WIN') === 0) {
-                    throw new Stash\Exception\WindowsPathMaxLengthException();
-                }
-
                 if (!mkdir(dirname($path), $this->dirPermissions, true)) {
                     return false;
                 }
-            }
-
-            // MAX_PATH is 260 - http://msdn.microsoft.com/en-us/library/aa365247(VS.85).aspx
-            if (strlen($path) > 259 &&  stripos(PHP_OS,'WIN') === 0) {
-                throw new Stash\Exception\WindowsPathMaxLengthException();
             }
 
             if (!(touch($path) && chmod($path, $this->filePermissions))) {
@@ -200,7 +195,15 @@ class FileSystem implements DriverInterface
             }
         }
 
-        $storeString = '<?php ' . PHP_EOL . '/* Cachekey: ' . str_replace('*/', '', $this->makeKeyString($key)) . ' */' . PHP_EOL . '/* Type: ' . gettype($data) . ' */' . PHP_EOL . '$expiration = ' . $expiration . ';' . PHP_EOL;
+        $storeString = '<?php ' . PHP_EOL
+            . '/* Cachekey: ' . str_replace('*/', '', $this->makeKeyString($key)) . ' */' . PHP_EOL
+            . '/* Type: ' . gettype($data) . ' */' . PHP_EOL
+            . PHP_EOL
+            . PHP_EOL
+            . PHP_EOL
+            . '$loaded = true;' . PHP_EOL
+            . '$expiration = ' . $expiration . ';' . PHP_EOL
+            . PHP_EOL;
 
         if (is_array($data)) {
             $storeString .= "\$data = array();" . PHP_EOL;
@@ -234,7 +237,7 @@ class FileSystem implements DriverInterface
 
     protected function encode($data)
     {
-        switch (\Stash\Utilities::encoding($data)) {
+        switch (Utilities::encoding($data)) {
             case 'bool':
                 $dataString = (bool) $data ? 'true' : 'false';
                 break;
@@ -277,7 +280,7 @@ class FileSystem implements DriverInterface
 
         $basePath = $this->cachePath;
 
-        if (count($key) == 0) {
+        if (!is_array($key) || count($key) == 0) {
             return $basePath;
         }
 
@@ -295,7 +298,7 @@ class FileSystem implements DriverInterface
             return $this->memStore['keys'][$memkey];
         } else {
             $path = $basePath;
-            $key = \Stash\Utilities::normalizeKeys($key, $this->keyHashFunction);
+            $key = Utilities::normalizeKeys($key, $this->keyHashFunction);
 
             foreach ($key as $value) {
                 if (strpos($value, '@') === 0) {
@@ -348,7 +351,7 @@ class FileSystem implements DriverInterface
         }
 
         if (is_dir($path)) {
-            return \Stash\Utilities::deleteRecursive($path);
+            return Utilities::deleteRecursive($path);
         }
 
         return isset($return);
@@ -391,29 +394,6 @@ class FileSystem implements DriverInterface
         unset($directoryIt);
 
         return true;
-    }
-
-    /**
-     * Checks to see whether the requisite permissions are available on the specified path.
-     *
-     */
-    protected function checkFileSystemPermissions()
-    {
-        if (!isset($this->cachePath)) {
-            throw new RuntimeException('Cache path was not set correctly.');
-        }
-
-        if (file_exists($this->cachePath) && !is_dir($this->cachePath)) {
-            throw new InvalidArgumentException('Cache path is not a directory.');
-        }
-
-        if (!is_dir($this->cachePath) && !@mkdir( $this->cachePath, $this->dirPermissions, true )) {
-            throw new InvalidArgumentException('Failed to create cache path.');
-        }
-
-        if (!is_writable($this->cachePath)) {
-            throw new InvalidArgumentException('Cache path is not writable.');
-        }
     }
 
     /**

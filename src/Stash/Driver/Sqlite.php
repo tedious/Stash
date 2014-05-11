@@ -12,8 +12,8 @@
 namespace Stash\Driver;
 
 use Stash;
+use Stash\Utilities;
 use Stash\Exception\RuntimeException;
-use Stash\Exception\InvalidArgumentException;
 use Stash\Interfaces\DriverInterface;
 
 /**
@@ -51,10 +51,10 @@ class Sqlite implements DriverInterface
     {
         $options = array_merge($this->defaultOptions, $options);
 
-        $cachePath = isset($options['path']) ? $options['path'] : \Stash\Utilities::getBaseDirectory($this);
+        $cachePath = isset($options['path']) ? $options['path'] : Utilities::getBaseDirectory($this);
         $this->cachePath = rtrim($cachePath, '\\/') . '/';
 
-        $this->checkFileSystemPermissions();
+        Utilities::checkFileSystemPermissions($this->cachePath, $this->dirPerms);
 
         $extension = isset($options['extension']) ? strtolower($options['extension']) : 'any';
         $version = isset($options['version']) ? $options['version'] : 'any';
@@ -107,7 +107,7 @@ class Sqlite implements DriverInterface
             return false;
         }
 
-        $data['data'] = \Stash\Utilities::decode($data['data'], $data['encoding']);
+        $data['data'] = Utilities::decode($data['data'], $data['encoding']);
 
         return $data;
     }
@@ -124,9 +124,9 @@ class Sqlite implements DriverInterface
             return false;
         }
 
-        $storeData = array('data' => \Stash\Utilities::encode($data),
+        $storeData = array('data' => Utilities::encode($data),
                            'expiration' => $expiration,
-                           'encoding' => \Stash\Utilities::encoding($data)
+                           'encoding' => Utilities::encoding($data)
         );
 
         return $sqlDriver->set($this->makeSqlKey($key), $storeData, $expiration);
@@ -200,7 +200,7 @@ class Sqlite implements DriverInterface
                 return false;
             }
 
-            $key = \Stash\Utilities::normalizeKeys($key);
+            $key = Utilities::normalizeKeys($key);
 
             $nestingLevel = $this->nesting;
             $fileName = 'cache_';
@@ -259,29 +259,6 @@ class Sqlite implements DriverInterface
     }
 
     /**
-     * Checks to see whether the requisite permissions are available on the specified path.
-     *
-     */
-    protected function checkFileSystemPermissions()
-    {
-        if (!isset($this->cachePath)) {
-            throw new RuntimeException('Cache path was not set correctly.');
-        }
-
-        if (file_exists($this->cachePath) && !is_dir($this->cachePath)) {
-            throw new InvalidArgumentException('Cache path is not a directory.');
-        }
-
-        if (!is_dir($this->cachePath) && !@mkdir( $this->cachePath, $this->dirPermissions, true )) {
-            throw new InvalidArgumentException('Failed to create cache path.');
-        }
-
-        if (!is_writable($this->cachePath)) {
-            throw new InvalidArgumentException('Cache path is not writable.');
-        }
-    }
-
-    /**
      * Checks availability of the specified subdriver.
      *
      * @return bool
@@ -322,7 +299,7 @@ class Sqlite implements DriverInterface
      */
     public static function makeSqlKey($key)
     {
-        $key = \Stash\Utilities::normalizeKeys($key, 'base64_encode');
+        $key = Utilities::normalizeKeys($key, 'base64_encode');
         $path = '';
         foreach ($key as $rawPathPiece) {
             $path .= $rawPathPiece . ':::';

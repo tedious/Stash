@@ -107,7 +107,6 @@ Stash currently supports the following backends:
 * FileSystem
 * Sqlite
 * APC
-* Xcache (experimental)
 * Memcached
 * Redis
 * Ephemeral (runtime only)

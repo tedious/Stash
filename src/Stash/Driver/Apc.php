@@ -25,6 +25,7 @@ class Apc implements DriverInterface
 {
     protected $ttl = 300;
     protected $apcNamespace;
+    protected $chunkSize = 100;
 
     /**
      * This function should takes an array which is used to pass option values to the driver.
@@ -68,7 +69,7 @@ class Apc implements DriverInterface
     public function getData($key)
     {
         $keyString = self::makeKey($key);
-
+        $success = null;
         $data = apc_fetch($keyString, $success);
 
         return $success ? $data : false;
@@ -127,6 +128,7 @@ class Apc implements DriverInterface
         $chunkSize = isset($this->chunkSize) && is_numeric($this->chunkSize) ? $this->chunkSize : 100;
         $it = new \APCIterator('user', $keyRegex, \APC_ITER_KEY, $chunkSize);
         foreach ($it as $key) {
+            $success = null;
             $data = apc_fetch($key, $success);
             $data = $data[$key['key']];
 

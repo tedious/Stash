@@ -147,6 +147,7 @@ class Memcached
 
     public function cas($key, $value)
     {
+        $token = null;
         if (($rValue = $this->memcached->get($key, null, $token)) !== false) {
             return $rValue;
         }

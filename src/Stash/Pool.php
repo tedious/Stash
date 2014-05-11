@@ -29,7 +29,7 @@ class Pool implements PoolInterface
      * The cacheDriver being used by the system. While this class handles all of the higher functions, it's the cache
      * driver here that handles all of the storage/retrieval functionality. This value is set by the constructor.
      *
-     * @var Stash\Interfaces\DriverInterface
+     * @var \Stash\Interfaces\DriverInterface
      */
     protected $driver;
 
@@ -152,7 +152,6 @@ class Pool implements PoolInterface
      * @param  array     $keys
      * @return \Iterator
      */
-
     public function getItemIterator($keys)
     {
         // temporarily cheating here by wrapping around single calls.

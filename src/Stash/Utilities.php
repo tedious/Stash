@@ -12,6 +12,7 @@
 namespace Stash;
 
 use Stash\Exception\RuntimeException;
+use Stash\Exception\InvalidArgumentException;
 use Stash\Interfaces\DriverInterface;
 
 /**
@@ -177,5 +178,29 @@ class Utilities
         }
 
         return $pKey;
+    }
+
+
+    /**
+     * Checks to see whether the requisite permissions are available on the specified path.
+     *
+     */
+    public static function checkFileSystemPermissions($path = null, $permissions)
+    {
+        if (!isset($path)) {
+            throw new RuntimeException('Cache path was not set correctly.');
+        }
+
+        if (file_exists($path) && !is_dir($path)) {
+            throw new InvalidArgumentException('Cache path is not a directory.');
+        }
+
+        if (!is_dir($path) && !@mkdir($path, $permissions, true )) {
+            throw new InvalidArgumentException('Failed to create cache path.');
+        }
+
+        if (!is_writable($path)) {
+            throw new InvalidArgumentException('Cache path is not writable.');
+        }
     }
 }
