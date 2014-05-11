@@ -503,8 +503,9 @@ class Item implements ItemInterface
 
         switch ($invalidation) {
             case self::SP_VALUE:
-                if(!isset($arg)) {
+                if (!isset($arg)) {
                     $this->isHit = false;
+
                     return;
                 } else {
                     $record['data']['return'] = $arg;
