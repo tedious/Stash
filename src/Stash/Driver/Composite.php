@@ -98,14 +98,7 @@ class Composite implements DriverInterface
      */
     public function storeData($key, $data, $expiration)
     {
-        $drivers = array_reverse($this->drivers);
-        $return = true;
-        foreach ($drivers as $driver) {
-            $storeResults = $driver->storeData($key, $data, $expiration);
-            $return = $return && $storeResults;
-        }
-
-        return $return;
+        return $this->actOnAll('storeData', array($key, $data, $expiration));
     }
 
     /**
@@ -117,14 +110,7 @@ class Composite implements DriverInterface
      */
     public function clear($key = null)
     {
-        $drivers = array_reverse($this->drivers);
-        $return = true;
-        foreach ($drivers as $driver) {
-            $clearResults = $driver->clear($key);
-            $return = $return && $clearResults;
-        }
-
-        return $return;
+        return $this->actOnAll('clear', array($key));
     }
 
     /**
@@ -134,11 +120,26 @@ class Composite implements DriverInterface
      */
     public function purge()
     {
+        return $this->actOnAll('purge');
+    }
+
+    protected function actOnAll($action, $args = array())
+    {
         $drivers = array_reverse($this->drivers);
         $return = true;
         foreach ($drivers as $driver) {
-            $purgeResults = $driver->purge();
-            $return = $return && $purgeResults;
+            switch($action){
+                case 'purge':
+                    $results = $driver->purge();
+                    break;
+                case 'clear':
+                    $results = $driver->clear($args[0]);
+                    break;
+                case 'storeData':
+                    $results = $driver->storeData($args[0], $args[1], $args[2]);
+                    break;
+            }
+            $return = $return && $results;
         }
 
         return $return;
