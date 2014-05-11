@@ -188,6 +188,7 @@ class Redis implements DriverInterface
         $key = \Stash\Utilities::normalizeKeys($key);
 
         $keyString = 'cache:::';
+        $pathKey = ':pathdb::';
         foreach ($key as $name) {
             //a. cache:::name
             //b. cache:::name0:::sub

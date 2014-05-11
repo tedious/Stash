@@ -63,7 +63,7 @@ class FileSystem implements DriverInterface
     protected $filePermissions;
     protected $dirPermissions;
     protected $directorySplit;
-
+    protected $keyHashFunction;
     protected $disabled = false;
 
     protected $defaultOptions = array('filePermissions' => 0660,
@@ -146,7 +146,7 @@ class FileSystem implements DriverInterface
         // possible that the item exists as null, so we have to make sure that
         // it's both unset and not null. The downside to this is that the
         // is_null function will issue a warning on an item that isn't set.
-        // So we're stuck testing and surpressing the warning.
+        // So we're stuck testing and suppressing the warning.
 
         // Item exists
         // isset + is_null = true + false = true
