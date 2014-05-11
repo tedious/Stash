@@ -142,26 +142,25 @@ class FileSystem implements DriverInterface
 
         include($path);
 
+        if (!isset($loaded)) {
+            return false;
+        }
+
+        if (!isset($expiration)) {
+            $expiration = null;
+        }
+
+
         // If the item does not exist we should return false. However, it's
         // possible that the item exists as null, so we have to make sure that
         // it's both unset and not null. The downside to this is that the
         // is_null function will issue a warning on an item that isn't set.
         // So we're stuck testing and suppressing the warning.
-
-        // Item exists
-        // isset + is_null = true + false = true
-        if (isset($data)) {
-            return array('data' => $data, 'expiration' => $expiration);
-
-        // Item is null
-        // isset + is_null = false + true = true
-        } elseif (@is_null($data)) {
+        if (!isset($data) || @is_null($data)) {
             return array('data' => null, 'expiration' => $expiration);
+        } else {
+            return array('data' => $data, 'expiration' => $expiration);
         }
-
-        // Item does not exist
-        // isset + is_null = false + notice/false = false
-        return false;
     }
 
 
@@ -196,7 +195,15 @@ class FileSystem implements DriverInterface
             }
         }
 
-        $storeString = '<?php ' . PHP_EOL . '/* Cachekey: ' . str_replace('*/', '', $this->makeKeyString($key)) . ' */' . PHP_EOL . '/* Type: ' . gettype($data) . ' */' . PHP_EOL . '$expiration = ' . $expiration . ';' . PHP_EOL;
+        $storeString = '<?php ' . PHP_EOL
+            . '/* Cachekey: ' . str_replace('*/', '', $this->makeKeyString($key)) . ' */' . PHP_EOL
+            . '/* Type: ' . gettype($data) . ' */' . PHP_EOL
+            . PHP_EOL
+            . PHP_EOL
+            . PHP_EOL
+            . '$loaded = true;' . PHP_EOL
+            . '$expiration = ' . $expiration . ';' . PHP_EOL
+            . PHP_EOL;
 
         if (is_array($data)) {
             $storeString .= "\$data = array();" . PHP_EOL;
