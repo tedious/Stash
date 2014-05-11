@@ -12,7 +12,6 @@
             <exclude>
                 <directory>./src/Stash/Exception</directory>
                 <directory>./src/Stash/Interfaces</directory>
-                <directory>./src/Stash/Driver/Xcache.php</directory>
             </exclude>
         </whitelist>
     </filter>
