@@ -15,7 +15,6 @@ use Stash;
 use Stash\Utilities;
 use Stash\Exception\LogicException;
 use Stash\Exception\RuntimeException;
-use Stash\Exception\InvalidArgumentException;
 use Stash\Interfaces\DriverInterface;
 
 /**
@@ -389,7 +388,6 @@ class FileSystem implements DriverInterface
 
         return true;
     }
-
 
     /**
      * This function checks to see if it is possible to enable this driver. This returns true no matter what, since
