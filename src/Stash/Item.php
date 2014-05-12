@@ -533,11 +533,11 @@ class Item implements ItemInterface
     }
 
     /**
-     * Returns the record's createdOn timestamp or null if no createdOn timestamp is set
+     * Returns the record's createdOn timestamp or null if no creation timestamp is set
      *
      * @return int timestamp
      */
-    public function getCreatedOn()
+    public function getCreation()
     {
         $record = $this->getRecord();
         if (!isset($record['data']['createdOn'])) {

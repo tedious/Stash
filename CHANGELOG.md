@@ -29,7 +29,7 @@
 
 *   Added "setNamespace($namespace = null)" and "getNamespace()" functions to the Pool class for.
 
-*   Added "getCreatedOn()" and "getExpiration()" functions to the Item class.
+*   Added "getCreation()" and "getExpiration()" functions to the Item class.
 
 *   Added internal function Utilities::checkFileSystemPermissions.
 

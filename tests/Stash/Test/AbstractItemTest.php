@@ -263,22 +263,22 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
 
     }
 
-    public function testGetCreatedOn()
+    public function testGetCreation()
     {
 
         $expiration = new \DateTime('now');
         $expiration->add(new \DateInterval('PT10S')); // expire 10 seconds after createdOn
         $expirationTS = $expiration->getTimestamp();
 
-        $key = array('getCreatedOn', 'test');
+        $key = array('getCreation', 'test');
         $stash = $this->testConstruct($key);
 
-        $this->assertNull($stash->getCreatedOn(), 'no record exists yet, return null');
+        $this->assertNull($stash->getCreation(), 'no record exists yet, return null');
 
         $stash->set(array('stuff'), $expiration);
 
         $stash = $this->testConstruct($key);
-        $createdOn = $stash->getCreatedOn();
+        $createdOn = $stash->getCreation();
         $this->assertEquals($expirationTS - 10, $createdOn, 'createdOn is 10 seconds before expiration');
 
     }

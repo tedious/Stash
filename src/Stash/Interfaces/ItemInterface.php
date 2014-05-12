@@ -36,4 +36,8 @@ interface ItemInterface
     public function isDisabled();
 
     public function setLogger($logger);
+
+    public function getCreation();
+
+    public function getExpiration();
 }
