@@ -35,7 +35,7 @@ class Sqlite
     /**
      * Output of buildDriver, used to interact with the relevant SQLite extension.
      *
-     * @var \SQLiteDatabase|\PDO
+     * @var \SQLiteDatabase
      */
     protected $driver;
 

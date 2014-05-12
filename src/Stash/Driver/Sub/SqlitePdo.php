@@ -23,6 +23,13 @@ namespace Stash\Driver\Sub;
 class SqlitePdo extends Sqlite
 {
     /**
+     * Output of buildDriver, used to interact with the relevant SQLite extension.
+     *
+     * @var \PDO
+     */
+    protected $driver;
+
+    /**
      * PDO driver string, used to distinguish between SQLite versions.
      *
      * @var string
