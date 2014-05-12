@@ -117,8 +117,9 @@ class Utilities
     /**
      * Deletes a directory and all of its contents.
      *
-     * @param  string $file Path to file or directory.
-     * @return bool   Returns true on success, false otherwise.
+     * @param  string                     $file Path to file or directory.
+     * @return bool                       Returns true on success, false otherwise.
+     * @throws Exception\RuntimeException
      */
     public static function deleteRecursive($file)
     {
@@ -184,6 +185,8 @@ class Utilities
     /**
      * Checks to see whether the requisite permissions are available on the specified path.
      *
+     * @throws Exception\RuntimeException
+     * @throws Exception\InvalidArgumentException
      */
     public static function checkFileSystemPermissions($path = null, $permissions)
     {

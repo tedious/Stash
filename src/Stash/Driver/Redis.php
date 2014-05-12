@@ -23,13 +23,40 @@ use Stash\Interfaces\DriverInterface;
  */
 class Redis implements DriverInterface
 {
+    /**
+     * An array of default options.
+     *
+     * @var array
+     */
     protected $defaultOptions = array ();
+
+    /**
+     * The Redis drivers.
+     *
+     * @var \Redis|\RedisArray
+     */
     protected $redis;
+
+    /**
+     * The cache of indexed keys.
+     *
+     * @var array
+     */
     protected $keyCache = array();
 
     /**
+     * The options array should contain an array of servers,
      *
-     * @param array $options
+     * The "server" option expects an array of servers, with each server being represented by an associative array. Each
+     * redis config must have either a "socket" or a "server" value, and optional "port" and "ttl" values (with the ttl
+     * representing server timeout, not cache expiration).
+     *
+     * The "database" option lets developers specific which specific database to use.
+     *
+     * The "password" option is used for clusters which required authentication.
+     *
+     * @param  array             $options
+     * @throws \RuntimeException
      */
     public function __construct(array $options = array())
     {
@@ -95,7 +122,7 @@ class Redis implements DriverInterface
     }
 
     /**
-     * Properly close the connection
+     * Properly close the connection.
      *
      * {@inheritdoc}
      */
@@ -169,7 +196,16 @@ class Redis implements DriverInterface
         return class_exists('Redis', false);
     }
 
-
+    /**
+     * Turns a key array into a key string. This includes running the indexing functions used to manage the Redis
+     * hierarchical storage.
+     *
+     * When requested the actual path, rather than a normalized value, is returned.
+     *
+     * @param  array  $key
+     * @param  bool   $path
+     * @return string
+     */
     protected function makeKeyString($key, $path = false)
     {
         $key = \Stash\Utilities::normalizeKeys($key);

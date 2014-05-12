@@ -355,6 +355,13 @@ class Item implements ItemInterface
         $this->logger = $logger;
     }
 
+    /**
+     * Logs an exception with the Logger class, if it exists.
+     *
+     * @param  string     $message
+     * @param  \Exception $exception
+     * @return bool
+     */
     protected function logException($message, $exception)
     {
         if(!isset($this->logger))
@@ -538,7 +545,6 @@ class Item implements ItemInterface
      * This function is used by the Pool object while creating this object. It
      * is an internal function an should not be called directly.
      *
-     * @internal
      * @param  array                     $key
      * @throws \InvalidArgumentException
      */

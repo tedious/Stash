@@ -33,8 +33,18 @@ class Pool implements PoolInterface
      */
     protected $driver;
 
+    /**
+     * Is this Pool disabled.
+     *
+     * @var bool
+     */
     protected $isDisabled = false;
 
+    /**
+     * Default "Item" class to use for making new items.
+     *
+     * @var string
+     */
     protected $itemClass = '\Stash\Item';
 
     /**
@@ -45,6 +55,11 @@ class Pool implements PoolInterface
      */
     protected $logger;
 
+    /**
+     * Current namespace, if any.
+     *
+     * @var string
+     */
     protected $namespace;
 
     /**
@@ -255,6 +270,13 @@ class Pool implements PoolInterface
         return true;
     }
 
+    /**
+     * Logs an exception with the Logger class, if it exists.
+     *
+     * @param  string     $message
+     * @param  \Exception $exception
+     * @return bool
+     */
     protected function logException($message, $exception)
     {
         if (!isset($this->logger)) {

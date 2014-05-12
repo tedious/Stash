@@ -129,6 +129,16 @@ class Memcache implements DriverInterface
         return true;
     }
 
+    /**
+     * Turns a key array into a key string. This includes running the indexing functions used to manage the memcached
+     * hierarchical storage.
+     *
+     * When requested the actual path, rather than a normalized value, is returned.
+     *
+     * @param  array  $key
+     * @param  bool   $path
+     * @return string
+     */
     protected function makeKeyString($key, $path = false)
     {
         $key = \Stash\Utilities::normalizeKeys($key);

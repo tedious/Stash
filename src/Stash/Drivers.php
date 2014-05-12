@@ -74,11 +74,23 @@ class Drivers
         return $driverList;
     }
 
+    /**
+     * Registers a new driver.
+     *
+     * @param string $name
+     * @param string $class
+     */
     public static function registerDriver($name, $class)
     {
         self::$drivers[$name] = $class;
     }
 
+    /**
+     * Returns the driver class for a specific driver name.
+     *
+     * @param  string $name
+     * @return bool
+     */
     public static function getDriverClass($name)
     {
         if (!isset(self::$drivers[$name])) {

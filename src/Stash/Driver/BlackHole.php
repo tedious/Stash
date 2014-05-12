@@ -12,6 +12,7 @@
 namespace Stash\Driver;
 
 use Stash\Interfaces\DriverInterface;
+
 /**
  * This class provides a NULL caching driver, it always takes values, but never saves them
  * Can be used as an default save driver

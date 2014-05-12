@@ -141,7 +141,7 @@ class Memcached
     /**
      * Stores the data in memcached.
      *
-     * @param string $key
+     * @param  string   $key
      * @param  mixed    $value
      * @param  null|int $expire
      * @return bool

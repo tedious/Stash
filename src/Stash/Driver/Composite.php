@@ -26,12 +26,18 @@ use Stash\Interfaces\DriverInterface;
 class Composite implements DriverInterface
 {
 
+    /**
+     * The drivers this driver encapsulates.
+     *
+     * @var \Stash\Interfaces\DriverInterface[]
+     */
     protected $drivers = array();
 
     /**
-     * This function should takes an array which is used to pass option values to the driver.
+     * Takes an array of Drivers.
      *
-     * @param  array                             $options
+     * {@inheritdoc}
+     *
      * @throws \Stash\Exception\RuntimeException
      */
     public function __construct(array $options = array())
@@ -61,6 +67,9 @@ class Composite implements DriverInterface
     }
 
     /**
+     * This starts with the first driver and keeps trying subsequent drivers until a result is found. It then fills
+     * in the result to any of the drivers that failed to retrieve it.
+     *
      * {@inheritdoc}
      */
     public function getData($key)
@@ -84,6 +93,9 @@ class Composite implements DriverInterface
     }
 
     /**
+     * This function stores the passed data on all drivers, starting with the most "distant" one (the last fallback) so
+     * in order to prevent race conditions.
+     *
      * {@inheritdoc}
      */
     public function storeData($key, $data, $expiration)
@@ -92,6 +104,9 @@ class Composite implements DriverInterface
     }
 
     /**
+     * This function clears the passed key on all drivers, starting with the most "distant" one (the last fallback) so
+     * in order to prevent race conditions.
+     *
      * {@inheritdoc}
      */
     public function clear($key = null)
@@ -100,6 +115,8 @@ class Composite implements DriverInterface
     }
 
     /**
+     * This function runs the purge operation on all drivers.
+     *
      * {@inheritdoc}
      */
     public function purge()
@@ -107,6 +124,13 @@ class Composite implements DriverInterface
         return $this->actOnAll('purge');
     }
 
+    /**
+     * This function runs the suggested action on all drivers in the reverse order, passing arguments when called for.
+     *
+     * @param  string $action purge|clear|storeData
+     * @param  array  $args
+     * @return bool
+     */
     protected function actOnAll($action, $args = array())
     {
         $drivers = array_reverse($this->drivers);
@@ -132,7 +156,7 @@ class Composite implements DriverInterface
 
     /**
      * This function checks to see if this driver is available. This always returns true because this
-     * driver has no dependencies, begin a wrapper around other classes.
+     * driver has no dependencies, being a wrapper around other classes.
      *
      * {@inheritdoc}
      * @return bool true

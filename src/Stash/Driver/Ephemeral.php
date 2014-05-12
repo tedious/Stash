@@ -24,8 +24,18 @@ use Stash\Interfaces\DriverInterface;
 class Ephemeral implements DriverInterface
 {
 
+    /**
+     * Contains the cached data.
+     *
+     * @var array
+     */
     protected $store = array();
 
+    /**
+     * Has no options.
+     *
+     * @param array $options
+     */
     public function __construct(array $options = array())
     {
 
@@ -49,6 +59,12 @@ class Ephemeral implements DriverInterface
         return isset($this->store[$key]) ? $this->store[$key] : false;
     }
 
+    /**
+     * Converts the key array into a passed function
+     *
+     * @param  array  $key
+     * @return string
+     */
     protected function getKeyIndex($key)
     {
         $index = '';
