@@ -47,7 +47,7 @@ Releases of Stash are available on [Github](https://github.com/tedivm/Stash/rele
 ## Documentation
 
 Although this README contains some userful data there is a lot more information
-at the main site,. [stash.tedivm.com](http://stash.tedivm.com).
+at the main site, [stash.tedivm.com](http://stash.tedivm.com).
 
 The [development documentation](http://stash.tedivm.com/dev/) is available for
 testing new releases, but is not considered stable.
@@ -57,29 +57,29 @@ testing new releases, but is not considered stable.
 
 ### Main Classes
 
-Stash has three main components- a Pool class that represents a specific
-grouping of cached objects, an Item class that provides access to individual
-objects, and a series of Driver classes that allow Stash to interact with
+Stash has three main components: a `Pool` class that represents a specific
+grouping of cached objects, an `Item` class that provides access to individual
+objects, and a series of `Driver` classes that allow Stash to interact with
 caching systems.
 
-Each Driver is initialized and then passed into a Pool, at which point the
-Developer can simply forget about it. Developers also have the option of using
+Each `Driver` is initialized and then passed into a `Pool`, at which point the
+developer can simply forget about it. Developers also have the option of using
 multiple Drivers together by joining them with the Composite Driver.
 
-The Pool class allows developers to perform a number of tasks. There are a few
+The `Pool` class allows developers to perform a number of tasks. There are a few
 maintenance related tasks, such as running a "Purge" to allow backend systems to
 perform maintenance tasks or set new logging or driver classes. The `Pool` also
 can be used to create `Item` objects, singly or in groups.
 
-Each Item represents a single object inside the cache. It has a unique Key,
-meaning that any two Item's created from the same Pool will contain the same
-Value. An Item can set, get and remove a value from a caching system.
+Each `Item` represents a single object inside the cache. It has a unique Key,
+meaning that any two Items created from the same `Pool` will contain the same
+Value. An `Item` can set, get and remove a value from a caching system.
 
 ### Keys
 
-A Key is a string that represents an Item in a caching system. At it's
-simpliest, a key is an alphanumeric string and has a one to one relationship
-with a value in the cache.
+A Key is a string that represents an Item in a caching system. At its simplest,
+a key is an alphanumeric string and has a one to one relationship with a value
+in the cache.
 
 Stash provides a feature known as "stacks" that allows developers to group
 related Items together so they can be erased as a group. This is done by giving
@@ -94,8 +94,8 @@ specific pieces to only load what is needed.
 
 ### Session Storage
 
-The provided Session class takes a Pool in it's constructor and can then be
-registered as a Session Handler using the build in PHP methods, the
+The provided Session class takes a Pool in its constructor and can then be
+registered as a Session Handler using the built-in PHP methods, the
 Session::registerHandler static function, or by using any framework that uses
 the SessionHandlerInterface interface.
 
@@ -112,7 +112,7 @@ Stash currently supports the following backends:
 * Ephemeral (runtime only)
 
 Stash also supports a specialized "Composite" Driver which can contain any
-number of the above drivers. This allows developers to created multitiered
+number of the above drivers. This allows developers to created multi-tiered
 drivers that use a variety of back ends.
 
 
