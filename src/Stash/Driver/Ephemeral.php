@@ -24,18 +24,34 @@ use Stash\Interfaces\DriverInterface;
 class Ephemeral implements DriverInterface
 {
 
+    /**
+     * Contains the cached data.
+     *
+     * @var array
+     */
     protected $store = array();
 
+    /**
+     * Has no options.
+     *
+     * @param array $options
+     */
     public function __construct(array $options = array())
     {
 
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function __destruct()
     {
 
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getData($key)
     {
         $key = $this->getKeyIndex($key);
@@ -43,6 +59,12 @@ class Ephemeral implements DriverInterface
         return isset($this->store[$key]) ? $this->store[$key] : false;
     }
 
+    /**
+     * Converts the key array into a passed function
+     *
+     * @param  array  $key
+     * @return string
+     */
     protected function getKeyIndex($key)
     {
         $index = '';
@@ -53,6 +75,9 @@ class Ephemeral implements DriverInterface
         return $index;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function storeData($key, $data, $expiration)
     {
         $this->store[$this->getKeyIndex($key)] = array('data' => $data, 'expiration' => $expiration);
@@ -60,6 +85,9 @@ class Ephemeral implements DriverInterface
         return true;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function clear($key = null)
     {
         if (!isset($key)) {
@@ -76,6 +104,9 @@ class Ephemeral implements DriverInterface
         return true;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function purge()
     {
         $now = time();
@@ -88,6 +119,13 @@ class Ephemeral implements DriverInterface
         return true;
     }
 
+    /**
+     * This function checks to see if this driver is available. This always returns true because this
+     * driver has no dependencies, begin a wrapper around other classes.
+     *
+     * {@inheritdoc}
+     * @return bool true
+     */
     public static function isAvailable()
     {
         return true;

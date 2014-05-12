@@ -26,12 +26,19 @@ use Stash\Interfaces\DriverInterface;
 class Composite implements DriverInterface
 {
 
+    /**
+     * The drivers this driver encapsulates.
+     *
+     * @var \Stash\Interfaces\DriverInterface[]
+     */
     protected $drivers = array();
 
     /**
-     * This function should takes an array which is used to pass option values to the driver.
+     * Takes an array of Drivers.
      *
-     * @param array $options
+     * {@inheritdoc}
+     *
+     * @throws \Stash\Exception\RuntimeException
      */
     public function __construct(array $options = array())
     {
@@ -53,20 +60,17 @@ class Composite implements DriverInterface
     }
 
     /**
-     * Empty destructor to maintain a standardized interface across all drivers.
-     *
+     * {@inheritdoc}
      */
     public function __destruct()
     {
     }
 
     /**
-     * This function should return the data array, exactly as it was received by the storeData function, or false if it
-     * is not present. This array should have a value for "data" and for "expiration", which should be the data the
-     * main script is trying to store.
+     * This starts with the first driver and keeps trying subsequent drivers until a result is found. It then fills
+     * in the result to any of the drivers that failed to retrieve it.
      *
-     * @param $key
-     * @return array
+     * {@inheritdoc}
      */
     public function getData($key)
     {
@@ -89,12 +93,10 @@ class Composite implements DriverInterface
     }
 
     /**
+     * This function stores the passed data on all drivers, starting with the most "distant" one (the last fallback) so
+     * in order to prevent race conditions.
      *
-     * @param array $key
-     * @param array $data
-     * @param int   $expiration
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function storeData($key, $data, $expiration)
     {
@@ -102,11 +104,10 @@ class Composite implements DriverInterface
     }
 
     /**
-     * This function should clear the cache tree using the key array provided. If called with no arguments the entire
-     * cache needs to be cleared.
+     * This function clears the passed key on all drivers, starting with the most "distant" one (the last fallback) so
+     * in order to prevent race conditions.
      *
-     * @param  null|array $key
-     * @return bool
+     * {@inheritdoc}
      */
     public function clear($key = null)
     {
@@ -114,15 +115,22 @@ class Composite implements DriverInterface
     }
 
     /**
-     * This function is used to remove expired items from the cache.
+     * This function runs the purge operation on all drivers.
      *
-     * @return bool
+     * {@inheritdoc}
      */
     public function purge()
     {
         return $this->actOnAll('purge');
     }
 
+    /**
+     * This function runs the suggested action on all drivers in the reverse order, passing arguments when called for.
+     *
+     * @param  string $action purge|clear|storeData
+     * @param  array  $args
+     * @return bool
+     */
     protected function actOnAll($action, $args = array())
     {
         $drivers = array_reverse($this->drivers);
@@ -148,8 +156,9 @@ class Composite implements DriverInterface
 
     /**
      * This function checks to see if this driver is available. This always returns true because this
-     * driver has no dependencies, begin a wrapper around other classes.
+     * driver has no dependencies, being a wrapper around other classes.
      *
+     * {@inheritdoc}
      * @return bool true
      */
     public static function isAvailable()

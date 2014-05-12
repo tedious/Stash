@@ -80,17 +80,14 @@ class Memcache implements DriverInterface
     }
 
     /**
-     * Empty destructor to maintain a standardized interface across all drivers.
-     *
+     * {@inheritdoc}
      */
     public function __destruct()
     {
     }
 
     /**
-     *
-     * @param  array $key
-     * @return array
+     * {@inheritdoc}
      */
     public function getData($key)
     {
@@ -98,11 +95,7 @@ class Memcache implements DriverInterface
     }
 
     /**
-     *
-     * @param  array $key
-     * @param  array $data
-     * @param  int   $expiration
-     * @return bool
+     * {@inheritdoc}
      */
     public function storeData($key, $data, $expiration)
     {
@@ -110,9 +103,7 @@ class Memcache implements DriverInterface
     }
 
     /**
-     *
-     * @param  null|array $key
-     * @return bool
+     * {@inheritdoc}
      */
     public function clear($key = null)
     {
@@ -131,14 +122,23 @@ class Memcache implements DriverInterface
     }
 
     /**
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function purge()
     {
         return true;
     }
 
+    /**
+     * Turns a key array into a key string. This includes running the indexing functions used to manage the memcached
+     * hierarchical storage.
+     *
+     * When requested the actual path, rather than a normalized value, is returned.
+     *
+     * @param  array  $key
+     * @param  bool   $path
+     * @return string
+     */
     protected function makeKeyString($key, $path = false)
     {
         $key = \Stash\Utilities::normalizeKeys($key);
@@ -171,6 +171,9 @@ class Memcache implements DriverInterface
         return $path ? $pathKey : md5($keyString);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function isAvailable()
     {
         return (SubMemcache::isAvailable() || SubMemcached::isAvailable());

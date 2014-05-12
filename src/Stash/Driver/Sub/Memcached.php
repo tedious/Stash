@@ -25,6 +25,18 @@ class Memcached
      */
     protected $memcached;
 
+    /**
+     * Constructs the Memcached subdriver.
+     *
+     * Takes an array of servers, with array containing another array with the server, port and weight.
+     * array(array( '127.0.0.1', 11211, 20), array( '192.168.10.12', 11213, 80), array( '192.168.10.12', 11211, 80));
+     *
+     * Takes an array of options which map to the "\Memcached::OPT_" settings (\Memcached::OPT_COMPRESSION => "compression").
+     *
+     * @param  array                             $servers
+     * @param  array                             $options
+     * @throws \Stash\Exception\RuntimeException
+     */
     public function __construct($servers = array(), $options = array())
     {
         // build this array here instead of as a class variable since the constants are only defined if the extension
@@ -126,6 +138,14 @@ class Memcached
         $this->memcached = $memcached;
     }
 
+    /**
+     * Stores the data in memcached.
+     *
+     * @param  string   $key
+     * @param  mixed    $value
+     * @param  null|int $expire
+     * @return bool
+     */
     public function set($key, $value, $expire = null)
     {
         if (isset($expire) && $expire < time()) {
@@ -135,6 +155,12 @@ class Memcached
         return $this->memcached->set($key, array('data' => $value, 'expiration' => $expire), $expire);
     }
 
+    /**
+     * Retrieves the data from memcached.
+     *
+     * @param  string $key
+     * @return mixed
+     */
     public function get($key)
     {
         $value = $this->memcached->get($key);
@@ -145,6 +171,13 @@ class Memcached
         return $value;
     }
 
+    /**
+     * This function emulates runs the cas memcache functionlity.
+     *
+     * @param  string $key
+     * @param  mixed  $value
+     * @return mixed
+     */
     public function cas($key, $value)
     {
         $token = null;
@@ -161,6 +194,12 @@ class Memcached
         return $value;
     }
 
+    /**
+     * Increments the key and returns the new value.
+     *
+     * @param $key
+     * @return int
+     */
     public function inc($key)
     {
         $this->cas($key, 0);
@@ -168,11 +207,19 @@ class Memcached
         return $this->memcached->increment($key);
     }
 
+    /**
+     * Flushes memcached.
+     */
     public function flush()
     {
         $this->memcached->flush();
     }
 
+    /**
+     * Returns true if the Memcached extension is installed.
+     *
+     * @return bool
+     */
     public static function isAvailable()
     {
         return class_exists('Memcached', false);
