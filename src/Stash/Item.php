@@ -542,7 +542,7 @@ class Item implements ItemInterface
     }
 
     /**
-     * Returns the record's createdOn timestamp or null if no creation timestamp is set
+     * Returns the record's creation time or false if it isn't set
      *
      * @return int timestamp
      */
@@ -550,14 +550,16 @@ class Item implements ItemInterface
     {
         $record = $this->getRecord();
         if (!isset($record['data']['createdOn'])) {
-            return null;
+            return false;
         }
 
-        return $record['data']['createdOn'];
+        $dateTime = new \DateTime();
+        $dateTime->setTimestamp($record['data']['createdOn']);
+        return $dateTime;
     }
 
     /**
-     * Returns the record's expiration timestamp or null if no expiration timestamp is set
+     * Returns the record's expiration timestamp or false if no expiration timestamp is set
      *
      * @return int timestamp
      */
@@ -565,10 +567,12 @@ class Item implements ItemInterface
     {
         $record = $this->getRecord();
         if (!isset($record['expiration'])) {
-            return null;
+            return false;
         }
 
-        return $record['expiration'];
+        $dateTime = new \DateTime();
+        $dateTime->setTimestamp($record['expiration']);
+        return $dateTime;
     }
 
 

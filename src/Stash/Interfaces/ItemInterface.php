@@ -123,14 +123,14 @@ interface ItemInterface
     public function setLogger($logger);
 
     /**
-     * Returns the record's createdOn timestamp or null if no creation timestamp is set
+     * Returns the record's creation time or false if it isn't set
      *
      * @return \DateTime
      */
     public function getCreation();
 
     /**
-     * Returns the record's expiration timestamp or null if no expiration timestamp is set
+     * Returns the record's expiration timestamp or false if no expiration timestamp is set
      *
      * @return \DateTime
      */
