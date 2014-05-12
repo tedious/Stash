@@ -119,11 +119,7 @@ class Item implements ItemInterface
 
 
     /**
-     * Sets the driver for the Item class to use.
-     *
-     * Typically called by Pool directly, and *must* be called before running caching functions.
-     *
-     * @param DriverInterface $driver
+     * {@inheritdoc}
      */
     public function setDriver(DriverInterface $driver)
     {
@@ -131,12 +127,7 @@ class Item implements ItemInterface
     }
 
     /**
-     * Takes and sets the key and namespace.
-     *
-     * Typically called by Pool directly, and *must* be called before running caching functions.
-     *
-     * @param array       $key
-     * @param string|null $namespace
+     * {@inheritdoc}
      */
     public function setKey($key, $namespace = null)
     {
@@ -145,10 +136,7 @@ class Item implements ItemInterface
     }
 
     /**
-     * This disables any IO operations by this object, effectively preventing
-     * the reading and writing of new data.
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function disable()
     {
@@ -158,10 +146,7 @@ class Item implements ItemInterface
     }
 
     /**
-     * Returns the key as a string. This is particularly useful when the Item is
-     * returned as a group of Items in an Iterator.
-     *
-     * @return string|bool Returns false if no key is set.
+     * {@inheritdoc}
      */
     public function getKey()
     {
@@ -169,10 +154,7 @@ class Item implements ItemInterface
     }
 
     /**
-     * Clears the current Item. If hierarchical or "stackable" caching is being
-     * used this function will also remove children Items.
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function clear()
     {
@@ -196,13 +178,7 @@ class Item implements ItemInterface
     }
 
     /**
-     * Returns the data retrieved from the cache. Since this can return false or
-     * null as a correctly cached value, the return value should not be used to
-     * determine successful retrieval of data- for that use the "isMiss()"
-     * function after call this one. If no value is stored at all then this
-     * function will return null.
-     *
-     * @return mixed|null
+     * {@inheritdoc}
      */
     public function get($invalidation = 0, $arg = null, $arg2 = null)
     {
@@ -254,9 +230,7 @@ class Item implements ItemInterface
     }
 
     /**
-     * Returns true if the cached item needs to be refreshed.
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function isMiss()
     {
@@ -271,10 +245,7 @@ class Item implements ItemInterface
     }
 
     /**
-     * Enables stampede protection by marking this specific instance of the Item
-     * as the one regenerating the cache.
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function lock($ttl = null)
     {
@@ -298,13 +269,7 @@ class Item implements ItemInterface
     }
 
     /**
-     * Takes and stores data for later retrieval. This data can be any php data,
-     * including arrays and object, except resources and objects which are
-     * unable to be serialized.
-     *
-     * @param  mixed             $data bool
-     * @param  int|DateTime|null $ttl  Int is time (seconds), DateTime a future expiration date
-     * @return bool              Returns whether the object was successfully stored or not.
+     * {@inheritdoc}
      */
     public function set($data, $ttl = null)
     {
@@ -361,10 +326,7 @@ class Item implements ItemInterface
     }
 
     /**
-     * Extends the expiration on the current cached item. For some engines this
-     * can be faster than storing the item again.
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function extend($ttl = null)
     {
@@ -376,9 +338,7 @@ class Item implements ItemInterface
     }
 
     /**
-     * Return true if caching is disabled
-     *
-     * @return bool True if caching is disabled.
+     * {@inheritdoc}
      */
     public function isDisabled()
     {
@@ -388,7 +348,7 @@ class Item implements ItemInterface
     }
 
     /**
-     * Return true if caching is disabled
+     * {@inheritdoc}
      */
     public function setLogger($logger)
     {
@@ -411,6 +371,7 @@ class Item implements ItemInterface
     /**
      * Returns true if another Item is currently recalculating the cache.
      *
+     * @param  array $key
      * @return bool
      */
     protected function getStampedeFlag($key)
@@ -452,7 +413,8 @@ class Item implements ItemInterface
      * This function has the ability to change the isHit property as well as the record passed.
      *
      * @param array $validation
-     * @param array $&record
+     * @param array &$record
+     *                          @internal
      */
     protected function validateRecord($validation, &$record)
     {
@@ -487,7 +449,6 @@ class Item implements ItemInterface
             }
 
             return;
-
         }
 
         if (!isset($invalidation) || $invalidation == self::SP_NONE) {
@@ -542,9 +503,7 @@ class Item implements ItemInterface
     }
 
     /**
-     * Returns the record's creation time or false if it isn't set
-     *
-     * @return int timestamp
+     * {@inheritdoc}
      */
     public function getCreation()
     {
@@ -560,9 +519,7 @@ class Item implements ItemInterface
     }
 
     /**
-     * Returns the record's expiration timestamp or false if no expiration timestamp is set
-     *
-     * @return int timestamp
+     * {@inheritdoc}
      */
     public function getExpiration()
     {
