@@ -1,3 +1,66 @@
+
+## Stash v0.12 Changelog
+
+### 0.12.1
+
+*   Full HHVM Support
+
+*   Removed xcache expirimental driver.
+
+*   Removed PEAR Support
+
+*   Internal Improvements- DocBlock, Explicitly Defined Variables, Commenting.
+
+*   Enforcement of code standards in test suite.
+
+*   FileSystem - Improved Storage and Retrieval
+
+*   Memcache - Altered subdrivers constructors and initialization.
+
+*   SQLite - Reduced duplicate code amongst PDO subdrivers.
+
+*   Updated Test Suite to make it simple to run again custom Pool or Item objects other than the build in ones.
+
+#### API Changes
+
+*   Added Drivers::getAllDrivers which returns an unfiltered list of registered drivers. Drivers::getDrivers still filters out by availability.
+
+*   Added "setDriver(DriverInterface $driver)" and "setKey($key, $namespace = null)" functions to the Item Interface. These functions are used by Pool to initialize the Item class.
+
+*   Added "setNamespace($namespace = null)" and "getNamespace()" functions to the Pool class for.
+
+*   Added "getCreation()" and "getExpiration()" functions to the Item class.
+
+*   Added internal function Utilities::checkFileSystemPermissions.
+
+
+## Stash v0.11 Changelog
+
+### 0.11.6
+
+*   FileSystem compatibility fix for the new OpCache system in later versions of PHP.
+
+
+### 0.11.5
+
+*   Fixed a bug where OSX would be identified as Windows and path names were limited to that system's length.
+
+*   Fixed a bug in the Pool class where setItemClass would throw an exception.
+
+
+### 0.11.4
+
+*   Introduced HHVM testing capabilities into the test suite.
+
+*   Removed HHVM specific fatal errors.
+
+
+
+### 0.11.3
+
+*   Fixed potential key collision with Ephemeral driver.
+
+
 ### 0.11.2
 
 *   Fixed Bug which prevented some file based caches from purging or flushing on Windows based systems.
