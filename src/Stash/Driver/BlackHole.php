@@ -29,45 +29,40 @@ class BlackHole implements DriverInterface
         // empty
     }
 
-    /*
-     * (non-PHPdoc)
-     * @see \Stash\Driver\DriverInterface::clear()
+    /**
+     * {@inheritdoc}
      */
     public function clear($key = null)
     {
         return true;
     }
 
-    /*
-     * (non-PHPdoc)
-     * @see \Stash\Driver\DriverInterface::getData()
+    /**
+     * {@inheritdoc}
      */
     public function getData($key)
     {
         return false;
     }
 
-    /*
-     * (non-PHPdoc)
-     * @see \Stash\Driver\DriverInterface::purge()
+    /**
+     * {@inheritdoc}
      */
     public function purge()
     {
         return true;
     }
 
-    /*
-     * (non-PHPdoc)
-     * @see \Stash\Driver\DriverInterface::storeData()
+    /**
+     * {@inheritdoc}
      */
     public function storeData($key, $data, $expiration)
     {
         return true;
     }
 
-    /*
-     * (non-PHPdoc)
-     * @see \Stash\Driver\DriverInterface::isAvailable()
+    /**
+     * {@inheritdoc}
      */
     public static function isAvailable()
     {

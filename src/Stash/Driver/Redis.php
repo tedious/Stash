@@ -96,6 +96,8 @@ class Redis implements DriverInterface
 
     /**
      * Properly close the connection
+     *
+     * {@inheritdoc}
      */
     public function __destruct()
     {
@@ -103,10 +105,7 @@ class Redis implements DriverInterface
     }
 
     /**
-     *
-     *
-     * @param  array $key
-     * @return array
+     * {@inheritdoc}
      */
     public function getData($key)
     {
@@ -114,12 +113,7 @@ class Redis implements DriverInterface
     }
 
     /**
-     *
-     *
-     * @param  array $key
-     * @param  array $data
-     * @param  int   $expiration
-     * @return bool
+     * {@inheritdoc}
      */
     public function storeData($key, $data, $expiration)
     {
@@ -131,20 +125,16 @@ class Redis implements DriverInterface
 
             // Prevent us from even passing a negative ttl'd item to redis,
             // since it will just round up to zero and cache forever.
-            if($ttl < 1)
-
+            if ($ttl < 1) {
                 return true;
+            }
 
             return $this->redis->set($this->makeKeyString($key), $store, $ttl);
         }
     }
 
     /**
-     * Clears the cache tree using the key array provided as the key. If called with no arguments the entire cache gets
-     * cleared.
-     *
-     * @param  null|array $key
-     * @return bool
+     * {@inheritdoc}
      */
     public function clear($key = null)
     {
@@ -164,8 +154,7 @@ class Redis implements DriverInterface
     }
 
     /**
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function purge()
     {
@@ -173,9 +162,7 @@ class Redis implements DriverInterface
     }
 
     /**
-     *
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public static function isAvailable()
     {

@@ -31,7 +31,8 @@ class Composite implements DriverInterface
     /**
      * This function should takes an array which is used to pass option values to the driver.
      *
-     * @param array $options
+     * @param  array                             $options
+     * @throws \Stash\Exception\RuntimeException
      */
     public function __construct(array $options = array())
     {
@@ -53,20 +54,14 @@ class Composite implements DriverInterface
     }
 
     /**
-     * Empty destructor to maintain a standardized interface across all drivers.
-     *
+     * {@inheritdoc}
      */
     public function __destruct()
     {
     }
 
     /**
-     * This function should return the data array, exactly as it was received by the storeData function, or false if it
-     * is not present. This array should have a value for "data" and for "expiration", which should be the data the
-     * main script is trying to store.
-     *
-     * @param $key
-     * @return array
+     * {@inheritdoc}
      */
     public function getData($key)
     {
@@ -89,12 +84,7 @@ class Composite implements DriverInterface
     }
 
     /**
-     *
-     * @param array $key
-     * @param array $data
-     * @param int   $expiration
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function storeData($key, $data, $expiration)
     {
@@ -102,11 +92,7 @@ class Composite implements DriverInterface
     }
 
     /**
-     * This function should clear the cache tree using the key array provided. If called with no arguments the entire
-     * cache needs to be cleared.
-     *
-     * @param  null|array $key
-     * @return bool
+     * {@inheritdoc}
      */
     public function clear($key = null)
     {
@@ -114,9 +100,7 @@ class Composite implements DriverInterface
     }
 
     /**
-     * This function is used to remove expired items from the cache.
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function purge()
     {
@@ -150,6 +134,7 @@ class Composite implements DriverInterface
      * This function checks to see if this driver is available. This always returns true because this
      * driver has no dependencies, begin a wrapper around other classes.
      *
+     * {@inheritdoc}
      * @return bool true
      */
     public static function isAvailable()

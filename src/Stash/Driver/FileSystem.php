@@ -105,8 +105,7 @@ class FileSystem implements DriverInterface
     }
 
     /**
-     * Empty destructor to maintain a standardized interface across all drivers.
-     *
+     * {@inheritdoc}
      */
     public function __destruct()
     {
@@ -123,9 +122,11 @@ class FileSystem implements DriverInterface
     }
 
     /**
-     * This function retrieves the data from the file. If the file doesn't exist, or is currently being written to, it
+     * This function retrieves the data from the file. If the file does not exist, or is currently being written to, it
      * will return false. If the file is already being written to, this instance of the driver gets disabled so as not
      * to have a bunch of writes get queued up when a cache item fails to hit.
+     *
+     * {@inheritdoc}
      *
      * @return bool
      */
@@ -150,7 +151,6 @@ class FileSystem implements DriverInterface
             $expiration = null;
         }
 
-
         // If the item does not exist we should return false. However, it's
         // possible that the item exists as null, so we have to make sure that
         // it's both unset and not null. The downside to this is that the
@@ -163,15 +163,11 @@ class FileSystem implements DriverInterface
         }
     }
 
-
     /**
      * This function takes the data and stores it to the path specified. If the directory leading up to the path does
      * not exist, it creates it.
      *
-     * @param  array $key
-     * @param  array $data
-     * @param  int   $expiration
-     * @return bool
+     * {@inheritdoc}
      */
     public function storeData($key, $data, $expiration)
     {
@@ -181,7 +177,6 @@ class FileSystem implements DriverInterface
         if (strlen($path) > 259 &&  stripos(PHP_OS,'WIN') === 0) {
             throw new Stash\Exception\WindowsPathMaxLengthException();
         }
-
 
         if (!file_exists($path)) {
             if (!is_dir(dirname($path))) {
@@ -269,7 +264,8 @@ class FileSystem implements DriverInterface
      * of the array as a directory (after putting the element through md5(), which was the most efficient way to make
      * sure it was filesystem safe). The last element of the array gets a php extension attached to it.
      *
-     * @param  array  $key Null arguments return the base directory.
+     * @param  array                           $key Null arguments return the base directory.
+     * @throws \Stash\Exception\LogicException
      * @return string
      */
     protected function makePath($key = null)
@@ -335,8 +331,7 @@ class FileSystem implements DriverInterface
      * This function clears the data from a key. If a key points to both a directory and a file, both are erased. If
      * passed null, the entire cache directory is removed.
      *
-     * @param  null|array $key
-     * @return bool
+     * {@inheritdoc}
      */
     public function clear($key = null)
     {
@@ -360,7 +355,7 @@ class FileSystem implements DriverInterface
     /**
      * Cleans out the cache directory by removing all stale cache files and empty directories.
      *
-     * @return bool
+     * {@inheritdoc}
      */
     public function purge()
     {
@@ -398,8 +393,9 @@ class FileSystem implements DriverInterface
 
     /**
      * This function checks to see if it is possible to enable this driver. This returns true no matter what, since
-     * this is the driver of last resort.
+     * there is typically a filesystem available somewhere.
      *
+     * {@inheritdoc}
      * @return bool true
      */
     public static function isAvailable()

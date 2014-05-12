@@ -45,7 +45,8 @@ class Sqlite implements DriverInterface
 
     /**
      *
-     * @param array $options
+     * @param  array                             $options
+     * @throws \Stash\Exception\RuntimeException
      */
     public function __construct(array $options = array())
     {
@@ -92,8 +93,7 @@ class Sqlite implements DriverInterface
     }
 
     /**
-     * @param  array $key
-     * @return array
+     * {@inheritdoc}
      */
     public function getData($key)
     {
@@ -113,10 +113,7 @@ class Sqlite implements DriverInterface
     }
 
     /**
-     * @param  array $key
-     * @param  array $data
-     * @param  int   $expiration
-     * @return bool
+     * {@inheritdoc}
      */
     public function storeData($key, $data, $expiration)
     {
@@ -133,9 +130,7 @@ class Sqlite implements DriverInterface
     }
 
     /**
-     *
-     * @param  null|array $key
-     * @return bool
+     * {@inheritdoc}
      */
     public function clear($key = null)
     {
@@ -162,8 +157,7 @@ class Sqlite implements DriverInterface
     }
 
     /**
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function purge()
     {
@@ -231,6 +225,7 @@ class Sqlite implements DriverInterface
     /**
      * Destroys the sub-drivers when this driver is unset -- required for Windows compatibility.
      *
+     * {@inheritdoc}
      */
     public function __destruct()
     {
@@ -261,6 +256,7 @@ class Sqlite implements DriverInterface
     /**
      * Checks availability of the specified subdriver.
      *
+     * @throws \Stash\Exception\RuntimeException
      * @return bool
      */
     protected function checkStatus()
@@ -279,10 +275,7 @@ class Sqlite implements DriverInterface
     }
 
     /**
-     * Returns whether the driver is able to run in the current environment or not. Any system checks- such as making
-     * sure any required extensions are missing- should be done here.
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public static function isAvailable()
     {
