@@ -64,9 +64,9 @@ interface ItemInterface
      * function after call this one. If no value is stored at all then this
      * function will return null.
      *
-     * @param int $invalidation
-     * @param null $arg
-     * @param null $arg2
+     * @param  int        $invalidation
+     * @param  null       $arg
+     * @param  null       $arg2
      * @return mixed|null
      */
     public function get($invalidation = 0, $arg = null, $arg2 = null);
@@ -82,7 +82,7 @@ interface ItemInterface
      * Enables stampede protection by marking this specific instance of the Item
      * as the one regenerating the cache.
      *
-     * @param null $ttl
+     * @param  null $ttl
      * @return bool
      */
     public function lock($ttl = null);
@@ -92,9 +92,9 @@ interface ItemInterface
      * including arrays and object, except resources and objects which are
      * unable to be serialized.
      *
-     * @param  mixed             $data bool
+     * @param  mixed              $data bool
      * @param  int|\DateTime|null $ttl  Int is time (seconds), DateTime a future expiration date
-     * @return bool              Returns whether the object was successfully stored or not.
+     * @return bool               Returns whether the object was successfully stored or not.
      */
     public function set($data, $ttl = null);
 
@@ -102,7 +102,7 @@ interface ItemInterface
      * Extends the expiration on the current cached item. For some engines this
      * can be faster than storing the item again.
      *
-     * @param null $ttl
+     * @param  null $ttl
      * @return bool
      */
     public function extend($ttl = null);
@@ -117,7 +117,7 @@ interface ItemInterface
     /**
      * Return true if caching is disabled
      *
-     * @param \PSR\Logger $logger
+     * @param  \PSR\Logger $logger
      * @return bool
      */
     public function setLogger($logger);

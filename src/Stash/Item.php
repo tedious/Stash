@@ -555,6 +555,7 @@ class Item implements ItemInterface
 
         $dateTime = new \DateTime();
         $dateTime->setTimestamp($record['data']['createdOn']);
+
         return $dateTime;
     }
 
@@ -572,9 +573,9 @@ class Item implements ItemInterface
 
         $dateTime = new \DateTime();
         $dateTime->setTimestamp($record['expiration']);
+
         return $dateTime;
     }
-
 
     /**
      * This function is used by the Pool object while creating this object. It
