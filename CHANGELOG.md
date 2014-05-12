@@ -9,7 +9,7 @@
 
 *   Removed PEAR Support
 
-*   Internal Improvements- DocBlock, Explicitly Defined Variables, Commenting,
+*   Internal Improvements- DocBlock, Explicitly Defined Variables, Commenting.
 
 *   Enforcement of code standards in test suite.
 
@@ -18,6 +18,10 @@
 *   Memcache - Altered subdrivers constructors and initialization.
 
 *   SQLite - Reduced duplicate code amongst PDO subdrivers.
+
+*   Updated Test Suite to make it simple to run again custom Pool or Item objects other than the build in ones.
+
+#### API Changes
 
 *   Added Drivers::getAllDrivers which returns an unfiltered list of registered drivers. Drivers::getDrivers still filters out by availability.
 
@@ -28,9 +32,6 @@
 *   Added "getCreatedOn()" and "getExpiration()" functions to the Item class.
 
 *   Added internal function Utilities::checkFileSystemPermissions.
-
-*   Updated Test Suite to make it simple to run again custom Pool or Item objects other than the build in ones.
-
 
 
 ## Stash v0.11 Changelog
