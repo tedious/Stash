@@ -33,6 +33,10 @@
 
 *   Added internal function Utilities::checkFileSystemPermissions.
 
+*   Moved Item::SP_* Constants to new Invalidation class and Deprecated the existing Item::SP_* constants.
+
+*   "PRECOMPUTE" is now the default method for dealing with stale data.
+
 
 ## Stash v0.11 Changelog
 
