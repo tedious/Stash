@@ -88,7 +88,7 @@ class Memcache implements DriverInterface
             $options['extension'] = 'any';
         }
 
-        if (isset($options['keycache_limit']) || is_numeric($options['keycache_limit')) {
+        if (isset($options['keycache_limit']) || is_numeric($options['keycache_limit'])) {
             $this->keyCacheTimeLimit = $options['keycache_limit'];
         }
 
