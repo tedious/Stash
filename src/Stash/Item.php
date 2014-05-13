@@ -25,10 +25,29 @@ use Stash\Interfaces\ItemInterface;
  */
 class Item implements ItemInterface
 {
+    /**
+     * @deprecated
+     */
     const SP_NONE         = 0;
+
+    /**
+     * @deprecated
+     */
     const SP_OLD          = 1;
+
+    /**
+     * @deprecated
+     */
     const SP_VALUE        = 2;
+
+    /**
+     * @deprecated
+     */
     const SP_SLEEP        = 3;
+
+    /**
+     * @deprecated
+     */
     const SP_PRECOMPUTE   = 4;
 
     /**
@@ -419,9 +438,9 @@ class Item implements ItemInterface
      *
      * This function has the ability to change the isHit property as well as the record passed.
      *
+     * @internal
      * @param array $validation
      * @param array &$record
-     *                          @internal
      */
     protected function validateRecord($validation, &$record)
     {
@@ -437,7 +456,7 @@ class Item implements ItemInterface
                 $arg2 = $argArray[2];
             }
         } else {
-            $invalidation = self::SP_NONE;
+            $invalidation = Invalidation::NONE;
         }
 
         $curTime = microtime(true);
@@ -445,8 +464,8 @@ class Item implements ItemInterface
         if (isset($record['expiration']) && ($ttl = $record['expiration'] - $curTime) > 0) {
             $this->isHit = true;
 
-            if ($invalidation == self::SP_PRECOMPUTE) {
-                $time = isset($arg) && is_numeric($arg) ? $arg : self::$defaults['precompute_time'];
+            if ($invalidation == Invalidation::PRECOMPUTE) {
+                $time = isset($arg) && is_numeric($arg) ? $arg : $this->defaults['precompute_time'];
 
                 // If stampede control is on it means another cache is already processing, so we return
                 // true for the hit.
@@ -458,7 +477,7 @@ class Item implements ItemInterface
             return;
         }
 
-        if (!isset($invalidation) || $invalidation == self::SP_NONE) {
+        if (!isset($invalidation) || $invalidation == Invalidation::NONE) {
             $this->isHit = false;
 
             return;
@@ -471,7 +490,7 @@ class Item implements ItemInterface
         }
 
         switch ($invalidation) {
-            case self::SP_VALUE:
+            case Invalidation::VALUE:
                 if (!isset($arg)) {
                     $this->isHit = false;
 
@@ -482,9 +501,9 @@ class Item implements ItemInterface
                 }
                 break;
 
-            case self::SP_SLEEP:
-                $time = isset($arg) && is_numeric($arg) ? $arg : self::$defaults['sleep_time'];
-                $attempts = isset($arg2) && is_numeric($arg2) ? $arg2 : self::$defaults['sleep_attempts'];
+            case Invalidation::SLEEP:
+                $time = isset($arg) && is_numeric($arg) ? $arg : $this->defaults['sleep_time'];
+                $attempts = isset($arg2) && is_numeric($arg2) ? $arg2 : $this->defaults['sleep_attempts'];
 
                 $ptime = $time * 1000;
 
@@ -495,15 +514,15 @@ class Item implements ItemInterface
                 }
 
                 usleep($ptime);
-                $record['data']['return'] = $this->get(self::SP_SLEEP, $time, $attempts - 1);
+                $record['data']['return'] = $this->get(Invalidation::SLEEP, $time, $attempts - 1);
                 break;
 
-            case self::SP_OLD:
+            case Invalidation::OLD:
                 $this->isHit = true;
                 break;
 
             default:
-            case self::SP_NONE:
+            case Invalidation::NONE:
                 $this->isHit = false;
                 break;
         } // switch($invalidate)
