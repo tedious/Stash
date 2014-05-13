@@ -32,7 +32,27 @@ class Memcache implements DriverInterface
      * @var SubMemcache|SubMemcached
      */
     protected $memcache;
+
+    /**
+     * Cache of calculated keys.
+     *
+     * @var array
+     */
     protected $keyCache = array();
+
+    /**
+     * Timestamp of last time the key cache was updated.
+     *
+     * @var int timestamp
+     */
+    protected $keyCacheTime = 0;
+
+    /**
+     * Limit
+     *
+     * @var int seconds
+     */
+    protected $keyCacheTimeLimit = 1;
 
     /**
      *
@@ -66,6 +86,10 @@ class Memcache implements DriverInterface
 
         if (!isset($options['extension'])) {
             $options['extension'] = 'any';
+        }
+
+        if (isset($options['keycache_limit']) || is_numeric($options['keycache_limit')) {
+            $this->keyCacheTimeLimit = $options['keycache_limit'];
         }
 
         $extension = strtolower($options['extension']);
@@ -143,8 +167,13 @@ class Memcache implements DriverInterface
     {
         $key = \Stash\Utilities::normalizeKeys($key);
 
-        $keyString = 'cache:::';
+        $keyString = ':cache:::';
         $pathKey = ':pathdb::';
+
+        if ((mictotime(true) - $this->keyCacheTime) > 1) {
+            $this->keyCacheTime = microtime(true);
+            $this->keyCache = array();
+        }
 
         foreach ($key as $name) {
             //a. cache:::name
