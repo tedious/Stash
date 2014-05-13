@@ -31,8 +31,8 @@
       "satooshi/php-coveralls": "dev-master"
   },
   "autoload": {
-    "psr-0": {
-      "Stash": "src/"
+    "psr-4": {
+      "Stash\\": "src/Stash/"
     }
   }
 }
