@@ -28,4 +28,4 @@ if (!file_exists($filename)) {
 }
 
 $loader = require $filename;
-$loader->add('Stash\\Test', __DIR__);
+$loader->addPsr4('Stash\\Test\\', __DIR__ . '/Stash/Test/');
