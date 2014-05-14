@@ -21,6 +21,9 @@
 
 *   Updated Test Suite to make it simple to run again custom Pool or Item objects other than the build in ones.
 
+*   Redis and Memcache constructors now take both forms (associative array or indexed array) when setting server configuration. Originally Memcache accepted an indexed list of settings while Redis expected an associative array.
+
+
 #### API Changes
 
 *   Added Drivers::getAllDrivers which returns an unfiltered list of registered drivers. Drivers::getDrivers still filters out by availability.

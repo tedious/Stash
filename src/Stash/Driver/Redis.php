@@ -60,16 +60,48 @@ class Redis implements DriverInterface
      */
     public function __construct(array $options = array())
     {
-       if(!self::isAvailable())
-           throw new \RuntimeException('Unable to load Redis driver without PhpRedis extension.');
+        if(!self::isAvailable())
+            throw new \RuntimeException('Unable to load Redis driver without PhpRedis extension.');
 
         // Normalize Server Options
         if (isset($options['servers'])) {
-            $servers = (is_array($options['servers']))
+
+            $unprocessedServers = (is_array($options['servers']))
                 ? $options['servers']
                 : array($options['servers']);
-
             unset($options['servers']);
+
+            $servers = array();
+            foreach ($unprocessedServers as $server) {
+
+                $ttl = '.1';
+                if (isset($server['ttl'])) {
+                    $ttl = $server['ttl'];
+                } elseif (isset($server[2])) {
+                    $ttl = $server[2];
+                }
+
+                if (isset($server['socket'])) {
+                    $servers[] = array('socket' => $server['socket'], 'ttl' => $ttl);
+                } else {
+
+                    $host = '127.0.0.1';
+                    if (isset($server['server'])) {
+                        $host = $server['server'];
+                    } elseif (isset($server[0])) {
+                        $host = $server[0];
+                    }
+
+                    $port = '6379';
+                    if (isset($server['port'])) {
+                        $port = $server['port'];
+                    } elseif (isset($server[1])) {
+                        $port = $server[1];
+                    }
+
+                    $servers[] = array('server' => $host, 'port' => $port, 'ttl' => $ttl);
+                }
+            }
 
         } else {
             $servers = array(array('server' => '127.0.0.1', 'port' => '6379', 'ttl' => 0.1));

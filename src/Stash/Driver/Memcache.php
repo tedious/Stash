@@ -77,12 +77,7 @@ class Memcache implements DriverInterface
         if (!isset($options['servers'])) {
             $options['servers'] = array('127.0.0.1', 11211);
         }
-
-        if (is_scalar($options['servers'][0])) {
-            $servers = array($options['servers']);
-        } else {
-            $servers = $options['servers'];
-        }
+        $servers = $this->normalizeServerConfig($options['servers']);
 
         if (!isset($options['extension'])) {
             $options['extension'] = 'any';
@@ -101,6 +96,41 @@ class Memcache implements DriverInterface
         } else {
             throw new RuntimeException('No memcache extension available.');
         }
+    }
+
+    protected function normalizeServerConfig($servers)
+    {
+        if (is_scalar($servers[0])) {
+            $servers = array($servers);
+        }
+
+        $normalizedServers = array();
+        foreach ($servers as $server) {
+
+            $host = '127.0.0.1';
+            if (isset($server['host'])) {
+                $host = $server['host'];
+            } elseif (isset($server[0])) {
+                $host = $server[0];
+            }
+
+            $port = '11211';
+            if (isset($server['port'])) {
+                $port = $server['port'];
+            } elseif (isset($server[1])) {
+                $port = $server[1];
+            }
+
+            $weight = null;
+            if (isset($server['weight'])) {
+                $weight = $server['weight'];
+            } elseif (isset($server[2])) {
+                $weight = $server[2];
+            }
+            $normalizedServers[] = array($host, $port, $weight);
+        }
+
+        return $normalizedServers;
     }
 
     /**
