@@ -26,6 +26,8 @@
 
 #### API Changes
 
+*   Removed constructor requirements from DriverInterface and added setOptions to replace it. Please note this means *all* drivers no longer take their options through the constructor, but expect them through the setOptions method.
+
 *   Added Drivers::getAllDrivers which returns an unfiltered list of registered drivers. Drivers::getDrivers still filters out by availability.
 
 *   Added "setDriver(DriverInterface $driver)" and "setKey($key, $namespace = null)" functions to the Item Interface. These functions are used by Pool to initialize the Item class.
