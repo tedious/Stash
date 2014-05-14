@@ -36,7 +36,7 @@ class Ephemeral implements DriverInterface
      *
      * @param array $options
      */
-    public function __construct(array $options = array())
+    public function setOptions(array $options = array())
     {
 
     }

@@ -28,7 +28,7 @@ class DriverExceptionStub implements DriverInterface
 {
     protected $store = array();
 
-    public function __construct(array $options = array())
+    public function setOptions(array $options = array())
     {
 
     }

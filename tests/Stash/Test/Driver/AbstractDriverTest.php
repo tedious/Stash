@@ -74,16 +74,18 @@ abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
             return false;
         }
 
-        $driver = new $driverClass($options);
+        $driver = new $driverClass();
+        $driver->setOptions($options);
 
         return $driver;
     }
 
-    public function testConstructor()
+    public function testSetOptions()
     {
         $driverType = $this->driverClass;
         $options = $this->getOptions();
-        $driver = new $driverType($options);
+        $driver = new $driverType();
+        $driver->setOptions($options);
         $this->assertTrue(is_a($driver, $driverType), 'Driver is an instance of ' . $driverType);
         $this->assertTrue(is_a($driver, '\Stash\Interfaces\DriverInterface'), 'Driver implments the Stash\Driver\DriverInterface interface');
 
@@ -96,7 +98,7 @@ abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @depends testConstructor
+     * @depends testSetOptions
      */
     public function testStoreData($driver)
     {

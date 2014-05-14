@@ -44,11 +44,23 @@ class Sqlite implements DriverInterface
     protected $disabled = false;
 
     /**
+     * Initializes the driver.
+     *
+     * @throws RuntimeException 'Extension is not installed.'
+     */
+    public function __construct()
+    {
+        if (!static::isAvailable()) {
+            throw new RuntimeException('Extension is not installed.');
+        }
+    }
+
+    /**
      *
      * @param  array                             $options
      * @throws \Stash\Exception\RuntimeException
      */
-    public function __construct(array $options = array())
+    public function setOptions(array $options = array())
     {
         $options = array_merge($this->defaultOptions, $options);
 

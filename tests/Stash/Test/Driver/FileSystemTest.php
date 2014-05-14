@@ -37,12 +37,14 @@ class FileSystemTest extends AbstractDriverTest
      */
     public function testOptionKeyHashFunctionException()
     {
-        $driver = new FileSystem(array('keyHashFunction' => 'foobar_'.mt_rand()));
+        $driver = new FileSystem();
+        $driver->setOptions(array('keyHashFunction' => 'foobar_'.mt_rand()));
     }
 
     public function testOptionKeyHashFunction()
     {
         $driver = new FileSystem(array('keyHashFunction' => 'md5'));
+        $driver->setOptions(array('keyHashFunction' => 'md5'));
     }
 
     /**
@@ -57,7 +59,8 @@ class FileSystemTest extends AbstractDriverTest
 
         foreach ($hashfunctions as $hashfunction) {
 
-            $driver = new FileSystem(array(
+            $driver = new FileSystem();
+            $driver->setOptions(array(
                 'keyHashFunction' => $hashfunction,
                 'path' => sys_get_temp_dir().DIRECTORY_SEPARATOR.'stash',
                 'dirSplit' => 1
@@ -100,7 +103,8 @@ class FileSystemTest extends AbstractDriverTest
 
         $cachePath = sys_get_temp_dir().DIRECTORY_SEPARATOR.'stash';
 
-        $driver = new FileSystem(array(
+        $driver = new FileSystem();
+        $driver->setOptions(array(
             'keyHashFunction' => 'Stash\Test\Driver\strdup',
             'path' => $cachePath,
             'dirSplit' => 1
@@ -136,7 +140,8 @@ class FileSystemTest extends AbstractDriverTest
 
         $cachePath = sys_get_temp_dir().DIRECTORY_SEPARATOR.'stash';
 
-        $driver = new FileSystem(array(
+        $driver = new FileSystem();
+        $driver->setOptions(array(
             'keyHashFunction' => 'Stash\Test\Driver\strdup',
             'path' => $cachePath,
             'dirSplit' => 1

@@ -40,7 +40,7 @@ class Composite implements DriverInterface
      *
      * @throws \Stash\Exception\RuntimeException
      */
-    public function __construct(array $options = array())
+    public function setOptions(array $options = array())
     {
         if (!isset($options['drivers']) || !is_array($options['drivers']) || count($options['drivers']) < 1) {
             throw new RuntimeException('One or more secondary drivers are required.');

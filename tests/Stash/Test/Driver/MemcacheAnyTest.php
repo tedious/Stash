@@ -49,7 +49,8 @@ class MemcacheAnyTest extends \PHPUnit_Framework_TestCase
 
         $options = array();
         $options['servers'][] = array('127.0.0.1', '11211', '50');
-        $driver = new Memcache($options);
+        $driver = new Memcache();
+        $driver->setOptions($options);
 
         $stash = new Item();
         $stash->setDriver($driver);

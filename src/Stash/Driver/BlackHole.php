@@ -25,7 +25,7 @@ class BlackHole implements DriverInterface
     /**
      * NOOP constructor
      */
-    public function __construct(array $options = array())
+    public function setOptions(array $options = array())
     {
         // empty
     }
