@@ -561,6 +561,18 @@ class Item implements ItemInterface
     }
 
     /**
+     * This clears out any locks that are present if this Item is prematurely destructed.
+     */
+    public function __destruct()
+    {
+        if (isset($this->stampedeRunning) && $this->stampedeRunning == true) {
+            $spkey = $this->key;
+            $spkey[0] = 'sp';
+            $this->driver->clear($spkey);
+        }
+    }
+
+    /**
      * This function is used by the Pool object while creating this object. It
      * is an internal function an should not be called directly.
      *
