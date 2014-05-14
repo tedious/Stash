@@ -55,6 +55,18 @@ class Memcache implements DriverInterface
     protected $keyCacheTimeLimit = 1;
 
     /**
+     * Initializes the driver.
+     *
+     * @throws RuntimeException 'Extension is not installed.'
+     */
+    public function __construct()
+    {
+        if (!static::isAvailable()) {
+            throw new RuntimeException('Extension is not installed.');
+        }
+    }
+
+    /**
      *
      * * servers - An array of servers, with each server represented by its own array (array(host, port, [weight])). If
      * not passed the default is array('127.0.0.1', 11211).

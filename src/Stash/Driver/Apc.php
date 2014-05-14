@@ -46,6 +46,18 @@ class Apc implements DriverInterface
     protected $chunkSize = 100;
 
     /**
+     * Initializes the driver.
+     *
+     * @throws RuntimeException 'Extension is not installed.'
+     */
+    public function __construct()
+    {
+        if (!static::isAvailable()) {
+            throw new RuntimeException('Extension is not installed.');
+        }
+    }
+
+    /**
      * This function should takes an array which is used to pass option values to the driver.
      *
      * * ttl - This is the maximum time the item will be stored.
@@ -61,10 +73,6 @@ class Apc implements DriverInterface
         }
 
         $this->apcNamespace = isset($options['namespace']) ? $options['namespace'] : md5(__FILE__);
-
-        if (!static::isAvailable()) {
-            throw new RuntimeException('Extension is not installed.');
-        }
     }
 
     /**

@@ -13,6 +13,7 @@ namespace Stash\Driver;
 
 use Stash;
 use Stash\Interfaces\DriverInterface;
+use Stash\Exception\RuntimeException;
 
 /**
  * The Redis driver is used for storing data on a Redis system. This class uses
@@ -43,6 +44,18 @@ class Redis implements DriverInterface
      * @var array
      */
     protected $keyCache = array();
+
+    /**
+     * Initializes the driver.
+     *
+     * @throws RuntimeException 'Extension is not installed.'
+     */
+    public function __construct()
+    {
+        if (!static::isAvailable()) {
+            throw new RuntimeException('Extension is not installed.');
+        }
+    }
 
     /**
      * The options array should contain an array of servers,
