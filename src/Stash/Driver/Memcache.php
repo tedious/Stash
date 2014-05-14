@@ -105,26 +105,26 @@ class Memcache implements DriverInterface
         }
 
         $normalizedServers = array();
-        foreach($servers as $server) {
+        foreach ($servers as $server) {
 
             $host = '127.0.0.1';
             if (isset($server['host'])) {
                 $host = $server['host'];
-            } elseif(isset($server[0])) {
+            } elseif (isset($server[0])) {
                 $host = $server[0];
             }
 
             $port = '11211';
             if (isset($server['port'])) {
                 $port = $server['port'];
-            } elseif(isset($server[1])) {
+            } elseif (isset($server[1])) {
                 $port = $server[1];
             }
 
             $weight = null;
             if (isset($server['weight'])) {
                 $weight = $server['weight'];
-            } elseif(isset($server[2])) {
+            } elseif (isset($server[2])) {
                 $weight = $server[2];
             }
             $normalizedServers[] = array($host, $port, $weight);
@@ -132,7 +132,6 @@ class Memcache implements DriverInterface
 
         return $normalizedServers;
     }
-
 
     /**
      * {@inheritdoc}
