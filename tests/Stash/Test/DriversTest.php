@@ -19,11 +19,19 @@ use Stash\Drivers;
  */
 class DriversTest extends \PHPUnit_Framework_TestCase
 {
-    public function testGetDrivers()
+    public function testGetAvailableDrivers()
     {
-        $drivers = Drivers::getDrivers();
+        $drivers = Drivers::getAvailableDrivers();
         $this->assertArrayHasKey('FileSystem', $drivers, 'getDrivers returns FileSystem driver');
         $this->assertArrayNotHasKey('Array', $drivers, 'getDrivers doesn\'t return Array driver');
+    }
+
+    public function testGetDrivers()
+    {
+        $availableDrivers = Drivers::getAvailableDrivers();
+        $getDrivers = Drivers::getDrivers();
+        $this->assertEquals($availableDrivers, $getDrivers, 'getDrivers is an alias for getAvailableDrivers');
+
     }
 
     public function testRegisterDriver()
