@@ -169,9 +169,9 @@ class Memcache implements DriverInterface
 
         $keyString = ':cache:::';
         $pathKey = ':pathdb::';
-
-        if ((mictotime(true) - $this->keyCacheTime) > 1) {
-            $this->keyCacheTime = microtime(true);
+        $time = microtime(true);
+        if (($time - $this->keyCacheTime) >= $this->keyCacheTimeLimit) {
+            $this->keyCacheTime = $time;
             $this->keyCache = array();
         }
 
