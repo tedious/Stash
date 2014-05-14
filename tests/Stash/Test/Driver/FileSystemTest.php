@@ -95,7 +95,7 @@ class FileSystemTest extends AbstractDriverTest
     public function testLongPathFolderCreation()
     {
         if (strtolower(substr(PHP_OS, 0, 3)) !== 'win') {
-            $this->markTestSkipped('Driver class unsuited for current environment');
+            $this->markTestSkipped('This test can only occur on Windows based systems.');
         }
 
         $cachePath = sys_get_temp_dir().DIRECTORY_SEPARATOR.'stash';
@@ -131,7 +131,7 @@ class FileSystemTest extends AbstractDriverTest
     public function testLongPathFileCreation()
     {
         if (strtolower(substr(PHP_OS, 0, 3)) !== 'win') {
-            $this->markTestSkipped('Driver class unsuited for current environment');
+            $this->markTestSkipped('This test can only occur on Windows based systems.');
         }
 
         $cachePath = sys_get_temp_dir().DIRECTORY_SEPARATOR.'stash';
