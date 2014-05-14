@@ -49,7 +49,7 @@ interface DriverInterface
      *
      * @param array $options
      */
-    public function __construct(array $options = array());
+    public function setOptions(array $options = array());
 
     /**
      * Returns the previously stored data as well as it's expiration date in an associative array. This array contains

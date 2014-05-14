@@ -72,7 +72,7 @@ class Memcache implements DriverInterface
      *
      * @throws RuntimeException
      */
-    public function __construct(array $options = array())
+    public function setOptions(array $options = array())
     {
         if (!isset($options['servers'])) {
             $options['servers'] = array('127.0.0.1', 11211);

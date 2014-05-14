@@ -28,7 +28,7 @@ class DriverCallCheckStub implements DriverInterface
     protected $store = array();
     protected $wasCalled = false;
 
-    public function __construct(array $options = array())
+    public function setOptions(array $options = array())
     {
 
     }

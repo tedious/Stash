@@ -58,7 +58,7 @@ class Redis implements DriverInterface
      * @param  array             $options
      * @throws \RuntimeException
      */
-    public function __construct(array $options = array())
+    public function setOptions(array $options = array())
     {
         if(!self::isAvailable())
             throw new \RuntimeException('Unable to load Redis driver without PhpRedis extension.');

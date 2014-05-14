@@ -120,7 +120,7 @@ class FileSystem implements DriverInterface
      * @param  array                             $options
      * @throws \Stash\Exception\RuntimeException
      */
-    public function __construct(array $options = array())
+    public function setOptions(array $options = array())
     {
         $options = array_merge($this->defaultOptions, $options);
 

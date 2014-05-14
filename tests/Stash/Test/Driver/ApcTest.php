@@ -19,7 +19,7 @@ class ApcTest extends AbstractDriverTest
 {
     protected $driverClass = 'Stash\Driver\Apc';
 
-    public function testConstructor()
+    public function testSetOptions()
     {
         $driverType = $this->driverClass;
         $options = $this->getOptions();
@@ -30,7 +30,7 @@ class ApcTest extends AbstractDriverTest
         $this->assertAttributeEquals('namespace_test', 'apcNamespace', $driver, 'APC is setting supplied namespace.');
         $this->assertAttributeEquals(15, 'ttl', $driver, 'APC is setting supplied ttl.');
 
-        return parent::testConstructor();
+        return parent::testSetOptions();
     }
 
 }

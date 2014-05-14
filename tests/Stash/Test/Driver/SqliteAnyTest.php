@@ -39,8 +39,8 @@ class SqliteAnyTest extends \PHPUnit_Framework_TestCase
         $key = array('apple', 'sauce');
 
         $options = array();
-        $driver = new Sqlite($options);
-
+        $driver = new Sqlite();
+        $driver->setOptions($options);
         $stash = new Item();
         $stash->setDriver($driver);
         $stash->setKey($key);

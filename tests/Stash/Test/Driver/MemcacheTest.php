@@ -68,7 +68,8 @@ class MemcacheTest extends AbstractDriverTest
         $options['servers'][] = array('127.0.0.1', '11211', '50');
         $options['servers'][] = array('127.0.0.1', '11211');
         $options['extension'] = $this->extension;
-        $driver = new Memcache($options);
+        $driver = new Memcache();
+        $driver->setOptions($options);
 
         $stash = new Item();
         $stash->setDriver($driver);
@@ -78,7 +79,8 @@ class MemcacheTest extends AbstractDriverTest
 
         $options = array();
         $options['extension'] = $this->extension;
-        $driver = new Memcache($options);
+        $driver = new Memcache();
+        $driver->setOptions($options);
         $stash = new Item();
         $stash->setDriver($driver);
         $stash->setKey($key);

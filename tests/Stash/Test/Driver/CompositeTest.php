@@ -25,9 +25,9 @@ class CompositeTest extends AbstractDriverTest
     protected function getOptions()
     {
         $options = array();
-        $options['drivers'][] = new Ephemeral(array());
-        $options['drivers'][] = new Ephemeral(array());
-        $options['drivers'][] = new Ephemeral(array());
+        $options['drivers'][] = new Ephemeral();
+        $options['drivers'][] = new Ephemeral();
+        $options['drivers'][] = new Ephemeral();
         $this->subDrivers = $options['drivers'];
 
         return $options;

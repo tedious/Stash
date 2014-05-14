@@ -54,7 +54,7 @@ class Apc implements DriverInterface
      * @param  array                             $options
      * @throws \Stash\Exception\RuntimeException
      */
-    public function __construct(array $options = array())
+    public function setOptions(array $options = array())
     {
         if (isset($options['ttl']) && is_numeric($options['ttl'])) {
             $this->ttl = (int) $options['ttl'];
