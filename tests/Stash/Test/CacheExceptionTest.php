@@ -12,6 +12,7 @@
 namespace Stash\Test;
 
 use Stash\Test\Stubs\DriverExceptionStub;
+use Stash\Test\Stubs\PoolGetDriverStub;
 use Stash\Pool;
 use Stash\Item;
 
@@ -24,7 +25,9 @@ class CacheExceptionTest extends \PHPUnit_Framework_TestCase
     public function testSet()
     {
         $item = new Item();
-        $item->setDriver(new DriverExceptionStub());
+        $poolStub = new PoolGetDriverStub();
+        $poolStub->setDriver(new DriverExceptionStub());
+        $item->setPool($poolStub);
         $item->setKey(array('path', 'to', 'store'));
 
         $this->assertFalse($item->isDisabled());
@@ -35,7 +38,9 @@ class CacheExceptionTest extends \PHPUnit_Framework_TestCase
     public function testGet()
     {
         $item = new Item();
-        $item->setDriver(new DriverExceptionStub());
+        $poolStub = new PoolGetDriverStub();
+        $poolStub->setDriver(new DriverExceptionStub());
+        $item->setPool($poolStub);
         $item->setKey(array('path', 'to', 'get'));
 
         $this->assertFalse($item->isDisabled());
@@ -46,8 +51,9 @@ class CacheExceptionTest extends \PHPUnit_Framework_TestCase
     public function testClear()
     {
         $item = new Item();
-        $item->setDriver(new DriverExceptionStub());
-        $item->setKey(array('path', 'to', 'clear'));
+        $poolStub = new PoolGetDriverStub();
+        $poolStub->setDriver(new DriverExceptionStub());
+        $item->setPool($poolStub);        $item->setKey(array('path', 'to', 'clear'));
 
         $this->assertFalse($item->isDisabled());
         $this->assertFalse($item->clear());
@@ -56,25 +62,29 @@ class CacheExceptionTest extends \PHPUnit_Framework_TestCase
 
     public function testPurge()
     {
-        $pool = new Pool(new DriverExceptionStub());
-        $stash = $pool->getItem('test');
-        $this->assertFalse($stash->isDisabled());
+        $pool = new Pool();
+        $pool->setDriver(new DriverExceptionStub());
+
+        $item = $pool->getItem('test');
+        $this->assertFalse($item->isDisabled());
         $this->assertFalse($pool->purge());
 
-        $stash = $pool->getItem('test');
-        $this->assertTrue($stash->isDisabled(), 'Is disabled after exception is thrown in driver');
+        $item = $pool->getItem('test');
+        $this->assertTrue($item->isDisabled(), 'Is disabled after exception is thrown in driver');
         $this->assertFalse($pool->purge());
     }
 
     public function testFlush()
     {
-        $pool = new Pool(new DriverExceptionStub());
-        $stash = $pool->getItem('test');
-        $this->assertFalse($stash->isDisabled());
+        $pool = new Pool();
+        $pool->setDriver(new DriverExceptionStub());
+
+        $item = $pool->getItem('test');
+        $this->assertFalse($item->isDisabled());
         $this->assertFalse($pool->flush());
 
-        $stash = $pool->getItem('test');
-        $this->assertTrue($stash->isDisabled(), 'Is disabled after exception is thrown in driver');
+        $item = $pool->getItem('test');
+        $this->assertTrue($item->isDisabled(), 'Is disabled after exception is thrown in driver');
         $this->assertFalse($pool->flush());
     }
 

@@ -123,7 +123,7 @@ interface PoolInterface
     /**
      * Sets a PSR\Logger style logging client to enable the tracking of errors.
      *
-     * @param  \PSR\Logger $logger
+     * @param  \PSR\Log\LoggerInterface $logger
      * @return bool
      */
     public function setLogger($logger);

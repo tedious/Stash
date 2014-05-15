@@ -13,6 +13,7 @@ namespace Stash\Test;
 
 use Stash\Test\Stubs\LoggerStub;
 use Stash\Test\Stubs\DriverExceptionStub;
+use Stash\Test\Stubs\PoolGetDriverStub;
 
 use Stash\Item;
 use Stash\Driver\Ephemeral as Ephemeral;
@@ -32,7 +33,10 @@ class ItemLoggerTest extends \PHPUnit_Framework_TestCase
         }
 
         $item = new Item();
-        $item->setDriver(new $fullDriver());
+
+        $poolStub = new PoolGetDriverStub();
+        $poolStub->setDriver(new $fullDriver());
+        $item->setPool($poolStub);
         $item->setKey($key);
 
         return $item;

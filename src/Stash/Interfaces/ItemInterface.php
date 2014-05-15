@@ -15,13 +15,13 @@ interface ItemInterface
 {
 
     /**
-     * Sets the driver for the Item class to use.
+     * Sets the Parent Pool for the Item class to use.
      *
      * Typically called by Pool directly, and *must* be called before running caching functions.
      *
-     * @param DriverInterface $driver
+     * @param PoolInterface $driver
      */
-    public function setDriver(DriverInterface $driver);
+    public function setPool(PoolInterface $driver);
 
     /**
      * Takes and sets the key and namespace.
@@ -117,7 +117,7 @@ interface ItemInterface
     /**
      * Return true if caching is disabled
      *
-     * @param  \PSR\Logger $logger
+     * @param  \PSR\Log\LoggerInterface $logger
      * @return bool
      */
     public function setLogger($logger);

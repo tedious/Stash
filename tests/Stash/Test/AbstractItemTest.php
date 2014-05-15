@@ -15,6 +15,8 @@ use Stash\Item;
 use Stash\Utilities;
 use Stash\Driver\Ephemeral;
 
+use Stash\Test\Stubs\PoolGetDriverStub;
+
 /**
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
@@ -80,7 +82,10 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         $item = $this->getItem();
         $this->assertTrue(is_a($item, 'Stash\Item'), 'Test object is an instance of Stash');
 
-        $item->setDriver($this->driver);
+        $poolStub = new PoolGetDriverStub();
+        $poolStub->setDriver($this->driver);
+        $item->setPool($poolStub);
+
         $item->setKey($key);
 
         return $item;
@@ -112,7 +117,9 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         }
 
         $item = $this->getItem();
-        $item->setDriver(new Ephemeral(array()));
+        $poolStub = new PoolGetDriverStub();
+        $poolStub->setDriver(new Ephemeral(array()));
+        $item->setPool($poolStub);
         $this->assertFalse($item->set($this->data), 'Item without key returns false for set.');
     }
 
@@ -133,11 +140,15 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         }
 
         if (!isset($this->driver)) {
-            $this->driver = new Ephemeral(array());
+            $this->driver = new Ephemeral();
         }
 
         $item = $this->getItem();
-        $item->setDriver(new Ephemeral(array()));
+
+        $poolStub = new PoolGetDriverStub();
+        $poolStub->setDriver(new Ephemeral());
+        $item->setPool($poolStub);
+
         $this->assertEquals(null, $item->get(), 'Item without key returns null for get.');
 
     }
@@ -149,14 +160,18 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
     public function testGetItemInvalidKey()
     {
         $item = $this->getItem();
-        $item->setDriver(new Ephemeral(array()));
+        $poolStub = new PoolGetDriverStub();
+        $poolStub->setDriver(new Ephemeral(array()));
+        $item->setPool($poolStub);
         $item->setKey('This is not an array');
     }
 
     public function testLock()
     {
         $item = $this->getItem();
-        $item->setDriver(new Ephemeral(array()));
+        $poolStub = new PoolGetDriverStub();
+        $poolStub->setDriver(new Ephemeral());
+        $item->setPool($poolStub);
         $this->assertFalse($item->lock(), 'Item without key returns false for lock.');
     }
 
@@ -415,12 +430,15 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
 
     public function testDisableCacheWillNeverCallDriver()
     {
-        $stash = $this->getItem();
-        $stash->setDriver($this->getMockedDriver());
-        $stash->setKey(array('test', 'key'));
-        $stash->disable();
-        $this->assertTrue($stash->isDisabled());
-        $this->assertDisabledStash($stash);
+        $item = $this->getItem();
+        $poolStub = new PoolGetDriverStub();
+        $poolStub->setDriver($this->getMockedDriver());
+        $item->setPool($poolStub);
+        $item->setKey(array('test', 'key'));
+        $item->disable();
+
+        $this->assertTrue($item->isDisabled());
+        $this->assertDisabledStash($item);
     }
 
     public function testDisableCacheGlobally()
@@ -428,12 +446,14 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         Item::$runtimeDisable = true;
         $testDriver = $this->getMockedDriver();
 
-        $stash = $this->getItem();
-        $stash->setDriver($testDriver);
-        $stash->setKey(array('test', 'key'));
+        $item = $this->getItem();
+        $poolStub = new PoolGetDriverStub();
+        $poolStub->setDriver($this->getMockedDriver());
+        $item->setPool($poolStub);
+        $item->setKey(array('test', 'key'));
 
-        $this->assertDisabledStash($stash);
-        $this->assertTrue($stash->isDisabled());
+        $this->assertDisabledStash($item);
+        $this->assertTrue($item->isDisabled());
         $this->assertFalse($testDriver->wasCalled(), 'Driver was not called after Item was disabled.');
         Item::$runtimeDisable = false;
     }

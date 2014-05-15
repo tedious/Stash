@@ -12,6 +12,7 @@
 namespace Stash\Test\Driver;
 
 use Stash\Item;
+use Stash\Test\Stubs\PoolGetDriverStub;
 
 /**
  * @package Stash
@@ -24,14 +25,16 @@ class EphemeralTest extends AbstractDriverTest
     public function testKeyCollisions1()
     {
         $driver = new $this->driverClass;
+        $poolStub = new PoolGetDriverStub();
+        $poolStub->setDriver($driver);
 
         $item1 = new Item();
-        $item1->setDriver(($driver));
+        $item1->setPool($poolStub);
         $item1->setKey(array('##' , '#'));
         $item1->set('X');
 
         $item2 = new Item();
-        $item2->setDriver(($driver));
+        $item2->setPool($poolStub);
         $item2->setKey(array('#' , '##'));
         $item2->set('Y');
 
@@ -41,14 +44,16 @@ class EphemeralTest extends AbstractDriverTest
     public function testKeyCollisions2()
     {
         $driver = new $this->driverClass;
+        $poolStub = new PoolGetDriverStub();
+        $poolStub->setDriver($driver);
 
         $item1 = new Item();
-        $item1->setDriver(($driver));
+        $item1->setPool($poolStub);
         $item1->setKey(array('#'));
         $item1->set('X');
 
         $item2 = new Item();
-        $item2->setDriver(($driver));
+        $item2->setPool($poolStub);
         $item2->setKey(array(':'));
         $item2->set('Y');
 

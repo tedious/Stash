@@ -11,6 +11,7 @@
 
 namespace Stash\Test\Driver;
 
+use Stash\Test\Stubs\PoolGetDriverStub;
 use Stash\Driver\FileSystem;
 use Stash\Item;
 
@@ -69,7 +70,10 @@ class FileSystemTest extends AbstractDriverTest
             $rand = str_repeat(uniqid(), 32);
 
             $item = new Item();
-            $item->setDriver($driver);
+
+            $poolStub = new PoolGetDriverStub();
+            $poolStub->setDriver($driver);
+            $item->setPool($poolStub);
             $item->setKey($paths);
             $item->set($rand);
 
