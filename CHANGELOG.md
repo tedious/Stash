@@ -28,6 +28,8 @@
 
 *   Removed constructor requirements from DriverInterface and added setOptions to replace it. Please note this means *all* drivers no longer take their options through the constructor, but expect them through the setOptions method.
 
+*   Replaced "Item->setDriver" with "Item->setPool" function. This should have no effect on typical consumers of this library but may effect those extending the Item or Pool class.
+
 *   Added Drivers::getAllDrivers which returns an unfiltered list of registered drivers.
 
 *   Added Drivers::getAvailableDrivers to replace the existing Drivers::getDrivers, which is now deprecated.
