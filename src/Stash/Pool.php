@@ -133,18 +133,18 @@ class Pool implements PoolInterface
             }
         }
 
-        /** @var ItemInterface $cache */
-        $cache = new $this->itemClass();
-        $cache->setDriver($this->driver);
-        $cache->setKey($key, $namespace);
+        /** @var ItemInterface $item */
+        $item = new $this->itemClass();
+        $item->setPool($this);
+        $item->setKey($key, $namespace);
 
         if($this->isDisabled)
-            $cache->disable();
+            $item->disable();
 
         if(isset($this->logger))
-            $cache->setLogger($this->logger);
+            $item->setLogger($this->logger);
 
-        return $cache;
+        return $item;
     }
 
     /**

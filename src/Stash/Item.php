@@ -14,6 +14,7 @@ namespace Stash;
 use Stash\Exception\Exception;
 use Stash\Interfaces\DriverInterface;
 use Stash\Interfaces\ItemInterface;
+use Stash\Interfaces\PoolInterface;
 
 /**
  * Stash caches data that has a high generation cost, such as template preprocessing or code that requires a database
@@ -106,6 +107,13 @@ class Item implements ItemInterface
     protected $stampedeRunning = false;
 
     /**
+     * The Pool that spawned this instance of the Item..
+     *
+     * @var \Stash\Interfaces\PoolInterface
+     */
+    protected $pool;
+
+    /**
      * The cacheDriver being used by the system. While this class handles all of the higher functions, it's the cache
      * driver here that handles all of the storage/retrieval functionality. This value is set by the constructor.
      *
@@ -140,9 +148,10 @@ class Item implements ItemInterface
     /**
      * {@inheritdoc}
      */
-    public function setDriver(DriverInterface $driver)
+    public function setPool(PoolInterface $pool)
     {
-        $this->driver = $driver;
+        $this->pool = $pool;
+        $this->setDriver($pool->getDriver());
     }
 
     /**
@@ -372,6 +381,16 @@ class Item implements ItemInterface
     public function setLogger($logger)
     {
         $this->logger = $logger;
+    }
+
+    /**
+     * Sets the driver this object uses to interact with the caching system.
+     *
+     * @param DriverInterface $driver
+     */
+    protected function setDriver(DriverInterface $driver)
+    {
+        $this->driver = $driver;
     }
 
     /**

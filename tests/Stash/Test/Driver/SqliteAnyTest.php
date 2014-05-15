@@ -11,6 +11,7 @@
 
 namespace Stash\Test\Driver;
 
+use Stash\Test\Stubs\PoolGetDriverStub;
 use Stash\Driver\Sqlite;
 use Stash\Item;
 use Stash\Utilities;
@@ -41,10 +42,12 @@ class SqliteAnyTest extends \PHPUnit_Framework_TestCase
         $options = array();
         $driver = new Sqlite();
         $driver->setOptions($options);
-        $stash = new Item();
-        $stash->setDriver($driver);
-        $stash->setKey($key);
-        $this->assertTrue($stash->set($key), 'Able to load and store with unconfigured extension.');
+        $item = new Item();
+        $poolSub = new PoolGetDriverStub();
+        $poolSub->setDriver($driver);
+        $item->setPool($poolSub);
+        $item->setKey($key);
+        $this->assertTrue($item->set($key), 'Able to load and store with unconfigured extension.');
     }
 
     public static function tearDownAfterClass()
