@@ -30,9 +30,11 @@
 
 *   Replaced "Item->setDriver" with "Item->setPool" function. This should have no effect on typical consumers of this library but may effect those extending the Item or Pool class.
 
-*   Added Drivers::getAllDrivers which returns an unfiltered list of registered drivers.
+*   Renamed Drivers class to DriversList to prevent confusion when talking about "Drivers".
 
-*   Added Drivers::getAvailableDrivers to replace the existing Drivers::getDrivers, which is now deprecated.
+*   Added DriversList::getAllDrivers which returns an unfiltered list of registered drivers.
+
+*   Added DriversList::getAvailableDrivers to replace the existing DriversList::getDrivers, which is now deprecated.
 
 *   Added "setDriver(DriverInterface $driver)" and "setKey($key, $namespace = null)" functions to the Item Interface. These functions are used by Pool to initialize the Item class.
 
