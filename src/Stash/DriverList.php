@@ -12,12 +12,12 @@
 namespace Stash;
 
 /**
- * Drivers contains various functions used to organize Driver classes that are available in the system.
+ * DriverList contains various functions used to organize Driver classes that are available in the system.
  *
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class Drivers
+class DriverList
 {
     /**
      * An array of possible cache storage data methods, with the driver class as the array value.
