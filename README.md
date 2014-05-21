@@ -1,8 +1,8 @@
-# Stash - A PHP Caching Library [![Build Status](https://travis-ci.org/tedivm/Stash.svg?branch=master)](https://travis-ci.org/tedivm/Stash)
+# Stash - A PHP Caching Library [![Build Status](https://travis-ci.org/tedious/Stash.svg?branch=master)](https://travis-ci.org/tedious/Stash)
 
-[![License](http://img.shields.io/packagist/l/tedivm/stash.svg)](https://github.com/tedivm/Stash/blob/master/LICENSE)
-[![Latest Stable Version](http://img.shields.io/github/release/tedivm/stash.svg)](https://packagist.org/packages/tedivm/stash)
-[![Coverage Status](http://img.shields.io/coveralls/tedivm/Stash.svg)](https://coveralls.io/r/tedivm/Stash?branch=master)
+[![License](http://img.shields.io/packagist/l/tedivm/stash.svg)](https://github.com/tedious/Stash/blob/master/LICENSE)
+[![Latest Stable Version](http://img.shields.io/github/release/tedious/stash.svg)](https://packagist.org/packages/tedivm/stash)
+[![Coverage Status](http://img.shields.io/coveralls/tedious/Stash.svg)](https://coveralls.io/r/tedious/Stash?branch=master)
 [![Total Downloads](http://img.shields.io/packagist/dt/tedivm/stash.svg)](https://packagist.org/packages/tedivm/stash)
 
 Stash makes it easy to speed up your code by caching the results of expensive
@@ -41,7 +41,7 @@ $ pear install tedivm/Stash
 
 ### Github
 
-Releases of Stash are available on [Github](https://github.com/tedivm/Stash/releases).
+Releases of Stash are available on [Github](https://github.com/tedious/Stash/releases).
 
 
 ## Documentation
@@ -118,7 +118,7 @@ drivers that use a variety of back ends.
 
 ## Symfony Integration
 
-The [Stash Bundle](https://github.com/tedivm/TedivmStashBundle) makes using
+The [Stash Bundle](https://github.com/tedious/TedivmStashBundle) makes using
 Stash inside of Symfony projects significantly easier. This bundle exposes
 Stash as a Service for developers to use, and allows Symfony to use Stash
 as a session handler. 
