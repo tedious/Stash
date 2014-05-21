@@ -9,7 +9,7 @@
     "redis",
     "apc"
   ],
-  "homepage": "http://github.com/tedivm/Stash",
+  "homepage": "http://github.com/tedious/Stash",
   "type": "library",
   "license": "BSD-3-Clause",
   "authors": [
