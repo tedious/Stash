@@ -252,6 +252,8 @@ class FileSystem implements DriverInterface
         $storeString = '<?php ' . PHP_EOL
             . '/* Cachekey: ' . str_replace('*/', '', $this->makeKeyString($key)) . ' */' . PHP_EOL
             . '/* Type: ' . gettype($data) . ' */' . PHP_EOL
+            . '/* Created: ' . date(DATE_W3C) . ' */' . PHP_EOL
+            . '/* Expiration: ' . date(DATE_W3C, $expiration) . ' */' . PHP_EOL
             . PHP_EOL
             . PHP_EOL
             . PHP_EOL
