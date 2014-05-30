@@ -34,6 +34,15 @@ else
     echo "Finished installing phpredis extension."
 
     echo ""
+    echo "******************************"
+    echo "Installing uopz extension if possible (PHP >=5.4)."
+    echo "******************************"
+    set +e
+    pecl install uopz
+    set -e
+    echo "Finished installing uopz extension."
+
+    echo ""
     echo "*********************"
     echo "Updating php.ini file"
     echo "*********************"
