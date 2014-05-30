@@ -173,7 +173,9 @@ class Redis implements DriverInterface
      */
     public function __destruct()
     {
-        $this->redis->close();
+        if ($this->redis instanceof \Redis) {
+            $this->redis->close();
+        }
     }
 
     /**
