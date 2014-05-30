@@ -45,6 +45,18 @@ class Redis implements DriverInterface
      */
     protected $keyCache = array();
 
+    protected $redisArrayOptionNames = array(
+        "previous",
+        "function",
+        "distributor",
+        "index",
+        "autorehash",
+        "pconnect",
+        "retry_interval",
+        "lazy_connect",
+        "connect_timeout",
+    );
+
     /**
      * Initializes the driver.
      *
@@ -147,20 +159,8 @@ class Redis implements DriverInterface
 
         } else {
 
-            $redisArrayOptionNames = array(
-                "previous",
-                "function",
-                "distributor",
-                "index",
-                "autorehash",
-                "pconnect",
-                "retry_interval",
-                "lazy_connect",
-                "connect_timeout",
-            );
-
             $redisArrayOptions = array();
-            foreach ($redisArrayOptionNames as $optionName) {
+            foreach ($this->redisArrayOptionNames as $optionName) {
                 if (array_key_exists($optionName, $options)) {
                     $redisArrayOptions[$optionName] = $options[$optionName];
                 }
