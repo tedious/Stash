@@ -75,6 +75,25 @@ class Redis implements DriverInterface
 
         } else {
 
+            $redisArrayOptionNames = array(
+                "previous",
+                "function",
+                "distributor",
+                "index",
+                "autorehash",
+                "pconnect",
+                "retry_interval",
+                "lazy_connect",
+                "connect_timeout",
+            );
+
+            $redisArrayOptions = array();
+            foreach ($redisArrayOptionNames as $optionName) {
+                if (array_key_exists($optionName, $options)) {
+                    $redisArrayOptions[$optionName] = $options[$optionName];
+                }
+            }
+
             $serverArray = array();
             foreach ($servers as $server) {
                 $serverString = $server['server'];
@@ -84,7 +103,7 @@ class Redis implements DriverInterface
                 $serverArray[] = $serverString;
             }
 
-            $redis = new \RedisArray($serverArray);
+            $redis = new \RedisArray($serverArray, $redisArrayOptions);
         }
 
         // select database
