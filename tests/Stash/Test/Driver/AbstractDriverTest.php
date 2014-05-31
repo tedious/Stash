@@ -65,10 +65,13 @@ abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    protected function getFreshDriver()
+    protected function getFreshDriver(array $options = null)
     {
         $driverClass = $this->driverClass;
-        $options = $this->getOptions();
+
+        if ($options === null) {
+            $options = $this->getOptions();
+        }
 
         if (!$driverClass::isAvailable()) {
             return false;
