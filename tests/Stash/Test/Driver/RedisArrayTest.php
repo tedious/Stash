@@ -24,6 +24,10 @@ class RedisArrayTest extends RedisTest
 
     protected function setUp()
     {
+        if (defined('HHVM_VERSION')) {
+            $this->markTestSkipped('RedisArray currently not supported by HHVM.');
+        }
+
         parent::setUp();
 
         if (!($sock = @fsockopen($this->redisServer, $this->redisPort, $errno, $errstr, 1))) {
@@ -40,9 +44,24 @@ class RedisArrayTest extends RedisTest
     protected function getOptions()
     {
         return array(
-            array('server' => $this->redisServer, 'port' => $this->redisPort, 'ttl' => 0.1),
-            array('server' => $this->redisSecondServer, 'port' => $this->redisSecondPort, 'ttl' => 0.1),
+            'servers' => array(
+                array('server' => $this->redisServer, 'port' => $this->redisPort, 'ttl' => 0.1),
+                array('server' => $this->redisSecondServer, 'port' => $this->redisSecondPort, 'ttl' => 0.1),
+            ),
         );
     }
 
+    /**
+     * @test
+     */
+    public function itShouldConstructARedisArray()
+    {
+        $driver = $this->getFreshDriver();
+        $class = new \ReflectionClass($driver);
+        $redisProperty = $class->getProperty('redis');
+        $redisProperty->setAccessible(true);
+        $redisArray = $redisProperty->getValue($driver);
+
+        $this->assertInstanceOf('\RedisArray', $redisArray);
+    }
 }
