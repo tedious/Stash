@@ -24,6 +24,10 @@ class RedisArrayTest extends RedisTest
 
     protected function setUp()
     {
+        if (defined('HHVM_VERSION')) {
+            $this->markTestSkipped('RedisArray currently not supported by HHVM.');
+        }
+
         parent::setUp();
 
         if (!($sock = @fsockopen($this->redisServer, $this->redisPort, $errno, $errstr, 1))) {
