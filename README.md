@@ -24,7 +24,7 @@ backwards compatible.
 
 ```
 "require": {
-  "tedivm/stash": "0.11.*"
+  "tedivm/stash": "0.12.*"
 }
 ```
 
