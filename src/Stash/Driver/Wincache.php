@@ -107,10 +107,14 @@ class Wincache implements DriverInterface
         if (!isset($key)) {
             return wincache_ucache_clear();
         } else {
-            $keyRegex = '[' . $this->makeKey($key) . '*]';
+            $keyString = $this->makeKey($key);
+            $keyLength = strlen($keyString);
+
             $info = wincache_ucache_info();
+
             foreach ($info['ucache_entries'] as $entry) {
-                if (preg_match($keyRegex, $entry['key_name'])) {
+                if (strlen($entry['key_name']) >= $keyLength 
+                    && $keyString == substr($entry['key_name'], 0, $keyLength)) {
                     wincache_ucache_delete($entry['key_name']);
                 }
             }
@@ -124,7 +128,7 @@ class Wincache implements DriverInterface
      */
     public function purge()
     {
-        wincache_ucache_clear();
+        // WinCache auto purges
 
         return true;
     }
@@ -148,11 +152,7 @@ class Wincache implements DriverInterface
      */
     protected function makeKey($key)
     {
-        $keyString = md5(__FILE__) . '::'; // make it unique per install
-
-        if (isset($this->wincacheNamespace)) {
-            $keyString .= $this->wincacheNamespace . '::';
-        }
+        $keyString = $this->wincacheNamespace . '::';
 
         foreach ($key as $piece) {
             $keyString .= $piece . '::';
