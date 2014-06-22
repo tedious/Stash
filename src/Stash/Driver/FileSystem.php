@@ -239,7 +239,7 @@ class FileSystem implements DriverInterface
 
         if (!file_exists($path)) {
             if (!is_dir(dirname($path))) {
-                if (!mkdir(dirname($path), $this->dirPermissions, true)) {
+                if (!@mkdir(dirname($path), $this->dirPermissions, true)) {
                     return false;
                 }
             }
