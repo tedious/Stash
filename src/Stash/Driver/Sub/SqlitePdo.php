@@ -39,7 +39,7 @@ class SqlitePdo extends Sqlite
     /**
      * {@inheritdoc}
      */
-    protected $responseCode = \PDO::FETCH_ASSOC;
+    protected $responseCode;
 
     /**
      * {@inheritdoc}
