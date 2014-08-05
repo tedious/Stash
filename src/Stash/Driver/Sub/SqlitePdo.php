@@ -39,7 +39,7 @@ class SqlitePdo extends Sqlite
     /**
      * {@inheritdoc}
      */
-    protected $responseCode = \PDO::FETCH_ASSOC;
+    protected $responseCode;
 
     /**
      * {@inheritdoc}
@@ -56,9 +56,9 @@ class SqlitePdo extends Sqlite
      */
     public static function isAvailable()
     {
-        $drivers = class_exists('\PDO', false) ? \PDO::getAvailableDrivers() : array();
-
-        return in_array(static::$pdoDriver, $drivers);
+        return class_exists('\PDO', false) ?
+            in_array(static::$pdoDriver, \PDO::getAvailableDrivers()) :
+            false;
     }
 
     /**
