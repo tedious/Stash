@@ -58,9 +58,10 @@ class RedisArrayTest extends RedisTest
     {
         $driver = $this->getFreshDriver();
         $class = new \ReflectionClass($driver);
-        $redisProperty = $class->getProperty('redis');
-        $redisProperty->setAccessible(true);
-        $redisArray = $redisProperty->getValue($driver);
+
+        $redisClient = $class->getMethod('getRedisClient');
+        $redisClient->setAccessible(true);
+        $redisArray = $redisClient->invoke($driver);
 
         $this->assertInstanceOf('\RedisArray', $redisArray);
     }

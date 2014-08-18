@@ -32,11 +32,25 @@ class Redis implements DriverInterface
     protected $defaultOptions = array ();
 
     /**
+     * An array of the user-supplied configuration options for this driver.
+     *
+     * @var array
+     */
+    protected $options = array();
+
+    /**
+     * An array of servers this Driver is configured to connect to.
+     *
+     * @var array
+     */
+    protected $servers = array();
+
+    /**
      * The Redis drivers.
      *
      * @var \Redis|\RedisArray
      */
-    protected $redis;
+    protected $redisClient;
 
     /**
      * The cache of indexed keys.
@@ -44,6 +58,13 @@ class Redis implements DriverInterface
      * @var array
      */
     protected $keyCache = array();
+
+    /**
+     * Whether we should disconnect when the driver's deconstructor is called.
+     *
+     * @var bool
+     */
+    protected $disconnectOnDeconstruct = true;
 
     protected $redisArrayOptionNames = array(
         "previous",
@@ -60,10 +81,13 @@ class Redis implements DriverInterface
     /**
      * Initializes the driver.
      *
-     * @throws RuntimeException 'Extension is not installed.'
+     * @param bool $disconnectOnDeconstruct Whether we should manually disconnect the Redis resource when the object is deconstructed
+     *
+     * @throws \Stash\Exception\RuntimeException
      */
-    public function __construct()
+    public function __construct($disconnectOnDeconstruct = true)
     {
+        $this->disconnectOnDeconstruct = $disconnectOnDeconstruct;
         if (!static::isAvailable()) {
             throw new RuntimeException('Extension is not installed.');
         }
@@ -133,14 +157,33 @@ class Redis implements DriverInterface
         }
 
         // Merge in default values.
-        $options = array_merge($this->defaultOptions, $options);
+        $this->servers = $servers;
+        $this->options = array_merge($this->defaultOptions, $options);
+    }
 
+    /**
+     * @return \Redis|\RedisArray
+     */
+    protected function getRedisClient()
+    {
+        if ($this->redisClient === null) {
+            $this->redisClient = $this->connect();
+        }
+
+        return $this->redisClient;
+    }
+
+    /**
+     * @return \Redis|\RedisArray
+     */
+    protected function connect()
+    {
         // this will have to be revisited to support multiple servers, using
         // the RedisArray object. That object acts as a proxy object, meaning
         // most of the class will be the same even after the changes.
 
-        if (count($servers) == 1) {
-            $server = $servers[0];
+        if (count($this->servers) == 1) {
+            $server = $this->servers[0];
             $redis = new \Redis();
 
             if (isset($server['socket']) && $server['socket']) {
@@ -152,22 +195,19 @@ class Redis implements DriverInterface
             }
 
             // auth - just password
-            if(isset($options['password']))
-                $redis->auth($options['password']);
-
-            $this->redis = $redis;
-
+            if(isset($this->options['password']))
+                $redis->auth($this->options['password']);
         } else {
 
             $redisArrayOptions = array();
             foreach ($this->redisArrayOptionNames as $optionName) {
-                if (array_key_exists($optionName, $options)) {
-                    $redisArrayOptions[$optionName] = $options[$optionName];
+                if (array_key_exists($optionName, $this->options)) {
+                    $redisArrayOptions[$optionName] = $this->options[$optionName];
                 }
             }
 
             $serverArray = array();
-            foreach ($servers as $server) {
+            foreach ($this->servers as $server) {
                 $serverString = $server['server'];
                 if(isset($server['port']))
                     $serverString .= ':' . $server['port'];
@@ -179,10 +219,17 @@ class Redis implements DriverInterface
         }
 
         // select database
-        if(isset($options['database']))
-            $redis->select($options['database']);
+        if(isset($this->options['database']))
+            $redis->select($this->options['database']);
 
-        $this->redis = $redis;
+        return $redis;
+    }
+
+    protected function disconnect()
+    {
+        if ($this->redisClient instanceof \Redis) {
+            $this->redisClient->close();
+        }
     }
 
     /**
@@ -192,8 +239,8 @@ class Redis implements DriverInterface
      */
     public function __destruct()
     {
-        if ($this->redis instanceof \Redis) {
-            $this->redis->close();
+        if ($this->disconnectOnDeconstruct) {
+            $this->disconnect();
         }
     }
 
@@ -202,7 +249,7 @@ class Redis implements DriverInterface
      */
     public function getData($key)
     {
-        return unserialize($this->redis->get($this->makeKeyString($key)));
+        return unserialize($this->getRedisClient()->get($this->makeKeyString($key)));
     }
 
     /**
@@ -211,8 +258,9 @@ class Redis implements DriverInterface
     public function storeData($key, $data, $expiration)
     {
         $store = serialize(array('data' => $data, 'expiration' => $expiration));
+        $redis = $this->getRedisClient();
         if (is_null($expiration)) {
-            return $this->redis->setex($this->makeKeyString($key), $store);
+            return $redis->setex($this->makeKeyString($key), $store);
         } else {
             $ttl = $expiration - time();
 
@@ -222,7 +270,7 @@ class Redis implements DriverInterface
                 return true;
             }
 
-            return $this->redis->set($this->makeKeyString($key), $store, $ttl);
+            return $redis->set($this->makeKeyString($key), $store, $ttl);
         }
     }
 
@@ -231,16 +279,17 @@ class Redis implements DriverInterface
      */
     public function clear($key = null)
     {
+        $redis = $this->getRedisClient();
         if (is_null($key)) {
-            $this->redis->flushDB();
+            $redis->flushDB();
 
             return true;
         }
 
         $keyString = $this->makeKeyString($key, true);
         $keyReal = $this->makeKeyString($key);
-        $this->redis->incr($keyString); // increment index for children items
-        $this->redis->delete($keyReal); // remove direct item.
+        $redis->incr($keyString); // increment index for children items
+        $redis->delete($keyReal); // remove direct item.
         $this->keyCache = array();
 
         return true;
@@ -291,7 +340,7 @@ class Redis implements DriverInterface
             if (isset($this->keyCache[$pathKey])) {
                 $index = $this->keyCache[$pathKey];
             } else {
-                $index = $this->redis->get($pathKey);
+                $index = $this->getRedisClient()->get($pathKey);
                 $this->keyCache[$pathKey] = $index;
             }
 
