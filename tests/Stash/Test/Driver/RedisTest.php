@@ -21,6 +21,9 @@ class RedisTest extends AbstractDriverTest
     protected $redisServer = '127.0.0.1';
     protected $redisPort = '6379';
 
+    protected $redisNoServer = '127.0.0.1';
+    protected $redisNoPort = '6381';
+
     protected function setUp()
     {
         if (!$this->setup) {
@@ -32,6 +35,12 @@ class RedisTest extends AbstractDriverTest
                 $this->markTestSkipped('Redis server unavailable for testing.');
             }
             fclose($sock);
+
+            if ($sock = @fsockopen($this->redisNoServer, $this->redisNoPort, $errno, $errstr, 1)) {
+                fclose($sock);
+                $this->markTestSkipped("No server should be listening on {$this->redisNoServer}:{$this->redisNoPort} " .
+                                       "so that we can test for exceptions.");
+            }
 
             if (!$this->getFreshDriver()) {
                 $this->markTestSkipped('Driver class unsuited for current environment');
@@ -48,6 +57,20 @@ class RedisTest extends AbstractDriverTest
         return array('servers' => array(
             array('server' => $this->redisServer, 'port' => $this->redisPort, 'ttl' => 0.1)
         ));
+    }
+
+    protected function getInvalidOptions()
+    {
+        return array('servers' => array(
+            array('server' => $this->redisNoServer, 'port' => $this->redisNoPort, 'ttl' => 0.1)
+        ));
+    }
+
+    public function testBadDisconnect()
+    {
+        $driver = $this->getFreshDriver($this->getInvalidOptions());
+        $driver->__destruct();
+        $driver = null;
     }
 
 }
