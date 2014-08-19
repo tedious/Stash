@@ -45,7 +45,9 @@ class RedisTest extends AbstractDriverTest
 
     protected function getOptions()
     {
-        return array('server' => $this->redisServer, 'port' => $this->redisPort, 'ttl' => 0.1);
+        return array('servers' => array(
+            array('server' => $this->redisServer, 'port' => $this->redisPort, 'ttl' => 0.1)
+        ));
     }
 
 }
