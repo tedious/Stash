@@ -151,16 +151,27 @@ class Item implements ItemInterface
     public function setPool(PoolInterface $pool)
     {
         $this->pool = $pool;
-        $this->setDriver($pool->getDriver());
+        $this->driver = $pool->getDriver();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setKey($key, $namespace = null)
+    public function setKey(array $key, $namespace = null)
     {
         $this->namespace = $namespace;
-        $this->setupKey($key);
+
+        $keyStringTmp = $key;
+        if (isset($this->namespace)) {
+            array_shift($keyStringTmp);
+        }
+
+        $this->keyString = implode('/', $keyStringTmp);
+
+        // We implant the namespace "cache" to the front of every stash object's key. This allows us to segment
+        // off the user data, and use other 'namespaces' for internal purposes.
+        array_unshift($key, 'cache');
+        $this->key = array_map('strtolower', $key);
     }
 
     /**
@@ -589,31 +600,5 @@ class Item implements ItemInterface
             $spkey[0] = 'sp';
             $this->driver->clear($spkey);
         }
-    }
-
-    /**
-     * This function is used by the Pool object while creating this object. It
-     * is an internal function an should not be called directly.
-     *
-     * @param  array                     $key
-     * @throws \InvalidArgumentException
-     */
-    protected function setupKey($key)
-    {
-        if (!is_array($key)) {
-            throw new \InvalidArgumentException('Item requires keys as arrays.');
-        }
-
-        $keyStringTmp = $key;
-        if (isset($this->namespace)) {
-            array_shift($keyStringTmp);
-        }
-
-        $this->keyString = implode('/', $keyStringTmp);
-
-        // We implant the namespace "cache" to the front of every stash object's key. This allows us to segment
-        // off the user data, and use other 'namespaces' for internal purposes.
-        array_unshift($key, 'cache');
-        $this->key = array_map('strtolower', $key);
     }
 }

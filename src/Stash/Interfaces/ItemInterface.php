@@ -30,7 +30,7 @@ interface ItemInterface
      * @param array       $key
      * @param string|null $namespace
      */
-    public function setKey($key, $namespace = null);
+    public function setKey(array $key, $namespace = null);
 
     /**
      * This disables any IO operations by this object, effectively preventing

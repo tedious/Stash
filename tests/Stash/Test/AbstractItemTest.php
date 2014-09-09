@@ -152,8 +152,8 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Item requires keys as arrays.
+     * @expectedException PHPUnit_Framework_Error
+     * @expectedExceptionMessage Argument 1 passed to Stash\Item::setKey()
      */
     public function testGetItemInvalidKey()
     {
