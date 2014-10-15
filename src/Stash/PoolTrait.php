@@ -11,6 +11,7 @@
 
 namespace Stash;
 
+use Stash\Interfaces\PoolInterface;
 use Stash\Interfaces\DriverInterface;
 
 /**

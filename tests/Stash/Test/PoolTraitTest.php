@@ -24,6 +24,18 @@ class PoolTraitTest extends AbstractPoolTest
 {
     protected $poolClass = '\Stash\Test\Stubs\PoolTraitStub';
 
+    public function testPool()
+    {
+        $decorator = $this->getTestPool();
+
+        $pool = $this->getMock('Stash\Interfaces\PoolInterface');
+
+        $this->assertSame($decorator, $decorator->setPool($pool));
+        $this->assertSame($pool, $decorator->getPool());
+        $decorator->setPool();
+        $this->assertInstanceOf('Stash\Interfaces\PoolInterface', $decorator->getPool());
+    }
+
     public function testSetItemClass()
     {
         $mockItem = $this->getMock('Stash\Interfaces\ItemInterface');
