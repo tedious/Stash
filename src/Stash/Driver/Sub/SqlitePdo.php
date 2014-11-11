@@ -56,7 +56,11 @@ class SqlitePdo extends Sqlite
      */
     public static function isAvailable()
     {
-        $drivers = class_exists('\PDO', false) ? \PDO::getAvailableDrivers() : array();
+        if (!class_exists('\PDO', false)) {
+            return false;
+        }
+
+        $drivers = \PDO::getAvailableDrivers();
 
         return in_array(static::$pdoDriver, $drivers);
     }
