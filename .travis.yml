@@ -24,4 +24,5 @@ services:
 
 matrix:
     allow_failures:
+      - php: hhvm
       - php: hhvm-nightly
