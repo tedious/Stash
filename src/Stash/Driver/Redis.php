@@ -193,7 +193,14 @@ class Redis implements DriverInterface
     public function __destruct()
     {
         if ($this->redis instanceof \Redis) {
-            $this->redis->close();
+            try {
+                $this->redis->close();
+            } catch (\RedisException $e) {
+                /*
+                 * \Redis::close will throw a \RedisException("Redis server went away") exception if
+                 * we haven't previously been able to connect to Redis or the connection has severed.
+                 */
+            }
         }
     }
 
