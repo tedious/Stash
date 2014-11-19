@@ -19,7 +19,7 @@ namespace Stash\Driver\Sub;
 class Memcache
 {
     /**
-     * @var \Memcached
+     * @var \Memcache
      */
     protected $memcached;
 
