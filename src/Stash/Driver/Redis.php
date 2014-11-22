@@ -219,7 +219,7 @@ class Redis implements DriverInterface
     {
         $store = serialize(array('data' => $data, 'expiration' => $expiration));
         if (is_null($expiration)) {
-            return $this->redis->setex($this->makeKeyString($key), $store);
+            return $this->redis->set($this->makeKeyString($key), $store);
         } else {
             $ttl = $expiration - time();
 
@@ -229,7 +229,7 @@ class Redis implements DriverInterface
                 return true;
             }
 
-            return $this->redis->set($this->makeKeyString($key), $store, $ttl);
+            return $this->redis->setex($this->makeKeyString($key), $ttl, $store);
         }
     }
 
