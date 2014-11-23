@@ -117,9 +117,10 @@ class Utilities
     /**
      * Deletes a directory and all of its contents.
      *
-     * @param  string                     $file Path to file or directory.
-     * @return bool                       Returns true on success, false otherwise.
+     * @param  string $file Path to file or directory.
+     * @param  bool $cleanParent Whether to prune empty parent directories or not.
      * @throws Exception\RuntimeException
+     * @return bool                       Returns true on success, false otherwise.
      */
     public static function deleteRecursive($file, $cleanParent = false)
     {
@@ -169,7 +170,8 @@ class Utilities
                 rmdir($filePath);
             }
 
-            if ($cleanParent && count(scandir($parentPath)) == 2) {
+
+            if ($cleanParent && static::checkForEmptyDirectory($parentPath)) {
                 $parentPerms = fileperms($parentPath);
                 $parentOwner = fileowner($parentPath);
 
@@ -203,7 +205,6 @@ class Utilities
         return $pKey;
     }
 
-
     /**
      * Checks to see whether the requisite permissions are available on the specified path.
      *
@@ -227,5 +228,25 @@ class Utilities
         if (!is_writable($path)) {
             throw new InvalidArgumentException('Cache path is not writable.');
         }
+    }
+
+    /**
+     * Checks to see if a directory is empty.
+     *
+     * @param  string $path
+     * @return bool
+     */
+    public static function checkForEmptyDirectory($path)
+    {
+        $empty = true;
+        $dir = opendir($path);
+        while ($file = readdir($dir)) {
+            if ($file != '.' && $file != '..') {
+                $empty = false;
+                break;
+            }
+        }
+        closedir($dir);
+        return $empty;
     }
 }
