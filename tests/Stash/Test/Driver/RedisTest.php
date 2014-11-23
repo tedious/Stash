@@ -67,7 +67,7 @@ class RedisTest extends AbstractDriverTest
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException RuntimeException
      * @expectedExceptionMessage Item requires keys as arrays.
      */
     public function testBadDisconnect()
