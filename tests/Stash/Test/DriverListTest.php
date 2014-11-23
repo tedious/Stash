@@ -31,7 +31,6 @@ class DriverListTest extends \PHPUnit_Framework_TestCase
         $availableDrivers = DriverList::getAvailableDrivers();
         $getDrivers = DriverList::getDrivers();
         $this->assertEquals($availableDrivers, $getDrivers, 'getDrivers is an alias for getAvailableDrivers');
-
     }
 
     public function testRegisterDriver()
@@ -47,7 +46,5 @@ class DriverListTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Stash\Driver\Ephemeral', DriverList::getDriverClass('Array'), 'getDriverClass returns proper classname for Array driver');
 
         $this->assertFalse(DriverList::getDriverClass('FakeName'), 'getDriverClass returns false for nonexistent class.');
-
     }
-
 }

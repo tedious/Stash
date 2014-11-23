@@ -13,7 +13,6 @@ namespace Stash\Driver\FileSystem;
 
 class SerializerEncoder implements EncoderInterface
 {
-
     public function deserialize($path)
     {
         if (!file_exists($path)) {
@@ -46,5 +45,4 @@ class SerializerEncoder implements EncoderInterface
     {
         return '.pser';
     }
-
 }

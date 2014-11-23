@@ -26,5 +26,4 @@ class FileSystemSerializerTest extends FileSystemTest
     {
         return array_merge(array('memKeyLimit' => 2, 'encoder' => 'Serializer'), $options);
     }
-
 }

@@ -118,7 +118,6 @@ class Memcache implements DriverInterface
 
         $normalizedServers = array();
         foreach ($servers as $server) {
-
             $host = '127.0.0.1';
             if (isset($server['host'])) {
                 $host = $server['host'];

@@ -88,5 +88,4 @@ class CompositeTest extends AbstractDriverTest
             $this->assertEquals($value, $return['data'], 'getData ' . $type . ' returns same item as stored');
         }
     }
-
 }

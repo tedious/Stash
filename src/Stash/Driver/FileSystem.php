@@ -225,7 +225,7 @@ class FileSystem implements DriverInterface
         $path = $this->makePath($key);
 
         // MAX_PATH is 260 - http://msdn.microsoft.com/en-us/library/aa365247(VS.85).aspx
-        if (strlen($path) > 259 &&  stripos(PHP_OS,'WIN') === 0) {
+        if (strlen($path) > 259 &&  stripos(PHP_OS, 'WIN') === 0) {
             throw new Stash\Exception\WindowsPathMaxLengthException();
         }
 
@@ -384,7 +384,6 @@ class FileSystem implements DriverInterface
             if (is_numeric($data['expiration']) && $data['expiration'] <= $startTime) {
                 unlink($filename);
             }
-
         }
         unset($directoryIt);
 
@@ -411,5 +410,4 @@ class FileSystem implements DriverInterface
     {
         return true;
     }
-
 }

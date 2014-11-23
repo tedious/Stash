@@ -27,7 +27,6 @@ class RedisTest extends AbstractDriverTest
     protected function setUp()
     {
         if (!$this->setup) {
-
             $this->startTime = time();
             $this->expiration = $this->startTime + 3600;
 
@@ -48,7 +47,6 @@ class RedisTest extends AbstractDriverTest
 
             $this->data['object'] = new \stdClass();
             $this->data['large_string'] = str_repeat('apples', ceil(200000 / 6));
-
         }
     }
 
@@ -76,5 +74,4 @@ class RedisTest extends AbstractDriverTest
         $driver->__destruct();
         $driver = null;
     }
-
 }

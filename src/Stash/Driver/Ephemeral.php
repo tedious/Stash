@@ -23,7 +23,6 @@ use Stash\Interfaces\DriverInterface;
  */
 class Ephemeral implements DriverInterface
 {
-
     /**
      * Contains the cached data.
      *
@@ -38,7 +37,6 @@ class Ephemeral implements DriverInterface
      */
     public function setOptions(array $options = array())
     {
-
     }
 
     /**
@@ -46,7 +44,6 @@ class Ephemeral implements DriverInterface
      */
     public function __destruct()
     {
-
     }
 
     /**

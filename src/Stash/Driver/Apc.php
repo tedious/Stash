@@ -80,7 +80,6 @@ class Apc implements DriverInterface
      */
     public function __destruct()
     {
-
     }
 
     /**
@@ -124,7 +123,6 @@ class Apc implements DriverInterface
                     apc_delete($item['key']);
                 }
             } while (!$emptyIterator);
-
         }
 
         return true;
@@ -201,5 +199,4 @@ class Apc implements DriverInterface
 
         return $this->ttl < $life ? $this->ttl : $life;
     }
-
 }

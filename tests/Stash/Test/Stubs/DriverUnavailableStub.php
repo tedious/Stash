@@ -30,7 +30,6 @@ class DriverUnavailableStub implements DriverInterface
 
     public function setOptions(array $options = array())
     {
-
     }
 
     public function __destruct()

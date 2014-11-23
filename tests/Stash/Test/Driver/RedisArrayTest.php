@@ -109,5 +109,4 @@ class RedisArrayTest extends RedisTest
 
         uopz_restore('\RedisArray', '__construct');
     }
-
 }

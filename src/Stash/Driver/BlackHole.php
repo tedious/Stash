@@ -21,7 +21,6 @@ use Stash\Interfaces\DriverInterface;
  */
 class BlackHole implements DriverInterface
 {
-
     /**
      * NOOP constructor
      */
@@ -69,5 +68,4 @@ class BlackHole implements DriverInterface
     {
         return true;
     }
-
 }
