@@ -27,10 +27,11 @@ function strdup($str)
 class FileSystemTest extends AbstractDriverTest
 {
     protected $driverClass = 'Stash\Driver\FileSystem';
+    protected $extension = '.php';
 
-    protected function getOptions()
+    protected function getOptions($options = array())
     {
-        return array('memKeyLimit' => 2);
+        return array_merge(array('memKeyLimit' => 2), $options);
     }
 
     /**
@@ -39,13 +40,13 @@ class FileSystemTest extends AbstractDriverTest
     public function testOptionKeyHashFunctionException()
     {
         $driver = new FileSystem();
-        $driver->setOptions(array('keyHashFunction' => 'foobar_'.mt_rand()));
+        $driver->setOptions($this->getOptions(array('keyHashFunction' => 'foobar_'.mt_rand())));
     }
 
     public function testOptionKeyHashFunction()
     {
         $driver = new FileSystem(array('keyHashFunction' => 'md5'));
-        $driver->setOptions(array('keyHashFunction' => 'md5'));
+        $driver->setOptions($this->getOptions(array('keyHashFunction' => 'md5')));
     }
 
     /**
@@ -61,11 +62,11 @@ class FileSystemTest extends AbstractDriverTest
         foreach ($hashfunctions as $hashfunction) {
 
             $driver = new FileSystem();
-            $driver->setOptions(array(
+            $driver->setOptions($this->getOptions(array(
                 'keyHashFunction' => $hashfunction,
                 'path' => sys_get_temp_dir().DIRECTORY_SEPARATOR.'stash',
                 'dirSplit' => 1
-            ));
+            )));
 
             $rand = str_repeat(uniqid(), 32);
 
@@ -82,9 +83,8 @@ class FileSystemTest extends AbstractDriverTest
                             DIRECTORY_SEPARATOR.
                             'stash'.
                             DIRECTORY_SEPARATOR.
-                            implode(DIRECTORY_SEPARATOR,
-                                array_map($hashfunction, $allpaths)).
-                            '.php';
+                            implode(DIRECTORY_SEPARATOR, array_map($hashfunction, $allpaths)).
+                            $this->extension;
 
             $this->assertFileExists($predicted);
         }
@@ -108,11 +108,11 @@ class FileSystemTest extends AbstractDriverTest
         $cachePath = sys_get_temp_dir().DIRECTORY_SEPARATOR.'stash';
 
         $driver = new FileSystem();
-        $driver->setOptions(array(
+        $driver->setOptions($this->getOptions(array(
             'keyHashFunction' => 'Stash\Test\Driver\strdup',
             'path' => $cachePath,
             'dirSplit' => 1
-        ));
+        )));
         $key=array();
 
         // MAX_PATH is 260 - http://msdn.microsoft.com/en-us/library/aa365247(VS.85).aspx
@@ -145,11 +145,11 @@ class FileSystemTest extends AbstractDriverTest
         $cachePath = sys_get_temp_dir().DIRECTORY_SEPARATOR.'stash';
 
         $driver = new FileSystem();
-        $driver->setOptions(array(
+        $driver->setOptions($this->getOptions(array(
             'keyHashFunction' => 'Stash\Test\Driver\strdup',
             'path' => $cachePath,
             'dirSplit' => 1
-        ));
+        )));
         $key=array();
 
         // MAX_PATH is 260 - http://msdn.microsoft.com/en-us/library/aa365247(VS.85).aspx
