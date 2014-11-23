@@ -121,7 +121,7 @@ class Utilities
      * @return bool                       Returns true on success, false otherwise.
      * @throws Exception\RuntimeException
      */
-    public static function deleteRecursive($file)
+    public static function deleteRecursive($file, $cleanParent = false)
     {
         if (!preg_match('/^(?:\/|\\\\|\w:\\\\|\w:\/).*$/', $file)) {
             throw new RuntimeException('deleteRecursive function requires an absolute path.');
@@ -135,10 +135,16 @@ class Utilities
         $filePath = rtrim($file, ' /');
 
         if (is_dir($filePath)) {
-            $directoryIt = new \RecursiveDirectoryIterator($filePath);
 
+            $currentPerms = fileperms($filePath);
+            $currentOwner = fileowner($filePath);
+            $parentPath = dirname($filePath);
+
+            $directoryIt = new \RecursiveDirectoryIterator($filePath);
             foreach (new \RecursiveIteratorIterator($directoryIt, \RecursiveIteratorIterator::CHILD_FIRST) as $file) {
                 $filename = $file->getPathname();
+
+                // Clear out children if this is a directory.
                 if ($file->isDir()) {
                     $dirFiles = scandir($file->getPathname());
                     if ($dirFiles && count($dirFiles) == 2) {
@@ -149,16 +155,33 @@ class Utilities
                     continue;
                 }
 
-
                 if (file_exists($filename)) {
-                    unlink($filename);
+                    if ($file->isDir()) {
+                        rmdir($filename);
+                    } else {
+                        unlink($filename);
+                    }
                 }
-
             }
+
             unset($directoryIt);
 
             if (is_dir($filePath)) {
                 rmdir($filePath);
+            }
+
+            if ($cleanParent && count(scandir($parentPath)) == 2) {
+                $parentPerms = fileperms($parentPath);
+                $parentOwner = fileowner($parentPath);
+
+                if ($currentPerms == $parentPerms && $currentOwner == $parentOwner) {
+                    $grandParentPath = dirname($parentPath);
+                    if ($parentOwner = fileowner($grandParentPath)) {
+                        if (is_writable($grandParentPath) && $parentPerms == fileperms($grandParentPath)) {
+                            rmdir($parentPath);
+                        }
+                    }
+                }
             }
 
             return true;

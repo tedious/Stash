@@ -417,7 +417,7 @@ class FileSystem implements DriverInterface
         }
 
         if (is_dir($path)) {
-            return Utilities::deleteRecursive($path);
+            return Utilities::deleteRecursive($path, true);
         }
 
         return isset($return);
