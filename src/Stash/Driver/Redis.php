@@ -148,7 +148,9 @@ class Redis implements DriverInterface
             } else {
                 $port = isset($server['port']) ? $server['port'] : 6379;
                 $ttl = isset($server['ttl']) ? $server['ttl'] : 0.1;
-                $redis->connect($server['server'], $port, $ttl);
+                if (@!$redis->connect($server['server'], $port, $ttl)) {
+                    throw new \RuntimeException('Unable to connect to redis server.');
+                }
             }
 
             // auth - just password
