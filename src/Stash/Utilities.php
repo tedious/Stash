@@ -233,7 +233,7 @@ class Utilities
     /**
      * Checks to see if a directory is empty.
      *
-     * @param $path
+     * @param  string $path
      * @return bool
      */
     public static function checkForEmptyDirectory($path)
