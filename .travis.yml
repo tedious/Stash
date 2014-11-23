@@ -23,6 +23,5 @@ services:
   - memcached
 
 matrix:
-    allow_failures:
-      - php: hhvm
+    allow_failures: 
       - php: hhvm-nightly

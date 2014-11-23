@@ -115,10 +115,16 @@ class Apc implements DriverInterface
         } else {
             $keyRegex = '[' . $this->makeKey($key) . '*]';
             $chunkSize = isset($this->chunkSize) && is_numeric($this->chunkSize) ? $this->chunkSize : 100;
-            $it = new \APCIterator('user', $keyRegex, \APC_ITER_KEY, $chunkSize);
-            foreach ($it as $key) {
-                apc_delete($key);
-            }
+
+            do {
+                $emptyIterator = true;
+                $it = new \APCIterator('user', $keyRegex, \APC_ITER_KEY, $chunkSize);
+                foreach ($it as $item) {
+                    $emptyIterator = false;
+                    apc_delete($item['key']);
+                }
+            } while (!$emptyIterator);
+
         }
 
         return true;
@@ -132,14 +138,14 @@ class Apc implements DriverInterface
         $now = time();
         $keyRegex = '[' . $this->makeKey(array()) . '*]';
         $chunkSize = isset($this->chunkSize) && is_numeric($this->chunkSize) ? $this->chunkSize : 100;
+
         $it = new \APCIterator('user', $keyRegex, \APC_ITER_KEY, $chunkSize);
-        foreach ($it as $key) {
+        foreach ($it as $item) {
             $success = null;
-            $data = apc_fetch($key, $success);
-            $data = $data[$key['key']];
+            $data = apc_fetch($item['key'], $success);
 
             if ($success && is_array($data) && $data['expiration'] <= $now) {
-                apc_delete($key);
+                apc_delete($item['key']);
             }
         }
 
