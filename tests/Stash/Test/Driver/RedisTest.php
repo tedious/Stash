@@ -66,10 +66,6 @@ class RedisTest extends AbstractDriverTest
         ));
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Item requires keys as arrays.
-     */
     public function testBadDisconnect()
     {
         $driver = $this->getFreshDriver($this->getInvalidOptions());
