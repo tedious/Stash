@@ -30,8 +30,8 @@ namespace Stash\Exception;
  */
 class WindowsPathMaxLengthException extends \Exception implements Exception
 {
-    public function __construct($message="",$code=0,$previous=null)
+    public function __construct($message="", $code=0, $previous=null)
     {
-        parent::__construct("Cache path exceeds Windows PHP MAX_LENGTH of 260 characters. " . $message,$code,$previous);
+        parent::__construct("Cache path exceeds Windows PHP MAX_LENGTH of 260 characters. " . $message, $code, $previous);
     }
 }

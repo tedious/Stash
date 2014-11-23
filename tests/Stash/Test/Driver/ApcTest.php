@@ -33,5 +33,4 @@ class ApcTest extends AbstractDriverTest
 
         return parent::testSetOptions();
     }
-
 }

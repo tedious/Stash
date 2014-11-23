@@ -79,9 +79,9 @@ class Session implements SessionHandlerInterface
                 array($handler, 'gc')
             );
 
-            if(!$results)
-
+            if (!$results) {
                 return false;
+            }
 
             // the following prevents unexpected effects when using objects as save handlers
             register_shutdown_function('session_write_close');
@@ -135,11 +135,13 @@ class Session implements SessionHandlerInterface
      */
     public function open($save_path, $session_name)
     {
-        if(isset($save_path) && $save_path !== '')
+        if (isset($save_path) && $save_path !== '') {
             $this->path = $save_path;
+        }
 
-        if(isset($session_name) || $session_name == '')
+        if (isset($session_name) || $session_name == '') {
             $this->name = $session_name;
+        }
 
         return true;
     }
@@ -228,5 +230,4 @@ class Session implements SessionHandlerInterface
     {
         return $this->pool->purge();
     }
-
 }

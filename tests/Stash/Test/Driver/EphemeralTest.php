@@ -30,12 +30,12 @@ class EphemeralTest extends AbstractDriverTest
 
         $item1 = new Item();
         $item1->setPool($poolStub);
-        $item1->setKey(array('##' , '#'));
+        $item1->setKey(array('##', '#'));
         $item1->set('X');
 
         $item2 = new Item();
         $item2->setPool($poolStub);
-        $item2->setKey(array('#' , '##'));
+        $item2->setKey(array('#', '##'));
         $item2->set('Y');
 
         $this->assertEquals('X', $item1->get());

@@ -66,7 +66,6 @@ class NativeEncoder implements EncoderInterface
                 $storeString .= "\$data[{$keyString}] = {$dataString};" . PHP_EOL;
             }
         } else {
-
             $dataString = $this->encode($data);
             $storeString .= '/* Type: ' . gettype($data) . ' */' . PHP_EOL;
             $storeString .= "\$data = {$dataString};" . PHP_EOL;

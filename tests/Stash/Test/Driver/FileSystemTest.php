@@ -60,7 +60,6 @@ class FileSystemTest extends AbstractDriverTest
         $paths = array('one', 'two', 'three', 'four');
 
         foreach ($hashfunctions as $hashfunction) {
-
             $driver = new FileSystem();
             $driver->setOptions($this->getOptions(array(
                 'keyHashFunction' => $hashfunction,
@@ -116,7 +115,7 @@ class FileSystemTest extends AbstractDriverTest
         $key=array();
 
         // MAX_PATH is 260 - http://msdn.microsoft.com/en-us/library/aa365247(VS.85).aspx
-        while (strlen($cachePath . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR,$key)) < 259) {
+        while (strlen($cachePath . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, $key)) < 259) {
             // 32 character string typical of an md5 sum
             $key[]="abcdefghijklmnopqrstuvwxyz123456";
         }
@@ -124,7 +123,7 @@ class FileSystemTest extends AbstractDriverTest
         $this->expiration = time() + 3600;
 
         $this->setExpectedException('\Stash\Exception\WindowsPathMaxLengthException');
-        $driver->storeData($key,"test",$this->expiration);
+        $driver->storeData($key, "test", $this->expiration);
     }
 
     /**
@@ -153,13 +152,13 @@ class FileSystemTest extends AbstractDriverTest
         $key=array();
 
         // MAX_PATH is 260 - http://msdn.microsoft.com/en-us/library/aa365247(VS.85).aspx
-        while (strlen($cachePath . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR,$key)) < 259) {
+        while (strlen($cachePath . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, $key)) < 259) {
             // 32 character string typical of an md5 sum
             $key[]="abcdefghijklmnopqrstuvwxyz123456";
         }
         $this->expiration = time() + 3600;
 
         $this->setExpectedException('\Stash\Exception\WindowsPathMaxLengthException');
-        $driver->storeData($key,"test",$this->expiration);
+        $driver->storeData($key, "test", $this->expiration);
     }
 }

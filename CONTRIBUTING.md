@@ -32,7 +32,7 @@ All code most follow these standards to be accepted. The easiest way to accompli
 new changes are finished. The php-cs-fixer package is installed as a development dependency of this project.
 
     composer install --dev
-    vendor/bin/php-cs-fixer fix ./ --level="all" -vv
+    vendor/bin/php-cs-fixer fix ./
 
 
 ## Running the test suite
@@ -51,4 +51,4 @@ To call phpunit directly:
 
 To call php-cs-fixer directly:
 
-    vendor/bin/php-cs-fixer fix ./ --level="all" -vv --dry-run
+    vendor/bin/php-cs-fixer fix ./ -vv --dry-run

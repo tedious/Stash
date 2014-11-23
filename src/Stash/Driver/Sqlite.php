@@ -200,7 +200,6 @@ class Sqlite implements DriverInterface
             }
 
             $file = $key;
-
         } else {
             if (!is_array($key)) {
                 return false;
@@ -223,9 +222,9 @@ class Sqlite implements DriverInterface
 
         $driverClass = $this->driverClass;
 
-        if(is_null($driverClass))
-
+        if (is_null($driverClass)) {
             return false;
+        }
 
         $driver = new $driverClass($file, $this->dirPerms, $this->filePerms, $this->busyTimeout);
 

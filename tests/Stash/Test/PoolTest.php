@@ -17,5 +17,4 @@ namespace Stash\Test;
  */
 class PoolTest extends AbstractPoolTest
 {
-
 }

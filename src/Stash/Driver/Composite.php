@@ -25,7 +25,6 @@ use Stash\Interfaces\DriverInterface;
  */
 class Composite implements DriverInterface
 {
-
     /**
      * The drivers this driver encapsulates.
      *

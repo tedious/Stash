@@ -13,7 +13,6 @@ namespace Stash\Interfaces;
 
 interface ItemInterface
 {
-
     /**
      * Sets the Parent Pool for the Item class to use.
      *

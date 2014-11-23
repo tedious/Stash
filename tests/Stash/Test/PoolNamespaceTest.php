@@ -19,7 +19,6 @@ use Stash\Pool;
  */
 class PoolNamespaceTest extends AbstractPoolTest
 {
-
     protected function getTestPool($skipNametest = false)
     {
         $pool = parent::getTestPool();
@@ -81,5 +80,4 @@ class PoolNamespaceTest extends AbstractPoolTest
         $this->assertAttributeEquals(null, 'namespace', $pool, 'setNamespace() empties namespace.');
         $this->assertFalse($pool->getNamespace(), 'getNamespace returns false when no namespace is set.');
     }
-
 }

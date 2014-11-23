@@ -150,7 +150,6 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         $item->setPool($poolStub);
 
         $this->assertEquals(null, $item->get(), 'Item without key returns null for get.');
-
     }
 
     /**
@@ -264,7 +263,6 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
 
     public function testSetWithDateTime()
     {
-
         $expiration = new \DateTime('now');
         $expiration->add(new \DateInterval('P1D'));
 
@@ -275,12 +273,10 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         $stash = $this->testConstruct($key);
         $data = $stash->get();
         $this->assertEquals(array(1, 2, 3, 'apples'), $data, 'getData returns data stores using a datetime expiration');
-
     }
 
     public function testGetCreation()
     {
-
         $creation = new \DateTime('now');
         $creation->add(new \DateInterval('PT10S')); // expire 10 seconds after createdOn
         $creationTS = $creation->getTimestamp();
@@ -297,12 +293,10 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\DateTime', $createdOn, 'getCreation returns DateTime');
         $itemCreationTimestamp = $createdOn->getTimestamp();
         $this->assertEquals($creationTS - 10, $itemCreationTimestamp, 'createdOn is 10 seconds before expiration');
-
     }
 
     public function testGetExpiration()
     {
-
         $expiration = new \DateTime('now');
         $expiration->add(new \DateInterval('P1D'));
         $expirationTS = $expiration->getTimestamp();
@@ -319,7 +313,6 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\DateTime', $itemExpiration, 'getExpiration returns DateTime');
         $itemExpirationTimestamp = $itemExpiration->getTimestamp();
         $this->assertLessThanOrEqual($expirationTS, $itemExpirationTimestamp, 'sometime before explicitly set expiration');
-
     }
 
     public function testIsMiss()
@@ -336,7 +329,6 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
 
         $stash = $this->testConstruct($key);
         $this->assertTrue(!$stash->isMiss(), 'isMiss returns false for valid data');
-
     }
 
     public function testClear()

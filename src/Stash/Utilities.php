@@ -135,7 +135,6 @@ class Utilities
         $filePath = rtrim($file, ' /');
 
         if (is_dir($filePath)) {
-
             $currentPerms = fileperms($filePath);
             $currentOwner = fileowner($filePath);
             $parentPath = dirname($filePath);
@@ -221,7 +220,7 @@ class Utilities
             throw new InvalidArgumentException('Cache path is not a directory.');
         }
 
-        if (!is_dir($path) && !@mkdir($path, $permissions, true )) {
+        if (!is_dir($path) && !@mkdir($path, $permissions, true)) {
             throw new InvalidArgumentException('Failed to create cache path.');
         }
 
