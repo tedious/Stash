@@ -119,4 +119,15 @@ class UtilitiesTest extends \PHPUnit_Framework_TestCase
         Utilities::deleteRecursive($dirTwo, true);
         $this->assertFileNotExists($tmp, 'deleteRecursive cleared out the empty parent directory');
     }
+
+    public function testCheckEmptyDirectory()
+    {
+        $tmp = sys_get_temp_dir() . '/stash/';
+        $dir2 = $tmp . 'emptytest/';
+        @mkdir($dir2, 0770, true);
+
+        $this->assertTrue(Utilities::checkForEmptyDirectory($dir2), 'Returns true for empty directories');
+        $this->assertFalse(Utilities::checkForEmptyDirectory($tmp), 'Returns false for non-empty directories');
+        Utilities::deleteRecursive($tmp);
+    }
 }
