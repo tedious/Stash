@@ -127,7 +127,9 @@ abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
             $this->assertArrayHasKey('expiration', $return, 'getData ' . $type . ' has expiration');
             $this->assertLessThanOrEqual($this->expiration, $return['expiration'], 'getData ' . $type . ' returns same expiration that is equal to or sooner than the one passed.');
 
-            $this->assertGreaterThan($this->startTime, $return['expiration'], 'getData ' . $type . ' returns expiration that after it\'s storage time');
+            if (!is_null($return['expiration'])) {
+                $this->assertGreaterThan($this->startTime, $return['expiration'], 'getData ' . $type . ' returns expiration that after it\'s storage time');
+            }
 
             $this->assertArrayHasKey('data', $return, 'getData ' . $type . ' has data');
             $this->assertEquals($value, $return['data'], 'getData ' . $type . ' returns same item as stored');

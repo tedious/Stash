@@ -68,6 +68,10 @@ class RedisTest extends AbstractDriverTest
 
     public function testBadDisconnect()
     {
+        if (defined('HHVM_VERSION')) {
+            $this->markTestSkipped('This test can not run on HHVM as HHVM throws a different set of errors.');
+        }
+
         $driver = $this->getFreshDriver($this->getInvalidOptions());
         $driver->__destruct();
         $driver = null;
