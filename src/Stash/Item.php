@@ -466,7 +466,7 @@ class Item implements ItemInterface
     {
         if (is_array($validation)) {
             $argArray = $validation;
-            $invalidation = isset($argArray[0]) ? $argArray[0] : 0;
+            $invalidation = isset($argArray[0]) ? $argArray[0] : Invalidation::PRECOMPUTE;
 
             if (isset($argArray[1])) {
                 $arg = $argArray[1];
@@ -476,7 +476,7 @@ class Item implements ItemInterface
                 $arg2 = $argArray[2];
             }
         } else {
-            $invalidation = Invalidation::NONE;
+            $invalidation = Invalidation::PRECOMPUTE;
         }
 
         $curTime = microtime(true);
