@@ -1,8 +1,12 @@
 
 ## Stash v0.12 Changelog
 
-### 0.12.2
+### 0.12.3
 
+*   Fixed invalidation default value.
+
+
+### 0.12.2
 
 *   Added an alternative format than native PHP for the Filesystem Driver.
 
