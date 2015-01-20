@@ -542,7 +542,6 @@ class Item implements ItemInterface
                 break;
 
             default:
-            case Invalidation::NONE:
                 $this->isHit = false;
                 break;
         } // switch($invalidate)
