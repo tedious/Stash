@@ -30,6 +30,7 @@ class DriverList
                                        'Ephemeral' => '\Stash\Driver\Ephemeral',
                                        'FileSystem' => '\Stash\Driver\FileSystem',
                                        'Memcache' => '\Stash\Driver\Memcache',
+                                       'Predis' => '\Stash\Driver\Predis',
                                        'Redis' => '\Stash\Driver\Redis',
                                        'SQLite' => '\Stash\Driver\Sqlite',
     );
