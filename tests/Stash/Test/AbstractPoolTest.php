@@ -226,4 +226,35 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
     {
         return new $this->poolClass();
     }
+
+    public function testForceMiss()
+    {
+        $pool = $this->getTestPool();
+        $pool->disable();
+
+        $stash = $pool->getItem('test');
+
+        $stash->set('value');
+
+        /**
+         * Test that the stash force misses, but value is still present.
+         */
+        $this->assertTrue($stash->isMiss());
+        $this->assertEquals($stash->get(), 'value');
+    }
+
+    public function testNegativeForceMiss()
+    {
+        $pool = $this->getTestPool();
+
+        $stash = $pool->getItem('test');
+
+        $stash->set('value');
+
+        /**
+         * Test force miss not called if pool disable isn't set.
+         */
+        $this->assertFalse($stash->isMiss());
+        $this->assertEquals($stash->get(), 'value');
+    }
 }
