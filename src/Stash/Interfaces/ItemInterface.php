@@ -134,4 +134,11 @@ interface ItemInterface
      * @return \DateTime
      */
     public function getExpiration();
+
+    /**
+     * Forces the cache to miss
+     *
+     * @return void
+     */
+    public function forceMiss();
 }

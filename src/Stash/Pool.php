@@ -62,6 +62,13 @@ class Pool implements PoolInterface
     protected $namespace;
 
     /**
+     * Force an item to miss
+     *
+     * @var bool
+     */
+    protected $forceMiss = false;
+
+    /**
      * The constructor takes a Driver class which is used for persistent
      * storage. If no driver is provided then the Ephemeral driver is used by
      * default.
@@ -141,6 +148,10 @@ class Pool implements PoolInterface
 
         if ($this->isDisabled) {
             $item->disable();
+        }
+
+        if($this->forceMiss) {
+            $item->forceMiss();
         }
 
         if (isset($this->logger)) {
@@ -289,5 +300,12 @@ class Pool implements PoolInterface
                                 array('exception' => $exception));
 
         return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function disable() {
+        $this->forceMiss = true;
     }
 }
