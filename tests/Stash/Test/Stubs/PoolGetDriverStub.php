@@ -72,4 +72,9 @@ class PoolGetDriverStub implements PoolInterface
     {
         return false;
     }
+
+    public function disable()
+    {
+        return false;
+    }
 }
