@@ -150,7 +150,7 @@ class Pool implements PoolInterface
             $item->disable();
         }
 
-        if($this->forceMiss) {
+        if ($this->forceMiss) {
             $item->forceMiss();
         }
 
@@ -305,7 +305,8 @@ class Pool implements PoolInterface
     /**
      * {@inheritdoc}
      */
-    public function disable() {
+    public function disable()
+    {
         $this->forceMiss = true;
     }
 }

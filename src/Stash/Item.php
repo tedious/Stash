@@ -269,7 +269,7 @@ class Item implements ItemInterface
      */
     public function isMiss()
     {
-        if($this->forceMiss) {
+        if ($this->forceMiss) {
             return true;
         }
 
