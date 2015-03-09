@@ -14,7 +14,6 @@ namespace Stash\Test;
 use Stash\Test\Stubs\LoggerStub;
 use Stash\Test\Stubs\DriverExceptionStub;
 use Stash\Test\Stubs\PoolGetDriverStub;
-
 use Stash\Item;
 use Stash\Driver\Ephemeral as Ephemeral;
 

@@ -14,7 +14,6 @@ namespace Stash\Test;
 use Stash\Item;
 use Stash\Utilities;
 use Stash\Driver\Ephemeral;
-
 use Stash\Test\Stubs\PoolGetDriverStub;
 
 /**
