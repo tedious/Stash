@@ -9,7 +9,7 @@ php:
     - hhvm-nightly
 
 before_script:
-    - composer self-update && composer install --dev
+    - composer self-update && composer install
     - tests/travis/php_setup.sh
     - tests/travis/redis_setup.sh
 
