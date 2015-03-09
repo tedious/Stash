@@ -344,7 +344,7 @@ class Item implements ItemInterface
             $expiration -= $expirationDiff;
         }
 
-        if ($this->stampedeRunning == true) {
+        if ($this->stampedeRunning === true) {
             $spkey = $this->key;
             $spkey[0] = 'sp'; // change "cache" data namespace to stampede namespace
             $this->driver->clear($spkey);
@@ -585,7 +585,7 @@ class Item implements ItemInterface
      */
     public function __destruct()
     {
-        if (isset($this->stampedeRunning) && $this->stampedeRunning == true) {
+        if (isset($this->stampedeRunning) && $this->stampedeRunning === true) {
             $spkey = $this->key;
             $spkey[0] = 'sp';
             $this->driver->clear($spkey);
