@@ -369,7 +369,10 @@ class FileSystem implements DriverInterface
                 $dirFiles = scandir($file->getPathname());
                 if ($dirFiles && count($dirFiles) == 2) {
                     $filename = rtrim($filename, '/.');
-                    rmdir($filename);
+
+                    if (file_exists(($filename))) {
+                        rmdir($filename);
+                    }
                 }
                 unset($dirFiles);
                 continue;
