@@ -75,6 +75,13 @@ class Item implements ItemInterface
     protected $cacheEnabled = true;
 
     /**
+     * Used internally to force the cache to miss
+     *
+     * @var bool
+     */
+    protected $forceMiss = false;
+
+    /**
      * Contains a list of default arguments for when users do not supply them.
      *
      * @var array
@@ -262,6 +269,10 @@ class Item implements ItemInterface
      */
     public function isMiss()
     {
+        if ($this->forceMiss) {
+            return true;
+        }
+
         if (!isset($this->isHit)) {
             $this->get();
         }
@@ -615,5 +626,13 @@ class Item implements ItemInterface
         // off the user data, and use other 'namespaces' for internal purposes.
         array_unshift($key, 'cache');
         $this->key = array_map('strtolower', $key);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function forceMiss()
+    {
+        $this->forceMiss = true;
     }
 }

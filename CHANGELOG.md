@@ -1,6 +1,10 @@
 
 ## Stash v0.12 Changelog
 
+### 0.12.4
+
+*   Force pool to miss cache (effectively disabling cache with $pool->disable()
+
 ### 0.12.3
 
 *   Fixed invalidation default value.

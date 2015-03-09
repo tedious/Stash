@@ -127,4 +127,11 @@ interface PoolInterface
      * @return bool
      */
     public function setLogger($logger);
+
+    /**
+     * Force the cache to miss
+     *
+     * @return void
+     */
+    public function disable();
 }
