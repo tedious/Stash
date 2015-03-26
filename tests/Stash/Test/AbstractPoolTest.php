@@ -41,11 +41,9 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
     public function testSetItemClass()
     {
         $mockItem = $this->getMock('Stash\Interfaces\ItemInterface');
-        $mockClassName = get_class($mockItem);
         $pool = $this->getTestPool();
 
-        $this->assertTrue($pool->setItemClass($mockClassName));
-        $this->assertAttributeEquals($mockClassName, 'itemClass', $pool);
+        $this->assertTrue($pool->setItemClass($mockItem));
     }
 
     public function testGetItem()
