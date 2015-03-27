@@ -80,18 +80,8 @@ class Pool implements PoolInterface
     /**
      * {@inheritdoc}
      */
-    public function setItemClass($class)
+    public function setItemClass(ItemInterface $class)
     {
-        if (!class_exists($class)) {
-            throw new \InvalidArgumentException('Item class ' . $class . ' does not exist');
-        }
-
-        $interfaces = class_implements($class, true);
-
-        if (!in_array('Stash\Interfaces\ItemInterface', $interfaces)) {
-            throw new \InvalidArgumentException('Item class ' . $class . ' must inherit from \Stash\Interfaces\ItemInterface');
-        }
-
         $this->itemClass = $class;
 
         return true;
