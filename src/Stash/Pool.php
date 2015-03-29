@@ -75,13 +75,18 @@ class Pool implements PoolInterface
      * default.
      *
      * @param DriverInterface $driver
+     * @param Mode $mode
      */
-    public function __construct(DriverInterface $driver = null)
+    public function __construct(DriverInterface $driver = null, Mode $mode = null)
     {
         if (isset($driver)) {
             $this->setDriver($driver);
         } else {
             $this->driver = new Ephemeral();
+        }
+
+        if(isset($mode)) {
+            $this->setMode($mode);
         }
     }
 
