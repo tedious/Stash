@@ -46,6 +46,14 @@ class Pool implements PoolInterface
      */
     protected $itemClass = '\Stash\Item';
 
+
+    /**
+     * Default "mode" for the pool to use.
+     *
+     * @var int
+     */
+    protected $mode = Mode::NORMAL;
+
     /**
      * If set various then errors and exceptions will get passed to the PSR Compliant logging library. This
      * can be set using the setLogger() function in this class.
@@ -279,5 +287,21 @@ class Pool implements PoolInterface
                                 array('exception' => $exception));
 
         return true;
+    }
+
+    /**
+     * Changes the mode of the pool
+     *
+     * Using this function developers can determine how Stash handles the cache
+     * @param $mode
+     */
+    public function setMode(Mode $mode)
+    {
+        $this->mode = $mode;
+    }
+
+    public function getMode()
+    {
+        return $this->mode;
     }
 }
