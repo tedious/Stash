@@ -269,6 +269,10 @@ class Item implements ItemInterface
      */
     public function isMiss()
     {
+        if($this->mode == Mode::FORCE_MISS) {
+            return true;
+        }
+
         if (!isset($this->isHit)) {
             $this->get();
         }
