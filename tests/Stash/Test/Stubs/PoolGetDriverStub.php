@@ -73,4 +73,14 @@ class PoolGetDriverStub implements PoolInterface
     {
         return false;
     }
+
+    public function setMode($mode)
+    {
+        return false;
+    }
+
+    public function getMode()
+    {
+        return false;
+    }
 }
