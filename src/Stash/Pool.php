@@ -77,7 +77,7 @@ class Pool implements PoolInterface
      * @param DriverInterface $driver
      * @param Mode $mode
      */
-    public function __construct(DriverInterface $driver = null, Mode $mode = null)
+    public function __construct(DriverInterface $driver = null, $mode = null)
     {
         if (isset($driver)) {
             $this->setDriver($driver);
@@ -297,7 +297,7 @@ class Pool implements PoolInterface
     /**
      * {@inheritdoc}
      */
-    public function setMode(Mode $mode)
+    public function setMode($mode)
     {
         $this->mode = $mode;
 
