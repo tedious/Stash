@@ -314,7 +314,12 @@ class Item implements ItemInterface
     public function set($data, $ttl = null)
     {
         try {
-            return $this->executeSet($data, $ttl);
+            if($this->mode == Mode::READ_ONLY) {
+                $this->clear();
+                return false;
+            } else {
+                return $this->executeSet($data, $ttl);
+            }
         } catch (Exception $e) {
             $this->logException('Setting value in cache caused exception.', $e);
             $this->disable();
