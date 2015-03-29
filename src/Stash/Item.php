@@ -393,6 +393,7 @@ class Item implements ItemInterface
     {
         return self::$runtimeDisable
                 || !$this->cacheEnabled
+                || $this->mode == Mode::DISABLED
                 || (defined('STASH_DISABLE_CACHE') && STASH_DISABLE_CACHE);
     }
 
