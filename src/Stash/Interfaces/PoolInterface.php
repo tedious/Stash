@@ -35,7 +35,7 @@ interface PoolInterface
      * Changes the mode of the pool
      *
      * Using this function developers can determine how Stash handles the cache
-     * @param $mode
+     * @param Mode $mode
      * @return bool
      */
     public function setMode(Mode $mode);

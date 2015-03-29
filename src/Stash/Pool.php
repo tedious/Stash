@@ -295,11 +295,7 @@ class Pool implements PoolInterface
     }
 
     /**
-     * Changes the mode of the pool
-     *
-     * Using this function developers can determine how Stash handles the cache
-     * @param $mode
-     * @return bool
+     * {@inheritdoc}
      */
     public function setMode(Mode $mode)
     {
@@ -308,6 +304,9 @@ class Pool implements PoolInterface
         return true;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getMode()
     {
         return $this->mode;
