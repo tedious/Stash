@@ -85,7 +85,7 @@ class Pool implements PoolInterface
             $this->driver = new Ephemeral();
         }
 
-        if(isset($mode)) {
+        if (isset($mode)) {
             $this->setMode($mode);
         }
     }

@@ -218,7 +218,7 @@ class Item implements ItemInterface
     public function get($invalidation = 0, $arg = null, $arg2 = null)
     {
         try {
-            if($this->mode == Mode::WRITE_ONLY) {
+            if ($this->mode == Mode::WRITE_ONLY) {
                 return null;
             } else {
                 return $this->executeGet($invalidation, $arg, $arg2);
@@ -273,7 +273,7 @@ class Item implements ItemInterface
      */
     public function isMiss()
     {
-        if($this->mode == Mode::FORCE_MISS) {
+        if ($this->mode == Mode::FORCE_MISS) {
             return true;
         }
 
@@ -318,7 +318,7 @@ class Item implements ItemInterface
     public function set($data, $ttl = null)
     {
         try {
-            if($this->mode == Mode::READ_ONLY) {
+            if ($this->mode == Mode::READ_ONLY) {
                 $this->clear();
                 return false;
             } else {
