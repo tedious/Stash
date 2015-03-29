@@ -10,6 +10,7 @@
  */
 
 namespace Stash\Interfaces;
+use Stash\Mode;
 
 /**
  *
@@ -29,6 +30,20 @@ interface PoolInterface
      * @throws \InvalidArgumentException When passed invalid or nonexistant classes.
      */
     public function setItemClass(ItemInterface $class);
+
+    /**
+     * Changes the mode of the pool
+     *
+     * Using this function developers can determine how Stash handles the cache
+     * @param $mode
+     */
+    public function setMode(Mode $mode);
+
+    /**
+     * Returns the mode of the pool
+     * @return int
+     */
+    public function getMode();
 
     /**
      * Returns an initialized Item for a given Key.
