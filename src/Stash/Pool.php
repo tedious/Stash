@@ -141,6 +141,7 @@ class Pool implements PoolInterface
         $item = new $this->itemClass();
         $item->setPool($this);
         $item->setKey($key, $namespace);
+        $item->setMode($this->mode);
 
         if ($this->isDisabled) {
             $item->disable();
