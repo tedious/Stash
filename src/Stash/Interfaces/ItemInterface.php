@@ -33,6 +33,13 @@ interface ItemInterface
     public function setKey($key, $namespace = null);
 
     /**
+     * Sets the pool mode
+     *
+     * @param $mode
+     */
+    public function setMode($mode);
+
+    /**
      * This disables any IO operations by this object, effectively preventing
      * the reading and writing of new data.
      *

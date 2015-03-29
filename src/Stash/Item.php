@@ -52,6 +52,13 @@ class Item implements ItemInterface
     const SP_PRECOMPUTE   = 4;
 
     /**
+     * The pool's mode
+     *
+     * @var int
+     */
+    private $mode;
+
+    /**
      * This is the default time, in seconds, that objects are cached for.
      *
      * @var int seconds
@@ -615,5 +622,13 @@ class Item implements ItemInterface
         // off the user data, and use other 'namespaces' for internal purposes.
         array_unshift($key, 'cache');
         $this->key = array_map('strtolower', $key);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setMode($mode)
+    {
+        $this->mode = $mode;
     }
 }
