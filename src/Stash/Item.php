@@ -218,7 +218,11 @@ class Item implements ItemInterface
     public function get($invalidation = 0, $arg = null, $arg2 = null)
     {
         try {
-            return $this->executeGet($invalidation, $arg, $arg2);
+            if($this->mode == Mode::WRITE_ONLY) {
+                return null;
+            } else {
+                return $this->executeGet($invalidation, $arg, $arg2);
+            }
         } catch (Exception $e) {
             $this->logException('Retrieving from cache caused exception.', $e);
             $this->disable();
