@@ -319,7 +319,6 @@ class Item implements ItemInterface
     {
         try {
             if ($this->mode == Mode::READ_ONLY) {
-                $this->clear();
                 return false;
             } else {
                 return $this->executeSet($data, $ttl);
