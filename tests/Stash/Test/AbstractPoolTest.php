@@ -11,6 +11,7 @@
 
 namespace Stash\Test;
 
+use Stash\Mode;
 use Stash\Pool;
 use Stash\Driver\Ephemeral;
 use Stash\Test\Stubs\LoggerStub;
@@ -64,6 +65,21 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
         $item = $pool->getItem(array('test', 'item'));
 
         $this->assertAttributeEquals('TestNamespace', 'namespace', $item, 'Pool sets Item namespace.');
+    }
+
+    public function testModeGetterSetters()
+    {
+        $pool = $this->getTestPool();
+
+        $mode_set = Mode::DISABLED;
+
+        $mode = $pool->setMode($mode_set);
+
+        $this->assertTrue($mode, 'Mode should return true upon being set.');
+
+        $mode_returned = $pool->getMode();
+
+        $this->assertTrue($mode_set === $mode_returned, 'The returned mode is not the same as the set mode');
     }
 
     /**
