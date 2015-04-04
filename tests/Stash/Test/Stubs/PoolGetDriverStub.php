@@ -11,7 +11,6 @@
 
 namespace Stash\Test\Stubs;
 
-use Stash\Interfaces\ItemInterface;
 use Stash\Interfaces\PoolInterface;
 
 /**
@@ -34,7 +33,7 @@ class PoolGetDriverStub implements PoolInterface
         return $this->driver;
     }
 
-    public function setItemClass(ItemInterface $class)
+    public function setItemClass($class)
     {
         return true;
     }

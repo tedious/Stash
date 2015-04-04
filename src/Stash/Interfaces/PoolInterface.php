@@ -24,11 +24,11 @@ interface PoolInterface
      *
      * Using this function developers can have the pool class generate custom Item objects.
      *
-     * @param ItemInterface $class
+     * @param string $class
      * @return bool
-     * @throws \InvalidArgumentException When passed invalid or nonexistant classes.
+     * @throws \InvalidArgumentException When passed invalid or nonexistent classes.
      */
-    public function setItemClass(ItemInterface $class);
+    public function setItemClass($class);
 
     /**
      * Changes the mode of the pool
