@@ -114,7 +114,7 @@ interface ItemInterface
     public function isDisabled();
 
     /**
-     * Return true if caching is disabled
+     * Sets a PSR\Logger style logging client to enable the tracking of errors.
      *
      * @param  \PSR\Log\LoggerInterface $logger
      * @return bool
