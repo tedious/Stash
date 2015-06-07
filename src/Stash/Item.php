@@ -208,7 +208,7 @@ class Item implements ItemInterface
     /**
      * {@inheritdoc}
      */
-    public function get($invalidation = 0, $arg = null, $arg2 = null)
+    public function get($invalidation = Invalidation::PRECOMPUTE, $arg = null, $arg2 = null)
     {
         try {
             return $this->executeGet($invalidation, $arg, $arg2);
