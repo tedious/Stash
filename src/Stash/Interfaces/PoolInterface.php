@@ -24,11 +24,26 @@ interface PoolInterface
      *
      * Using this function developers can have the pool class generate custom Item objects.
      *
-     * @param  string                    $class
+     * @param string $class
      * @return bool
-     * @throws \InvalidArgumentException When passed invalid or nonexistant classes.
+     * @throws \InvalidArgumentException When passed invalid or nonexistent classes.
      */
     public function setItemClass($class);
+
+    /**
+     * Changes the mode of the pool
+     *
+     * Using this function developers can determine how Stash handles the cache
+     * @param $mode
+     * @return bool
+     */
+    public function setMode($mode);
+
+    /**
+     * Returns the mode of the pool
+     * @return int
+     */
+    public function getMode();
 
     /**
      * Returns an initialized Item for a given Key.

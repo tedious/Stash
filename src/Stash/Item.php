@@ -52,6 +52,13 @@ class Item implements ItemInterface
     const SP_PRECOMPUTE   = 4;
 
     /**
+     * The pool's mode
+     *
+     * @var int
+     */
+    private $mode;
+
+    /**
      * This is the default time, in seconds, that objects are cached for.
      *
      * @var int seconds
@@ -211,7 +218,11 @@ class Item implements ItemInterface
     public function get($invalidation = Invalidation::PRECOMPUTE, $arg = null, $arg2 = null)
     {
         try {
-            return $this->executeGet($invalidation, $arg, $arg2);
+            if ($this->mode == Mode::WRITE_ONLY) {
+                return null;
+            } else {
+                return $this->executeGet($invalidation, $arg, $arg2);
+            }
         } catch (Exception $e) {
             $this->logException('Retrieving from cache caused exception.', $e);
             $this->disable();
@@ -262,6 +273,10 @@ class Item implements ItemInterface
      */
     public function isMiss()
     {
+        if ($this->mode == Mode::FORCE_MISS) {
+            return true;
+        }
+
         if (!isset($this->isHit)) {
             $this->get();
         }
@@ -303,7 +318,11 @@ class Item implements ItemInterface
     public function set($data, $ttl = null)
     {
         try {
-            return $this->executeSet($data, $ttl);
+            if ($this->mode == Mode::READ_ONLY) {
+                return false;
+            } else {
+                return $this->executeSet($data, $ttl);
+            }
         } catch (Exception $e) {
             $this->logException('Setting value in cache caused exception.', $e);
             $this->disable();
@@ -373,6 +392,7 @@ class Item implements ItemInterface
     {
         return self::$runtimeDisable
                 || !$this->cacheEnabled
+                || $this->mode == Mode::DISABLED
                 || (defined('STASH_DISABLE_CACHE') && STASH_DISABLE_CACHE);
     }
 
@@ -615,5 +635,13 @@ class Item implements ItemInterface
         // off the user data, and use other 'namespaces' for internal purposes.
         array_unshift($key, 'cache');
         $this->key = array_map('strtolower', $key);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setMode($mode)
+    {
+        $this->mode = $mode;
     }
 }

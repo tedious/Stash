@@ -46,6 +46,14 @@ class Pool implements PoolInterface
      */
     protected $itemClass = '\Stash\Item';
 
+
+    /**
+     * Default "mode" for the pool to use.
+     *
+     * @var int
+     */
+    protected $mode = Mode::NORMAL;
+
     /**
      * If set various then errors and exceptions will get passed to the PSR Compliant logging library. This
      * can be set using the setLogger() function in this class.
@@ -67,13 +75,18 @@ class Pool implements PoolInterface
      * default.
      *
      * @param DriverInterface $driver
+     * @param Mode $mode
      */
-    public function __construct(DriverInterface $driver = null)
+    public function __construct(DriverInterface $driver = null, $mode = null)
     {
         if (isset($driver)) {
             $this->setDriver($driver);
         } else {
             $this->driver = new Ephemeral();
+        }
+
+        if (isset($mode)) {
+            $this->setMode($mode);
         }
     }
 
@@ -138,6 +151,7 @@ class Pool implements PoolInterface
         $item = new $this->itemClass();
         $item->setPool($this);
         $item->setKey($key, $namespace);
+        $item->setMode($this->mode);
 
         if ($this->isDisabled) {
             $item->disable();
@@ -289,5 +303,23 @@ class Pool implements PoolInterface
                                 array('exception' => $exception));
 
         return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setMode($mode)
+    {
+        $this->mode = $mode;
+
+        return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getMode()
+    {
+        return $this->mode;
     }
 }
