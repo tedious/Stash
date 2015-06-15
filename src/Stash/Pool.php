@@ -103,33 +103,30 @@ class Pool implements PoolInterface
     public function getItem()
     {
         $args = func_get_args();
-        $argCount = count($args);
 
-        if ($argCount < 1) {
+        if (!isset($args[0])) {
             throw new \InvalidArgumentException('Item constructor requires a key.');
         }
 
         // check to see if a single array was used instead of multiple arguments
-        if ($argCount == 1 && is_array($args[0])) {
+        if (!isset($args[1]) && is_array($args[0])) {
             $args = $args[0];
-            $argCount = count($args);
         }
 
-        if ($argCount == 1) {
+        // if only one item treat as key string
+        if (!isset($args[1])) {
             $keyString = trim($args[0], '/');
             $key = explode('/', $keyString);
         } else {
             $key = $args;
         }
 
-        if (!($namespace = $this->getNamespace())) {
-            $namespace = 'stash_default';
-        }
+        $namespace = empty($this->namespace) ? 'stash_default' : $this->namespace;
 
         array_unshift($key, $namespace);
 
         foreach ($key as $node) {
-            if (strlen($node) < 1) {
+            if (!isset($node[1]) && strlen($node) < 1) {
                 throw new \InvalidArgumentException('Invalid or Empty Node passed to getItem constructor.');
             }
         }
