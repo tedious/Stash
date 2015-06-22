@@ -24,7 +24,7 @@ use Stash\Interfaces\DriverInterface;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class Sqlite implements DriverInterface
+class Sqlite extends AbstractDriver
 {
     protected $defaultOptions = array('filePermissions' => 0660,
                                       'dirPermissions' => 0770,
@@ -42,18 +42,6 @@ class Sqlite implements DriverInterface
     protected $subDrivers;
 
     protected $disabled = false;
-
-    /**
-     * Initializes the driver.
-     *
-     * @throws RuntimeException 'Extension is not installed.'
-     */
-    public function __construct()
-    {
-        if (!static::isAvailable()) {
-            throw new RuntimeException('Extension is not installed.');
-        }
-    }
 
     /**
      *
@@ -235,8 +223,6 @@ class Sqlite implements DriverInterface
 
     /**
      * Destroys the sub-drivers when this driver is unset -- required for Windows compatibility.
-     *
-     * {@inheritdoc}
      */
     public function __destruct()
     {

@@ -21,7 +21,7 @@ use Stash\Interfaces\DriverInterface;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class Ephemeral implements DriverInterface
+class Ephemeral extends AbstractDriver
 {
     /**
      * Contains the cached data.
@@ -29,22 +29,6 @@ class Ephemeral implements DriverInterface
      * @var array
      */
     protected $store = array();
-
-    /**
-     * Has no options.
-     *
-     * @param array $options
-     */
-    public function setOptions(array $options = array())
-    {
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __destruct()
-    {
-    }
 
     /**
      * {@inheritdoc}
@@ -113,18 +97,6 @@ class Ephemeral implements DriverInterface
             }
         }
 
-        return true;
-    }
-
-    /**
-     * This function checks to see if this driver is available. This always returns true because this
-     * driver has no dependencies, begin a wrapper around other classes.
-     *
-     * {@inheritdoc}
-     * @return bool true
-     */
-    public static function isAvailable()
-    {
         return true;
     }
 }

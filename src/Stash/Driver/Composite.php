@@ -23,7 +23,7 @@ use Stash\Interfaces\DriverInterface;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class Composite implements DriverInterface
+class Composite extends AbstractDriver
 {
     /**
      * The drivers this driver encapsulates.
@@ -56,13 +56,6 @@ class Composite implements DriverInterface
         if (count($this->drivers) < 1) {
             throw new RuntimeException('None of the secondary drivers can be enabled.');
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __destruct()
-    {
     }
 
     /**
@@ -155,17 +148,5 @@ class Composite implements DriverInterface
         }
 
         return $return;
-    }
-
-    /**
-     * This function checks to see if this driver is available. This always returns true because this
-     * driver has no dependencies, being a wrapper around other classes.
-     *
-     * {@inheritdoc}
-     * @return bool true
-     */
-    public static function isAvailable()
-    {
-        return true;
     }
 }

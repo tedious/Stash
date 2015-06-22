@@ -21,7 +21,7 @@ use Stash\Interfaces\DriverInterface;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class Apc implements DriverInterface
+class Apc extends AbstractDriver
 {
     /**
      * Default maximum time an Item will be stored.
@@ -46,18 +46,6 @@ class Apc implements DriverInterface
     protected $chunkSize = 100;
 
     /**
-     * Initializes the driver.
-     *
-     * @throws RuntimeException 'Extension is not installed.'
-     */
-    public function __construct()
-    {
-        if (!static::isAvailable()) {
-            throw new RuntimeException('Extension is not installed.');
-        }
-    }
-
-    /**
      * This function should takes an array which is used to pass option values to the driver.
      *
      * * ttl - This is the maximum time the item will be stored.
@@ -73,13 +61,6 @@ class Apc implements DriverInterface
         }
 
         $this->apcNamespace = isset($options['namespace']) ? $options['namespace'] : md5(__FILE__);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __destruct()
-    {
     }
 
     /**

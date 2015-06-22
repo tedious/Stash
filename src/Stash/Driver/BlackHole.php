@@ -19,16 +19,8 @@ use Stash\Interfaces\DriverInterface;
  *
  * @author Benjamin Zikarsky <benjamin.zikarsky@perbility.de>
  */
-class BlackHole implements DriverInterface
+class BlackHole extends AbstractDriver
 {
-    /**
-     * NOOP constructor
-     */
-    public function setOptions(array $options = array())
-    {
-        // empty
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -57,14 +49,6 @@ class BlackHole implements DriverInterface
      * {@inheritdoc}
      */
     public function storeData($key, $data, $expiration)
-    {
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function isAvailable()
     {
         return true;
     }

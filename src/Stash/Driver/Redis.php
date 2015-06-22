@@ -22,7 +22,7 @@ use Stash\Exception\RuntimeException;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class Redis implements DriverInterface
+class Redis extends AbstractDriver
 {
     /**
      * An array of default options.
@@ -56,18 +56,6 @@ class Redis implements DriverInterface
         "lazy_connect",
         "connect_timeout",
     );
-
-    /**
-     * Initializes the driver.
-     *
-     * @throws RuntimeException 'Extension is not installed.'
-     */
-    public function __construct()
-    {
-        if (!static::isAvailable()) {
-            throw new RuntimeException('Extension is not installed.');
-        }
-    }
 
     /**
      * The options array should contain an array of servers,
@@ -185,8 +173,6 @@ class Redis implements DriverInterface
 
     /**
      * Properly close the connection.
-     *
-     * {@inheritdoc}
      */
     public function __destruct()
     {

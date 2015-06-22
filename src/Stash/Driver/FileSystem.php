@@ -27,7 +27,7 @@ use Stash\Interfaces\DriverInterface;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class FileSystem implements DriverInterface
+class FileSystem extends AbstractDriver
 {
     /**
      * This is the path to the file which will be used to store the cached item. It is based off of the key.
@@ -175,13 +175,6 @@ class FileSystem implements DriverInterface
         }
 
         Utilities::checkFileSystemPermissions($this->cachePath, $this->dirPermissions);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __destruct()
-    {
     }
 
     /**
@@ -400,17 +393,5 @@ class FileSystem implements DriverInterface
         }
 
         return $this->encoder;
-    }
-
-    /**
-     * This function checks to see if it is possible to enable this driver. This returns true no matter what, since
-     * there is typically a filesystem available somewhere.
-     *
-     * {@inheritdoc}
-     * @return bool true
-     */
-    public static function isAvailable()
-    {
-        return true;
     }
 }

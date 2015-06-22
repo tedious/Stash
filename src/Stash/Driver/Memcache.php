@@ -24,7 +24,7 @@ use Stash\Interfaces\DriverInterface;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class Memcache implements DriverInterface
+class Memcache extends AbstractDriver
 {
     /**
      * Memcache subdriver used by this class.
@@ -53,18 +53,6 @@ class Memcache implements DriverInterface
      * @var int seconds
      */
     protected $keyCacheTimeLimit = 1;
-
-    /**
-     * Initializes the driver.
-     *
-     * @throws RuntimeException 'Extension is not installed.'
-     */
-    public function __construct()
-    {
-        if (!static::isAvailable()) {
-            throw new RuntimeException('Extension is not installed.');
-        }
-    }
 
     /**
      *
@@ -142,13 +130,6 @@ class Memcache implements DriverInterface
         }
 
         return $normalizedServers;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __destruct()
-    {
     }
 
     /**
