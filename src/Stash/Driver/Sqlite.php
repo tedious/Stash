@@ -25,15 +25,8 @@ use Stash\Exception\RuntimeException;
  */
 class Sqlite extends AbstractDriver
 {
-    protected $defaultOptions = array('filePermissions' => 0660,
-                                      'dirPermissions' => 0770,
-                                      'busyTimeout' => 500,
-                                      'nesting' => 0,
-                                      'subdriver' => 'PDO'
-    );
-
-    protected $filePerms;
-    protected $dirPerms;
+    protected $filePermissions;
+    protected $dirPermissions;
     protected $busyTimeout;
     protected $cachePath;
     protected $driverClass;
@@ -43,18 +36,46 @@ class Sqlite extends AbstractDriver
     protected $disabled = false;
 
     /**
+     * {@inheritdoc}
+     */
+    public function __construct(array $options = array())
+    {
+        // Provide default options.
+        $options += array(
+            'path' => Utilities::getBaseDirectory($this),
+            'filePermissions' => 0660,
+            'dirPermissions' => 0770,
+            'busyTimeout' => 500,
+            'nesting' => 0,
+            'subdriver' => 'PDO',
+        );
+        parent::__construct($options);
+    }
+
+    /**
+     * {@inheritdoc}
      *
-     * @param  array                             $options
      * @throws \Stash\Exception\RuntimeException
      */
     public function setOptions(array $options = array())
     {
-        $options = array_merge($this->defaultOptions, $options);
+        if (isset($options['path'])) {
+            $this->cachePath = rtrim($options['path'], '\\/') . DIRECTORY_SEPARATOR;
+        }
+        if (isset($options['filePermissions'])) {
+            $this->filePermissions = $options['filePermissions'];
+        }
+        if (isset($options['dirPermissions'])) {
+            $this->dirPermissions = $options['dirPermissions'];
+        }
+        if (isset($options['busyTimeout'])) {
+            $this->busyTimeout = $options['busyTimeout'];
+        }
+        if (isset($options['nesting'])) {
+            $this->nesting = $options['nesting'];
+        }
 
-        $cachePath = isset($options['path']) ? $options['path'] : Utilities::getBaseDirectory($this);
-        $this->cachePath = rtrim($cachePath, '\\/') . '/';
-
-        Utilities::checkFileSystemPermissions($this->cachePath, $this->dirPerms);
+        Utilities::checkFileSystemPermissions($this->cachePath, $this->dirPermissions);
 
         $extension = isset($options['extension']) ? strtolower($options['extension']) : 'any';
         $version = isset($options['version']) ? $options['version'] : 'any';
@@ -83,11 +104,6 @@ class Sqlite extends AbstractDriver
         }
 
         $this->driverClass = $driver;
-        $this->filePerms = $options['filePermissions'];
-        $this->dirPerms = $options['dirPermissions'];
-        $this->busyTimeout = $options['busyTimeout'];
-        $this->nesting = $options['nesting'];
-
         $this->checkStatus();
     }
 
@@ -213,7 +229,7 @@ class Sqlite extends AbstractDriver
             return false;
         }
 
-        $driver = new $driverClass($file, $this->dirPerms, $this->filePerms, $this->busyTimeout);
+        $driver = new $driverClass($file, $this->dirPermissions, $this->filePermissions, $this->busyTimeout);
 
         $this->subDrivers[$file] = $driver;
 

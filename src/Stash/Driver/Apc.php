@@ -44,21 +44,33 @@ class Apc extends AbstractDriver
     protected $chunkSize = 100;
 
     /**
+     * {@inheritdoc}
+     */
+    public function __construct(array $options = array())
+    {
+        // Provide default options.
+        $options += array(
+            'namespace' => md5(__FILE__),
+        );
+        parent::__construct($options);
+    }
+
+    /**
      * This function should takes an array which is used to pass option values to the driver.
      *
      * * ttl - This is the maximum time the item will be stored.
      * * namespace - This should be used when multiple projects may use the same library.
      *
-     * @param  array                             $options
-     * @throws \Stash\Exception\RuntimeException
+     * @param array $options
      */
     public function setOptions(array $options = array())
     {
         if (isset($options['ttl']) && is_numeric($options['ttl'])) {
             $this->ttl = (int) $options['ttl'];
         }
-
-        $this->apcNamespace = isset($options['namespace']) ? $options['namespace'] : md5(__FILE__);
+        if (isset($options['namespace'])) {
+            $this->apcNamespace = $options['namespace'];
+        }
     }
 
     /**

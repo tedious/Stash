@@ -35,7 +35,9 @@ abstract class AbstractDriver implements DriverInterface
         if (!static::isAvailable()) {
             throw new RuntimeException(__CLASS__ . ' is not available.');
         }
-        $this->setOptions($options);
+        if (!empty($options)) {
+            $this->setOptions($options);
+        }
     }
 
     /**

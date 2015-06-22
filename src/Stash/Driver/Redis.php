@@ -23,13 +23,6 @@ use Stash;
 class Redis extends AbstractDriver
 {
     /**
-     * An array of default options.
-     *
-     * @var array
-     */
-    protected $defaultOptions = array();
-
-    /**
      * The Redis drivers.
      *
      * @var \Redis|\RedisArray
@@ -66,15 +59,10 @@ class Redis extends AbstractDriver
      *
      * The "password" option is used for clusters which required authentication.
      *
-     * @param  array             $options
-     * @throws \RuntimeException
+     * @param array $options
      */
     public function setOptions(array $options = array())
     {
-        if (!self::isAvailable()) {
-            throw new \RuntimeException('Unable to load Redis driver without PhpRedis extension.');
-        }
-
         // Normalize Server Options
         if (isset($options['servers'])) {
             $unprocessedServers = (is_array($options['servers']))
@@ -114,9 +102,6 @@ class Redis extends AbstractDriver
         } else {
             $servers = array(array('server' => '127.0.0.1', 'port' => '6379', 'ttl' => 0.1));
         }
-
-        // Merge in default values.
-        $options = array_merge($this->defaultOptions, $options);
 
         // this will have to be revisited to support multiple servers, using
         // the RedisArray object. That object acts as a proxy object, meaning

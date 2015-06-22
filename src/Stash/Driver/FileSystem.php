@@ -104,55 +104,64 @@ class FileSystem extends AbstractDriver
     protected $disabled = false;
 
     /**
-     * Default values for selections the user does not make.
-     *
-     * @var array
-     */
-    protected $defaultOptions = array('filePermissions' => 0660,
-                                      'dirPermissions' => 0770,
-                                      'dirSplit' => 2,
-                                      'memKeyLimit' => 20,
-                                      'keyHashFunction' => 'md5'
-    );
-
-    /**
      * @var \Stash\Driver\FileSystem\EncoderInterface
      */
     protected $encoder;
 
     /**
+     * {@inheritdoc}
+     */
+    public function __construct(array $options = array())
+    {
+        // Provide default options.
+        $options += array(
+            'path' => Utilities::getBaseDirectory($this),
+            'filePermissions' => 0660,
+            'dirPermissions' => 0770,
+            'dirSplit' => 2,
+            'memKeyLimit' => 20,
+            'keyHashFunction' => 'md5',
+        );
+        parent::__construct($options);
+    }
+
+    /**
      * Requests a list of options.
      *
-     * @param  array                             $options
+     * @param array $options
+     *
      * @throws \Stash\Exception\RuntimeException
      */
     public function setOptions(array $options = array())
     {
-        $options = array_merge($this->defaultOptions, $options);
-
-        $this->cachePath = isset($options['path']) ? $options['path'] : Utilities::getBaseDirectory($this);
-        $this->cachePath = rtrim($this->cachePath, '\\/') . DIRECTORY_SEPARATOR;
-
-        $this->filePermissions = $options['filePermissions'];
-        $this->dirPermissions = $options['dirPermissions'];
-
-        if (!is_numeric($options['dirSplit']) || $options['dirSplit'] < 1) {
-            $options['dirSplit'] = 1;
+        if (isset($options['path'])) {
+            $this->cachePath = rtrim($options['path'], '\\/') . DIRECTORY_SEPARATOR;
         }
-
-        $this->directorySplit = (int) $options['dirSplit'];
-
-        if (!is_numeric($options['memKeyLimit']) || $options['memKeyLimit'] < 1) {
-            $options['memKeyLimit'] = 0;
+        if (isset($options['filePermissions'])) {
+            $this->filePermissions = $options['filePermissions'];
         }
-
-        if (is_callable($options['keyHashFunction'])) {
-            $this->keyHashFunction = $options['keyHashFunction'];
-        } else {
-            throw new RuntimeException('Key Hash Function is not callable');
+        if (isset($options['dirPermissions'])) {
+            $this->dirPermissions = $options['dirPermissions'];
         }
-
-        $this->memStoreLimit = (int) $options['memKeyLimit'];
+        if (isset($options['dirSplit'])) {
+            if (!is_numeric($options['dirSplit']) || $options['dirSplit'] < 1) {
+                $options['dirSplit'] = 1;
+            }
+            $this->directorySplit = (int) $options['dirSplit'];
+        }
+        if (isset($options['memKeyLimit'])) {
+            if (!is_numeric($options['memKeyLimit']) || $options['memKeyLimit'] < 1) {
+                $options['memKeyLimit'] = 0;
+            }
+            $this->memStoreLimit = (int) $options['memKeyLimit'];
+        }
+        if (isset($options['keyHashFunction'])) {
+            if (is_callable($options['keyHashFunction'])) {
+                $this->keyHashFunction = $options['keyHashFunction'];
+            } else {
+                throw new RuntimeException('Key Hash Function is not callable');
+            }
+        }
 
         if (isset($options['encoder'])) {
             $encoder = $options['encoder'];
