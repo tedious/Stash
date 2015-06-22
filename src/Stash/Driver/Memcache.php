@@ -15,7 +15,6 @@ use Stash;
 use Stash\Exception\RuntimeException;
 use Stash\Driver\Sub\Memcache as SubMemcache;
 use Stash\Driver\Sub\Memcached as SubMemcached;
-use Stash\Interfaces\DriverInterface;
 
 /**
  * Memcache is a wrapper around the popular memcache server. Memcache supports both memcache php

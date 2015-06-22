@@ -13,7 +13,6 @@ namespace Stash\Driver;
 
 use Stash;
 use Stash\Exception\RuntimeException;
-use Stash\Interfaces\DriverInterface;
 
 /**
  * Composite is a wrapper around one or more StashDrivers, allowing faster caching engines with size or

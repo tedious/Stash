@@ -11,6 +11,8 @@
 
 namespace Stash\Driver;
 
+use Stash\Interfaces\DriverInterface;
+
 /**
  * Abstract base class for all drivers to use.
  *

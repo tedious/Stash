@@ -13,7 +13,6 @@ namespace Stash\Driver;
 
 use Stash;
 use Stash\Exception\RuntimeException;
-use Stash\Interfaces\DriverInterface;
 
 /**
  * The APC driver is a wrapper for the APC extension, which allows developers to store data in memory.

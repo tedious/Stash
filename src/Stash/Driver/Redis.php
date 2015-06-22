@@ -12,7 +12,6 @@
 namespace Stash\Driver;
 
 use Stash;
-use Stash\Interfaces\DriverInterface;
 use Stash\Exception\RuntimeException;
 
 /**
