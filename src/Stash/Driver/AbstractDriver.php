@@ -12,6 +12,7 @@
 namespace Stash\Driver;
 
 use Stash\Interfaces\DriverInterface;
+use Stash\Exception\RuntimeException;
 
 /**
  * Abstract base class for all drivers to use.

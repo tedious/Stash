@@ -12,7 +12,6 @@
 namespace Stash\Driver;
 
 use Stash;
-use Stash\Exception\RuntimeException;
 
 /**
  * The Redis driver is used for storing data on a Redis system. This class uses
