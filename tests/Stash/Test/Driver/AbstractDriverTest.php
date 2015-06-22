@@ -226,7 +226,6 @@ abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
      */
     public function testDestructor($driver)
     {
-        $driver->__destruct();
         $driver=null;
     }
 }

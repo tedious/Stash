@@ -25,6 +25,9 @@ abstract class AbstractDriver implements DriverInterface
     /**
      * Initializes the driver.
      *
+     * @param array $options
+     *   An additional array of options to pass through to setOptions().
+     *
      * @throws RuntimeException
      */
     public function __construct(array $options = array())
