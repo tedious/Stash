@@ -43,20 +43,22 @@ class Composite extends AbstractDriver
     {
         $options += $this->getDefaultOptions();
 
-        if (!isset($options['drivers']) || !is_array($options['drivers']) || count($options['drivers']) < 1) {
-            throw new RuntimeException('One or more secondary drivers are required.');
-        }
+        if (isset($options['drivers'])) {
+            if (count($options['drivers']) < 1) {
+                throw new RuntimeException('One or more secondary drivers are required.');
+            }
+            $this->drivers = array();
 
-        foreach ($options['drivers'] as $driver) {
-            if (!(is_object($driver) && $driver instanceof DriverInterface)) {
-                continue;
+            foreach ($options['drivers'] as $driver) {
+                if (!(is_object($driver) && $driver instanceof DriverInterface)) {
+                    continue;
+                }
+                $this->drivers[] = $driver;
             }
 
-            $this->drivers[] = $driver;
-        }
-
-        if (count($this->drivers) < 1) {
-            throw new RuntimeException('None of the secondary drivers can be enabled.');
+            if (count($this->drivers) < 1) {
+                throw new RuntimeException('None of the secondary drivers can be enabled.');
+            }
         }
     }
 
