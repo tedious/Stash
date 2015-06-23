@@ -56,13 +56,11 @@ class Memcache extends AbstractDriver
     /**
      * {@inheritdoc}
      */
-    public function __construct(array $options = array())
+    public function getDefaultOptions()
     {
-        // Provide default options.
-        $options += array(
+        return array(
             'keycache_limit' => 1,
         );
-        parent::__construct($options);
     }
 
     /**
@@ -85,6 +83,8 @@ class Memcache extends AbstractDriver
      */
     public function setOptions(array $options = array())
     {
+        $options += $this->getDefaultOptions();
+
         if (!isset($options['servers'])) {
             $options['servers'] = array('127.0.0.1', 11211);
         }

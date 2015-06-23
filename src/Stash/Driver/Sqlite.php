@@ -38,10 +38,9 @@ class Sqlite extends AbstractDriver
     /**
      * {@inheritdoc}
      */
-    public function __construct(array $options = array())
+    public function getDefaultOptions()
     {
-        // Provide default options.
-        $options += array(
+        return array(
             'path' => Utilities::getBaseDirectory($this),
             'filePermissions' => 0660,
             'dirPermissions' => 0770,
@@ -49,7 +48,6 @@ class Sqlite extends AbstractDriver
             'nesting' => 0,
             'subdriver' => 'PDO',
         );
-        parent::__construct($options);
     }
 
     /**
@@ -59,6 +57,8 @@ class Sqlite extends AbstractDriver
      */
     public function setOptions(array $options = array())
     {
+        $options += $this->getDefaultOptions();
+
         $this->cachePath = rtrim($options['path'], '\\/') . DIRECTORY_SEPARATOR;
         $this->filePermissions = $options['filePermissions'];
         $this->dirPermissions = $options['dirPermissions'];

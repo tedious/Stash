@@ -111,10 +111,9 @@ class FileSystem extends AbstractDriver
     /**
      * {@inheritdoc}
      */
-    public function __construct(array $options = array())
+    public function getDefaultOptions()
     {
-        // Provide default options.
-        $options += array(
+        return array(
             'path' => Utilities::getBaseDirectory($this),
             'filePermissions' => 0660,
             'dirPermissions' => 0770,
@@ -122,7 +121,6 @@ class FileSystem extends AbstractDriver
             'memKeyLimit' => 20,
             'keyHashFunction' => 'md5',
         );
-        parent::__construct($options);
     }
 
     /**
@@ -134,6 +132,8 @@ class FileSystem extends AbstractDriver
      */
     public function setOptions(array $options = array())
     {
+        $options += $this->getDefaultOptions();
+
         $this->cachePath = rtrim($options['path'], '\\/') . DIRECTORY_SEPARATOR;
         $this->filePermissions = $options['filePermissions'];
         $this->dirPermissions = $options['dirPermissions'];

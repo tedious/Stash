@@ -41,6 +41,8 @@ class Composite extends AbstractDriver
      */
     public function setOptions(array $options = array())
     {
+        $options += $this->getDefaultOptions();
+
         if (!isset($options['drivers']) || !is_array($options['drivers']) || count($options['drivers']) < 1) {
             throw new RuntimeException('One or more secondary drivers are required.');
         }

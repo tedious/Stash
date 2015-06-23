@@ -63,6 +63,8 @@ class Redis extends AbstractDriver
      */
     public function setOptions(array $options = array())
     {
+        $options += $this->getDefaultOptions();
+
         // Normalize Server Options
         if (isset($options['servers'])) {
             $unprocessedServers = (is_array($options['servers']))

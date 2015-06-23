@@ -46,14 +46,12 @@ class Apc extends AbstractDriver
     /**
      * {@inheritdoc}
      */
-    public function __construct(array $options = array())
+    public function getDefaultOptions()
     {
-        // Provide default options.
-        $options += array(
+        return array(
             'ttl' => 300,
             'namespace' => md5(__FILE__),
         );
-        parent::__construct($options);
     }
 
     /**
@@ -66,6 +64,8 @@ class Apc extends AbstractDriver
      */
     public function setOptions(array $options = array())
     {
+        $options += $this->getDefaultOptions();
+
         $this->ttl = (int) $options['ttl'];
         $this->apcNamespace = $options['namespace'];
     }
