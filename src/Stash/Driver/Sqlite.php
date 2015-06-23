@@ -59,21 +59,11 @@ class Sqlite extends AbstractDriver
      */
     public function setOptions(array $options = array())
     {
-        if (isset($options['path'])) {
-            $this->cachePath = rtrim($options['path'], '\\/') . DIRECTORY_SEPARATOR;
-        }
-        if (isset($options['filePermissions'])) {
-            $this->filePermissions = $options['filePermissions'];
-        }
-        if (isset($options['dirPermissions'])) {
-            $this->dirPermissions = $options['dirPermissions'];
-        }
-        if (isset($options['busyTimeout'])) {
-            $this->busyTimeout = $options['busyTimeout'];
-        }
-        if (isset($options['nesting'])) {
-            $this->nesting = $options['nesting'];
-        }
+        $this->cachePath = rtrim($options['path'], '\\/') . DIRECTORY_SEPARATOR;
+        $this->filePermissions = $options['filePermissions'];
+        $this->dirPermissions = $options['dirPermissions'];
+        $this->busyTimeout = $options['busyTimeout'];
+        $this->nesting = max((int) $options['nesting'], 0);
 
         Utilities::checkFileSystemPermissions($this->cachePath, $this->dirPermissions);
 

@@ -54,6 +54,18 @@ class Memcache extends AbstractDriver
     protected $keyCacheTimeLimit = 1;
 
     /**
+     * {@inheritdoc}
+     */
+    public function __construct(array $options = array())
+    {
+        // Provide default options.
+        $options += array(
+            'keycache_limit' => 1,
+        );
+        parent::__construct($options);
+    }
+
+    /**
      *
      * * servers - An array of servers, with each server represented by its own array (array(host, port, [weight])). If
      * not passed the default is array('127.0.0.1', 11211).
@@ -82,9 +94,7 @@ class Memcache extends AbstractDriver
             $options['extension'] = 'any';
         }
 
-        if (isset($options['keycache_limit']) && is_numeric($options['keycache_limit'])) {
-            $this->keyCacheTimeLimit = $options['keycache_limit'];
-        }
+        $this->keyCacheTimeLimit = (int) $options['keycache_limit'];
 
         $extension = strtolower($options['extension']);
 

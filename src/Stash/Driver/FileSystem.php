@@ -134,33 +134,16 @@ class FileSystem extends AbstractDriver
      */
     public function setOptions(array $options = array())
     {
-        if (isset($options['path'])) {
-            $this->cachePath = rtrim($options['path'], '\\/') . DIRECTORY_SEPARATOR;
-        }
-        if (isset($options['filePermissions'])) {
-            $this->filePermissions = $options['filePermissions'];
-        }
-        if (isset($options['dirPermissions'])) {
-            $this->dirPermissions = $options['dirPermissions'];
-        }
-        if (isset($options['dirSplit'])) {
-            if (!is_numeric($options['dirSplit']) || $options['dirSplit'] < 1) {
-                $options['dirSplit'] = 1;
-            }
-            $this->directorySplit = (int) $options['dirSplit'];
-        }
-        if (isset($options['memKeyLimit'])) {
-            if (!is_numeric($options['memKeyLimit']) || $options['memKeyLimit'] < 1) {
-                $options['memKeyLimit'] = 0;
-            }
-            $this->memStoreLimit = (int) $options['memKeyLimit'];
-        }
-        if (isset($options['keyHashFunction'])) {
-            if (is_callable($options['keyHashFunction'])) {
-                $this->keyHashFunction = $options['keyHashFunction'];
-            } else {
-                throw new RuntimeException('Key Hash Function is not callable');
-            }
+        $this->cachePath = rtrim($options['path'], '\\/') . DIRECTORY_SEPARATOR;
+        $this->filePermissions = $options['filePermissions'];
+        $this->dirPermissions = $options['dirPermissions'];
+        $this->directorySplit = max((int) $options['dirSplit'], 1);
+        $this->memStoreLimit = max((int) $options['memKeyLimit'], 0);
+
+        if (is_callable($options['keyHashFunction'])) {
+            $this->keyHashFunction = $options['keyHashFunction'];
+        } else {
+            throw new RuntimeException('Key Hash Function is not callable');
         }
 
         if (isset($options['encoder'])) {

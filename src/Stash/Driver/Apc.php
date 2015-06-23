@@ -26,7 +26,7 @@ class Apc extends AbstractDriver
      *
      * @var int
      */
-    protected $ttl = 300;
+    protected $ttl;
 
     /**
      * This is an install specific namespace used to segment different applications from interacting with each other
@@ -50,6 +50,7 @@ class Apc extends AbstractDriver
     {
         // Provide default options.
         $options += array(
+            'ttl' => 300,
             'namespace' => md5(__FILE__),
         );
         parent::__construct($options);
@@ -65,12 +66,8 @@ class Apc extends AbstractDriver
      */
     public function setOptions(array $options = array())
     {
-        if (isset($options['ttl']) && is_numeric($options['ttl'])) {
-            $this->ttl = (int) $options['ttl'];
-        }
-        if (isset($options['namespace'])) {
-            $this->apcNamespace = $options['namespace'];
-        }
+        $this->ttl = (int) $options['ttl'];
+        $this->apcNamespace = $options['namespace'];
     }
 
     /**
