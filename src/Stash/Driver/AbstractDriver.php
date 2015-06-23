@@ -42,7 +42,8 @@ abstract class AbstractDriver implements DriverInterface
     /**
      * @return array
      */
-    public function getDefaultOptions() {
+    public function getDefaultOptions()
+    {
         return array();
     }
 
