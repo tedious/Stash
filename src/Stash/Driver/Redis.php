@@ -278,4 +278,12 @@ class Redis extends AbstractDriver
 
         return $path ? $pathKey : md5($keyString);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isPersistent()
+    {
+        return true;
+    }
 }

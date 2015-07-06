@@ -123,6 +123,14 @@ class Composite extends AbstractDriver
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function isPersistent()
+    {
+        return $this->actOnAll('isPersistent');
+    }
+
+    /**
      * This function runs the suggested action on all drivers in the reverse order, passing arguments when called for.
      *
      * @param  string $action purge|clear|storeData
@@ -146,6 +154,9 @@ class Composite extends AbstractDriver
                     break;
                 case 'storeData':
                     $results = $driver->storeData($args[0], $args[1], $args[2]);
+                    break;
+                case 'isPersistent':
+                    $results = $driver->isPersistent();
                     break;
             }
             $return = $return && $results;

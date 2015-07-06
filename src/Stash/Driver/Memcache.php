@@ -238,4 +238,12 @@ class Memcache extends AbstractDriver
     {
         return (SubMemcache::isAvailable() || SubMemcached::isAvailable());
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isPersistent()
+    {
+        return true;
+    }
 }
