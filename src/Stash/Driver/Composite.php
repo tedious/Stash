@@ -127,7 +127,14 @@ class Composite extends AbstractDriver
      */
     public function isPersistent()
     {
-        return $this->actOnAll('isPersistent');
+        // If one of the drivers is persistent, then this should be marked as persistent as well. This does not
+        // require all of the drivers to be persistent.
+        foreach ($this->drivers as $driver) {
+            if ($driver->isPersistent()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -154,9 +161,6 @@ class Composite extends AbstractDriver
                     break;
                 case 'storeData':
                     $results = $driver->storeData($args[0], $args[1], $args[2]);
-                    break;
-                case 'isPersistent':
-                    $results = $driver->isPersistent();
                     break;
             }
             $return = $return && $results;

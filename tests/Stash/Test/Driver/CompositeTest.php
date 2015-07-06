@@ -11,6 +11,8 @@
 
 namespace Stash\Test\Driver;
 
+use Stash\Driver\FileSystem;
+use Stash\Driver\Composite;
 use Stash\Driver\Ephemeral;
 
 /**
@@ -87,5 +89,27 @@ class CompositeTest extends AbstractDriverTest
             $this->assertArrayHasKey('data', $return, 'getData ' . $type . ' has data');
             $this->assertEquals($value, $return['data'], 'getData ' . $type . ' returns same item as stored');
         }
+    }
+
+    public function testIsPersistent()
+    {
+        $fileDriver = new FileSystem();
+        $ephemeralDriver = new Ephemeral();
+
+        $drivers = array($fileDriver, $ephemeralDriver);
+        $driver = new Composite(array('drivers' => $drivers));
+        $this->assertTrue($driver->isPersistent());
+
+        $drivers = array($ephemeralDriver, $fileDriver);
+        $driver = new Composite(array('drivers' => $drivers));
+        $this->assertTrue($driver->isPersistent());
+
+        $drivers = array($fileDriver, $fileDriver);
+        $driver = new Composite(array('drivers' => $drivers));
+        $this->assertTrue($driver->isPersistent());
+
+        $drivers = array($ephemeralDriver, $ephemeralDriver);
+        $driver = new Composite(array('drivers' => $drivers));
+        $this->assertFalse($driver->isPersistent());
     }
 }
