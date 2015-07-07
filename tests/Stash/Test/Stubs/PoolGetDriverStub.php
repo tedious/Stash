@@ -11,6 +11,7 @@
 
 namespace Stash\Test\Stubs;
 
+use Psr\Log\LoggerInterface;
 use Stash\Interfaces\PoolInterface;
 
 /**
@@ -68,7 +69,7 @@ class PoolGetDriverStub implements PoolInterface
         return false;
     }
 
-    public function setLogger($logger)
+    public function setLogger(LoggerInterface $logger)
     {
         return false;
     }

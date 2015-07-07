@@ -11,6 +11,7 @@
 
 namespace Stash;
 
+use Psr\Log\LoggerAwareTrait;
 use Stash\Exception\Exception;
 use Stash\Interfaces\DriverInterface;
 use Stash\Interfaces\ItemInterface;
@@ -26,6 +27,9 @@ use Stash\Interfaces\PoolInterface;
  */
 class Item implements ItemInterface
 {
+    use LoggerAwareTrait;
+    use HasCachePoolTrait;
+
     /**
      * @deprecated
      */
@@ -107,29 +111,6 @@ class Item implements ItemInterface
     protected $stampedeRunning = false;
 
     /**
-     * The Pool that spawned this instance of the Item..
-     *
-     * @var \Stash\Interfaces\PoolInterface
-     */
-    protected $pool;
-
-    /**
-     * The cacheDriver being used by the system. While this class handles all of the higher functions, it's the cache
-     * driver here that handles all of the storage/retrieval functionality. This value is set by the constructor.
-     *
-     * @var \Stash\Interfaces\DriverInterface
-     */
-    protected $driver;
-
-    /**
-     * If set various then errors and exceptions will get passed to the PSR Compliant logging library. This
-     * can be set using the setLogger() function in this class.
-     *
-     * @var \Psr\Log\LoggerInterface
-     */
-    protected $logger;
-
-    /**
      * Defines the namespace the item lives in.
      *
      * @var string|null
@@ -143,16 +124,6 @@ class Item implements ItemInterface
      * @var bool
      */
     private $isHit = null;
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setPool(PoolInterface $pool)
-    {
-        $this->pool = $pool;
-        $this->driver = $pool->getDriver();
-    }
 
     /**
      * {@inheritdoc}
@@ -213,7 +184,7 @@ class Item implements ItemInterface
             return false;
         }
 
-        return $this->driver->clear(isset($this->key) ? $this->key : null);
+        return $this->getCachePool()->getDriver()->clear(isset($this->key) ? $this->key : null);
     }
 
     /**
@@ -305,7 +276,7 @@ class Item implements ItemInterface
         $spkey = $this->key;
         $spkey[0] = 'sp';
 
-        return $this->driver->storeData($spkey, true, time() + $expiration);
+        return $this->getCachePool()->getDriver()->storeData($spkey, true, time() + $expiration);
     }
 
     /**
@@ -358,11 +329,11 @@ class Item implements ItemInterface
         if ($this->stampedeRunning === true) {
             $spkey = $this->key;
             $spkey[0] = 'sp'; // change "cache" data namespace to stampede namespace
-            $this->driver->clear($spkey);
+            $this->getCachePool()->getDriver()->clear($spkey);
             $this->stampedeRunning = false;
         }
 
-        return $this->driver->storeData($this->key, $store, $expiration);
+        return $this->getCachePool()->getDriver()->storeData($this->key, $store, $expiration);
     }
 
     /**
@@ -385,24 +356,6 @@ class Item implements ItemInterface
         return self::$runtimeDisable
                 || !$this->cacheEnabled
                 || (defined('STASH_DISABLE_CACHE') && STASH_DISABLE_CACHE);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setLogger($logger)
-    {
-        $this->logger = $logger;
-    }
-
-    /**
-     * Sets the driver this object uses to interact with the caching system.
-     *
-     * @param DriverInterface $driver
-     */
-    protected function setDriver(DriverInterface $driver)
-    {
-        $this->driver = $driver;
     }
 
     /**
@@ -434,7 +387,7 @@ class Item implements ItemInterface
     protected function getStampedeFlag($key)
     {
         $key[0] = 'sp'; // change "cache" data namespace to stampede namespace
-        $spReturn = $this->driver->getData($key);
+        $spReturn = $this->getCachePool()->getDriver()->getData($key);
         $sp = isset($spReturn['data']) ? $spReturn['data'] : false;
 
 
@@ -454,7 +407,7 @@ class Item implements ItemInterface
      */
     protected function getRecord()
     {
-        $record = $this->driver->getData($this->key);
+        $record = $this->getCachePool()->getDriver()->getData($this->key);
 
         if (!is_array($record)) {
             return array();
@@ -598,7 +551,7 @@ class Item implements ItemInterface
         if (isset($this->stampedeRunning) && $this->stampedeRunning === true) {
             $spkey = $this->key;
             $spkey[0] = 'sp';
-            $this->driver->clear($spkey);
+            $this->getCachePool()->getDriver()->clear($spkey);
         }
     }
 }

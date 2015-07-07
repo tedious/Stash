@@ -11,7 +11,9 @@
 
 namespace Stash\Interfaces;
 
-interface ItemInterface
+use Psr\Log\LoggerAwareInterface;
+
+interface ItemInterface extends LoggerAwareInterface
 {
     /**
      * Sets the Parent Pool for the Item class to use.
@@ -112,14 +114,6 @@ interface ItemInterface
      * @return bool True if caching is disabled.
      */
     public function isDisabled();
-
-    /**
-     * Sets a PSR\Logger style logging client to enable the tracking of errors.
-     *
-     * @param  \PSR\Log\LoggerInterface $logger
-     * @return bool
-     */
-    public function setLogger($logger);
 
     /**
      * Returns the record's creation time or false if it isn't set

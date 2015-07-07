@@ -11,6 +11,7 @@
 
 namespace Stash;
 
+use Psr\Log\LoggerAwareTrait;
 use Stash\Driver\Ephemeral;
 use Stash\Interfaces\DriverInterface;
 use Stash\Interfaces\ItemInterface;
@@ -24,6 +25,8 @@ use Stash\Interfaces\PoolInterface;
  */
 class Pool implements PoolInterface
 {
+    use LoggerAwareTrait;
+
     /**
      * The cacheDriver being used by the system. While this class handles all of the higher functions, it's the cache
      * driver here that handles all of the storage/retrieval functionality. This value is set by the constructor.
@@ -47,14 +50,6 @@ class Pool implements PoolInterface
     protected $itemClass = '\Stash\Item';
 
     /**
-     * If set various then errors and exceptions will get passed to the PSR Compliant logging library. This
-     * can be set using the setLogger() function in this class.
-     *
-     * @var Psr\Log\LoggerInterface
-     */
-    protected $logger;
-
-    /**
      * Current namespace, if any.
      *
      * @var string
@@ -70,11 +65,7 @@ class Pool implements PoolInterface
      */
     public function __construct(DriverInterface $driver = null)
     {
-        if (isset($driver)) {
-            $this->setDriver($driver);
-        } else {
-            $this->driver = new Ephemeral();
-        }
+        $this->driver = $driver;
     }
 
     /**
@@ -257,16 +248,6 @@ class Pool implements PoolInterface
     public function getNamespace()
     {
         return isset($this->namespace) ? $this->namespace : false;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setLogger($logger)
-    {
-        $this->logger = $logger;
-
-        return true;
     }
 
     /**

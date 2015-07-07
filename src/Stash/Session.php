@@ -24,13 +24,7 @@ use Stash\Session\SessionHandlerInterface as SessionHandlerInterface;
  */
 class Session implements SessionHandlerInterface
 {
-    /**
-     * The Stash\Pool generates the individual cache items corresponding to each
-     * session. Basically all persistence is handled by this object.
-     *
-     * @var Stash\Pool
-     */
-    protected $pool;
+    use HasCachePoolTrait;
 
     /**
      * PHP passes a "save_path", which is not really relevant to most session
@@ -154,7 +148,7 @@ class Session implements SessionHandlerInterface
             base64_encode($this->name) . '/' .
             base64_encode($session_id);
 
-        return $this->pool->getItem($path);
+        return $this->getCachePool()->getItem($path);
     }
 
     /**
@@ -228,6 +222,6 @@ class Session implements SessionHandlerInterface
      */
     public function gc($maxlifetime)
     {
-        return $this->pool->purge();
+        return $this->getCachePool()->purge();
     }
 }
