@@ -27,7 +27,7 @@ class CacheExceptionTest extends \PHPUnit_Framework_TestCase
         $item = new Item();
         $poolStub = new PoolGetDriverStub();
         $poolStub->setDriver(new DriverExceptionStub());
-        $item->setPool($poolStub);
+        $item->setCachePool($poolStub);
         $item->setKey(array('path', 'to', 'store'));
 
         $this->assertFalse($item->isDisabled());
@@ -40,7 +40,7 @@ class CacheExceptionTest extends \PHPUnit_Framework_TestCase
         $item = new Item();
         $poolStub = new PoolGetDriverStub();
         $poolStub->setDriver(new DriverExceptionStub());
-        $item->setPool($poolStub);
+        $item->setCachePool($poolStub);
         $item->setKey(array('path', 'to', 'get'));
 
         $this->assertFalse($item->isDisabled());
@@ -53,7 +53,7 @@ class CacheExceptionTest extends \PHPUnit_Framework_TestCase
         $item = new Item();
         $poolStub = new PoolGetDriverStub();
         $poolStub->setDriver(new DriverExceptionStub());
-        $item->setPool($poolStub);
+        $item->setCachePool($poolStub);
         $item->setKey(array('path', 'to', 'clear'));
 
         $this->assertFalse($item->isDisabled());

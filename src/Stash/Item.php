@@ -552,4 +552,15 @@ class Item implements ItemInterface
             $this->getCachePool()->getDriver()->clear($spkey);
         }
     }
+
+    /**
+     * Backwards compatibility support.
+     *
+     * @param \Psr\Log\LoggerInterface $pool
+     *
+     * @deprecated
+     */
+    public function setPool($pool) {
+        $this->setCachePool($pool);
+    }
 }

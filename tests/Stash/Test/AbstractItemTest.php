@@ -83,7 +83,7 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
 
         $poolStub = new PoolGetDriverStub();
         $poolStub->setDriver($this->driver);
-        $item->setPool($poolStub);
+        $item->setCachePool($poolStub);
 
         $item->setKey($key);
 
@@ -118,7 +118,7 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         $item = $this->getItem();
         $poolStub = new PoolGetDriverStub();
         $poolStub->setDriver(new Ephemeral(array()));
-        $item->setPool($poolStub);
+        $item->setCachePool($poolStub);
         $this->assertFalse($item->set($this->data), 'Item without key returns false for set.');
     }
 
@@ -146,7 +146,7 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
 
         $poolStub = new PoolGetDriverStub();
         $poolStub->setDriver(new Ephemeral());
-        $item->setPool($poolStub);
+        $item->setCachePool($poolStub);
 
         $this->assertEquals(null, $item->get(), 'Item without key returns null for get.');
     }
@@ -160,7 +160,7 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         $item = $this->getItem();
         $poolStub = new PoolGetDriverStub();
         $poolStub->setDriver(new Ephemeral(array()));
-        $item->setPool($poolStub);
+        $item->setCachePool($poolStub);
         $item->setKey('This is not an array');
     }
 
@@ -169,7 +169,7 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         $item = $this->getItem();
         $poolStub = new PoolGetDriverStub();
         $poolStub->setDriver(new Ephemeral());
-        $item->setPool($poolStub);
+        $item->setCachePool($poolStub);
         $this->assertFalse($item->lock(), 'Item without key returns false for lock.');
     }
 
@@ -424,7 +424,7 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         $item = $this->getItem();
         $poolStub = new PoolGetDriverStub();
         $poolStub->setDriver($this->getMockedDriver());
-        $item->setPool($poolStub);
+        $item->setCachePool($poolStub);
         $item->setKey(array('test', 'key'));
         $item->disable();
 
@@ -440,7 +440,7 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         $item = $this->getItem();
         $poolStub = new PoolGetDriverStub();
         $poolStub->setDriver($this->getMockedDriver());
-        $item->setPool($poolStub);
+        $item->setCachePool($poolStub);
         $item->setKey(array('test', 'key'));
 
         $this->assertDisabledStash($item);

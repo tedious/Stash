@@ -29,12 +29,12 @@ class EphemeralTest extends AbstractDriverTest
         $poolStub->setDriver($driver);
 
         $item1 = new Item();
-        $item1->setPool($poolStub);
+        $item1->setCachePool($poolStub);
         $item1->setKey(array('##', '#'));
         $item1->set('X');
 
         $item2 = new Item();
-        $item2->setPool($poolStub);
+        $item2->setCachePool($poolStub);
         $item2->setKey(array('#', '##'));
         $item2->set('Y');
 
@@ -48,12 +48,12 @@ class EphemeralTest extends AbstractDriverTest
         $poolStub->setDriver($driver);
 
         $item1 = new Item();
-        $item1->setPool($poolStub);
+        $item1->setCachePool($poolStub);
         $item1->setKey(array('#'));
         $item1->set('X');
 
         $item2 = new Item();
-        $item2->setPool($poolStub);
+        $item2->setCachePool($poolStub);
         $item2->setKey(array(':'));
         $item2->set('Y');
 

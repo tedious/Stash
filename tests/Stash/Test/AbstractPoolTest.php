@@ -34,8 +34,8 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
     {
         $pool = $this->getTestPool();
 
-        $stash = $pool->getItem('test');
-        $this->assertAttributeInstanceOf('Stash\Driver\Ephemeral', 'driver', $stash, 'set driver is pushed to new stash objects');
+        $driver = $pool->getItem('test')->getCachePool()->getDriver();
+        $this->assertEquals(get_class($driver), 'Stash\Driver\Ephemeral', 'set driver is pushed to new stash objects');
     }
 
     public function testSetItemClass()

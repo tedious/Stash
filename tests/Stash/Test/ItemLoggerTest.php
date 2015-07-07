@@ -35,7 +35,7 @@ class ItemLoggerTest extends \PHPUnit_Framework_TestCase
 
         $poolStub = new PoolGetDriverStub();
         $poolStub->setDriver(new $fullDriver());
-        $item->setPool($poolStub);
+        $item->setCachePool($poolStub);
         $item->setKey($key);
 
         return $item;

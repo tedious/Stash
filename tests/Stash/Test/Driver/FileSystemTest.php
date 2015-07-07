@@ -73,7 +73,7 @@ class FileSystemTest extends AbstractDriverTest
 
             $poolStub = new PoolGetDriverStub();
             $poolStub->setDriver($driver);
-            $item->setPool($poolStub);
+            $item->setCachePool($poolStub);
             $item->setKey($paths);
             $item->set($rand);
 
