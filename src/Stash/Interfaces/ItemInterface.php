@@ -13,17 +13,8 @@ namespace Stash\Interfaces;
 
 use Psr\Log\LoggerAwareInterface;
 
-interface ItemInterface extends LoggerAwareInterface
+interface ItemInterface extends LoggerAwareInterface, HasCachePoolInterface
 {
-    /**
-     * Sets the Parent Pool for the Item class to use.
-     *
-     * Typically called by Pool directly, and *must* be called before running caching functions.
-     *
-     * @param PoolInterface $driver
-     */
-    public function setPool(PoolInterface $driver);
-
     /**
      * Takes and sets the key and namespace.
      *

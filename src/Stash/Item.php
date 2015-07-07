@@ -13,9 +13,7 @@ namespace Stash;
 
 use Psr\Log\LoggerAwareTrait;
 use Stash\Exception\Exception;
-use Stash\Interfaces\DriverInterface;
 use Stash\Interfaces\ItemInterface;
-use Stash\Interfaces\PoolInterface;
 
 /**
  * Stash caches data that has a high generation cost, such as template preprocessing or code that requires a database
