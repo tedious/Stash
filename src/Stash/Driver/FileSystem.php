@@ -385,4 +385,12 @@ class FileSystem extends AbstractDriver
 
         return $this->encoder;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isPersistent()
+    {
+        return true;
+    }
 }

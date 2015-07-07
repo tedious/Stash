@@ -110,4 +110,13 @@ interface DriverInterface
      * @return bool
      */
     public static function isAvailable();
+
+    /**
+     * Returns whether the driver is able to run in the current environment or not. Any system checks - such as making
+     * sure any required extensions are missing - should be done here. This is a general check; if any instance of this
+     * driver can be used in the current environment it should return true.
+     *
+     * @return bool
+     */
+    public function isPersistent();
 }

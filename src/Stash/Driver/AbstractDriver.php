@@ -62,4 +62,12 @@ abstract class AbstractDriver implements DriverInterface
     {
         return true;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isPersistent()
+    {
+        return false;
+    }
 }

@@ -123,6 +123,21 @@ class Composite extends AbstractDriver
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function isPersistent()
+    {
+        // If one of the drivers is persistent, then this should be marked as persistent as well. This does not
+        // require all of the drivers to be persistent.
+        foreach ($this->drivers as $driver) {
+            if ($driver->isPersistent()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * This function runs the suggested action on all drivers in the reverse order, passing arguments when called for.
      *
      * @param  string $action purge|clear|storeData

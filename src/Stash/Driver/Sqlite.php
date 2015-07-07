@@ -302,4 +302,12 @@ class Sqlite extends AbstractDriver
 
         return $path;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isPersistent()
+    {
+        return true;
+    }
 }
