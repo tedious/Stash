@@ -77,8 +77,7 @@ abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
             return false;
         }
 
-        $driver = new $driverClass();
-        $driver->setOptions($options);
+        $driver = new $driverClass($options);
 
         return $driver;
     }
@@ -226,7 +225,6 @@ abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
      */
     public function testDestructor($driver)
     {
-        $driver->__destruct();
         $driver=null;
     }
 }

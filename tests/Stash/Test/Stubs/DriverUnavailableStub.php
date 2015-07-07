@@ -12,8 +12,8 @@
 namespace Stash\Test\Stubs;
 
 use Stash;
+use Stash\Driver\AbstractDriver;
 use Stash\Test\Exception\TestException;
-use Stash\Interfaces\DriverInterface;
 
 /**
  * DriverExceptionStub is used for testing how Stash reacts to thrown errors. Every function but the constructor throws
@@ -24,17 +24,9 @@ use Stash\Interfaces\DriverInterface;
  *
  * @codeCoverageIgnore
  */
-class DriverUnavailableStub implements DriverInterface
+class DriverUnavailableStub extends AbstractDriver
 {
     protected $store = array();
-
-    public function setOptions(array $options = array())
-    {
-    }
-
-    public function __destruct()
-    {
-    }
 
     public function getData($key)
     {

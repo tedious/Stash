@@ -12,8 +12,6 @@
 namespace Stash\Driver;
 
 use Stash;
-use Stash\Exception\RuntimeException;
-use Stash\Interfaces\DriverInterface;
 
 /**
  * The APC driver is a wrapper for the APC extension, which allows developers to store data in memory.
@@ -21,14 +19,14 @@ use Stash\Interfaces\DriverInterface;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class Apc implements DriverInterface
+class Apc extends AbstractDriver
 {
     /**
      * Default maximum time an Item will be stored.
      *
      * @var int
      */
-    protected $ttl = 300;
+    protected $ttl;
 
     /**
      * This is an install specific namespace used to segment different applications from interacting with each other
@@ -46,15 +44,14 @@ class Apc implements DriverInterface
     protected $chunkSize = 100;
 
     /**
-     * Initializes the driver.
-     *
-     * @throws RuntimeException 'Extension is not installed.'
+     * {@inheritdoc}
      */
-    public function __construct()
+    public function getDefaultOptions()
     {
-        if (!static::isAvailable()) {
-            throw new RuntimeException('Extension is not installed.');
-        }
+        return array(
+            'ttl' => 300,
+            'namespace' => md5(__FILE__),
+        );
     }
 
     /**
@@ -63,23 +60,14 @@ class Apc implements DriverInterface
      * * ttl - This is the maximum time the item will be stored.
      * * namespace - This should be used when multiple projects may use the same library.
      *
-     * @param  array                             $options
-     * @throws \Stash\Exception\RuntimeException
+     * @param array $options
      */
     public function setOptions(array $options = array())
     {
-        if (isset($options['ttl']) && is_numeric($options['ttl'])) {
-            $this->ttl = (int) $options['ttl'];
-        }
+        $options += $this->getDefaultOptions();
 
-        $this->apcNamespace = isset($options['namespace']) ? $options['namespace'] : md5(__FILE__);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __destruct()
-    {
+        $this->ttl = (int) $options['ttl'];
+        $this->apcNamespace = $options['namespace'];
     }
 
     /**

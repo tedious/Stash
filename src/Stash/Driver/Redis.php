@@ -12,8 +12,6 @@
 namespace Stash\Driver;
 
 use Stash;
-use Stash\Interfaces\DriverInterface;
-use Stash\Exception\RuntimeException;
 
 /**
  * The Redis driver is used for storing data on a Redis system. This class uses
@@ -22,15 +20,8 @@ use Stash\Exception\RuntimeException;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class Redis implements DriverInterface
+class Redis extends AbstractDriver
 {
-    /**
-     * An array of default options.
-     *
-     * @var array
-     */
-    protected $defaultOptions = array();
-
     /**
      * The Redis drivers.
      *
@@ -58,18 +49,6 @@ class Redis implements DriverInterface
     );
 
     /**
-     * Initializes the driver.
-     *
-     * @throws RuntimeException 'Extension is not installed.'
-     */
-    public function __construct()
-    {
-        if (!static::isAvailable()) {
-            throw new RuntimeException('Extension is not installed.');
-        }
-    }
-
-    /**
      * The options array should contain an array of servers,
      *
      * The "server" option expects an array of servers, with each server being represented by an associative array. Each
@@ -80,14 +59,11 @@ class Redis implements DriverInterface
      *
      * The "password" option is used for clusters which required authentication.
      *
-     * @param  array             $options
-     * @throws \RuntimeException
+     * @param array $options
      */
     public function setOptions(array $options = array())
     {
-        if (!self::isAvailable()) {
-            throw new \RuntimeException('Unable to load Redis driver without PhpRedis extension.');
-        }
+        $options += $this->getDefaultOptions();
 
         // Normalize Server Options
         if (isset($options['servers'])) {
@@ -128,9 +104,6 @@ class Redis implements DriverInterface
         } else {
             $servers = array(array('server' => '127.0.0.1', 'port' => '6379', 'ttl' => 0.1));
         }
-
-        // Merge in default values.
-        $options = array_merge($this->defaultOptions, $options);
 
         // this will have to be revisited to support multiple servers, using
         // the RedisArray object. That object acts as a proxy object, meaning
@@ -185,8 +158,6 @@ class Redis implements DriverInterface
 
     /**
      * Properly close the connection.
-     *
-     * {@inheritdoc}
      */
     public function __destruct()
     {

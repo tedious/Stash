@@ -17,7 +17,6 @@ use Stash\Driver\FileSystem\EncoderInterface;
 use Stash\Utilities;
 use Stash\Exception\LogicException;
 use Stash\Exception\RuntimeException;
-use Stash\Interfaces\DriverInterface;
 
 /**
  * StashFileSystem stores cache objects in the filesystem as native php, making the process of retrieving stored data
@@ -27,7 +26,7 @@ use Stash\Interfaces\DriverInterface;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class FileSystem implements DriverInterface
+class FileSystem extends AbstractDriver
 {
     /**
      * This is the path to the file which will be used to store the cached item. It is based off of the key.
@@ -105,55 +104,47 @@ class FileSystem implements DriverInterface
     protected $disabled = false;
 
     /**
-     * Default values for selections the user does not make.
-     *
-     * @var array
-     */
-    protected $defaultOptions = array('filePermissions' => 0660,
-                                      'dirPermissions' => 0770,
-                                      'dirSplit' => 2,
-                                      'memKeyLimit' => 20,
-                                      'keyHashFunction' => 'md5'
-    );
-
-    /**
      * @var \Stash\Driver\FileSystem\EncoderInterface
      */
     protected $encoder;
 
     /**
+     * {@inheritdoc}
+     */
+    public function getDefaultOptions()
+    {
+        return array(
+            'path' => Utilities::getBaseDirectory($this),
+            'filePermissions' => 0660,
+            'dirPermissions' => 0770,
+            'dirSplit' => 2,
+            'memKeyLimit' => 20,
+            'keyHashFunction' => 'md5',
+        );
+    }
+
+    /**
      * Requests a list of options.
      *
-     * @param  array                             $options
+     * @param array $options
+     *
      * @throws \Stash\Exception\RuntimeException
      */
     public function setOptions(array $options = array())
     {
-        $options = array_merge($this->defaultOptions, $options);
+        $options += $this->getDefaultOptions();
 
-        $this->cachePath = isset($options['path']) ? $options['path'] : Utilities::getBaseDirectory($this);
-        $this->cachePath = rtrim($this->cachePath, '\\/') . DIRECTORY_SEPARATOR;
-
+        $this->cachePath = rtrim($options['path'], '\\/') . DIRECTORY_SEPARATOR;
         $this->filePermissions = $options['filePermissions'];
         $this->dirPermissions = $options['dirPermissions'];
-
-        if (!is_numeric($options['dirSplit']) || $options['dirSplit'] < 1) {
-            $options['dirSplit'] = 1;
-        }
-
-        $this->directorySplit = (int) $options['dirSplit'];
-
-        if (!is_numeric($options['memKeyLimit']) || $options['memKeyLimit'] < 1) {
-            $options['memKeyLimit'] = 0;
-        }
+        $this->directorySplit = max((int) $options['dirSplit'], 1);
+        $this->memStoreLimit = max((int) $options['memKeyLimit'], 0);
 
         if (is_callable($options['keyHashFunction'])) {
             $this->keyHashFunction = $options['keyHashFunction'];
         } else {
             throw new RuntimeException('Key Hash Function is not callable');
         }
-
-        $this->memStoreLimit = (int) $options['memKeyLimit'];
 
         if (isset($options['encoder'])) {
             $encoder = $options['encoder'];
@@ -175,13 +166,6 @@ class FileSystem implements DriverInterface
         }
 
         Utilities::checkFileSystemPermissions($this->cachePath, $this->dirPermissions);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __destruct()
-    {
     }
 
     /**
@@ -400,17 +384,5 @@ class FileSystem implements DriverInterface
         }
 
         return $this->encoder;
-    }
-
-    /**
-     * This function checks to see if it is possible to enable this driver. This returns true no matter what, since
-     * there is typically a filesystem available somewhere.
-     *
-     * {@inheritdoc}
-     * @return bool true
-     */
-    public static function isAvailable()
-    {
-        return true;
     }
 }

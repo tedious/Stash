@@ -15,7 +15,6 @@ use Stash;
 use Stash\Exception\RuntimeException;
 use Stash\Driver\Sub\Memcache as SubMemcache;
 use Stash\Driver\Sub\Memcached as SubMemcached;
-use Stash\Interfaces\DriverInterface;
 
 /**
  * Memcache is a wrapper around the popular memcache server. Memcache supports both memcache php
@@ -24,7 +23,7 @@ use Stash\Interfaces\DriverInterface;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class Memcache implements DriverInterface
+class Memcache extends AbstractDriver
 {
     /**
      * Memcache subdriver used by this class.
@@ -55,15 +54,13 @@ class Memcache implements DriverInterface
     protected $keyCacheTimeLimit = 1;
 
     /**
-     * Initializes the driver.
-     *
-     * @throws RuntimeException 'Extension is not installed.'
+     * {@inheritdoc}
      */
-    public function __construct()
+    public function getDefaultOptions()
     {
-        if (!static::isAvailable()) {
-            throw new RuntimeException('Extension is not installed.');
-        }
+        return array(
+            'keycache_limit' => 1,
+        );
     }
 
     /**
@@ -86,6 +83,8 @@ class Memcache implements DriverInterface
      */
     public function setOptions(array $options = array())
     {
+        $options += $this->getDefaultOptions();
+
         if (!isset($options['servers'])) {
             $options['servers'] = array('127.0.0.1', 11211);
         }
@@ -95,9 +94,7 @@ class Memcache implements DriverInterface
             $options['extension'] = 'any';
         }
 
-        if (isset($options['keycache_limit']) && is_numeric($options['keycache_limit'])) {
-            $this->keyCacheTimeLimit = $options['keycache_limit'];
-        }
+        $this->keyCacheTimeLimit = (int) $options['keycache_limit'];
 
         $extension = strtolower($options['extension']);
 
@@ -142,13 +139,6 @@ class Memcache implements DriverInterface
         }
 
         return $normalizedServers;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __destruct()
-    {
     }
 
     /**

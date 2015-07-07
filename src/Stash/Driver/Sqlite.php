@@ -14,7 +14,6 @@ namespace Stash\Driver;
 use Stash;
 use Stash\Utilities;
 use Stash\Exception\RuntimeException;
-use Stash\Interfaces\DriverInterface;
 
 /**
  * StashSqlite is a wrapper around one or more SQLite databases stored on the local system. While not as quick at at
@@ -24,17 +23,10 @@ use Stash\Interfaces\DriverInterface;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class Sqlite implements DriverInterface
+class Sqlite extends AbstractDriver
 {
-    protected $defaultOptions = array('filePermissions' => 0660,
-                                      'dirPermissions' => 0770,
-                                      'busyTimeout' => 500,
-                                      'nesting' => 0,
-                                      'subdriver' => 'PDO'
-    );
-
-    protected $filePerms;
-    protected $dirPerms;
+    protected $filePermissions;
+    protected $dirPermissions;
     protected $busyTimeout;
     protected $cachePath;
     protected $driverClass;
@@ -44,30 +36,36 @@ class Sqlite implements DriverInterface
     protected $disabled = false;
 
     /**
-     * Initializes the driver.
-     *
-     * @throws RuntimeException 'Extension is not installed.'
+     * {@inheritdoc}
      */
-    public function __construct()
+    public function getDefaultOptions()
     {
-        if (!static::isAvailable()) {
-            throw new RuntimeException('Extension is not installed.');
-        }
+        return array(
+            'path' => Utilities::getBaseDirectory($this),
+            'filePermissions' => 0660,
+            'dirPermissions' => 0770,
+            'busyTimeout' => 500,
+            'nesting' => 0,
+            'subdriver' => 'PDO',
+        );
     }
 
     /**
+     * {@inheritdoc}
      *
-     * @param  array                             $options
      * @throws \Stash\Exception\RuntimeException
      */
     public function setOptions(array $options = array())
     {
-        $options = array_merge($this->defaultOptions, $options);
+        $options += $this->getDefaultOptions();
 
-        $cachePath = isset($options['path']) ? $options['path'] : Utilities::getBaseDirectory($this);
-        $this->cachePath = rtrim($cachePath, '\\/') . '/';
+        $this->cachePath = rtrim($options['path'], '\\/') . DIRECTORY_SEPARATOR;
+        $this->filePermissions = $options['filePermissions'];
+        $this->dirPermissions = $options['dirPermissions'];
+        $this->busyTimeout = $options['busyTimeout'];
+        $this->nesting = max((int) $options['nesting'], 0);
 
-        Utilities::checkFileSystemPermissions($this->cachePath, $this->dirPerms);
+        Utilities::checkFileSystemPermissions($this->cachePath, $this->dirPermissions);
 
         $extension = isset($options['extension']) ? strtolower($options['extension']) : 'any';
         $version = isset($options['version']) ? $options['version'] : 'any';
@@ -96,11 +94,6 @@ class Sqlite implements DriverInterface
         }
 
         $this->driverClass = $driver;
-        $this->filePerms = $options['filePermissions'];
-        $this->dirPerms = $options['dirPermissions'];
-        $this->busyTimeout = $options['busyTimeout'];
-        $this->nesting = $options['nesting'];
-
         $this->checkStatus();
     }
 
@@ -226,7 +219,7 @@ class Sqlite implements DriverInterface
             return false;
         }
 
-        $driver = new $driverClass($file, $this->dirPerms, $this->filePerms, $this->busyTimeout);
+        $driver = new $driverClass($file, $this->dirPermissions, $this->filePermissions, $this->busyTimeout);
 
         $this->subDrivers[$file] = $driver;
 
@@ -235,8 +228,6 @@ class Sqlite implements DriverInterface
 
     /**
      * Destroys the sub-drivers when this driver is unset -- required for Windows compatibility.
-     *
-     * {@inheritdoc}
      */
     public function __destruct()
     {

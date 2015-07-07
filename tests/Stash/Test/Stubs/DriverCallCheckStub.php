@@ -12,7 +12,7 @@
 namespace Stash\Test\Stubs;
 
 use Stash;
-use Stash\Interfaces\DriverInterface;
+use Stash\Driver\AbstractDriver;
 
 /**
  * DriverExceptionStub is used for testing how Stash reacts to thrown errors. Every function but the constructor throws
@@ -23,18 +23,10 @@ use Stash\Interfaces\DriverInterface;
  *
  * @codeCoverageIgnore
  */
-class DriverCallCheckStub implements DriverInterface
+class DriverCallCheckStub extends AbstractDriver
 {
     protected $store = array();
     protected $wasCalled = false;
-
-    public function setOptions(array $options = array())
-    {
-    }
-
-    public function __destruct()
-    {
-    }
 
     public function getData($key)
     {
