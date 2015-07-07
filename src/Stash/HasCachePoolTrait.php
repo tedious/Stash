@@ -8,7 +8,8 @@ use Psr\Log\LoggerInterface;
 /**
  * Basic Implementation of PoolInterface.
  */
-trait HasCachePoolTrait {
+trait HasCachePoolTrait
+{
 
     /**
      * @var \Stash\Interfaces\PoolInterface
@@ -43,5 +44,4 @@ trait HasCachePoolTrait {
         }
         return $this->cachePool;
     }
-
 }

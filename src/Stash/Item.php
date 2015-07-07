@@ -560,7 +560,8 @@ class Item implements ItemInterface
      *
      * @deprecated
      */
-    public function setPool($pool) {
+    public function setPool($pool)
+    {
         $this->setCachePool($pool);
     }
 }
