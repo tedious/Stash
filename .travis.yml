@@ -9,6 +9,10 @@ php:
     - hhvm
     - hhvm-nightly
 
+cache:
+    directories:
+        - $HOME/.composer/cache
+
 before_script:
     - composer self-update && composer install
     - tests/travis/php_setup.sh
