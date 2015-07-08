@@ -22,14 +22,14 @@ before_script:
 script: ./tests/runTests.sh
 
 after_script:
-  - php vendor/bin/coveralls -v
+    - php vendor/bin/coveralls -v
 
 services:
-  - redis-server
-  - memcached
+    - redis-server
+    - memcached
 
 matrix:
     fast_finish: true
     allow_failures:
-      - php: hhvm-nightly
-      - php: 7.0
+        - php: hhvm-nightly
+        - php: 7.0
