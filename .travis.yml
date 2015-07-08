@@ -12,8 +12,10 @@ php:
 before_install:
     - composer self-update
 
-before_script:
+install:
     - composer install
+
+before_script:
     - tests/travis/php_setup.sh
     - tests/travis/redis_setup.sh
 
