@@ -8,21 +8,27 @@ php:
     - 7.0
     - hhvm
 
+before_install:
+    - composer self-update
+
+install:
+    - composer install
+
 before_script:
-    - composer self-update && composer install
     - tests/travis/php_setup.sh
     - tests/travis/redis_setup.sh
 
 script: ./tests/runTests.sh
 
 after_script:
-  - php vendor/bin/coveralls -v
+    - php vendor/bin/coveralls -v
 
 services:
-  - redis-server
-  - memcached
+    - redis-server
+    - memcached
 
 matrix:
     fast_finish: true
     allow_failures:
       - php: 7.0
+      - php: 5.3
