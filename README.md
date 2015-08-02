@@ -24,7 +24,7 @@ backwards compatible.
 
 ```
 "require": {
-  "tedivm/stash": "0.12.*"
+  "tedivm/stash": "0.13.*"
 }
 ```
 
@@ -107,7 +107,7 @@ drivers that use a variety of back ends.
 The [Stash Bundle](https://github.com/tedious/TedivmStashBundle) makes using
 Stash inside of Symfony projects significantly easier. This bundle exposes
 Stash as a Service for developers to use, and allows Symfony to use Stash
-as a session handler. 
+as a session handler.
 
 
 ## License

@@ -1,3 +1,9 @@
+## Stash v0.13 Changelog
+
+### 0.13.1
+
+* Dropped support for PHP 5.3.
+
 
 ## Stash v0.12 Changelog
 
