@@ -22,7 +22,7 @@ use Stash\Session\SessionHandlerInterface as SessionHandlerInterface;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class Session implements SessionHandlerInterface
+class Session implements \SessionHandlerInterface
 {
     /**
      * The Stash\Pool generates the individual cache items corresponding to each
