@@ -92,5 +92,4 @@ class PoolGetDriverStub implements PoolInterface
     {
         return false;
     }
-
 }
