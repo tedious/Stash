@@ -580,13 +580,13 @@ class Item implements ItemInterface
     public function getExpiration()
     {
         $record = $this->getRecord();
+        $dateTime = new \DateTime();
+
         if (!isset($record['expiration'])) {
-            return false;
+            return $dateTime;
         }
 
-        $dateTime = new \DateTime();
         $dateTime->setTimestamp($record['expiration']);
-
         return $dateTime;
     }
 

@@ -303,7 +303,14 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         $key = array('getExpiration', 'test');
         $stash = $this->testConstruct($key);
 
-        $this->assertFalse($stash->getExpiration(), 'no record exists yet, return null');
+
+        $currentDate = new \DateTime();
+        $returnedDate = $stash->getExpiration();
+
+        $this->assertLessThanOrEqual(2, $currentDate->getTimestamp() -  $returnedDate->getTimestamp(), 'No record set, return as expired.');
+        $this->assertLessThanOrEqual(2, $returnedDate->getTimestamp() -  $currentDate->getTimestamp(), 'No record set, return as expired.');
+
+        #$this->assertFalse($stash->getExpiration(), 'no record exists yet, return null');
 
         $stash->set(array('stuff'), $expiration);
 
