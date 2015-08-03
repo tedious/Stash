@@ -88,6 +88,12 @@ class Item implements ItemInterface
     protected $data;
     protected $expiration;
 
+    protected $invalidationMethod = Invalidation::PRECOMPUTE;
+    protected $invalidationArg1 = null;
+    protected $invalidationArg2 = null;
+
+
+
     /**
      * The identifier for the item being cached. It is set through the setupKey function.
      *
@@ -225,11 +231,14 @@ class Item implements ItemInterface
     /**
      * {@inheritdoc}
      */
-    public function get($invalidation = Invalidation::PRECOMPUTE, $arg = null, $arg2 = null)
+    public function get()
     {
         try {
             if (!isset($this->data)) {
-                $this->data = $this->executeGet($invalidation, $arg, $arg2);
+                $this->data = $this->executeGet(
+                    $this->invalidationMethod,
+                    $this->invalidationArg1,
+                    $this->invalidationArg2);
             }
 
             return $this->data;
@@ -241,7 +250,14 @@ class Item implements ItemInterface
         }
     }
 
-    private function executeGet($invalidation, $arg, $arg2)
+    public function setInvalidationMethod($invalidation = Invalidation::PRECOMPUTE, $arg = null, $arg2 = null)
+    {
+      $this->invalidationMethod = $invalidation;
+      $this->invalidationArg1 = $arg;
+      $this->invalidationArg2 = $arg2;
+    }
+
+    private function executeGet($invalidation = Invalidation::PRECOMPUTE, $arg = null, $arg2 = null)
     {
         $this->isHit = false;
 
@@ -338,12 +354,13 @@ class Item implements ItemInterface
     public function setTTL($ttl = null)
     {
         if (is_numeric($ttl) || ($ttl instanceof \DateInterval)) {
-            $this->expiresAfter($ttl);
+            return $this->expiresAfter($ttl);
         } elseif ($ttl instanceof \DateTimeInterface) {
-            $this->expiresAt($ttl);
+            return $this->expiresAt($ttl);
         } else {
             $this->expiration = null;
         }
+        return $this;
     }
 
     public function expiresAt($expiration = null)
@@ -596,7 +613,6 @@ class Item implements ItemInterface
             case Invalidation::SLEEP:
                 $time = isset($arg) && is_numeric($arg) ? $arg : $this->defaults['sleep_time'];
                 $attempts = isset($arg2) && is_numeric($arg2) ? $arg2 : $this->defaults['sleep_attempts'];
-
                 $ptime = $time * 1000;
 
                 if ($attempts <= 0) {
@@ -606,7 +622,7 @@ class Item implements ItemInterface
                 }
 
                 usleep($ptime);
-                $record['data']['return'] = $this->get(Invalidation::SLEEP, $time, $attempts - 1);
+                $record['data']['return'] = $this->executeGet(Invalidation::SLEEP, $time, $attempts - 1);
                 break;
 
             case Invalidation::OLD:

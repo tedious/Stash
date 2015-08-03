@@ -63,12 +63,9 @@ interface ItemInterface
      * function after call this one. If no value is stored at all then this
      * function will return null.
      *
-     * @param  int        $invalidation
-     * @param  null       $arg
-     * @param  null       $arg2
      * @return mixed|null
      */
-    public function get($invalidation = 0, $arg = null, $arg2 = null);
+    public function get();
 
     /**
      * Returns true if the cached item needs to be refreshed.
