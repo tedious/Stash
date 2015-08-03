@@ -92,10 +92,9 @@ interface ItemInterface
      * unable to be serialized.
      *
      * @param  mixed              $data bool
-     * @param  int|\DateTime|null $ttl  Int is time (seconds), DateTime a future expiration date
      * @return bool               Returns whether the object was successfully stored or not.
      */
-    public function set($data, $ttl = null);
+    public function set($data);
 
     /**
      * Extends the expiration on the current cached item. For some engines this

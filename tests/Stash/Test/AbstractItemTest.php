@@ -180,7 +180,7 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         $newValue = 'newValue';
 
         $runningStash = $this->testConstruct($key);
-        $runningStash->set($oldValue, -300)->save();
+        $runningStash->set($oldValue)->expiresAfter(-300)->save();
 
         // Test without stampede
         $controlStash = $this->testConstruct($key);
@@ -234,7 +234,7 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         unset($unknownStash);
 
         // Test that storing the cache turns off stampede mode.
-        $runningStash->set($newValue, 30)->save();
+        $runningStash->set($newValue)->expiresAfter(30)->save();
         $this->assertAttributeEquals(false, 'stampedeRunning', $runningStash, 'Stampede flag is off.');
         unset($runningStash);
 
@@ -255,7 +255,7 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         // Test Stampede Flag Expiration
         $key = array('stampede', 'expire');
         $Item_SPtest = $this->testConstruct($key);
-        $Item_SPtest->set($oldValue, -300)->save();
+        $Item_SPtest->set($oldValue)->expiresAfter(-300)->save();
         $Item_SPtest->lock(-5);
         $this->assertEquals($oldValue, $Item_SPtest->get(Item::SP_VALUE, $newValue), 'Expired lock is ignored');
     }
@@ -267,7 +267,10 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
 
         $key = array('base', 'expiration', 'test');
         $stash = $this->testConstruct($key);
-        $stash->set(array(1, 2, 3, 'apples'), $expiration)->save();
+
+        $stash->set(array(1, 2, 3, 'apples'))
+          ->expiresAt($expiration)
+          ->save();
 
         $stash = $this->testConstruct($key);
         $data = $stash->get();
@@ -312,7 +315,7 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
 
         #$this->assertFalse($stash->getExpiration(), 'no record exists yet, return null');
 
-        $stash->set(array('stuff'), $expiration)->save();
+        $stash->set(array('stuff'))->expiresAt($expiration)->save();
 
         $stash = $this->testConstruct($key);
         $itemExpiration = $stash->getExpiration();

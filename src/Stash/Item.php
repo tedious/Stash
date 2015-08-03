@@ -321,7 +321,7 @@ class Item implements ItemInterface
     /**
      * {@inheritdoc}
      */
-    public function set($data, $ttl = null)
+    public function set($data)
     {
         if (!isset($this->key)) {
             return false;
@@ -332,7 +332,6 @@ class Item implements ItemInterface
         }
 
         $this->data = $data;
-        $this->setTTL($ttl);
         return $this;
     }
 

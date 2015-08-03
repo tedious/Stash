@@ -130,7 +130,7 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
         $pool = $this->getTestPool();
 
         $stash = $pool->getItem('base', 'one');
-        $stash->set($this->data, -600)->save();
+        $stash->set($this->data)->expiresAfter(-600)->save();
         $this->assertTrue($pool->purge(), 'purge returns true');
 
         $stash = $pool->getItem('base', 'one');
