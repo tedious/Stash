@@ -31,7 +31,7 @@ class EphemeralTest extends AbstractDriverTest
         $item1 = new Item();
         $item1->setPool($poolStub);
         $item1->setKey(array('##', '#'));
-        $item1->set('X'->save());
+        $item1->set('X')->save();
 
         $item2 = new Item();
         $item2->setPool($poolStub);
