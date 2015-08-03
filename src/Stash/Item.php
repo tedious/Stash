@@ -228,7 +228,7 @@ class Item implements ItemInterface
     public function get($invalidation = Invalidation::PRECOMPUTE, $arg = null, $arg2 = null)
     {
         try {
-            if(!isset($this->data)) {
+            if (!isset($this->data)) {
                 $this->data = $this->executeGet($invalidation, $arg, $arg2);
             }
 
@@ -323,38 +323,38 @@ class Item implements ItemInterface
      */
     public function set($data, $ttl = null)
     {
-      if ($this->isDisabled()) {
-          return false;
-      }
-
-      $this->data = $data;
-
-      if(is_numeric($ttl)) {
-        $dateInterval = \DateInterval::createFromDateString(abs($ttl) . ' seconds');
-        $date = new \DateTime();
-        if($ttl > 0) {
-          $date->add($dateInterval);
-        } else {
-          $date->sub($dateInterval);
+        if ($this->isDisabled()) {
+            return false;
         }
-        $this->expiration = $date;
-      } elseif ($ttl instanceof \DateTime) {
-        $this->expiration = $ttl;
-      }
 
-      return $this->save();
+        $this->data = $data;
+
+        if (is_numeric($ttl)) {
+            $dateInterval = \DateInterval::createFromDateString(abs($ttl) . ' seconds');
+            $date = new \DateTime();
+            if ($ttl > 0) {
+                $date->add($dateInterval);
+            } else {
+                $date->sub($dateInterval);
+            }
+            $this->expiration = $date;
+        } elseif ($ttl instanceof \DateTime) {
+            $this->expiration = $ttl;
+        }
+
+        return $this->save();
     }
 
     public function save()
     {
-      try {
-          return $this->executeSet($this->data, $this->expiration);
-      } catch (Exception $e) {
-          $this->logException('Setting value in cache caused exception.', $e);
-          $this->disable();
+        try {
+            return $this->executeSet($this->data, $this->expiration);
+        } catch (Exception $e) {
+            $this->logException('Setting value in cache caused exception.', $e);
+            $this->disable();
 
-          return false;
-      }
+            return false;
+        }
     }
 
     private function executeSet($data, $time)
@@ -613,15 +613,15 @@ class Item implements ItemInterface
      */
     public function getExpiration()
     {
-        if(!isset($this->expiration)) {
-          $record = $this->getRecord();
-          $dateTime = new \DateTime();
+        if (!isset($this->expiration)) {
+            $record = $this->getRecord();
+            $dateTime = new \DateTime();
 
-          if (!isset($record['expiration'])) {
-              return $dateTime;
-          }
+            if (!isset($record['expiration'])) {
+                return $dateTime;
+            }
 
-          $this->expiration = $dateTime->setTimestamp($record['expiration']);
+            $this->expiration = $dateTime->setTimestamp($record['expiration']);
         }
 
         return $this->expiration;
