@@ -252,9 +252,9 @@ class Item implements ItemInterface
 
     public function setInvalidationMethod($invalidation = Invalidation::PRECOMPUTE, $arg = null, $arg2 = null)
     {
-      $this->invalidationMethod = $invalidation;
-      $this->invalidationArg1 = $arg;
-      $this->invalidationArg2 = $arg2;
+        $this->invalidationMethod = $invalidation;
+        $this->invalidationArg1 = $arg;
+        $this->invalidationArg2 = $arg2;
     }
 
     private function executeGet($invalidation = Invalidation::PRECOMPUTE, $arg = null, $arg2 = null)
