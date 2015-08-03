@@ -127,4 +127,10 @@ interface PoolInterface
      * @return bool
      */
     public function setLogger($logger);
+
+
+    public function commit();
+    public function saveDeferred($item);
+    public function save($item);
+    public function deleteItems(array $keys);
 }

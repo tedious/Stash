@@ -72,4 +72,25 @@ class PoolGetDriverStub implements PoolInterface
     {
         return false;
     }
+
+    public function commit()
+    {
+        return false;
+    }
+
+    public function saveDeferred($item)
+    {
+        return false;
+    }
+
+    public function save($item)
+    {
+        return false;
+    }
+
+    public function deleteItems(array $keys)
+    {
+        return false;
+    }
+
 }

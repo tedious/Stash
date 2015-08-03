@@ -165,6 +165,47 @@ class Pool implements PoolInterface
     /**
      * {@inheritdoc}
      */
+    public function save($item)
+    {
+        $item->save();
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function saveDeferred($item)
+    {
+        return $this->save($item);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function commit()
+    {
+        return true;
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function deleteItems(array $keys)
+    {
+        // temporarily cheating here by wrapping around single calls.
+
+        $items = array();
+        foreach ($keys as $key) {
+            $items[] = $this->getItem($key)->clear();
+        }
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function flush()
     {
         if ($this->isDisabled) {

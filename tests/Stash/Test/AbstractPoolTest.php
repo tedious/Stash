@@ -68,6 +68,38 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
         $this->assertAttributeEquals('TestNamespace', 'namespace', $item, 'Pool sets Item namespace.');
     }
 
+    public function testSaveItem()
+    {
+        $pool = $this->getTestPool();
+
+        $item = $pool->getItem('base', 'one');
+        $this->assertInstanceOf('Stash\Item', $item, 'getItem returns a Stash\Item object');
+
+        $key = $item->getKey();
+        $this->assertEquals('base/one', $key, 'Pool sets proper Item key.');
+
+        $item->set($this->data);
+        $this->assertEquals($pool, $pool->save($item), 'Pool->save() returns pool instance.');
+        $storedData = $item->get();
+        $this->assertEquals($this->data, $storedData, 'Pool->save() returns proper data on passed Item.');
+
+        $item = $pool->getItem('base', 'one');
+        $storedData = $item->get();
+        $this->assertEquals($this->data, $storedData, 'Pool->save() returns proper data on new Item instance.');
+
+        $pool->setNamespace('TestNamespace');
+        $item = $pool->getItem(array('test', 'item'));
+
+        $this->assertAttributeEquals('TestNamespace', 'namespace', $item, 'Pool sets Item namespace.');
+    }
+
+    public function testCommit()
+    {
+        $pool = $this->getTestPool();
+        $this->assertTrue($pool->commit());
+    }
+
+
     /**
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Item constructor requires a key.
@@ -88,7 +120,7 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
         $item = $pool->getItem('This/Test//Fail');
     }
 
-    public function testgetItems()
+    public function testGetItems()
     {
         $pool = $this->getTestPool();
 
@@ -111,6 +143,38 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals($this->multiData[$key], $data, 'data put into the pool comes back the same through iterators.');
         }
     }
+
+    public function testDeleteItems()
+    {
+        $pool = $this->getTestPool();
+
+        $keys = array_keys($this->multiData);
+
+        $cacheIterator = $pool->getItems($keys);
+        $keyData = $this->multiData;
+        foreach ($cacheIterator as $stash) {
+            $key = $stash->getKey();
+            $this->assertTrue($stash->isMiss(), 'new Cache in iterator is empty');
+            $stash->set($keyData[$key])->save();
+            unset($keyData[$key]);
+        }
+        $this->assertCount(0, $keyData, 'all keys are accounted for the in cache iterator');
+
+        $cacheIterator = $pool->getItems($keys);
+        foreach ($cacheIterator as $item) {
+            $key = $item->getKey();
+            $data = $item->get($key);
+            $this->assertEquals($this->multiData[$key], $data, 'data put into the pool comes back the same through iterators.');
+        }
+
+        $this->assertEquals($pool, $pool->deleteItems($keys), 'deleteItems returns Pool class.');
+        $cacheIterator = $pool->getItems($keys);
+        foreach ($cacheIterator as $item) {
+            $this->assertTrue($item->isMiss(), 'data cleared using deleteItems is removed from the cache.');
+        }
+    }
+
+
 
     public function testFlushCache()
     {
