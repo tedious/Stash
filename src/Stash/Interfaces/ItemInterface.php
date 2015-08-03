@@ -135,4 +135,5 @@ interface ItemInterface
 
     public function expiresAfter($time);
     public function expiresAt($expiration);
+    public function save();
 }
