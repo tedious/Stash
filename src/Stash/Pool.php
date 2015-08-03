@@ -150,7 +150,7 @@ class Pool implements PoolInterface
     /**
      * {@inheritdoc}
      */
-    public function getItemIterator($keys)
+    public function getItems($keys)
     {
         // temporarily cheating here by wrapping around single calls.
 

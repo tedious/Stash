@@ -43,7 +43,7 @@ class PoolGetDriverStub implements PoolInterface
         return false;
     }
 
-    public function getItemIterator($keys)
+    public function getItems($keys)
     {
         return false;
     }

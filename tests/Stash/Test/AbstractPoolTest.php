@@ -88,13 +88,13 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
         $item = $pool->getItem('This/Test//Fail');
     }
 
-    public function testGetItemIterator()
+    public function testgetItems()
     {
         $pool = $this->getTestPool();
 
         $keys = array_keys($this->multiData);
 
-        $cacheIterator = $pool->getItemIterator($keys);
+        $cacheIterator = $pool->getItems($keys);
         $keyData = $this->multiData;
         foreach ($cacheIterator as $stash) {
             $key = $stash->getKey();
@@ -104,7 +104,7 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
         }
         $this->assertCount(0, $keyData, 'all keys are accounted for the in cache iterator');
 
-        $cacheIterator = $pool->getItemIterator($keys);
+        $cacheIterator = $pool->getItems($keys);
         foreach ($cacheIterator as $stash) {
             $key = $stash->getKey();
             $data = $stash->get($key);
