@@ -47,7 +47,7 @@ class SqliteAnyTest extends \PHPUnit_Framework_TestCase
         $poolSub->setDriver($driver);
         $item->setPool($poolSub);
         $item->setKey($key);
-        $this->assertTrue($item->set($key), 'Able to load and store with unconfigured extension.');
+        $this->assertTrue($item->set($key)->save(), 'Able to load and store with unconfigured extension.');
     }
 
     public static function tearDownAfterClass()

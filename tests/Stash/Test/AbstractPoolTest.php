@@ -55,7 +55,7 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
         $stash = $pool->getItem('base', 'one');
         $this->assertInstanceOf('Stash\Item', $stash, 'getItem returns a Stash\Item object');
 
-        $stash->set($this->data);
+        $stash->set($this->data)->save();
         $storedData = $stash->get();
         $this->assertEquals($this->data, $storedData, 'getItem returns working Stash\Item object');
 
@@ -99,7 +99,7 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
         foreach ($cacheIterator as $stash) {
             $key = $stash->getKey();
             $this->assertTrue($stash->isMiss(), 'new Cache in iterator is empty');
-            $stash->set($keyData[$key]);
+            $stash->set($keyData[$key])->save();
             unset($keyData[$key]);
         }
         $this->assertCount(0, $keyData, 'all keys are accounted for the in cache iterator');
@@ -117,7 +117,7 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
         $pool = $this->getTestPool();
 
         $stash = $pool->getItem('base', 'one');
-        $stash->set($this->data);
+        $stash->set($this->data)->save();
         $this->assertTrue($pool->flush(), 'flush returns true');
 
         $stash = $pool->getItem('base', 'one');
@@ -130,7 +130,7 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
         $pool = $this->getTestPool();
 
         $stash = $pool->getItem('base', 'one');
-        $stash->set($this->data, -600);
+        $stash->set($this->data, -600)->save();
         $this->assertTrue($pool->purge(), 'purge returns true');
 
         $stash = $pool->getItem('base', 'one');

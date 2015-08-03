@@ -75,7 +75,7 @@ class FileSystemTest extends AbstractDriverTest
             $poolStub->setDriver($driver);
             $item->setPool($poolStub);
             $item->setKey($paths);
-            $item->set($rand);
+            $item->set($rand)->save();
 
             $allpaths = array_merge(array('cache'), $paths);
             $predicted = sys_get_temp_dir().

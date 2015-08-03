@@ -112,7 +112,7 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
             $this->assertAttributeInternalType('string', 'keyString', $stash, 'Argument based keys setup keystring');
             $this->assertAttributeInternalType('array', 'key', $stash, 'Argument based keys setup key');
 
-            $this->assertTrue($stash->set($value), 'Driver class able to store data type ' . $type);
+            $this->assertTrue($stash->set($value)->save(), 'Driver class able to store data type ' . $type);
         }
 
         $item = $this->getItem();
@@ -130,7 +130,7 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         foreach ($this->data as $type => $value) {
             $key = array('base', $type);
             $stash = $this->testConstruct($key);
-            $stash->set($value);
+            $stash->set($value)->save();
 
             // new object, but same backend
             $stash = $this->testConstruct($key);
@@ -180,7 +180,7 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         $newValue = 'newValue';
 
         $runningStash = $this->testConstruct($key);
-        $runningStash->set($oldValue, -300);
+        $runningStash->set($oldValue, -300)->save();
 
         // Test without stampede
         $controlStash = $this->testConstruct($key);
@@ -234,7 +234,7 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         unset($unknownStash);
 
         // Test that storing the cache turns off stampede mode.
-        $runningStash->set($newValue, 30);
+        $runningStash->set($newValue, 30)->save();
         $this->assertAttributeEquals(false, 'stampedeRunning', $runningStash, 'Stampede flag is off.');
         unset($runningStash);
 
@@ -255,7 +255,7 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         // Test Stampede Flag Expiration
         $key = array('stampede', 'expire');
         $Item_SPtest = $this->testConstruct($key);
-        $Item_SPtest->set($oldValue, -300);
+        $Item_SPtest->set($oldValue, -300)->save();
         $Item_SPtest->lock(-5);
         $this->assertEquals($oldValue, $Item_SPtest->get(Item::SP_VALUE, $newValue), 'Expired lock is ignored');
     }
@@ -267,7 +267,7 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
 
         $key = array('base', 'expiration', 'test');
         $stash = $this->testConstruct($key);
-        $stash->set(array(1, 2, 3, 'apples'), $expiration);
+        $stash->set(array(1, 2, 3, 'apples'), $expiration)->save();
 
         $stash = $this->testConstruct($key);
         $data = $stash->get();
@@ -285,7 +285,7 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
 
         $this->assertFalse($stash->getCreation(), 'no record exists yet, return null');
 
-        $stash->set(array('stuff'), $creation);
+        $stash->set(array('stuff'), $creation)->save();
 
         $stash = $this->testConstruct($key);
         $createdOn = $stash->getCreation();
@@ -312,7 +312,7 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
 
         #$this->assertFalse($stash->getExpiration(), 'no record exists yet, return null');
 
-        $stash->set(array('stuff'), $expiration);
+        $stash->set(array('stuff'), $expiration)->save();
 
         $stash = $this->testConstruct($key);
         $itemExpiration = $stash->getExpiration();
@@ -331,7 +331,7 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         $key = array('isMiss', 'test');
 
         $stash = $this->testConstruct($key);
-        $stash->set('testString');
+        $stash->set('testString')->save();
 
         $stash = $this->testConstruct($key);
         $this->assertTrue(!$stash->isMiss(), 'isMiss returns false for valid data');
@@ -343,11 +343,11 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         foreach ($this->data as $type => $value) {
             $key = array('base', $type);
             $stash = $this->testConstruct($key);
-            $stash->set($value);
+            $stash->set($value)->save();
             $this->assertAttributeInternalType('string', 'keyString', $stash, 'Argument based keys setup keystring');
             $this->assertAttributeInternalType('array', 'key', $stash, 'Argument based keys setup key');
 
-            $this->assertTrue($stash->set($value), 'Driver class able to store data type ' . $type);
+            $this->assertTrue($stash->set($value)->save(), 'Driver class able to store data type ' . $type);
         }
 
         foreach ($this->data as $type => $value) {
@@ -376,7 +376,7 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         foreach ($this->data as $type => $value) {
             $key = array('base', $type);
             $stash = $this->testConstruct($key);
-            $stash->set($value);
+            $stash->set($value)->save();
         }
 
         // clear
@@ -406,10 +406,11 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
 
 
             $stash = $this->testConstruct($key);
-            $stash->set($value, -600);
+            $stash->set($value, -600)->save();
 
             $stash = $this->testConstruct($key);
-            $this->assertTrue($stash->extend(), 'extend returns true');
+            $this->assertEquals($stash->extend(), $stash, 'extend returns item object');
+            $stash->save();
 
             $stash = $this->testConstruct($key);
             $data = $stash->get();

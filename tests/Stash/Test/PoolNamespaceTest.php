@@ -36,17 +36,17 @@ class PoolNamespaceTest extends AbstractPoolTest
 
         // No Namespace
         $item = $pool->getItem(array('base', 'one'));
-        $item->set($this->data);
+        $item->set($this->data)->save();
 
         // TestNamespace
         $pool->setNamespace('TestNamespace');
         $item = $pool->getItem(array('test', 'one'));
-        $item->set($this->data);
+        $item->set($this->data)->save();
 
         // TestNamespace2
         $pool->setNamespace('TestNamespace2');
         $item = $pool->getItem(array('test', 'one'));
-        $item->set($this->data);
+        $item->set($this->data)->save();
 
         // Flush TestNamespace
         $pool->setNamespace('TestNamespace');

@@ -323,26 +323,54 @@ class Item implements ItemInterface
      */
     public function set($data, $ttl = null)
     {
+        if (!isset($this->key)) {
+            return false;
+        }
+
         if ($this->isDisabled()) {
             return false;
         }
 
         $this->data = $data;
+        $this->setTTL($ttl);
+        return $this;
+    }
 
-        if (is_numeric($ttl)) {
-            $dateInterval = \DateInterval::createFromDateString(abs($ttl) . ' seconds');
-            $date = new \DateTime();
-            if ($ttl > 0) {
+    public function setTTL($ttl = null)
+    {
+        if (is_numeric($ttl) || ($ttl instanceof \DateInterval)) {
+            $this->expiresAfter($ttl);
+        } elseif ($ttl instanceof \DateTimeInterface) {
+            $this->expiresAt($ttl);
+        } else {
+            $this->expiration = null;
+        }
+    }
+
+    public function expiresAt($expiration = null)
+    {
+        $this->expiration = $expiration;
+        return $this;
+    }
+
+    public function expiresAfter($time)
+    {
+        $date = new \DateTime();
+        if (is_numeric($time)) {
+            $dateInterval = \DateInterval::createFromDateString(abs($time) . ' seconds');
+            if ($time > 0) {
                 $date->add($dateInterval);
             } else {
                 $date->sub($dateInterval);
             }
             $this->expiration = $date;
-        } elseif ($ttl instanceof \DateTime) {
-            $this->expiration = $ttl;
+        } elseif ($time instanceof \DateInterval) {
+            $date->add($time);
+            $this->expiration = $date;
+        } else {
         }
 
-        return $this->save();
+        return $this;
     }
 
     public function save()

@@ -134,4 +134,9 @@ interface ItemInterface
      * @return \DateTime
      */
     public function getExpiration();
+
+
+
+    public function expiresAfter($time);
+    public function expiresAt($expiration);
 }
