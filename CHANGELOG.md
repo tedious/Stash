@@ -2,6 +2,8 @@
 
 ### v1.0.0
 
+* Removed SQLite Extension support (SQLite3 is still available).
+
 * The `set` function no longer persists data.
 
 * Removed expiration time for `set` function
