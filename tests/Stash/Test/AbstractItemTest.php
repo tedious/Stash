@@ -300,7 +300,6 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
 
     public function testSetTTLNulll()
     {
-
         $key = array('ttl', 'expiration', 'test');
         $stash = $this->testConstruct($key);
         $stash->set(array(1, 2, 3, 'apples'))
