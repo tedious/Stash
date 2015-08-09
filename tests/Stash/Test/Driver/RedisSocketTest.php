@@ -19,7 +19,8 @@ class RedisSocketTest extends RedisTest
 {
     protected function getOptions()
     {
-        $socket = '/tmp/redis.sock'
+        $socket = '/tmp/redis.sock';
+
         return array('servers' => array(
             array('socket' => $socket, 'ttl' => 0.1)
         ));
