@@ -11,6 +11,7 @@
 
 namespace Stash\Test;
 
+use Stash\Exception\InvalidArgumentException;
 use Stash\Pool;
 use Stash\Driver\Ephemeral;
 use Stash\Test\Stubs\LoggerStub;
@@ -128,8 +129,7 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
 
         $cacheIterator = $pool->getItems($keys);
         $keyData = $this->multiData;
-        foreach ($cacheIterator as $stash) {
-            $key = $stash->getKey();
+        foreach ($cacheIterator as $key => $stash) {
             $this->assertTrue($stash->isMiss(), 'new Cache in iterator is empty');
             $stash->set($keyData[$key])->save();
             unset($keyData[$key]);
@@ -137,8 +137,8 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(0, $keyData, 'all keys are accounted for the in cache iterator');
 
         $cacheIterator = $pool->getItems($keys);
-        foreach ($cacheIterator as $stash) {
-            $key = $stash->getKey();
+        foreach ($cacheIterator as $key => $stash) {
+            $this->assertEquals($key, $stash->getKey(), 'Item key is not equals key in iterator');
             $data = $stash->get($key);
             $this->assertEquals($this->multiData[$key], $data, 'data put into the pool comes back the same through iterators.');
         }
@@ -286,6 +286,9 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('critical', $logger->lastLevel, 'Exceptions logged as critical.');
     }
 
+    /**
+     * @return \Stash\Pool
+     */
     protected function getTestPool()
     {
         return new $this->poolClass();
