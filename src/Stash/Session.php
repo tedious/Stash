@@ -184,7 +184,7 @@ class Session implements \SessionHandlerInterface
     {
         $cache = $this->getCache($session_id);
 
-        return $cache->set($session_data, $this->options['ttl']);
+        return $cache->set($session_data)->expiresAfter($this->options['ttl'])->save();
     }
 
     /**

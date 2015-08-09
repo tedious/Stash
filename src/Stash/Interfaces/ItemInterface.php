@@ -63,12 +63,17 @@ interface ItemInterface
      * function after call this one. If no value is stored at all then this
      * function will return null.
      *
-     * @param  int        $invalidation
-     * @param  null       $arg
-     * @param  null       $arg2
      * @return mixed|null
      */
-    public function get($invalidation = 0, $arg = null, $arg2 = null);
+    public function get();
+
+    /**
+     * Returns true if the cached item is valid and usable.
+     *
+     * @return bool
+     */
+    public function isHit();
+
 
     /**
      * Returns true if the cached item needs to be refreshed.
@@ -92,10 +97,9 @@ interface ItemInterface
      * unable to be serialized.
      *
      * @param  mixed              $data bool
-     * @param  int|\DateTime|null $ttl  Int is time (seconds), DateTime a future expiration date
      * @return bool               Returns whether the object was successfully stored or not.
      */
-    public function set($data, $ttl = null);
+    public function set($data);
 
     /**
      * Extends the expiration on the current cached item. For some engines this
@@ -134,4 +138,36 @@ interface ItemInterface
      * @return \DateTime
      */
     public function getExpiration();
+
+
+    /**
+    * Sets the expiration based off of an integer or DateInterval
+    *
+    * @param int|\DateInterval $time
+    * @return static The invoked object.
+    */
+    public function expiresAfter($time);
+
+
+    /**
+    * Sets the expiration to a specific time.
+    *
+    * @param \DateTimeInterface $expiration
+    * @return static The invoked object.
+    */
+    public function expiresAt($expiration);
+
+
+    /**
+    * Persists the Item's value to the backend storage.
+    *
+    * @return bool
+    */
+    public function save();
+
+
+    /**
+    * @return boolean True if item exists in the cache, false otherwise.
+    */
+   public function exists();
 }

@@ -150,7 +150,7 @@ class Pool implements PoolInterface
     /**
      * {@inheritdoc}
      */
-    public function getItemIterator($keys)
+    public function getItems($keys)
     {
         // temporarily cheating here by wrapping around single calls.
 
@@ -161,6 +161,55 @@ class Pool implements PoolInterface
         }
 
         return new \ArrayIterator($items);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function exists($key)
+    {
+        return $this->getItem($key)->isHit();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function save($item)
+    {
+        $item->save();
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function saveDeferred($item)
+    {
+        return $this->save($item);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function commit()
+    {
+        return true;
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function deleteItems(array $keys)
+    {
+        // temporarily cheating here by wrapping around single calls.
+
+        $items = array();
+        foreach ($keys as $key) {
+            $this->getItem($key)->clear();
+        }
+
+        return $this;
     }
 
     /**
@@ -225,10 +274,6 @@ class Pool implements PoolInterface
      */
     public function getDriver()
     {
-        if (!isset($this->driver)) {
-            $this->driver = new Ephemeral();
-        }
-
         return $this->driver;
     }
 

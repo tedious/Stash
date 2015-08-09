@@ -59,6 +59,6 @@ class MemcacheAnyTest extends \PHPUnit_Framework_TestCase
         $item->setPool($poolStub);
 
         $item->setKey($key);
-        $this->assertTrue($item->set($key), 'Able to load and store with unconfigured extension.');
+        $this->assertTrue($item->set($key)->save(), 'Able to load and store with unconfigured extension.');
     }
 }

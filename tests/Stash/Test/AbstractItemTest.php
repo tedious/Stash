@@ -112,7 +112,7 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
             $this->assertAttributeInternalType('string', 'keyString', $stash, 'Argument based keys setup keystring');
             $this->assertAttributeInternalType('array', 'key', $stash, 'Argument based keys setup key');
 
-            $this->assertTrue($stash->set($value), 'Driver class able to store data type ' . $type);
+            $this->assertTrue($stash->set($value)->save(), 'Driver class able to store data type ' . $type);
         }
 
         $item = $this->getItem();
@@ -130,7 +130,7 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         foreach ($this->data as $type => $value) {
             $key = array('base', $type);
             $stash = $this->testConstruct($key);
-            $stash->set($value);
+            $stash->set($value)->save();
 
             // new object, but same backend
             $stash = $this->testConstruct($key);
@@ -151,17 +151,19 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(null, $item->get(), 'Item without key returns null for get.');
     }
 
-    /**
-     * @expectedException PHPUnit_Framework_Error
-     * @expectedExceptionMessage Argument 1 passed to Stash\Item::setKey()
-     */
     public function testGetItemInvalidKey()
     {
-        $item = $this->getItem();
-        $poolStub = new PoolGetDriverStub();
-        $poolStub->setDriver(new Ephemeral(array()));
-        $item->setPool($poolStub);
-        $item->setKey('This is not an array');
+        try {
+            $item = $this->getItem();
+            $poolStub = new PoolGetDriverStub();
+            $poolStub->setDriver(new Ephemeral(array()));
+            $item->setPool($poolStub);
+            $item->setKey('This is not an array');
+        } catch (\Exception $expected) {
+            return;
+        }
+
+        $this->fail('An expected exception has not been raised.');
     }
 
     public function testLock()
@@ -180,12 +182,12 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         $newValue = 'newValue';
 
         $runningStash = $this->testConstruct($key);
-        $runningStash->set($oldValue, -300);
+        $runningStash->set($oldValue)->expiresAfter(-300)->save();
 
         // Test without stampede
         $controlStash = $this->testConstruct($key);
-
-        $return = $controlStash->get(Item::SP_VALUE, $newValue);
+        $controlStash->setInvalidationMethod(Item::SP_VALUE, $newValue);
+        $return = $controlStash->get();
         $this->assertEquals($oldValue, $return, 'Old value is returned');
         $this->assertTrue($controlStash->isMiss());
         unset($controlStash);
@@ -196,7 +198,7 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
 
         // Old
         $oldStash = $this->testConstruct($key);
-
+        $oldStash->setInvalidationMethod(Item::SP_OLD);
         $return = $oldStash->get(Item::SP_OLD);
         $this->assertEquals($oldValue, $return, 'Old value is returned');
         $this->assertFalse($oldStash->isMiss());
@@ -204,7 +206,7 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
 
         // Value
         $valueStash = $this->testConstruct($key);
-
+        $valueStash->setInvalidationMethod(Item::SP_VALUE, $newValue);
         $return = $valueStash->get(Item::SP_VALUE, $newValue);
         $this->assertEquals($newValue, $return, 'New value is returned');
         $this->assertFalse($valueStash->isMiss());
@@ -212,9 +214,9 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
 
         // Sleep
         $sleepStash = $this->testConstruct($key);
-
+        $sleepStash->setInvalidationMethod(Item::SP_SLEEP, 250, 2);
         $start = microtime(true);
-        $return = $sleepStash->get(array(Item::SP_SLEEP, 250, 2));
+        $return = $sleepStash->get();
         $end = microtime(true);
 
         $this->assertTrue($sleepStash->isMiss());
@@ -234,45 +236,124 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         unset($unknownStash);
 
         // Test that storing the cache turns off stampede mode.
-        $runningStash->set($newValue, 30);
+        $runningStash->set($newValue)->expiresAfter(30)->save();
         $this->assertAttributeEquals(false, 'stampedeRunning', $runningStash, 'Stampede flag is off.');
         unset($runningStash);
 
         // Precompute - test outside limit
         $precomputeStash = $this->testConstruct($key);
-
+        $precomputeStash->setInvalidationMethod(Item::SP_PRECOMPUTE, 10);
         $return = $precomputeStash->get(Item::SP_PRECOMPUTE, 10);
         $this->assertFalse($precomputeStash->isMiss(), 'Cache is marked as hit');
         unset($precomputeStash);
 
         // Precompute - test inside limit
         $precomputeStash = $this->testConstruct($key);
-
-        $return = $precomputeStash->get(Item::SP_PRECOMPUTE, 35);
+        $precomputeStash->setInvalidationMethod(Item::SP_PRECOMPUTE, 35);
+        $return = $precomputeStash->get();
         $this->assertTrue($precomputeStash->isMiss(), 'Cache is marked as miss');
         unset($precomputeStash);
 
         // Test Stampede Flag Expiration
         $key = array('stampede', 'expire');
         $Item_SPtest = $this->testConstruct($key);
-        $Item_SPtest->set($oldValue, -300);
+        $Item_SPtest->setInvalidationMethod(Item::SP_VALUE, $newValue);
+        $Item_SPtest->set($oldValue)->expiresAfter(-300)->save();
         $Item_SPtest->lock(-5);
-        $this->assertEquals($oldValue, $Item_SPtest->get(Item::SP_VALUE, $newValue), 'Expired lock is ignored');
+        $this->assertEquals($oldValue, $Item_SPtest->get(), 'Expired lock is ignored');
     }
 
-    public function testSetWithDateTime()
+    public function testSetTTLDatetime()
+    {
+        $expiration = new \DateTime('now');
+        $expiration->add(new \DateInterval('P1D'));
+
+        $key = array('ttl', 'expiration', 'test');
+        $stash = $this->testConstruct($key);
+
+        $stash->set(array(1, 2, 3, 'apples'))
+          ->setTTL($expiration)
+          ->save();
+        $this->assertLessThanOrEqual($expiration->getTimestamp(), $stash->getExpiration()->getTimestamp());
+
+        $stash = $this->testConstruct($key);
+        $data = $stash->get();
+        $this->assertEquals(array(1, 2, 3, 'apples'), $data, 'getData returns data stores using a datetime expiration');
+        $this->assertLessThanOrEqual($expiration->getTimestamp(), $stash->getExpiration()->getTimestamp());
+    }
+
+    public function testSetTTLDateInterval()
+    {
+        $interval = new \DateInterval('P1D');
+        $expiration = new \DateTime('now');
+        $expiration->add($interval);
+
+        $key = array('ttl', 'expiration', 'test');
+        $stash = $this->testConstruct($key);
+        $stash->set(array(1, 2, 3, 'apples'))
+          ->setTTL($interval)
+          ->save();
+
+        $stash = $this->testConstruct($key);
+        $data = $stash->get();
+        $this->assertEquals(array(1, 2, 3, 'apples'), $data, 'getData returns data stores using a datetime expiration');
+        $this->assertLessThanOrEqual($expiration->getTimestamp(), $stash->getExpiration()->getTimestamp());
+    }
+
+    public function testSetTTLNulll()
+    {
+        $key = array('ttl', 'expiration', 'test');
+        $stash = $this->testConstruct($key);
+        $stash->set(array(1, 2, 3, 'apples'))
+          ->setTTL(null)
+          ->save();
+
+        $this->assertAttributeEquals(null, 'expiration', $stash);
+    }
+
+
+    public function testExpiresAt()
     {
         $expiration = new \DateTime('now');
         $expiration->add(new \DateInterval('P1D'));
 
         $key = array('base', 'expiration', 'test');
         $stash = $this->testConstruct($key);
-        $stash->set(array(1, 2, 3, 'apples'), $expiration);
+
+        $stash->set(array(1, 2, 3, 'apples'))
+          ->expiresAt($expiration)
+          ->save();
+
+        $stash = $this->testConstruct($key);
+        $data = $stash->get();
+        $this->assertEquals(array(1, 2, 3, 'apples'), $data, 'getData returns data stores using a datetime expiration');
+        $this->assertLessThanOrEqual($expiration->getTimestamp(), $stash->getExpiration()->getTimestamp());
+    }
+
+    /**
+     * @expectedException Stash\Exception\InvalidArgumentException
+     * @expectedExceptionMessage expiresAt requires \DateTimeInterface or null
+     */
+    public function testExpiresAtException()
+    {
+        $stash = $this->testConstruct(array('base', 'expiration', 'test'));
+        $stash->expiresAt(false);
+    }
+
+    public function testExpiresAfterWithDateTimeInterval()
+    {
+        $key = array('base', 'expiration', 'test');
+        $stash = $this->testConstruct($key);
+
+        $stash->set(array(1, 2, 3, 'apples'))
+          ->expiresAfter(new \DateInterval('P1D'))
+          ->save();
 
         $stash = $this->testConstruct($key);
         $data = $stash->get();
         $this->assertEquals(array(1, 2, 3, 'apples'), $data, 'getData returns data stores using a datetime expiration');
     }
+
 
     public function testGetCreation()
     {
@@ -285,7 +366,7 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
 
         $this->assertFalse($stash->getCreation(), 'no record exists yet, return null');
 
-        $stash->set(array('stuff'), $creation);
+        $stash->set(array('stuff'), $creation)->save();
 
         $stash = $this->testConstruct($key);
         $createdOn = $stash->getCreation();
@@ -303,9 +384,16 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         $key = array('getExpiration', 'test');
         $stash = $this->testConstruct($key);
 
-        $this->assertFalse($stash->getExpiration(), 'no record exists yet, return null');
 
-        $stash->set(array('stuff'), $expiration);
+        $currentDate = new \DateTime();
+        $returnedDate = $stash->getExpiration();
+
+        $this->assertLessThanOrEqual(2, $currentDate->getTimestamp() -  $returnedDate->getTimestamp(), 'No record set, return as expired.');
+        $this->assertLessThanOrEqual(2, $returnedDate->getTimestamp() -  $currentDate->getTimestamp(), 'No record set, return as expired.');
+
+        #$this->assertFalse($stash->getExpiration(), 'no record exists yet, return null');
+
+        $stash->set(array('stuff'))->expiresAt($expiration)->save();
 
         $stash = $this->testConstruct($key);
         $itemExpiration = $stash->getExpiration();
@@ -324,10 +412,42 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         $key = array('isMiss', 'test');
 
         $stash = $this->testConstruct($key);
-        $stash->set('testString');
+        $stash->set('testString')->save();
 
         $stash = $this->testConstruct($key);
         $this->assertTrue(!$stash->isMiss(), 'isMiss returns false for valid data');
+    }
+
+    public function testIsHit()
+    {
+        $stash = $this->testConstruct(array('This', 'Should', 'Fail'));
+        $this->assertFalse($stash->isHit(), 'isHit returns false for missing data');
+        $data = $stash->get();
+        $this->assertNull($data, 'getData returns null for missing data');
+
+        $key = array('isHit', 'test');
+
+        $stash = $this->testConstruct($key);
+        $stash->set('testString')->save();
+
+        $stash = $this->testConstruct($key);
+        $this->assertTrue($stash->isHit(), 'isHit returns true for valid data');
+    }
+
+    public function testExists()
+    {
+        $stash = $this->testConstruct(array('This', 'Should', 'Fail'));
+        $this->assertFalse($stash->exists(), 'exists returns false for missing data');
+        $data = $stash->get();
+        $this->assertNull($data, 'getData returns null for missing data');
+
+        $key = array('isHit', 'test');
+
+        $stash = $this->testConstruct($key);
+        $stash->set('testString')->save();
+
+        $stash = $this->testConstruct($key);
+        $this->assertTrue($stash->exists(), 'exists returns true for valid data');
     }
 
     public function testClear()
@@ -336,11 +456,11 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         foreach ($this->data as $type => $value) {
             $key = array('base', $type);
             $stash = $this->testConstruct($key);
-            $stash->set($value);
+            $stash->set($value)->save();
             $this->assertAttributeInternalType('string', 'keyString', $stash, 'Argument based keys setup keystring');
             $this->assertAttributeInternalType('array', 'key', $stash, 'Argument based keys setup key');
 
-            $this->assertTrue($stash->set($value), 'Driver class able to store data type ' . $type);
+            $this->assertTrue($stash->set($value)->save(), 'Driver class able to store data type ' . $type);
         }
 
         foreach ($this->data as $type => $value) {
@@ -369,7 +489,7 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         foreach ($this->data as $type => $value) {
             $key = array('base', $type);
             $stash = $this->testConstruct($key);
-            $stash->set($value);
+            $stash->set($value)->save();
         }
 
         // clear
@@ -399,10 +519,11 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
 
 
             $stash = $this->testConstruct($key);
-            $stash->set($value, -600);
+            $stash->set($value, -600)->save();
 
             $stash = $this->testConstruct($key);
-            $this->assertTrue($stash->extend(), 'extend returns true');
+            $this->assertEquals($stash->extend(), $stash, 'extend returns item object');
+            $stash->save();
 
             $stash = $this->testConstruct($key);
             $data = $stash->get();

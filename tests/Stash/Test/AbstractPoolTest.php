@@ -33,8 +33,14 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
 
     public function testSetDriver()
     {
-        $pool = $this->getTestPool();
+        $driver = new Ephemeral();
+        $pool = new $this->poolClass($driver);
+        $this->assertAttributeEquals($driver, 'driver', $pool);
+    }
 
+    public function testSetItemDriver()
+    {
+        $pool = $this->getTestPool();
         $stash = $pool->getItem('test');
         $this->assertAttributeInstanceOf('Stash\Driver\Ephemeral', 'driver', $stash, 'set driver is pushed to new stash objects');
     }
@@ -49,6 +55,28 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
         $this->assertAttributeEquals($mockClassName, 'itemClass', $pool);
     }
 
+    public function testSetItemClassFakeClassException()
+    {
+        try {
+            $pool = $this->getTestPool();
+            $pool->setItemClass('FakeClassName');
+        } catch (\Exception $expected) {
+            return;
+        }
+        $this->fail('An expected exception has not been raised.');
+    }
+
+    public function testSetItemClassImproperClassException()
+    {
+        try {
+            $pool = $this->getTestPool();
+            $pool->setItemClass('\stdClass');
+        } catch (\Exception $expected) {
+            return;
+        }
+        $this->fail('An expected exception has not been raised.');
+    }
+
     public function testGetItem()
     {
         $pool = $this->getTestPool();
@@ -56,7 +84,7 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
         $stash = $pool->getItem('base', 'one');
         $this->assertInstanceOf('Stash\Item', $stash, 'getItem returns a Stash\Item object');
 
-        $stash->set($this->data);
+        $stash->set($this->data)->save();
         $storedData = $stash->get();
         $this->assertEquals($this->data, $storedData, 'getItem returns working Stash\Item object');
 
@@ -68,6 +96,80 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
 
         $this->assertAttributeEquals('TestNamespace', 'namespace', $item, 'Pool sets Item namespace.');
     }
+
+    public function testSaveItem()
+    {
+        $pool = $this->getTestPool();
+
+        $this->assertFalse($pool->exists('base/one'), 'Pool->exists() returns false for item without stored data.');
+        $item = $pool->getItem('base', 'one');
+        $this->assertInstanceOf('Stash\Item', $item, 'getItem returns a Stash\Item object');
+
+        $key = $item->getKey();
+        $this->assertEquals('base/one', $key, 'Pool sets proper Item key.');
+
+        $item->set($this->data);
+        $this->assertEquals($pool, $pool->save($item), 'Pool->save() returns pool instance.');
+        $storedData = $item->get();
+        $this->assertEquals($this->data, $storedData, 'Pool->save() returns proper data on passed Item.');
+
+        $item = $pool->getItem('base', 'one');
+        $storedData = $item->get();
+        $this->assertEquals($this->data, $storedData, 'Pool->save() returns proper data on new Item instance.');
+
+        $this->assertTrue($pool->exists('base/one'), 'Pool->exists() returns true for item with stored data.');
+
+        $pool->setNamespace('TestNamespace');
+        $item = $pool->getItem(array('test', 'item'));
+
+        $this->assertAttributeEquals('TestNamespace', 'namespace', $item, 'Pool sets Item namespace.');
+    }
+
+
+    public function testSaveDeferredItem()
+    {
+        $pool = $this->getTestPool();
+
+        $this->assertFalse($pool->exists('base/one'), 'Pool->exists() returns false for item without stored data.');
+        $item = $pool->getItem('base', 'one');
+        $this->assertInstanceOf('Stash\Item', $item, 'getItem returns a Stash\Item object');
+
+        $key = $item->getKey();
+        $this->assertEquals('base/one', $key, 'Pool sets proper Item key.');
+
+        $item->set($this->data);
+        $this->assertEquals($pool, $pool->saveDeferred($item), 'Pool->save() returns pool instance.');
+        $storedData = $item->get();
+        $this->assertEquals($this->data, $storedData, 'Pool->save() returns proper data on passed Item.');
+
+        $item = $pool->getItem('base', 'one');
+        $storedData = $item->get();
+        $this->assertEquals($this->data, $storedData, 'Pool->save() returns proper data on new Item instance.');
+
+        $this->assertTrue($pool->exists('base/one'), 'Pool->exists() returns true for item with stored data.');
+
+        $pool->setNamespace('TestNamespace');
+        $item = $pool->getItem(array('test', 'item'));
+
+        $this->assertAttributeEquals('TestNamespace', 'namespace', $item, 'Pool sets Item namespace.');
+    }
+
+    public function testExists()
+    {
+        $pool = $this->getTestPool();
+        $this->assertFalse($pool->exists('base/one'), 'Pool->exists() returns false for item without stored data.');
+        $item = $pool->getItem('base', 'one');
+        $item->set($this->data);
+        $pool->save($item);
+        $this->assertTrue($pool->exists('base/one'), 'Pool->exists() returns true for item with stored data.');
+    }
+
+    public function testCommit()
+    {
+        $pool = $this->getTestPool();
+        $this->assertTrue($pool->commit());
+    }
+
 
     /**
      * @expectedException InvalidArgumentException
@@ -89,22 +191,22 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
         $item = $pool->getItem('This/Test//Fail');
     }
 
-    public function testGetItemIterator()
+    public function testGetItems()
     {
         $pool = $this->getTestPool();
 
         $keys = array_keys($this->multiData);
 
-        $cacheIterator = $pool->getItemIterator($keys);
+        $cacheIterator = $pool->getItems($keys);
         $keyData = $this->multiData;
         foreach ($cacheIterator as $key => $stash) {
             $this->assertTrue($stash->isMiss(), 'new Cache in iterator is empty');
-            $stash->set($keyData[$key]);
+            $stash->set($keyData[$key])->save();
             unset($keyData[$key]);
         }
         $this->assertCount(0, $keyData, 'all keys are accounted for the in cache iterator');
 
-        $cacheIterator = $pool->getItemIterator($keys);
+        $cacheIterator = $pool->getItems($keys);
         foreach ($cacheIterator as $key => $stash) {
             $this->assertEquals($key, $stash->getKey(), 'Item key is not equals key in iterator');
             $data = $stash->get($key);
@@ -112,12 +214,44 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    public function testDeleteItems()
+    {
+        $pool = $this->getTestPool();
+
+        $keys = array_keys($this->multiData);
+
+        $cacheIterator = $pool->getItems($keys);
+        $keyData = $this->multiData;
+        foreach ($cacheIterator as $stash) {
+            $key = $stash->getKey();
+            $this->assertTrue($stash->isMiss(), 'new Cache in iterator is empty');
+            $stash->set($keyData[$key])->save();
+            unset($keyData[$key]);
+        }
+        $this->assertCount(0, $keyData, 'all keys are accounted for the in cache iterator');
+
+        $cacheIterator = $pool->getItems($keys);
+        foreach ($cacheIterator as $item) {
+            $key = $item->getKey();
+            $data = $item->get($key);
+            $this->assertEquals($this->multiData[$key], $data, 'data put into the pool comes back the same through iterators.');
+        }
+
+        $this->assertEquals($pool, $pool->deleteItems($keys), 'deleteItems returns Pool class.');
+        $cacheIterator = $pool->getItems($keys);
+        foreach ($cacheIterator as $item) {
+            $this->assertTrue($item->isMiss(), 'data cleared using deleteItems is removed from the cache.');
+        }
+    }
+
+
+
     public function testFlushCache()
     {
         $pool = $this->getTestPool();
 
         $stash = $pool->getItem('base', 'one');
-        $stash->set($this->data);
+        $stash->set($this->data)->save();
         $this->assertTrue($pool->flush(), 'flush returns true');
 
         $stash = $pool->getItem('base', 'one');
@@ -130,7 +264,7 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
         $pool = $this->getTestPool();
 
         $stash = $pool->getItem('base', 'one');
-        $stash->set($this->data, -600);
+        $stash->set($this->data)->expiresAfter(-600)->save();
         $this->assertTrue($pool->purge(), 'purge returns true');
 
         $stash = $pool->getItem('base', 'one');
@@ -180,7 +314,10 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
         $logger = new LoggerStub();
         $pool->setLogger($logger);
 
-        $this->assertAttributeInstanceOf('Stash\Test\Stubs\LoggerStub', 'logger', $pool, 'setLogger injects logger into Item.');
+        $this->assertAttributeInstanceOf('Stash\Test\Stubs\LoggerStub', 'logger', $pool, 'setLogger injects logger into Pool.');
+
+        $item = $pool->getItem('testItem');
+        $this->assertAttributeInstanceOf('Stash\Test\Stubs\LoggerStub', 'logger', $item, 'setLogger injects logger into Pool.');
     }
 
     public function testLoggerFlush()
