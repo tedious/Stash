@@ -44,7 +44,7 @@ else
 
 
 
-    if [ "$TRAVIS_PHP_VERSION" != "5.4" && "$TRAVIS_PHP_VERSION" != "hhvm" ]
+    if [ "$TRAVIS_PHP_VERSION" != "5.4" ] && [ "$TRAVIS_PHP_VERSION" != "hhvm" ]
     then
         echo ""
         echo "******************************"
