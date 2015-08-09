@@ -512,16 +512,6 @@ class Item implements ItemInterface
     }
 
     /**
-     * Sets the driver this object uses to interact with the caching system.
-     *
-     * @param DriverInterface $driver
-     */
-    protected function setDriver(DriverInterface $driver)
-    {
-        $this->driver = $driver;
-    }
-
-    /**
      * Logs an exception with the Logger class, if it exists.
      *
      * @param  string     $message
