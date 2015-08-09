@@ -376,7 +376,10 @@ class Item implements ItemInterface
     public function expiresAt($expiration = null)
     {
         if (!is_null($expiration) && !($expiration instanceof \DateTimeInterface)) {
-            throw new InvalidArgumentException('expiresAt requires \DateTimeInterface or null');
+            # For compatbility with PHP 5.4 we also allow inheriting from the DateTime object.
+            if(!($expiration instanceof \DateTime)) {
+              throw new InvalidArgumentException('expiresAt requires \DateTimeInterface or null');
+            }
         }
 
         $this->expiration = $expiration;
