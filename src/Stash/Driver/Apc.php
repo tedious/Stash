@@ -186,4 +186,13 @@ class Apc extends AbstractDriver
 
         return $this->ttl < $life ? $this->ttl : $life;
     }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isPersistent()
+    {
+        return true;
+    }
 }

@@ -28,6 +28,7 @@ class FileSystemTest extends AbstractDriverTest
 {
     protected $driverClass = 'Stash\Driver\FileSystem';
     protected $extension = '.php';
+    protected $persistence = true;
 
     protected function getOptions($options = array())
     {

@@ -44,6 +44,7 @@ abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
     protected $driverClass;
     protected $startTime;
     protected $setup = false;
+    protected $persistence = false;
 
     public static function tearDownAfterClass()
     {
@@ -226,5 +227,16 @@ abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
     public function testDestructor($driver)
     {
         $driver=null;
+    }
+
+    /**
+     * @depends testDestructor
+     */
+    public function testIsPersistant()
+    {
+        if (!$driver = $this->getFreshDriver()) {
+            $this->markTestSkipped('Driver class unsuited for current environment');
+        }
+        $this->assertEquals($this->persistence, $driver->isPersistent());
     }
 }
