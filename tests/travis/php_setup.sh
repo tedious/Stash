@@ -50,7 +50,8 @@ else
         echo "Installing apcu-beta extension"
         echo "******************************"
         set +e
-        echo "no" | pecl install apcu-beta
+        pecl config-set preferred_state beta
+        printf "yes\n" | pecl install apcu
         set -e
         echo "Finished installing apcu-beta extension."
     fi
