@@ -365,7 +365,7 @@ class Item implements ItemInterface
     {
         if (is_numeric($ttl) || ($ttl instanceof \DateInterval)) {
             return $this->expiresAfter($ttl);
-        } elseif ($ttl instanceof \DateTimeInterface) {
+        } elseif (($ttl instanceof \DateTimeInterface) || ($ttl instanceof \DateTime)) {
             return $this->expiresAt($ttl);
         } else {
             $this->expiration = null;
