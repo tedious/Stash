@@ -12,6 +12,7 @@
 namespace Stash;
 
 use Stash\Exception\Exception;
+use Stash\Exception\InvalidArgumentException;
 use Stash\Interfaces\DriverInterface;
 use Stash\Interfaces\ItemInterface;
 use Stash\Interfaces\PoolInterface;
@@ -374,6 +375,10 @@ class Item implements ItemInterface
 
     public function expiresAt($expiration = null)
     {
+        if(!is_null($expiration) && !($expiration instanceof \DateTimeInterface)) {
+          throw new InvalidArgumentException('expiresAt requires \DateTimeInterface or null');
+        }
+
         $this->expiration = $expiration;
         return $this;
     }
