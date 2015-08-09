@@ -198,7 +198,7 @@ class Pool implements PoolInterface
 
         $items = array();
         foreach ($keys as $key) {
-            $items[] = $this->getItem($key)->clear();
+            $this->getItem($key)->clear();
         }
 
         return $this;
