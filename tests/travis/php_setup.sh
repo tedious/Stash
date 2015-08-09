@@ -43,7 +43,7 @@ else
     echo "Finished installing uopz extension."
 
 
-    if [ "$TRAVIS_PHP_VERSION" != "5.4" ] && [ "$TRAVIS_PHP_VERSION" != "hhvm" ]
+    if [ "$TRAVIS_PHP_VERSION" != "5.4" ]
     then
         echo ""
         echo "******************************"
@@ -55,13 +55,14 @@ else
         echo "Finished installing apcu-beta extension."
     fi
 
-
-    echo ""
-    echo "*********************"
-    echo "Updating php.ini file"
-    echo "*********************"
-    echo ""
-    echo ""
-    phpenv config-add tests/travis/php_extensions.ini
-
+    if [ -f "tests/travis/php_extensions_${TRAVIS_PHP_VERSION}.ini" ]
+    then
+      echo ""
+      echo "*********************"
+      echo "Updating php.ini file"
+      echo "*********************"
+      echo ""
+      echo ""
+      phpenv config-add "tests/travis/php_extensions_${TRAVIS_PHP_VERSION}.ini"
+    fi
 fi
