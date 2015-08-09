@@ -272,7 +272,7 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         $stash->set(array(1, 2, 3, 'apples'))
           ->setTTL($expiration)
           ->save();
-        $this->assertEquals($expiration, $stash->getExpiration());
+        $this->assertLessThanOrEqual($expiration->getTimestamp(), $stash->getExpiration()->getTimestamp());
 
         $stash = $this->testConstruct($key);
         $data = $stash->get();
