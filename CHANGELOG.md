@@ -18,7 +18,9 @@
 
 * Added `isHit` function to ItemInterface.
 
-* Added the "exists" function, which should mostly be avoided.
+* Added the `exists` function to ItemInterface, which should mostly be avoided.
+
+* Added the `exists` function to the Pool, which should mostly be avoided.
 
 
 ## Stash v0.13 Changelog

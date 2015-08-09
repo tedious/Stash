@@ -472,6 +472,27 @@ class Item implements ItemInterface
     /**
      * {@inheritdoc}
      */
+    public function exists()
+    {
+        if ($this->isDisabled()) {
+            return false;
+        }
+        $storedData = $this->driver->getData($this->key);
+
+        if ($storedData === false) {
+            return false;
+        }
+
+        if (!is_array($storedData)) {
+            return false;
+        }
+
+        return isset($storedData['data']);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function isDisabled()
     {
         return self::$runtimeDisable
