@@ -1,3 +1,26 @@
+## Stash v1.0.0 Changelog
+
+### v1.0.0
+
+* The `set` function no longer persists data.
+
+* Removed expiration time for `set` function
+
+* Added `expiresAt` and `expiresAfter` functions to the Item class.
+
+* `getExpiration` to return current datetime when no record exists.
+
+* Added `save` function to ItemInterface.
+
+* Changed `getItemIterator` to `getItems`
+
+* RuntimeException now extends from \RuntimeException
+
+* Added `isHit` function to ItemInterface.
+
+* Added the "exists" function, which should mostly be avoided.
+
+
 ## Stash v0.13 Changelog
 
 ### 0.13.1
