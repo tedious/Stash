@@ -160,7 +160,10 @@ interface PoolInterface
 
 
     /**
+    * Checks for the existance of an item in the cache.
+    *
+    * @param  array|string $key    
     * @return boolean True if item exists in the cache, false otherwise.
     */
-    public function exists();
+    public function exists($key);
 }
