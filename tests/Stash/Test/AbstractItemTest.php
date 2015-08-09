@@ -154,13 +154,12 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
     public function testGetItemInvalidKey()
     {
         try {
-          $item = $this->getItem();
-          $poolStub = new PoolGetDriverStub();
-          $poolStub->setDriver(new Ephemeral(array()));
-          $item->setPool($poolStub);
-          $item->setKey('This is not an array');
-        }
-        catch (\Exception $expected) {
+            $item = $this->getItem();
+            $poolStub = new PoolGetDriverStub();
+            $poolStub->setDriver(new Ephemeral(array()));
+            $item->setPool($poolStub);
+            $item->setKey('This is not an array');
+        } catch (\Exception $expected) {
             return;
         }
 
