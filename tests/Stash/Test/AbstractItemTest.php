@@ -159,7 +159,6 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
             $poolStub->setDriver(new Ephemeral(array()));
             $item->setPool($poolStub);
             $item->setKey('This is not an array');
-
         } catch (\Throwable $t) {
             return;
         } catch (\Exception $expected) {
