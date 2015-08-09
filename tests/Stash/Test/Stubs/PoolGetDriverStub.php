@@ -73,6 +73,11 @@ class PoolGetDriverStub implements PoolInterface
         return false;
     }
 
+    public function exists($key)
+    {
+        return false;
+    }
+
     public function commit()
     {
         return false;

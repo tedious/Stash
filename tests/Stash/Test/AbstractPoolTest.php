@@ -73,6 +73,7 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
     {
         $pool = $this->getTestPool();
 
+        $this->assertFalse($pool->exists('base/one'), 'Pool->exists() returns false for item without stored data.');
         $item = $pool->getItem('base', 'one');
         $this->assertInstanceOf('Stash\Item', $item, 'getItem returns a Stash\Item object');
 
@@ -88,10 +89,22 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
         $storedData = $item->get();
         $this->assertEquals($this->data, $storedData, 'Pool->save() returns proper data on new Item instance.');
 
+        $this->assertTrue($pool->exists('base/one'), 'Pool->exists() returns true for item with stored data.');
+
         $pool->setNamespace('TestNamespace');
         $item = $pool->getItem(array('test', 'item'));
 
         $this->assertAttributeEquals('TestNamespace', 'namespace', $item, 'Pool sets Item namespace.');
+    }
+
+    public function testExists()
+    {
+        $pool = $this->getTestPool();
+        $this->assertFalse($pool->exists('base/one'), 'Pool->exists() returns false for item without stored data.');
+        $item = $pool->getItem('base', 'one');
+        $item->set($this->data);
+        $pool->save($item);
+        $this->assertTrue($pool->exists('base/one'), 'Pool->exists() returns true for item with stored data.');
     }
 
     public function testCommit()

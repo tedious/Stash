@@ -133,4 +133,5 @@ interface PoolInterface
     public function saveDeferred($item);
     public function save($item);
     public function deleteItems(array $keys);
+    public function exists($key);
 }

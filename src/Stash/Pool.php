@@ -166,6 +166,14 @@ class Pool implements PoolInterface
     /**
      * {@inheritdoc}
      */
+    public function exists($key)
+    {
+        return $this->getItem($key)->isHit();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function save($item)
     {
         $item->save();
