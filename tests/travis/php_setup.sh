@@ -35,6 +35,15 @@ else
 
     echo ""
     echo "******************************"
+    echo "Installing sqlite extension."
+    echo "******************************"
+    set +e
+    pecl install sqlite
+    set -e
+    echo "Finished installing sqlite extension."
+
+    echo ""
+    echo "******************************"
     echo "Installing uopz extension if possible (PHP >=5.4)."
     echo "******************************"
     set +e
