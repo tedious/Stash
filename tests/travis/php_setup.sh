@@ -42,11 +42,6 @@ else
     set -e
     echo "Finished installing uopz extension."
 
-    if [ "$TRAVIS_PHP_VERSION" == "5.4" ]
-    then
-      echo "extension = apc.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-    fi
-
 
     if [ "$TRAVIS_PHP_VERSION" != "5.4" ] && [ "$TRAVIS_PHP_VERSION" != "hhvm" ]
     then
@@ -56,7 +51,6 @@ else
         echo "******************************"
         set +e
         echo "no" | pecl install apcu-beta
-        echo "extension = apcu.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
         set -e
         echo "Finished installing apcu-beta extension."
     fi
