@@ -42,6 +42,10 @@ else
     set -e
     echo "Finished installing uopz extension."
 
+    if [ "$TRAVIS_PHP_VERSION" == "5.4" ]
+    then
+      echo "extension = apc.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+    fi
 
 
     if [ "$TRAVIS_PHP_VERSION" != "5.4" ] && [ "$TRAVIS_PHP_VERSION" != "hhvm" ]
