@@ -18,6 +18,7 @@ namespace Stash\Test\Driver;
 class ApcTest extends AbstractDriverTest
 {
     protected $driverClass = 'Stash\Driver\Apc';
+    protected $persistence = true;
 
     public function testSetOptions()
     {

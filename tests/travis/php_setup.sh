@@ -42,12 +42,27 @@ else
     set -e
     echo "Finished installing uopz extension."
 
-    echo ""
-    echo "*********************"
-    echo "Updating php.ini file"
-    echo "*********************"
-    echo ""
-    echo ""
-    phpenv config-add tests/travis/php_extensions.ini
 
+    if [ "$TRAVIS_PHP_VERSION" != "5.4" ]
+    then
+        echo ""
+        echo "******************************"
+        echo "Installing apcu-beta extension"
+        echo "******************************"
+        set +e
+        echo "no" | pecl install apcu-beta
+        set -e
+        echo "Finished installing apcu-beta extension."
+    fi
+
+    if [ -f "tests/travis/php_extensions_${TRAVIS_PHP_VERSION}.ini" ]
+    then
+      echo ""
+      echo "*********************"
+      echo "Updating php.ini file"
+      echo "*********************"
+      echo ""
+      echo ""
+      phpenv config-add "tests/travis/php_extensions_${TRAVIS_PHP_VERSION}.ini"
+    fi
 fi

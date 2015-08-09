@@ -25,6 +25,7 @@ class MemcacheTest extends AbstractDriverTest
     protected $extension = 'memcache';
 
     protected $servers = array('127.0.0.1', '11211');
+    protected $persistence = true;
 
     protected function getOptions()
     {

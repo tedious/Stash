@@ -23,6 +23,7 @@ class RedisTest extends AbstractDriverTest
 
     protected $redisNoServer = '127.0.0.1';
     protected $redisNoPort = '6381';
+    protected $persistence = true;
 
     protected function setUp()
     {
