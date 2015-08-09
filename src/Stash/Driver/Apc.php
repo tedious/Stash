@@ -150,8 +150,7 @@ class Apc extends AbstractDriver
             return false;
         }
 
-        return (extension_loaded('apc') && ini_get('apc.enabled'))
-            && ((php_sapi_name() !== 'cli') || ini_get('apc.enable_cli'));
+        return function_exists('apc_fetch');
     }
 
     /**
