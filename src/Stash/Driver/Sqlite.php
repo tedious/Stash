@@ -276,7 +276,7 @@ class Sqlite extends AbstractDriver
      */
     public static function isAvailable()
     {
-        return (Sub\SqlitePdo::isAvailable()) || (Sub\Sqlite::isAvailable()) || (Sub\SqlitePdo2::isAvailable());
+        return (Sub\SqlitePdo::isAvailable()) || (Sub\SqlitePdo2::isAvailable());
     }
 
     /**
