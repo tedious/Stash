@@ -140,8 +140,34 @@ interface ItemInterface
     public function getExpiration();
 
 
-
+    /**
+    * Sets the expiration based off of an integer or DateInterval
+    *
+    * @param int|\DateInterval $time
+    * @return static The invoked object.
+    */
     public function expiresAfter($time);
+
+
+    /**
+    * Sets the expiration to a specific time.
+    *
+    * @param \DateTimeInterface $expiration
+    * @return static The invoked object.
+    */
     public function expiresAt($expiration);
+
+
+    /**
+    * Persists the Item's value to the backend storage.
+    *
+    * @return bool
+    */
     public function save();
+
+
+    /**
+    * @return boolean True if item exists in the cache, false otherwise.
+    */
+   public function exists();
 }

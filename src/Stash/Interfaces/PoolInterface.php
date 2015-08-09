@@ -128,10 +128,39 @@ interface PoolInterface
      */
     public function setLogger($logger);
 
-
+    /**
+    * Forces any save-deferred objects to get flushed to the backend drivers.
+    */
     public function commit();
+
+    /**
+    * Sets an Item to be saved at some point. This allows buffering for
+    * multi-save events.
+    *
+    * @param CacheItemInterface $item
+    * @return static The invoked object.
+    */
     public function saveDeferred($item);
+
+    /**
+    * Sets an Item to be saved immediately.
+    *
+    * @param CacheItemInterface $item
+    * @return static The invoked object.
+    */
     public function save($item);
+
+    /**
+     * Removes multiple items from the pool.
+     *
+     * @param array $keys
+     * @return static The invoked object.
+     */
     public function deleteItems(array $keys);
-    public function exists($key);
+
+
+    /**
+    * @return boolean True if item exists in the cache, false otherwise.
+    */
+    public function exists();
 }
