@@ -12,6 +12,7 @@
 namespace Stash;
 
 use Stash\Exception\Exception;
+use Stash\Exception\InvalidArgumentException;
 use Stash\Interfaces\DriverInterface;
 use Stash\Interfaces\ItemInterface;
 use Stash\Interfaces\PoolInterface;
@@ -84,6 +85,15 @@ class Item implements ItemInterface
                                 'sleep_attempts' => 1, // number of times to sleep, wake up, and recheck cache
                                 'stampede_ttl' => 30, // How long a stampede flag will be acknowledged
     );
+
+    protected $data;
+    protected $expiration;
+
+    protected $invalidationMethod = Invalidation::PRECOMPUTE;
+    protected $invalidationArg1 = null;
+    protected $invalidationArg2 = null;
+
+
 
     /**
      * The identifier for the item being cached. It is set through the setupKey function.
@@ -209,6 +219,9 @@ class Item implements ItemInterface
 
     private function executeClear()
     {
+        unset($this->data);
+        unset($this->expiration);
+
         if ($this->isDisabled()) {
             return false;
         }
@@ -219,10 +232,17 @@ class Item implements ItemInterface
     /**
      * {@inheritdoc}
      */
-    public function get($invalidation = Invalidation::PRECOMPUTE, $arg = null, $arg2 = null)
+    public function get()
     {
         try {
-            return $this->executeGet($invalidation, $arg, $arg2);
+            if (!isset($this->data)) {
+                $this->data = $this->executeGet(
+                    $this->invalidationMethod,
+                    $this->invalidationArg1,
+                    $this->invalidationArg2);
+            }
+
+            return $this->data;
         } catch (Exception $e) {
             $this->logException('Retrieving from cache caused exception.', $e);
             $this->disable();
@@ -231,7 +251,14 @@ class Item implements ItemInterface
         }
     }
 
-    private function executeGet($invalidation, $arg, $arg2)
+    public function setInvalidationMethod($invalidation = Invalidation::PRECOMPUTE, $arg = null, $arg2 = null)
+    {
+        $this->invalidationMethod = $invalidation;
+        $this->invalidationArg1 = $arg;
+        $this->invalidationArg2 = $arg2;
+    }
+
+    private function executeGet($invalidation = Invalidation::PRECOMPUTE, $arg = null, $arg2 = null)
     {
         $this->isHit = false;
 
@@ -266,6 +293,15 @@ class Item implements ItemInterface
         $this->validateRecord($invalidation, $record);
 
         return isset($record['data']['return']) ? $record['data']['return'] : null;
+    }
+
+
+    /**
+    * {@inheritdoc}
+    */
+    public function isHit()
+    {
+        return !$this->isMiss();
     }
 
     /**
@@ -311,10 +347,66 @@ class Item implements ItemInterface
     /**
      * {@inheritdoc}
      */
-    public function set($data, $ttl = null)
+    public function set($data)
+    {
+        if (!isset($this->key)) {
+            return false;
+        }
+
+        if ($this->isDisabled()) {
+            return false;
+        }
+
+        $this->data = $data;
+        return $this;
+    }
+
+    public function setTTL($ttl = null)
+    {
+        if (is_numeric($ttl) || ($ttl instanceof \DateInterval)) {
+            return $this->expiresAfter($ttl);
+        } elseif ($ttl instanceof \DateTimeInterface) {
+            return $this->expiresAt($ttl);
+        } else {
+            $this->expiration = null;
+        }
+        return $this;
+    }
+
+    public function expiresAt($expiration = null)
+    {
+        if(!is_null($expiration) && !($expiration instanceof \DateTimeInterface)) {
+          throw new InvalidArgumentException('expiresAt requires \DateTimeInterface or null');
+        }
+
+        $this->expiration = $expiration;
+        return $this;
+    }
+
+    public function expiresAfter($time)
+    {
+        $date = new \DateTime();
+        if (is_numeric($time)) {
+            $dateInterval = \DateInterval::createFromDateString(abs($time) . ' seconds');
+            if ($time > 0) {
+                $date->add($dateInterval);
+            } else {
+                $date->sub($dateInterval);
+            }
+            $this->expiration = $date;
+        } elseif ($time instanceof \DateInterval) {
+            $date->add($time);
+            $this->expiration = $date;
+        } else {
+        }
+
+        return $this;
+    }
+
+    public function save()
     {
         try {
-            return $this->executeSet($data, $ttl);
+            return $this->executeSet($this->data, $this->expiration);
         } catch (Exception $e) {
             $this->logException('Setting value in cache caused exception.', $e);
             $this->disable();
@@ -535,7 +627,6 @@ class Item implements ItemInterface
             case Invalidation::SLEEP:
                 $time = isset($arg) && is_numeric($arg) ? $arg : $this->defaults['sleep_time'];
                 $attempts = isset($arg2) && is_numeric($arg2) ? $arg2 : $this->defaults['sleep_attempts'];
-
                 $ptime = $time * 1000;
 
                 if ($attempts <= 0) {
@@ -545,7 +636,7 @@ class Item implements ItemInterface
                 }
 
                 usleep($ptime);
-                $record['data']['return'] = $this->get(Invalidation::SLEEP, $time, $attempts - 1);
+                $record['data']['return'] = $this->executeGet(Invalidation::SLEEP, $time, $attempts - 1);
                 break;
 
             case Invalidation::OLD:
@@ -579,15 +670,18 @@ class Item implements ItemInterface
      */
     public function getExpiration()
     {
-        $record = $this->getRecord();
-        if (!isset($record['expiration'])) {
-            return false;
+        if (!isset($this->expiration)) {
+            $record = $this->getRecord();
+            $dateTime = new \DateTime();
+
+            if (!isset($record['expiration'])) {
+                return $dateTime;
+            }
+
+            $this->expiration = $dateTime->setTimestamp($record['expiration']);
         }
 
-        $dateTime = new \DateTime();
-        $dateTime->setTimestamp($record['expiration']);
-
-        return $dateTime;
+        return $this->expiration;
     }
 
     /**

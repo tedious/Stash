@@ -66,7 +66,7 @@ interface PoolInterface
      * @param  array     $keys
      * @return \Iterator
      */
-    public function getItemIterator($keys);
+    public function getItems($keys);
 
     /**
      * Empties the entire cache pool of all Items.
@@ -127,4 +127,11 @@ interface PoolInterface
      * @return bool
      */
     public function setLogger($logger);
+
+
+    public function commit();
+    public function saveDeferred($item);
+    public function save($item);
+    public function deleteItems(array $keys);
+    public function exists($key);
 }

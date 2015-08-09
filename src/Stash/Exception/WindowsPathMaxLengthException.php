@@ -28,7 +28,7 @@ namespace Stash\Exception;
  * @package Stash\Exception
  * @author Jonathan Chan <jc@jmccc.com>
  */
-class WindowsPathMaxLengthException extends \Exception implements Exception
+class WindowsPathMaxLengthException extends RuntimeException implements Exception
 {
     public function __construct($message="", $code=0, $previous=null)
     {

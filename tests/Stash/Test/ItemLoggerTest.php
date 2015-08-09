@@ -75,7 +75,7 @@ class ItemLoggerTest extends \PHPUnit_Framework_TestCase
         $item->setLogger($logger);
 
         // triggerlogging
-        $item->set('test_key');
+        $item->set('test_key')->save();
 
         $this->assertInstanceOf('Stash\Test\Exception\TestException',
                                 $logger->lastContext['exception'], 'Logger was passed exception in event context.');

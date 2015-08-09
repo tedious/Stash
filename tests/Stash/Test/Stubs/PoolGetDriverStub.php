@@ -43,7 +43,7 @@ class PoolGetDriverStub implements PoolInterface
         return false;
     }
 
-    public function getItemIterator($keys)
+    public function getItems($keys)
     {
         return false;
     }
@@ -69,6 +69,31 @@ class PoolGetDriverStub implements PoolInterface
     }
 
     public function setLogger($logger)
+    {
+        return false;
+    }
+
+    public function exists($key)
+    {
+        return false;
+    }
+
+    public function commit()
+    {
+        return false;
+    }
+
+    public function saveDeferred($item)
+    {
+        return false;
+    }
+
+    public function save($item)
+    {
+        return false;
+    }
+
+    public function deleteItems(array $keys)
     {
         return false;
     }

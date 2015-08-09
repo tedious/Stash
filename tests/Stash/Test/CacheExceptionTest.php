@@ -31,7 +31,7 @@ class CacheExceptionTest extends \PHPUnit_Framework_TestCase
         $item->setKey(array('path', 'to', 'store'));
 
         $this->assertFalse($item->isDisabled());
-        $this->assertFalse($item->set(array(1, 2, 3), 3600));
+        $this->assertFalse($item->set(array(1, 2, 3), 3600)->save());
         $this->assertTrue($item->isDisabled(), 'Is disabled after exception is thrown in driver');
     }
 
