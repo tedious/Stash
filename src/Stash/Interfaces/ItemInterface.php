@@ -68,6 +68,14 @@ interface ItemInterface
     public function get();
 
     /**
+     * Returns true if the cached item is valid and usable.
+     *
+     * @return bool
+     */
+    public function isHit();
+
+
+    /**
      * Returns true if the cached item needs to be refreshed.
      *
      * @return bool

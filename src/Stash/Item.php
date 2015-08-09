@@ -294,6 +294,15 @@ class Item implements ItemInterface
         return isset($record['data']['return']) ? $record['data']['return'] : null;
     }
 
+
+    /**
+    * {@inheritdoc}
+    */
+    public function isHit()
+    {
+        return !$this->isMiss();
+    }
+
     /**
      * {@inheritdoc}
      */
