@@ -74,17 +74,12 @@ class Sqlite extends AbstractDriver
         if (Sub\SqlitePdo::isAvailable()) {
             $subdrivers['pdo'] = '\Stash\Driver\Sub\SqlitePdo';
         }
-        if (Sub\Sqlite::isAvailable()) {
-            $subdrivers['sqlite'] = '\Stash\Driver\Sub\Sqlite';
-        }
         if (Sub\SqlitePdo2::isAvailable()) {
             $subdrivers['pdo2'] = '\Stash\Driver\Sub\SqlitePdo2';
         }
 
         if ($extension == 'pdo' && $version != '2' && isset($subdrivers['pdo'])) {
             $driver = $subdrivers['pdo'];
-        } elseif ($extension == 'sqlite' && isset($subdrivers['sqlite'])) {
-            $driver = $subdrivers['sqlite'];
         } elseif ($extension == 'pdo' && $version != '3' && isset($subdrivers['pdo2'])) {
             $driver = $subdrivers['pdo2'];
         } elseif (count($subdrivers) > 0 && $extension == 'any') {
@@ -281,7 +276,7 @@ class Sqlite extends AbstractDriver
      */
     public static function isAvailable()
     {
-        return (Sub\SqlitePdo::isAvailable()) || (Sub\Sqlite::isAvailable()) || (Sub\SqlitePdo2::isAvailable());
+        return (Sub\SqlitePdo::isAvailable()) || (Sub\SqlitePdo2::isAvailable());
     }
 
     /**
