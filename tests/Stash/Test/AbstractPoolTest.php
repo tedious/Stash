@@ -33,8 +33,14 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
 
     public function testSetDriver()
     {
-        $pool = $this->getTestPool();
+        $driver = new Ephemeral();
+        $pool = new $this->poolClass($driver);
+        $this->assertAttributeEquals($driver, 'driver', $pool);
+    }
 
+    public function testSetItemDriver()
+    {
+        $pool = $this->getTestPool();
         $stash = $pool->getItem('test');
         $this->assertAttributeInstanceOf('Stash\Driver\Ephemeral', 'driver', $stash, 'set driver is pushed to new stash objects');
     }
@@ -47,6 +53,28 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($pool->setItemClass($mockClassName));
         $this->assertAttributeEquals($mockClassName, 'itemClass', $pool);
+    }
+
+    public function testSetItemClassFakeClassException()
+    {
+        try {
+            $pool = $this->getTestPool();
+            $pool->setItemClass('FakeClassName');
+        } catch (\Exception $expected) {
+            return;
+        }
+        $this->fail('An expected exception has not been raised.');
+    }
+
+    public function testSetItemClassImproperClassException()
+    {
+        try {
+            $pool = $this->getTestPool();
+            $pool->setItemClass('\stdClass');
+        } catch (\Exception $expected) {
+            return;
+        }
+        $this->fail('An expected exception has not been raised.');
     }
 
     public function testGetItem()
@@ -82,6 +110,35 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
 
         $item->set($this->data);
         $this->assertEquals($pool, $pool->save($item), 'Pool->save() returns pool instance.');
+        $storedData = $item->get();
+        $this->assertEquals($this->data, $storedData, 'Pool->save() returns proper data on passed Item.');
+
+        $item = $pool->getItem('base', 'one');
+        $storedData = $item->get();
+        $this->assertEquals($this->data, $storedData, 'Pool->save() returns proper data on new Item instance.');
+
+        $this->assertTrue($pool->exists('base/one'), 'Pool->exists() returns true for item with stored data.');
+
+        $pool->setNamespace('TestNamespace');
+        $item = $pool->getItem(array('test', 'item'));
+
+        $this->assertAttributeEquals('TestNamespace', 'namespace', $item, 'Pool sets Item namespace.');
+    }
+
+
+    public function testSaveDeferredItem()
+    {
+        $pool = $this->getTestPool();
+
+        $this->assertFalse($pool->exists('base/one'), 'Pool->exists() returns false for item without stored data.');
+        $item = $pool->getItem('base', 'one');
+        $this->assertInstanceOf('Stash\Item', $item, 'getItem returns a Stash\Item object');
+
+        $key = $item->getKey();
+        $this->assertEquals('base/one', $key, 'Pool sets proper Item key.');
+
+        $item->set($this->data);
+        $this->assertEquals($pool, $pool->saveDeferred($item), 'Pool->save() returns pool instance.');
         $storedData = $item->get();
         $this->assertEquals($this->data, $storedData, 'Pool->save() returns proper data on passed Item.');
 
@@ -257,7 +314,10 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
         $logger = new LoggerStub();
         $pool->setLogger($logger);
 
-        $this->assertAttributeInstanceOf('Stash\Test\Stubs\LoggerStub', 'logger', $pool, 'setLogger injects logger into Item.');
+        $this->assertAttributeInstanceOf('Stash\Test\Stubs\LoggerStub', 'logger', $pool, 'setLogger injects logger into Pool.');
+
+        $item = $pool->getItem('testItem');
+        $this->assertAttributeInstanceOf('Stash\Test\Stubs\LoggerStub', 'logger', $item, 'setLogger injects logger into Pool.');
     }
 
     public function testLoggerFlush()
