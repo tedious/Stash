@@ -261,7 +261,57 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($oldValue, $Item_SPtest->get(), 'Expired lock is ignored');
     }
 
-    public function testSetWithDateTime()
+    public function testSetTTLDatetime()
+    {
+        $expiration = new \DateTime('now');
+        $expiration->add(new \DateInterval('P1D'));
+
+        $key = array('ttl', 'expiration', 'test');
+        $stash = $this->testConstruct($key);
+
+        $stash->set(array(1, 2, 3, 'apples'))
+          ->setTTL($expiration)
+          ->save();
+        $this->assertEquals($expiration, $stash->getExpiration());
+
+        $stash = $this->testConstruct($key);
+        $data = $stash->get();
+        $this->assertEquals(array(1, 2, 3, 'apples'), $data, 'getData returns data stores using a datetime expiration');
+        $this->assertLessThanOrEqual($expiration->getTimestamp(), $stash->getExpiration()->getTimestamp());
+    }
+
+    public function testSetTTLDateInterval()
+    {
+        $interval = new \DateInterval('P1D');
+        $expiration = new \DateTime('now');
+        $expiration->add($interval);
+
+        $key = array('ttl', 'expiration', 'test');
+        $stash = $this->testConstruct($key);
+        $stash->set(array(1, 2, 3, 'apples'))
+          ->setTTL($interval)
+          ->save();
+
+        $stash = $this->testConstruct($key);
+        $data = $stash->get();
+        $this->assertEquals(array(1, 2, 3, 'apples'), $data, 'getData returns data stores using a datetime expiration');
+        $this->assertLessThanOrEqual($expiration->getTimestamp(), $stash->getExpiration()->getTimestamp());
+    }
+
+    public function testSetTTLNulll()
+    {
+
+        $key = array('ttl', 'expiration', 'test');
+        $stash = $this->testConstruct($key);
+        $stash->set(array(1, 2, 3, 'apples'))
+          ->setTTL(null)
+          ->save();
+
+        $this->assertAttributeEquals(null, 'expiration', $stash);
+    }
+
+
+    public function testExpiresAt()
     {
         $expiration = new \DateTime('now');
         $expiration->add(new \DateInterval('P1D'));
@@ -276,7 +326,33 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         $stash = $this->testConstruct($key);
         $data = $stash->get();
         $this->assertEquals(array(1, 2, 3, 'apples'), $data, 'getData returns data stores using a datetime expiration');
+        $this->assertLessThanOrEqual($expiration->getTimestamp(), $stash->getExpiration()->getTimestamp());
     }
+
+    /**
+     * @expectedException Stash\Exception\InvalidArgumentException
+     * @expectedExceptionMessage expiresAt requires \DateTimeInterface or null
+     */
+    public function testExpiresAtException()
+    {
+        $stash = $this->testConstruct(array('base', 'expiration', 'test'));
+        $stash->expiresAt(false);
+    }
+
+    public function testExpiresAfterWithDateTimeInterval()
+    {
+        $key = array('base', 'expiration', 'test');
+        $stash = $this->testConstruct($key);
+
+        $stash->set(array(1, 2, 3, 'apples'))
+          ->expiresAfter(new \DateInterval('P1D'))
+          ->save();
+
+        $stash = $this->testConstruct($key);
+        $data = $stash->get();
+        $this->assertEquals(array(1, 2, 3, 'apples'), $data, 'getData returns data stores using a datetime expiration');
+    }
+
 
     public function testGetCreation()
     {
