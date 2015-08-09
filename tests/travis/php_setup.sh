@@ -42,6 +42,21 @@ else
     set -e
     echo "Finished installing uopz extension."
 
+
+
+    if [ "$TRAVIS_PHP_VERSION" != "5.4" && "$TRAVIS_PHP_VERSION" != "hhvm" ]
+    then
+        echo ""
+        echo "******************************"
+        echo "Installing apcu-beta extension"
+        echo "******************************"
+        set +e
+        echo "no" | pecl install apcu-beta
+        set -e
+        echo "Finished installing apcu-beta extension."
+    fi
+
+
     echo ""
     echo "*********************"
     echo "Updating php.ini file"
