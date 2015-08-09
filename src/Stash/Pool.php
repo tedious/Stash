@@ -274,10 +274,6 @@ class Pool implements PoolInterface
      */
     public function getDriver()
     {
-        if (!isset($this->driver)) {
-            $this->driver = new Ephemeral();
-        }
-
         return $this->driver;
     }
 
