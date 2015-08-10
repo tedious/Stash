@@ -116,10 +116,7 @@ class SqlitePdo
      */
     public function get($key)
     {
-        if (!($driver = $this->getDriver())) {
-            return false;
-        }
-
+        $driver = $this->getDriver();
         $query = $driver->query("SELECT * FROM cacheStore WHERE key LIKE '{$key}'");
         if ($query === false) {
             return false;
@@ -142,10 +139,7 @@ class SqlitePdo
      */
     public function set($key, $value, $expiration)
     {
-        if (!($driver = $this->getDriver())) {
-            return false;
-        }
-
+        $driver = $this->getDriver();
         $data = base64_encode(serialize($value));
 
         $contentLength = strlen($data);
@@ -169,7 +163,9 @@ class SqlitePdo
     public function clear($key = null)
     {
         // return true if the cache is already empty
-        if (!($driver = $this->getDriver())) {
+        try {
+            $driver = $this->getDriver();
+        } catch (RuntimeException $e) {
             return true;
         }
 
@@ -192,10 +188,7 @@ class SqlitePdo
      */
     public function purge()
     {
-        if (!($driver = $this->getDriver())) {
-            return false;
-        }
-
+        $driver = $this->getDriver();
         $driver->query('DELETE FROM cacheStore WHERE expiration < ' . time());
         $driver->query('VACUUM');
 
@@ -243,10 +236,7 @@ class SqlitePdo
      */
     protected function setTimeout($milliseconds)
     {
-        if (!($driver = $this->getDriver())) {
-            return false;
-        }
-
+        $driver = $this->getDriver();
         $timeout = ceil($milliseconds / 1000);
         $driver->setAttribute(\PDO::ATTR_TIMEOUT, $timeout);
     }
@@ -290,6 +280,11 @@ class SqlitePdo
             unlink($this->path);
             throw new RuntimeException('Unable to set SQLite: structure');
         }
+
+        if (!$db) {
+            throw new RuntimeException('SQLite driver failed to load');
+        }
+
         $this->driver = $db;
 
         // prevent the cache from getting hungup waiting on a return
