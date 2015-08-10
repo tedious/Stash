@@ -120,6 +120,24 @@ class UtilitiesTest extends \PHPUnit_Framework_TestCase
         $this->assertFileNotExists($tmp, 'deleteRecursive cleared out the empty parent directory');
     }
 
+
+    /**
+     * @expectedException Stash\Exception\RuntimeException
+     */
+    public function testDeleteRecursiveRelativeException()
+    {
+        Utilities::deleteRecursive('../tests/fakename');
+    }
+
+    /**
+     * @expectedException Stash\Exception\RuntimeException
+     */
+    public function testDeleteRecursiveRootException()
+    {
+        Utilities::deleteRecursive('/');
+    }
+
+
     public function testCheckEmptyDirectory()
     {
         $tmp = sys_get_temp_dir() . '/stash/';
@@ -129,5 +147,42 @@ class UtilitiesTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(Utilities::checkForEmptyDirectory($dir2), 'Returns true for empty directories');
         $this->assertFalse(Utilities::checkForEmptyDirectory($tmp), 'Returns false for non-empty directories');
         Utilities::deleteRecursive($tmp);
+    }
+
+    /**
+     * @expectedException Stash\Exception\RuntimeException
+     */
+    public function testCheckFileSystemPermissionsNullException()
+    {
+        Utilities::checkFileSystemPermissions(null, '0644');
+    }
+
+    /**
+     * @expectedException Stash\Exception\InvalidArgumentException
+     */
+    public function testCheckFileSystemPermissionsFileException()
+    {
+        $tmp = sys_get_temp_dir() . '/stash/';
+        $dir2 = $tmp . 'emptytest/';
+        @mkdir($dir2, 0770, true);
+        touch($dir2 . 'testfile');
+
+        Utilities::checkFileSystemPermissions($dir2 . 'testfile', '0644');
+    }
+
+    /**
+     * @expectedException Stash\Exception\InvalidArgumentException
+     */
+    public function testCheckFileSystemPermissionsUnaccessibleException()
+    {
+        Utilities::checkFileSystemPermissions('/fakedir/cache', '0644');
+    }
+
+    /**
+     * @expectedException Stash\Exception\InvalidArgumentException
+     */
+    public function testCheckFileSystemPermissionsUnwrittableException()
+    {
+        Utilities::checkFileSystemPermissions('/home', '0644');
     }
 }
