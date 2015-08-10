@@ -12,6 +12,7 @@
 namespace Stash\Test;
 
 use Stash\Item;
+use Stash\Invalidation;
 use Stash\Utilities;
 use Stash\Driver\Ephemeral;
 use Stash\Test\Stubs\PoolGetDriverStub;
@@ -188,7 +189,7 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
 
         // Test without stampede
         $controlStash = $this->testConstruct($key);
-        $controlStash->setInvalidationMethod(Item::SP_VALUE, $newValue);
+        $controlStash->setInvalidationMethod(Invalidation::VALUE, $newValue);
         $return = $controlStash->get();
         $this->assertEquals($oldValue, $return, 'Old value is returned');
         $this->assertTrue($controlStash->isMiss());
@@ -200,23 +201,23 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
 
         // Old
         $oldStash = $this->testConstruct($key);
-        $oldStash->setInvalidationMethod(Item::SP_OLD);
-        $return = $oldStash->get(Item::SP_OLD);
+        $oldStash->setInvalidationMethod(Invalidation::OLD);
+        $return = $oldStash->get(Invalidation::OLD);
         $this->assertEquals($oldValue, $return, 'Old value is returned');
         $this->assertFalse($oldStash->isMiss());
         unset($oldStash);
 
         // Value
         $valueStash = $this->testConstruct($key);
-        $valueStash->setInvalidationMethod(Item::SP_VALUE, $newValue);
-        $return = $valueStash->get(Item::SP_VALUE, $newValue);
+        $valueStash->setInvalidationMethod(Invalidation::VALUE, $newValue);
+        $return = $valueStash->get(Invalidation::VALUE, $newValue);
         $this->assertEquals($newValue, $return, 'New value is returned');
         $this->assertFalse($valueStash->isMiss());
         unset($valueStash);
 
         // Sleep
         $sleepStash = $this->testConstruct($key);
-        $sleepStash->setInvalidationMethod(Item::SP_SLEEP, 250, 2);
+        $sleepStash->setInvalidationMethod(Invalidation::SLEEP, 250, 2);
         $start = microtime(true);
         $return = $sleepStash->get();
         $end = microtime(true);
@@ -244,14 +245,14 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
 
         // Precompute - test outside limit
         $precomputeStash = $this->testConstruct($key);
-        $precomputeStash->setInvalidationMethod(Item::SP_PRECOMPUTE, 10);
-        $return = $precomputeStash->get(Item::SP_PRECOMPUTE, 10);
+        $precomputeStash->setInvalidationMethod(Invalidation::PRECOMPUTE, 10);
+        $return = $precomputeStash->get(Invalidation::PRECOMPUTE, 10);
         $this->assertFalse($precomputeStash->isMiss(), 'Cache is marked as hit');
         unset($precomputeStash);
 
         // Precompute - test inside limit
         $precomputeStash = $this->testConstruct($key);
-        $precomputeStash->setInvalidationMethod(Item::SP_PRECOMPUTE, 35);
+        $precomputeStash->setInvalidationMethod(Invalidation::PRECOMPUTE, 35);
         $return = $precomputeStash->get();
         $this->assertTrue($precomputeStash->isMiss(), 'Cache is marked as miss');
         unset($precomputeStash);
@@ -259,7 +260,7 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         // Test Stampede Flag Expiration
         $key = array('stampede', 'expire');
         $Item_SPtest = $this->testConstruct($key);
-        $Item_SPtest->setInvalidationMethod(Item::SP_VALUE, $newValue);
+        $Item_SPtest->setInvalidationMethod(Invalidation::VALUE, $newValue);
         $Item_SPtest->set($oldValue)->expiresAfter(-300)->save();
         $Item_SPtest->lock(-5);
         $this->assertEquals($oldValue, $Item_SPtest->get(), 'Expired lock is ignored');

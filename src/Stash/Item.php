@@ -28,31 +28,6 @@ use Stash\Interfaces\PoolInterface;
 class Item implements ItemInterface
 {
     /**
-     * @deprecated
-     */
-    const SP_NONE         = 0;
-
-    /**
-     * @deprecated
-     */
-    const SP_OLD          = 1;
-
-    /**
-     * @deprecated
-     */
-    const SP_VALUE        = 2;
-
-    /**
-     * @deprecated
-     */
-    const SP_SLEEP        = 3;
-
-    /**
-     * @deprecated
-     */
-    const SP_PRECOMPUTE   = 4;
-
-    /**
      * This is the default time, in seconds, that objects are cached for.
      *
      * @var int seconds
