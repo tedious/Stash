@@ -99,15 +99,4 @@ class DriverList
 
         return self::$drivers[$name];
     }
-
-    /**
-     * Returns a list of cache drivers that are also supported by this system.
-     *
-     * @deprecated Deprecated in favor of getAvailableDrivers.
-     * @return array
-     */
-    public static function getDrivers()
-    {
-        return self::getAvailableDrivers();
-    }
 }
