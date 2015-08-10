@@ -11,7 +11,7 @@
 
 namespace Stash\Test\Driver;
 
-use Stash\Driver\Memcache;
+use \Stash\Driver\Memcache;
 
 /**
  * @package Stash
@@ -95,7 +95,7 @@ class MemcachedTest extends MemcacheTest
         $options = array();
         $options['servers'][] = array('127.0.0.1', '11211', '50');
         $options['servers'][] = array('127.0.0.1', '11211');
-        $options['cache_lookup'] = 'InvalidOption';
+        $options['cache_lookups'] = 'InvalidOption';
         $driver = new Memcache();
         $driver->setOptions($options);
     }
