@@ -11,6 +11,8 @@
 
 namespace Stash\Test\Driver;
 
+use Stash\Driver\Memcache;
+
 /**
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
