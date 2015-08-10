@@ -44,6 +44,41 @@ class FileSystemTest extends AbstractDriverTest
         $driver->setOptions($this->getOptions(array('keyHashFunction' => 'foobar_'.mt_rand())));
     }
 
+    /**
+     * @expectedException Stash\Exception\RuntimeException
+     */
+    public function testOptionEncoderObjectException()
+    {
+        $driver = new FileSystem();
+        $encoder = new \stdClass();
+        $driver->setOptions($this->getOptions(array('encoder' => $encoder)));
+    }
+
+    /**
+     * @expectedException Stash\Exception\RuntimeException
+     */
+    public function testOptionEncoderStringException()
+    {
+        $driver = new FileSystem();
+        $encoder = 'stdClass';
+        $driver->setOptions($this->getOptions(array('encoder' => $encoder)));
+    }
+
+    public function testOptionEncoderAsObject()
+    {
+        $driver = new FileSystem();
+        $encoder = new \Stash\Driver\FileSystem\NativeEncoder();
+        $driver->setOptions($this->getOptions(array('encoder' => $encoder)));
+    }
+
+    public function testOptionEncoderAsString()
+    {
+        $driver = new FileSystem();
+        $encoder = '\Stash\Driver\FileSystem\NativeEncoder';
+        $driver->setOptions($this->getOptions(array('encoder' => $encoder)));
+    }
+
+
     public function testOptionKeyHashFunction()
     {
         $driver = new FileSystem(array('keyHashFunction' => 'md5'));

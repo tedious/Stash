@@ -31,6 +31,10 @@ class DriverListTest extends \PHPUnit_Framework_TestCase
         $availableDrivers = DriverList::getAvailableDrivers();
         $getDrivers = DriverList::getDrivers();
         $this->assertEquals($availableDrivers, $getDrivers, 'getDrivers is an alias for getAvailableDrivers');
+
+        DriverList::registerDriver('TestBroken', 'stdClass');
+        $drivers = DriverList::getDrivers();
+        $this->assertArrayNotHasKey('TestBroken', $drivers, 'getDrivers doesn\'t return TestBroken driver');
     }
 
     public function testRegisterDriver()
