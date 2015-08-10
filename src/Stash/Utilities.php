@@ -158,13 +158,7 @@ class Utilities
                 }
 
                 if (file_exists($filename)) {
-                    if ($file->isDir()) {
-                        if (file_exists($filename)) {
-                            @rmdir($filename);
-                        }
-                    } else {
-                        unlink($filename);
-                    }
+                    unlink($filename);
                 }
             }
 
