@@ -26,5 +26,4 @@ class UnavailableDriverTest extends \PHPUnit_Framework_TestCase
     {
         new DriverUnavailableStub();
     }
-
 }

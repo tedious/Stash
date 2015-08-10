@@ -48,7 +48,7 @@ class Composite extends AbstractDriver
             throw new RuntimeException('One or more secondary drivers are required.');
         }
 
-        if(!is_array($options['drivers'])) {
+        if (!is_array($options['drivers'])) {
             throw new InvalidArgumentException('Drivers option requires an array.');
         }
 
@@ -63,7 +63,6 @@ class Composite extends AbstractDriver
         if (count($this->drivers) < 1) {
             throw new RuntimeException('None of the secondary drivers can be enabled.');
         }
-
     }
 
     /**

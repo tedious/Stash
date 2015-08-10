@@ -137,5 +137,4 @@ class CompositeTest extends AbstractDriverTest
     {
         $driver = new Composite(array('drivers' => 'fakedriver'));
     }
-
 }
