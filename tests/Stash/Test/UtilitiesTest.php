@@ -27,11 +27,11 @@ class UtilitiesTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(Utilities::encoding('String of doom!'), 'string', 'encoding recognized string scalar');
 
-        $this->assertEquals(Utilities::encoding(234), 'none', 'encoding recognized integer scalar');
-        $this->assertEquals(Utilities::encoding(1.432), 'none', 'encoding recognized float scalar');
+        $this->assertEquals(Utilities::encoding(234), 'numeric', 'encoding recognized integer scalar');
+        $this->assertEquals(Utilities::encoding(1.432), 'numeric', 'encoding recognized float scalar');
 
         $this->assertEquals(Utilities::encoding(pow(2, 31)), 'serialize', 'encoding recognized large number');
-        $this->assertEquals(Utilities::encoding(pow(2, 31) - 1), 'none', 'encoding recognized small number');
+        $this->assertEquals(Utilities::encoding(pow(2, 31) - 1), 'numeric', 'encoding recognized small number');
 
         $std = new \stdClass();
         $this->assertEquals(Utilities::encoding($std), 'serialize', 'encoding recognized object');

@@ -92,22 +92,18 @@ class NativeEncoder implements EncoderInterface
                 $dataString = (bool) $data ? 'true' : 'false';
                 break;
 
-            case 'serialize':
-                $dataString = 'unserialize(base64_decode(\'' . base64_encode(serialize($data)) . '\'))';
-                break;
-
             case 'string':
                 $dataString = sprintf('"%s"', addcslashes($data, "\t\"\$\\"));
                 break;
 
-            case 'none':
-            default :
-                if (is_numeric($data)) {
-                    $dataString = (string) $data;
-                } else {
-                    $dataString = 'base64_decode(\'' . base64_encode($data) . '\')';
-                }
+            case 'numeric':
+                $dataString = (string) $data;
                 break;
+
+            default :
+                case 'serialize':
+                    $dataString = 'unserialize(base64_decode(\'' . base64_encode(serialize($data)) . '\'))';
+                    break;
         }
 
         return $dataString;
