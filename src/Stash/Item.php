@@ -420,11 +420,7 @@ class Item implements ItemInterface
 
     private function executeSet($data, $time)
     {
-        if ($this->isDisabled()) {
-            return false;
-        }
-
-        if (!isset($this->key)) {
+        if ($this->isDisabled() || !isset($this->key)) {
             return false;
         }
 
@@ -432,13 +428,9 @@ class Item implements ItemInterface
         $store['return'] = $data;
         $store['createdOn'] = time();
 
-        if (isset($time)) {
-            if ($time instanceof \DateTime) {
-                $expiration = $time->getTimestamp();
-                $cacheTime = $expiration - $store['createdOn'];
-            } else {
-                $cacheTime = isset($time) && is_numeric($time) ? $time : self::$cacheTime;
-            }
+        if (isset($time) && ($time instanceof \DateTime)) {
+            $expiration = $time->getTimestamp();
+            $cacheTime = $expiration - $store['createdOn'];
         } else {
             $cacheTime = self::$cacheTime;
         }
@@ -581,6 +573,7 @@ class Item implements ItemInterface
      */
     protected function validateRecord($validation, &$record)
     {
+        $invalidation = Invalidation::PRECOMPUTE;
         if (is_array($validation)) {
             $argArray = $validation;
             $invalidation = isset($argArray[0]) ? $argArray[0] : Invalidation::PRECOMPUTE;
@@ -592,8 +585,6 @@ class Item implements ItemInterface
             if (isset($argArray[2])) {
                 $arg2 = $argArray[2];
             }
-        } else {
-            $invalidation = Invalidation::PRECOMPUTE;
         }
 
         $curTime = microtime(true);
