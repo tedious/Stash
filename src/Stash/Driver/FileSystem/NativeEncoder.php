@@ -21,14 +21,11 @@ class NativeEncoder implements EncoderInterface
             return false;
         }
 
+        $expiration = null;
         include($path);
 
         if (!isset($loaded)) {
             return false;
-        }
-
-        if (!isset($expiration)) {
-            $expiration = null;
         }
 
         if (!isset($data)) {
