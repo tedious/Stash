@@ -154,10 +154,11 @@ class FileSystem extends AbstractDriver
                 }
                 $this->encoder = new $encoder;
             } else {
+                $encoderInterface = 'Stash\Driver\FileSystem\EncoderInterface';
                 $encoderClass = 'Stash\Driver\FileSystem\\' . $encoder . 'Encoder';
-                if (class_exists($encoder)) {
+                if (class_exists($encoder) && in_array($encoderInterface, class_implements($encoder))) {
                     $this->encoder = new $encoder();
-                } elseif (class_exists($encoderClass)) {
+                } elseif (class_exists($encoderClass) && in_array($encoderInterface, class_implements($encoderClass))) {
                     $this->encoder = new $encoderClass();
                 } else {
                     throw new RuntimeException('Invalid Encoder: ' . $encoder);
