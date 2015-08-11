@@ -2,6 +2,10 @@
 
 ### v1.0.0
 
+* Removed deprecated DriverList::getDrivers function.
+
+* Removed deprecated invalidation constants in the Item class.
+
 * Removed SQLite Extension support (SQLite3 is still available).
 
 * The `set` function no longer persists data.
