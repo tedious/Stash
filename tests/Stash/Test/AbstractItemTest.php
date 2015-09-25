@@ -152,6 +152,28 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @depends testGet
+     */
+    public function testWant()
+    {
+        $failGenerator = function () { $this->fail('Generator should not be called'); };
+
+        foreach ($this->data as $type => $value) {
+            $valueGenerator = function () use ($value) { return $value; };
+
+            $key = array('base', $type);
+            $stash = $this->testConstruct($key);
+            $data = $stash->want($valueGenerator);
+            $this->assertEquals($value, $data, 'want ' . $type . ' generates item');
+
+            // new object, but same backend
+            $stash = $this->testConstruct($key);
+            $data = $stash->want($failGenerator);
+            $this->assertEquals($value, $data, 'want ' . $type . ' uses previously generated value');
+        }
+    }
+
+    /**
      * @expectedException PHPUnit_Framework_Error
      * @expectedExceptionMessage Argument 1 passed to Stash\Item::setKey()
      */

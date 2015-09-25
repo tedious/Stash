@@ -231,6 +231,24 @@ class Item implements ItemInterface
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function want($generator, $invalidation = Invalidation::PRECOMPUTE, $arg = null, $arg2 = null)
+    {
+        $data = $this->get($invalidation, $arg, $arg2);
+
+        if ($this->isMiss()) {
+            $this->lock();
+
+            $data = $generator();
+
+            $this->set($data);
+        }
+
+        return $data;
+    }
+
     private function executeGet($invalidation, $arg, $arg2)
     {
         $this->isHit = false;
