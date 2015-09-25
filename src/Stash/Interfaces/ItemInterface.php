@@ -71,6 +71,20 @@ interface ItemInterface
     public function get($invalidation = 0, $arg = null, $arg2 = null);
 
     /**
+     * Returns the data retrieved from the cache if possible. If a cache miss
+     * occurs, this method uses the generator callback to generate the data
+     * which it then automatically sets. The generator callback takes no
+     * parameters.
+     *
+     * @param  callable   $generator
+     * @param  int        $invalidation
+     * @param  null       $arg
+     * @param  null       $arg2
+     * @return mixed|null
+     */
+    public function want($generator, $invalidation = 0, $arg = null, $arg2 = null);
+
+    /**
      * Returns true if the cached item needs to be refreshed.
      *
      * @return bool
