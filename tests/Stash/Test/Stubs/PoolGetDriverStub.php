@@ -43,7 +43,7 @@ class PoolGetDriverStub implements PoolInterface
         return false;
     }
 
-    public function getItems($keys)
+    public function getItems(array $keys = array())
     {
         return false;
     }
