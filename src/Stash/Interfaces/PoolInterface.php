@@ -64,9 +64,9 @@ interface PoolInterface
      * each key passed, but is not required to maintain an order.
      *
      * @param  array     $keys
-     * @return \Iterator
+     * @return array|\Traversable
      */
-    public function getItems($keys);
+    public function getItems(array $keys = array());
 
     /**
      * Empties the entire cache pool of all Items.
@@ -162,7 +162,7 @@ interface PoolInterface
     /**
     * Checks for the existance of an item in the cache.
     *
-    * @param  string $key    
+    * @param  string $key
     * @return boolean True if item exists in the cache, false otherwise.
     */
     public function hasItem($key);
