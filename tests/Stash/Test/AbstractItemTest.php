@@ -151,17 +151,21 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(null, $item->get(), 'Item without key returns null for get.');
     }
 
-    /**
-     * @expectedException PHPUnit_Framework_Error
-     * @expectedExceptionMessage Argument 1 passed to Stash\Item::setKey()
-     */
     public function testGetItemInvalidKey()
     {
-        $item = $this->getItem();
-        $poolStub = new PoolGetDriverStub();
-        $poolStub->setDriver(new Ephemeral(array()));
-        $item->setPool($poolStub);
-        $item->setKey('This is not an array');
+        try {
+            $item = $this->getItem();
+            $poolStub = new PoolGetDriverStub();
+            $poolStub->setDriver(new Ephemeral(array()));
+            $item->setPool($poolStub);
+            $item->setKey('This is not an array');
+        } catch (\Throwable $t) {
+            return;
+        } catch (\Exception $expected) {
+            return;
+        }
+
+        $this->fail('An expected exception has not been raised.');
     }
 
     public function testLock()
