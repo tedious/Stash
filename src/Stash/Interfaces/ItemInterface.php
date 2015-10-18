@@ -97,7 +97,7 @@ interface ItemInterface
      * unable to be serialized.
      *
      * @param  mixed              $data bool
-     * @return bool               Returns whether the object was successfully stored or not.
+     * @return static             The invoked object
      */
     public function set($data);
 
@@ -164,10 +164,4 @@ interface ItemInterface
     * @return bool
     */
     public function save();
-
-
-    /**
-    * @return boolean True if item exists in the cache, false otherwise.
-    */
-   public function exists();
 }

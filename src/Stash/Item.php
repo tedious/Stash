@@ -329,7 +329,7 @@ class Item implements ItemInterface
         }
 
         if ($this->isDisabled()) {
-            return false;
+            return $this;
         }
 
         $this->data = $data;
@@ -437,27 +437,6 @@ class Item implements ItemInterface
         }
 
         return $this->set($this->get(), $ttl);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function exists()
-    {
-        if ($this->isDisabled()) {
-            return false;
-        }
-        $storedData = $this->driver->getData($this->key);
-
-        if ($storedData === false) {
-            return false;
-        }
-
-        if (!is_array($storedData)) {
-            return false;
-        }
-
-        return isset($storedData['data']);
     }
 
     /**

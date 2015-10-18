@@ -437,22 +437,6 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($stash->isHit(), 'isHit returns true for valid data');
     }
 
-    public function testExists()
-    {
-        $stash = $this->testConstruct(array('This', 'Should', 'Fail'));
-        $this->assertFalse($stash->exists(), 'exists returns false for missing data');
-        $data = $stash->get();
-        $this->assertNull($data, 'getData returns null for missing data');
-
-        $key = array('isHit', 'test');
-
-        $stash = $this->testConstruct($key);
-        $stash->set('testString')->save();
-
-        $stash = $this->testConstruct($key);
-        $this->assertTrue($stash->exists(), 'exists returns true for valid data');
-    }
-
     public function testClear()
     {
         // repopulate
@@ -580,7 +564,7 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
 
     private function assertDisabledStash(\Stash\Interfaces\ItemInterface $item)
     {
-        $this->assertFalse($item->set('true'), 'storeData returns false for disabled cache');
+        $this->assertEquals($item, $item->set('true'), 'storeData returns self for disabled cache');
         $this->assertNull($item->get(), 'getData returns null for disabled cache');
         $this->assertFalse($item->clear(), 'clear returns false for disabled cache');
         $this->assertTrue($item->isMiss(), 'isMiss returns true for disabled cache');
