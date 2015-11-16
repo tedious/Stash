@@ -23,7 +23,8 @@
     }
   ],
   "require": {
-    "php": ">=5.4.0"
+    "php": ">=5.4.0",
+    "predis/predis": "^1.0"
   },
   "require-dev": {
     "fabpot/php-cs-fixer": "^1.9",

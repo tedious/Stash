@@ -95,6 +95,7 @@ Stash currently supports the following backends:
 * APC
 * Memcached
 * Redis
+* Predis
 * Ephemeral (runtime only)
 
 Stash also supports a specialized "Composite" Driver which can contain any
