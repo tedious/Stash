@@ -9,8 +9,19 @@ echo "**************************"
 echo ""
 echo "PHP Version: $TRAVIS_PHP_VERSION"
 
-if [ "$TRAVIS_PHP_VERSION" = "hhvm" ] || [ "$TRAVIS_PHP_VERSION" = "hhvm-nightly" ] || [ "$TRAVIS_PHP_VERSION" = "7.0" ]; then
+if [ "$TRAVIS_PHP_VERSION" = "hhvm" ] || [ "$TRAVIS_PHP_VERSION" = "hhvm-nightly" ]; then
     echo "Unable to install php extensions on current system"
+
+elif [ "$TRAVIS_PHP_VERSION" = "7.0" ]; then
+
+    echo ""
+    echo "******************************"
+    echo "Installing apcu extension"
+    echo "******************************"
+    set +e
+    printf "yes\n" | pecl install apcu
+    set -e
+    echo "Finished installing apcu-beta extension."
 
 else
 
@@ -47,23 +58,23 @@ else
     then
         echo ""
         echo "******************************"
-        echo "Installing apcu-beta extension"
+        echo "Installing apcu extension"
         echo "******************************"
         set +e
-        pecl config-set preferred_state beta
-        printf "yes\n" | pecl install apcu
+        printf "yes\n" | pecl install apcu-4.0.8
         set -e
         echo "Finished installing apcu-beta extension."
     fi
 
-    if [ -f "tests/travis/php_extensions_${TRAVIS_PHP_VERSION}.ini" ]
-    then
-      echo ""
-      echo "*********************"
-      echo "Updating php.ini file"
-      echo "*********************"
-      echo ""
-      echo ""
-      phpenv config-add "tests/travis/php_extensions_${TRAVIS_PHP_VERSION}.ini"
-    fi
+fi
+
+if [ -f "tests/travis/php_extensions_${TRAVIS_PHP_VERSION}.ini" ]
+then
+  echo ""
+  echo "*********************"
+  echo "Updating php.ini file"
+  echo "*********************"
+  echo ""
+  echo ""
+  phpenv config-add "tests/travis/php_extensions_${TRAVIS_PHP_VERSION}.ini"
 fi
