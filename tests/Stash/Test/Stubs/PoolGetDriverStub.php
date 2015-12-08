@@ -48,7 +48,7 @@ class PoolGetDriverStub implements PoolInterface
         return false;
     }
 
-    public function flush()
+    public function clear()
     {
         return false;
     }
@@ -94,6 +94,12 @@ class PoolGetDriverStub implements PoolInterface
     }
 
     public function deleteItems(array $keys)
+    {
+        return false;
+    }
+
+
+    public function deleteItem($key)
     {
         return false;
     }

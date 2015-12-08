@@ -44,7 +44,7 @@ interface ItemInterface
      * Returns the key as a string. This is particularly useful when the Item is
      * returned as a group of Items in an Iterator.
      *
-     * @return string|bool Returns false if no key is set.
+     * @return string
      */
     public function getKey();
 
@@ -63,7 +63,7 @@ interface ItemInterface
      * function after call this one. If no value is stored at all then this
      * function will return null.
      *
-     * @return mixed|null
+     * @return mixed
      */
     public function get();
 
@@ -96,10 +96,10 @@ interface ItemInterface
      * including arrays and object, except resources and objects which are
      * unable to be serialized.
      *
-     * @param  mixed              $data bool
+     * @param  mixed              $value bool
      * @return static             The invoked object
      */
-    public function set($data);
+    public function set($value);
 
     /**
      * Extends the expiration on the current cached item. For some engines this

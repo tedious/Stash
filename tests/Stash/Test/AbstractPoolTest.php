@@ -109,7 +109,7 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('base/one', $key, 'Pool sets proper Item key.');
 
         $item->set($this->data);
-        $this->assertEquals($pool, $pool->save($item), 'Pool->save() returns pool instance.');
+        $this->assertTrue($pool->save($item), 'Pool->save() returns true.');
         $storedData = $item->get();
         $this->assertEquals($this->data, $storedData, 'Pool->save() returns proper data on passed Item.');
 
@@ -138,7 +138,7 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('base/one', $key, 'Pool sets proper Item key.');
 
         $item->set($this->data);
-        $this->assertEquals($pool, $pool->saveDeferred($item), 'Pool->save() returns pool instance.');
+        $this->assertTrue($pool->saveDeferred($item), 'Pool->save() returns true.');
         $storedData = $item->get();
         $this->assertEquals($this->data, $storedData, 'Pool->save() returns proper data on passed Item.');
 
@@ -237,7 +237,7 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals($this->multiData[$key], $data, 'data put into the pool comes back the same through iterators.');
         }
 
-        $this->assertEquals($pool, $pool->deleteItems($keys), 'deleteItems returns Pool class.');
+        $this->assertTrue($pool->deleteItems($keys), 'deleteItems returns true.');
         $cacheIterator = $pool->getItems($keys);
         foreach ($cacheIterator as $item) {
             $this->assertTrue($item->isMiss(), 'data cleared using deleteItems is removed from the cache.');
@@ -246,17 +246,17 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
 
 
 
-    public function testFlushCache()
+    public function testClearCache()
     {
         $pool = $this->getTestPool();
 
         $stash = $pool->getItem('base', 'one');
         $stash->set($this->data)->save();
-        $this->assertTrue($pool->flush(), 'flush returns true');
+        $this->assertTrue($pool->clear(), 'clear returns true');
 
         $stash = $pool->getItem('base', 'one');
         $this->assertNull($stash->get(), 'clear removes item');
-        $this->assertTrue($stash->isMiss(), 'flush causes cache miss');
+        $this->assertTrue($stash->isMiss(), 'clear causes cache miss');
     }
 
     public function testPurgeCache()
@@ -320,7 +320,7 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
         $this->assertAttributeInstanceOf('Stash\Test\Stubs\LoggerStub', 'logger', $item, 'setLogger injects logger into Pool.');
     }
 
-    public function testLoggerFlush()
+    public function testLoggerClear()
     {
         $pool = $this->getTestPool();
 
@@ -331,7 +331,7 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
         $pool->setLogger($logger);
 
         // triggerlogging
-        $pool->flush();
+        $pool->clear();
 
         $this->assertInstanceOf('Stash\Test\Exception\TestException',
             $logger->lastContext['exception'], 'Logger was passed exception in event context.');

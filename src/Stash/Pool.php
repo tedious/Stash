@@ -176,8 +176,7 @@ class Pool implements PoolInterface
      */
     public function save($item)
     {
-        $item->save();
-        return $this;
+        return $item->save();
     }
 
     /**
@@ -203,19 +202,29 @@ class Pool implements PoolInterface
     public function deleteItems(array $keys)
     {
         // temporarily cheating here by wrapping around single calls.
-
         $items = array();
+        $results = true;
         foreach ($keys as $key) {
-            $this->getItem($key)->clear();
+            $results = $this->deleteItem($key) && $results;
         }
 
-        return $this;
+        return $results;
     }
+
 
     /**
      * {@inheritdoc}
      */
-    public function flush()
+    public function deleteItem($key)
+    {
+        return $this->getItem($key)->clear();
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function clear()
     {
         if ($this->isDisabled) {
             return false;

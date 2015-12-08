@@ -51,7 +51,7 @@ interface PoolInterface
      * @example $item = $pool->getItem(array('permissions', 'user', '4', '2'));
      * @example $item = $pool->getItem('permissions', 'user', '4', '2');
      *
-     * @param  array|string              $key
+     * @param  string              $key
      * @return ItemInterface
      * @throws \InvalidArgumentException
      */
@@ -75,7 +75,7 @@ interface PoolInterface
      *
      * @return bool True on success
      */
-    public function flush();
+    public function clear();
 
     /**
      * The Purge function allows drivers to perform basic maintenance tasks, such as removing stale or expired items
@@ -130,6 +130,8 @@ interface PoolInterface
 
     /**
     * Forces any save-deferred objects to get flushed to the backend drivers.
+    *
+    * @return bool
     */
     public function commit();
 
@@ -146,18 +148,25 @@ interface PoolInterface
     * Sets an Item to be saved immediately.
     *
     * @param CacheItemInterface $item
-    * @return static The invoked object.
+    * @return bool
     */
     public function save($item);
 
     /**
-     * Removes multiple items from the pool.
+     * Removes multiple items from the pool by their key.
      *
      * @param array $keys
-     * @return static The invoked object.
+     * @return bool
      */
     public function deleteItems(array $keys);
 
+    /**
+     * Removes multiple items from the pool by their key.
+     *
+     * @param array $keys
+     * @return bool
+     */
+    public function deleteItem($key);
 
     /**
     * Checks for the existance of an item in the cache.

@@ -7,7 +7,9 @@
     "sessions",
     "memcached",
     "redis",
-    "apc"
+    "apc",
+    "psr-6",
+    "psr6"
   ],
   "homepage": "http://github.com/tedious/Stash",
   "type": "library",

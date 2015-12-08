@@ -16,7 +16,7 @@
 
 * `getExpiration` to return current datetime when no record exists.
 
-* Added `save` function to ItemInterface.
+* Added `save` function to PoolInterface.
 
 * Changed `getItemIterator` to `getItems`
 
@@ -25,6 +25,11 @@
 * Added `isHit` function to ItemInterface.
 
 * Added the `hasItem` function to the Pool, which should mostly be avoided.
+
+* Renamed `Pool::purge` to `Pool::clear`.
+
+* Added `Pool::deleteItem` and `Pool::deleteItems`.
+
 
 
 ## Stash v0.13 Changelog

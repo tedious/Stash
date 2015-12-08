@@ -322,7 +322,7 @@ class Item implements ItemInterface
     /**
      * {@inheritdoc}
      */
-    public function set($data)
+    public function set($value)
     {
         if (!isset($this->key)) {
             return false;
@@ -332,7 +332,7 @@ class Item implements ItemInterface
             return $this;
         }
 
-        $this->data = $data;
+        $this->data = $value;
         return $this;
     }
 
