@@ -19,7 +19,6 @@ elif [ "$TRAVIS_PHP_VERSION" = "7.0" ]; then
     echo "Installing apcu-beta extension"
     echo "******************************"
     set +e
-    pecl config-set preferred_state beta
     printf "yes\n" | pecl install apcu
     set -e
     echo "Finished installing apcu-beta extension."
@@ -62,8 +61,7 @@ else
         echo "Installing apcu-beta extension"
         echo "******************************"
         set +e
-        pecl config-set preferred_state beta
-        printf "yes\n" | pecl install apcu-4.0.10
+        printf "yes\n" | pecl install apcu-4.0.8
         set -e
         echo "Finished installing apcu-beta extension."
     fi
