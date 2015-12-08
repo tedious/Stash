@@ -12,13 +12,13 @@
 namespace Stash\Interfaces;
 
 /**
- * Stash Drivers are the engines behind the Stash library. These classes handle the low level operations- retrieving,
+ * Stash Drivers are the engines behind the Stash library. These classes handle the low level operations - retrieving,
  * storing and deleting items in the persistant cache pool. By creating new drivers developers can add new caching
  * methods to their applications with extremely minimal changes to their existing code base. This interface defines the
  * standard for those drivers and all of them are required to implement it. When writing new cache storage engines this
  * is the place to start.
  *
- * A few important notes when implementing this interface-
+ * A few important notes when implementing this interface:
  *
  * * Unlike with the Stash class itself, instances of drivers are meant to be reused over and over again, allowing them
  * to avoid the overhead of repeatedly opening and closing resources. There are times when multiple instances of an
@@ -44,7 +44,7 @@ interface DriverInterface
 {
     /**
      * Takes an array which is used to pass option values to the driver. As this is the only required function that is
-     * used specifically by the developer is is where any engine specific options should go. An engine that requires
+     * used specifically by the developer is where any engine specific options should go. An engine that requires
      * authentication information, as an example, should get them here.
      *
      * @param array $options
@@ -52,8 +52,8 @@ interface DriverInterface
     public function setOptions(array $options = array());
 
     /**
-     * Returns the previously stored data as well as it's expiration date in an associative array. This array contains
-     * two keys- a 'data' key and an 'expiration' key. The 'data' key should be exactly the same as the value passed to
+     * Returns the previously stored data as well as its expiration date in an associative array. This array contains
+     * two keys - a 'data' key and an 'expiration' key. The 'data' key should be exactly the same as the value passed to
      * storeData.
      *
      * @param  array $key
@@ -92,7 +92,7 @@ interface DriverInterface
     public function clear($key = null);
 
     /**
-     * Removed any expired code from the cache. For same drivers this can just return true, as their underlying engines
+     * Remove any expired code from the cache. For some drivers this can just return true, as their underlying engines
      * automatically take care of time based expiration (apc or memcache for example). This function should also be used
      * for other clean up operations that the specific engine needs to handle. This function is generally called outside
      * of user requests as part of a maintenance check, so it is okay if the code in this function takes some time to
