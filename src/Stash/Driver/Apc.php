@@ -74,7 +74,7 @@ class Apc extends AbstractDriver
      *
      * @param array $options
      */
-    public function setOptions(array $options = array())
+    protected function setOptions(array $options = array())
     {
         $options += $this->getDefaultOptions();
 

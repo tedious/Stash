@@ -36,9 +36,7 @@ abstract class AbstractDriver implements DriverInterface
             throw new RuntimeException(get_class($this) . ' is not available.');
         }
 
-        if (!empty($options)) {
-            $this->setOptions($options);
-        }
+        $this->setOptions($options);
     }
 
     /**
@@ -52,7 +50,7 @@ abstract class AbstractDriver implements DriverInterface
     /**
      * {@inheritdoc}
      */
-    public function setOptions(array $options = array())
+    protected function setOptions(array $options = array())
     {
         // empty
     }

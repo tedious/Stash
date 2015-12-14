@@ -4,6 +4,8 @@
 
 * Implemented PSR-6 interfaces.
 
+* Removed `Driver::setOptions($options)` in favor of `Driver::constructor($options)`
+
 * Removed deprecated DriverList::getDrivers function.
 
 * Removed deprecated invalidation constants in the Item class.

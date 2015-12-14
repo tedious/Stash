@@ -87,8 +87,7 @@ abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
     {
         $driverType = $this->driverClass;
         $options = $this->getOptions();
-        $driver = new $driverType();
-        $driver->setOptions($options);
+        $driver = new $driverType($options);
         $this->assertTrue(is_a($driver, $driverType), 'Driver is an instance of ' . $driverType);
         $this->assertTrue(is_a($driver, '\Stash\Interfaces\DriverInterface'), 'Driver implments the Stash\Driver\DriverInterface interface');
 

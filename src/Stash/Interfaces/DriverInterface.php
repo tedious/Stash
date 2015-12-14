@@ -43,15 +43,6 @@ namespace Stash\Interfaces;
 interface DriverInterface
 {
     /**
-     * Takes an array which is used to pass option values to the driver. As this is the only required function that is
-     * used specifically by the developer is where any engine specific options should go. An engine that requires
-     * authentication information, as an example, should get them here.
-     *
-     * @param array $options
-     */
-    public function setOptions(array $options = array());
-
-    /**
      * Returns the previously stored data as well as its expiration date in an associative array. This array contains
      * two keys - a 'data' key and an 'expiration' key. The 'data' key should be exactly the same as the value passed to
      * storeData.

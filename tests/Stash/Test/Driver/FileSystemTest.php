@@ -40,8 +40,7 @@ class FileSystemTest extends AbstractDriverTest
      */
     public function testOptionKeyHashFunctionException()
     {
-        $driver = new FileSystem();
-        $driver->setOptions($this->getOptions(array('keyHashFunction' => 'foobar_'.mt_rand())));
+        $driver = new FileSystem($this->getOptions(array('keyHashFunction' => 'foobar_'.mt_rand())));
     }
 
     /**
@@ -49,9 +48,8 @@ class FileSystemTest extends AbstractDriverTest
      */
     public function testOptionEncoderObjectException()
     {
-        $driver = new FileSystem();
         $encoder = new \stdClass();
-        $driver->setOptions($this->getOptions(array('encoder' => $encoder)));
+        $driver = new FileSystem($this->getOptions(array('encoder' => $encoder)));
     }
 
     /**
@@ -59,30 +57,26 @@ class FileSystemTest extends AbstractDriverTest
      */
     public function testOptionEncoderStringException()
     {
-        $driver = new FileSystem();
         $encoder = 'stdClass';
-        $driver->setOptions($this->getOptions(array('encoder' => $encoder)));
+        $driver = new FileSystem($this->getOptions(array('encoder' => $encoder)));
     }
 
     public function testOptionEncoderAsObject()
     {
-        $driver = new FileSystem();
         $encoder = new \Stash\Driver\FileSystem\NativeEncoder();
-        $driver->setOptions($this->getOptions(array('encoder' => $encoder)));
+        $driver = new FileSystem($this->getOptions(array('encoder' => $encoder)));
     }
 
     public function testOptionEncoderAsString()
     {
-        $driver = new FileSystem();
         $encoder = '\Stash\Driver\FileSystem\NativeEncoder';
-        $driver->setOptions($this->getOptions(array('encoder' => $encoder)));
+        $driver = new FileSystem($this->getOptions(array('encoder' => $encoder)));
     }
 
 
     public function testOptionKeyHashFunction()
     {
         $driver = new FileSystem(array('keyHashFunction' => 'md5'));
-        $driver->setOptions($this->getOptions(array('keyHashFunction' => 'md5')));
     }
 
     /**
@@ -96,8 +90,7 @@ class FileSystemTest extends AbstractDriverTest
         $paths = array('one', 'two', 'three', 'four');
 
         foreach ($hashfunctions as $hashfunction) {
-            $driver = new FileSystem();
-            $driver->setOptions($this->getOptions(array(
+            $driver = new FileSystem($this->getOptions(array(
                 'keyHashFunction' => $hashfunction,
                 'path' => sys_get_temp_dir().DIRECTORY_SEPARATOR.'stash',
                 'dirSplit' => 1
@@ -142,8 +135,7 @@ class FileSystemTest extends AbstractDriverTest
 
         $cachePath = sys_get_temp_dir().DIRECTORY_SEPARATOR.'stash';
 
-        $driver = new FileSystem();
-        $driver->setOptions($this->getOptions(array(
+        $driver = new FileSystem($this->getOptions(array(
             'keyHashFunction' => 'Stash\Test\Driver\strdup',
             'path' => $cachePath,
             'dirSplit' => 1
@@ -179,8 +171,7 @@ class FileSystemTest extends AbstractDriverTest
 
         $cachePath = sys_get_temp_dir().DIRECTORY_SEPARATOR.'stash';
 
-        $driver = new FileSystem();
-        $driver->setOptions($this->getOptions(array(
+        $driver = new FileSystem($this->getOptions(array(
             'keyHashFunction' => 'Stash\Test\Driver\strdup',
             'path' => $cachePath,
             'dirSplit' => 1

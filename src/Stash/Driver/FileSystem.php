@@ -129,7 +129,7 @@ class FileSystem extends AbstractDriver
      *
      * @throws \Stash\Exception\RuntimeException
      */
-    public function setOptions(array $options = array())
+    protected function setOptions(array $options = array())
     {
         $options += $this->getDefaultOptions();
         if (!isset($options['path'])) {
