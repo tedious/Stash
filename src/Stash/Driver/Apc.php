@@ -104,7 +104,6 @@ class Apc extends AbstractDriver
         $apckey = $this->makeKey($key);
         $store = array('data' => $data, 'expiration' => $expiration);
 
-
         return $this->apcu ? apcu_store($apckey, $store, $life) : apc_store($apckey, $store, $life);
     }
 
@@ -142,8 +141,8 @@ class Apc extends AbstractDriver
         $now = time();
         $keyRegex = '[' . $this->makeKey(array()) . '*]';
         $chunkSize = isset($this->chunkSize) && is_numeric($this->chunkSize) ? $this->chunkSize : 100;
-
-        $it = new \APCIterator('user', $keyRegex, \APC_ITER_KEY, $chunkSize);
+        $iteratorClass = $this->apcu ? '\APCUIterator' : '\APCIterator';
+        $it = new $iteratorClass('user', $keyRegex, \APC_ITER_KEY, $chunkSize);
         foreach ($it as $item) {
             $success = null;
             $data = $this->apcu ? apcu_fetch($item['key'], $success): apc_fetch($item['key'], $success);
