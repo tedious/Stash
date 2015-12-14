@@ -120,8 +120,7 @@ class Apc extends AbstractDriver
 
             do {
                 $emptyIterator = true;
-                $iteratorClass = $this->apcu ? '\APCUIterator' : '\APCIterator';
-                $it = new $iteratorClass('user', $keyRegex, \APC_ITER_KEY, $chunkSize);
+                $it = $this->apcu ? new \APCUIterator($keyRegex, \APC_ITER_KEY, $chunkSize) : new \APCIterator('user', $keyRegex, \APC_ITER_KEY, $chunkSize);
 
                 foreach ($it as $item) {
                     $emptyIterator = false;
@@ -141,8 +140,7 @@ class Apc extends AbstractDriver
         $now = time();
         $keyRegex = '[' . $this->makeKey(array()) . '*]';
         $chunkSize = isset($this->chunkSize) && is_numeric($this->chunkSize) ? $this->chunkSize : 100;
-        $iteratorClass = $this->apcu ? '\APCUIterator' : '\APCIterator';
-        $it = new $iteratorClass('user', $keyRegex, \APC_ITER_KEY, $chunkSize);
+        $it = $this->apcu ? new \APCUIterator($keyRegex, \APC_ITER_KEY, $chunkSize) : new \APCIterator('user', $keyRegex, \APC_ITER_KEY, $chunkSize);
         foreach ($it as $item) {
             $success = null;
             $data = $this->apcu ? apcu_fetch($item['key'], $success): apc_fetch($item['key'], $success);
