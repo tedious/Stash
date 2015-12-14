@@ -11,6 +11,8 @@
 
 namespace Stash;
 
+use PSR\Cache\CacheItemInterface;
+use Stash\Exception\InvalidArgumentException;
 use Stash\Driver\Ephemeral;
 use Stash\Interfaces\DriverInterface;
 use Stash\Interfaces\ItemInterface;
@@ -83,7 +85,7 @@ class Pool implements PoolInterface
     public function setItemClass($class)
     {
         if (!class_exists($class)) {
-            throw new \InvalidArgumentException('Item class ' . $class . ' does not exist');
+            throw new InvalidArgumentException('Item class ' . $class . ' does not exist');
         }
 
         $interfaces = class_implements($class, true);
@@ -110,7 +112,7 @@ class Pool implements PoolInterface
 
         foreach ($key as $node) {
             if (!isset($node[1]) && strlen($node) < 1) {
-                throw new \InvalidArgumentException('Invalid or Empty Node passed to getItem constructor.');
+                throw new InvalidArgumentException('Invalid or Empty Node passed to getItem constructor.');
             }
         }
 
@@ -157,7 +159,7 @@ class Pool implements PoolInterface
     /**
      * {@inheritdoc}
      */
-    public function save($item)
+    public function save(CacheItemInterface $item)
     {
         return $item->save();
     }
@@ -165,7 +167,7 @@ class Pool implements PoolInterface
     /**
      * {@inheritdoc}
      */
-    public function saveDeferred($item)
+    public function saveDeferred(CacheItemInterface $item)
     {
         return $this->save($item);
     }

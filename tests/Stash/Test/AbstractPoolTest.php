@@ -81,7 +81,7 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
     {
         $pool = $this->getTestPool();
 
-        $stash = $pool->getItem('base', 'one');
+        $stash = $pool->getItem('base/one');
         $this->assertInstanceOf('Stash\Item', $stash, 'getItem returns a Stash\Item object');
 
         $stash->set($this->data)->save();
@@ -92,7 +92,7 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('base/one', $key, 'Pool sets proper Item key.');
 
         $pool->setNamespace('TestNamespace');
-        $item = $pool->getItem(array('test', 'item'));
+        $item = $pool->getItem('test/item');
 
         $this->assertAttributeEquals('TestNamespace', 'namespace', $item, 'Pool sets Item namespace.');
     }
@@ -102,7 +102,7 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
         $pool = $this->getTestPool();
 
         $this->assertFalse($pool->hasItem('base/one'), 'Pool->hasItem() returns false for item without stored data.');
-        $item = $pool->getItem('base', 'one');
+        $item = $pool->getItem('base/one');
         $this->assertInstanceOf('Stash\Item', $item, 'getItem returns a Stash\Item object');
 
         $key = $item->getKey();
@@ -113,14 +113,14 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
         $storedData = $item->get();
         $this->assertEquals($this->data, $storedData, 'Pool->save() returns proper data on passed Item.');
 
-        $item = $pool->getItem('base', 'one');
+        $item = $pool->getItem('base/one');
         $storedData = $item->get();
         $this->assertEquals($this->data, $storedData, 'Pool->save() returns proper data on new Item instance.');
 
         $this->assertTrue($pool->hasItem('base/one'), 'Pool->hasItem() returns true for item with stored data.');
 
         $pool->setNamespace('TestNamespace');
-        $item = $pool->getItem(array('test', 'item'));
+        $item = $pool->getItem('test/item');
 
         $this->assertAttributeEquals('TestNamespace', 'namespace', $item, 'Pool sets Item namespace.');
     }
@@ -131,7 +131,7 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
         $pool = $this->getTestPool();
 
         $this->assertFalse($pool->hasItem('base/one'), 'Pool->hasItem() returns false for item without stored data.');
-        $item = $pool->getItem('base', 'one');
+        $item = $pool->getItem('base/one');
         $this->assertInstanceOf('Stash\Item', $item, 'getItem returns a Stash\Item object');
 
         $key = $item->getKey();
@@ -142,14 +142,14 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
         $storedData = $item->get();
         $this->assertEquals($this->data, $storedData, 'Pool->save() returns proper data on passed Item.');
 
-        $item = $pool->getItem('base', 'one');
+        $item = $pool->getItem('base/one');
         $storedData = $item->get();
         $this->assertEquals($this->data, $storedData, 'Pool->save() returns proper data on new Item instance.');
 
         $this->assertTrue($pool->hasItem('base/one'), 'Pool->hasItem() returns true for item with stored data.');
 
         $pool->setNamespace('TestNamespace');
-        $item = $pool->getItem(array('test', 'item'));
+        $item = $pool->getItem('test/item');
 
         $this->assertAttributeEquals('TestNamespace', 'namespace', $item, 'Pool sets Item namespace.');
     }
@@ -158,7 +158,7 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
     {
         $pool = $this->getTestPool();
         $this->assertFalse($pool->hasItem('base/one'), 'Pool->hasItem() returns false for item without stored data.');
-        $item = $pool->getItem('base', 'one');
+        $item = $pool->getItem('base/one');
         $item->set($this->data);
         $pool->save($item);
         $this->assertTrue($pool->hasItem('base/one'), 'Pool->hasItem() returns true for item with stored data.');
@@ -170,16 +170,6 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($pool->commit());
     }
 
-
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Item constructor requires a key.
-     */
-    public function testGetItemInvalidKey()
-    {
-        $pool = $this->getTestPool();
-        $item = $pool->getItem();
-    }
 
     /**
      * @expectedException InvalidArgumentException
@@ -250,11 +240,11 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
     {
         $pool = $this->getTestPool();
 
-        $stash = $pool->getItem('base', 'one');
+        $stash = $pool->getItem('base/one');
         $stash->set($this->data)->save();
         $this->assertTrue($pool->clear(), 'clear returns true');
 
-        $stash = $pool->getItem('base', 'one');
+        $stash = $pool->getItem('base/one');
         $this->assertNull($stash->get(), 'clear removes item');
         $this->assertTrue($stash->isMiss(), 'clear causes cache miss');
     }
@@ -263,11 +253,11 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
     {
         $pool = $this->getTestPool();
 
-        $stash = $pool->getItem('base', 'one');
+        $stash = $pool->getItem('base/one');
         $stash->set($this->data)->expiresAfter(-600)->save();
         $this->assertTrue($pool->purge(), 'purge returns true');
 
-        $stash = $pool->getItem('base', 'one');
+        $stash = $pool->getItem('base/one');
         $this->assertNull($stash->get(), 'purge removes item');
         $this->assertTrue($stash->isMiss(), 'purge causes cache miss');
     }
@@ -296,13 +286,6 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
         $pool->setNamespace('!@#$%^&*(');
     }
 
-    public function testgetItemArrayConversion()
-    {
-        $pool = $this->getTestPool();
-
-        $cache = $pool->getItem(array('base', 'one'));
-        $this->assertEquals($cache->getKey(), 'base/one');
-    }
 
     public function testSetLogger()
     {

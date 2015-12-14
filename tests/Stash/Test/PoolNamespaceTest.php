@@ -35,17 +35,17 @@ class PoolNamespaceTest extends AbstractPoolTest
         $pool = $this->getTestPool(true);
 
         // No Namespace
-        $item = $pool->getItem(array('base', 'one'));
+        $item = $pool->getItem('base/one');
         $item->set($this->data)->save();
 
         // TestNamespace
         $pool->setNamespace('TestNamespace');
-        $item = $pool->getItem(array('test', 'one'));
+        $item = $pool->getItem('test/one');
         $item->set($this->data)->save();
 
         // TestNamespace2
         $pool->setNamespace('TestNamespace2');
-        $item = $pool->getItem(array('test', 'one'));
+        $item = $pool->getItem('test/one');
         $item->set($this->data)->save();
 
         // Clear TestNamespace
@@ -54,7 +54,7 @@ class PoolNamespaceTest extends AbstractPoolTest
 
         // Return to No Namespace
         $pool->setNamespace();
-        $item = $pool->getItem(array('base', 'one'));
+        $item = $pool->getItem('base/one');
         $this->assertFalse($item->isMiss(), 'Base item exists after other namespace was cleared.');
         $this->assertEquals($this->data, $item->get(), 'Base item returns data after other namespace was cleared.');
 
@@ -63,7 +63,7 @@ class PoolNamespaceTest extends AbstractPoolTest
 
         // Return to TestNamespace2
         $pool->setNamespace('TestNamespace2');
-        $item = $pool->getItem(array('base', 'one'));
+        $item = $pool->getItem('base/one');
         $this->assertTrue($item->isMiss(), 'Namespaced item disappears after complete clear.');
     }
 

@@ -11,6 +11,7 @@
 
 namespace Stash\Test\Stubs;
 
+use Psr\Cache\CacheItemInterface;
 use Stash\Interfaces\PoolInterface;
 
 /**
@@ -38,7 +39,7 @@ class PoolGetDriverStub implements PoolInterface
         return true;
     }
 
-    public function getItem()
+    public function getItem($key)
     {
         return false;
     }
@@ -83,12 +84,12 @@ class PoolGetDriverStub implements PoolInterface
         return false;
     }
 
-    public function saveDeferred($item)
+    public function saveDeferred(CacheItemInterface $item)
     {
         return false;
     }
 
-    public function save($item)
+    public function save(CacheItemInterface $item)
     {
         return false;
     }

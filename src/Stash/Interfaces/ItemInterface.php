@@ -11,7 +11,9 @@
 
 namespace Stash\Interfaces;
 
-interface ItemInterface
+use \Psr\Cache\CacheItemInterface;
+
+interface ItemInterface extends CacheItemInterface
 {
     /**
      * Sets the Parent Pool for the Item class to use.

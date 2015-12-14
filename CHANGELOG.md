@@ -2,6 +2,8 @@
 
 ### v1.0.0
 
+* Implemented PSR-6 interfaces. 
+
 * Removed deprecated DriverList::getDrivers function.
 
 * Removed deprecated invalidation constants in the Item class.
