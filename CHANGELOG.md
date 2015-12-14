@@ -30,6 +30,7 @@
 
 * Added `Pool::deleteItem` and `Pool::deleteItems`.
 
+* Removed legacy methods for defining keys- keys must be defined as strings.
 
 
 ## Stash v0.13 Changelog

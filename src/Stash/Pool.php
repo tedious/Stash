@@ -100,27 +100,10 @@ class Pool implements PoolInterface
     /**
      * {@inheritdoc}
      */
-    public function getItem()
+    public function getItem($key)
     {
-        $args = func_get_args();
-
-        if (!isset($args[0])) {
-            throw new \InvalidArgumentException('Item constructor requires a key.');
-        }
-
-        // check to see if a single array was used instead of multiple arguments
-        if (!isset($args[1]) && is_array($args[0])) {
-            $args = $args[0];
-        }
-
-        // if only one item treat as key string
-        if (!isset($args[1])) {
-            $keyString = trim($args[0], '/');
-            $key = explode('/', $keyString);
-        } else {
-            $key = $args;
-        }
-
+        $keyString = trim($key, '/');
+        $key = explode('/', $keyString);
         $namespace = empty($this->namespace) ? 'stash_default' : $this->namespace;
 
         array_unshift($key, $namespace);
