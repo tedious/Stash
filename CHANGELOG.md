@@ -2,7 +2,7 @@
 
 ### v1.0.0
 
-* Implemented PSR-6 interfaces. 
+* Implemented PSR-6 interfaces.
 
 * Removed deprecated DriverList::getDrivers function.
 
@@ -33,6 +33,8 @@
 * Added `Pool::deleteItem` and `Pool::deleteItems`.
 
 * Removed legacy methods for defining keys- keys must be defined as strings.
+
+* Added support for "APCU" functions.
 
 
 ## Stash v0.13 Changelog
