@@ -50,8 +50,7 @@ class MemcacheAnyTest extends \PHPUnit_Framework_TestCase
 
         $options = array();
         $options['servers'][] = array('127.0.0.1', '11211', '50');
-        $driver = new Memcache();
-        $driver->setOptions($options);
+        $driver = new Memcache($options);
 
         $item = new Item();
         $poolStub = new PoolGetDriverStub();

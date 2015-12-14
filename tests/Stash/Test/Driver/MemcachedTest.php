@@ -44,8 +44,7 @@ class MemcachedTest extends MemcacheTest
         $options['servers'][] = array('127.0.0.1', '11211', '50');
         $options['servers'][] = array('127.0.0.1', '11211');
         $options['hash'] = 'InvalidOption';
-        $driver = new Memcache();
-        $driver->setOptions($options);
+        $driver = new Memcache($options);
     }
 
     /**
@@ -57,8 +56,7 @@ class MemcachedTest extends MemcacheTest
         $options['servers'][] = array('127.0.0.1', '11211', '50');
         $options['servers'][] = array('127.0.0.1', '11211');
         $options['distribution'] = 'InvalidOption';
-        $driver = new Memcache();
-        $driver->setOptions($options);
+        $driver = new Memcache($options);
     }
 
     /**
@@ -70,8 +68,7 @@ class MemcachedTest extends MemcacheTest
         $options['servers'][] = array('127.0.0.1', '11211', '50');
         $options['servers'][] = array('127.0.0.1', '11211');
         $options['serializer'] = 'InvalidOption';
-        $driver = new Memcache();
-        $driver->setOptions($options);
+        $driver = new Memcache($options);
     }
 
     /**
@@ -83,8 +80,7 @@ class MemcachedTest extends MemcacheTest
         $options['servers'][] = array('127.0.0.1', '11211', '50');
         $options['servers'][] = array('127.0.0.1', '11211');
         $options['connect_timeout'] = 'InvalidOption';
-        $driver = new Memcache();
-        $driver->setOptions($options);
+        $driver = new Memcache($options);
     }
 
     /**
@@ -96,7 +92,6 @@ class MemcachedTest extends MemcacheTest
         $options['servers'][] = array('127.0.0.1', '11211', '50');
         $options['servers'][] = array('127.0.0.1', '11211');
         $options['cache_lookups'] = 'InvalidOption';
-        $driver = new Memcache();
-        $driver->setOptions($options);
+        $driver = new Memcache($options);
     }
 }
