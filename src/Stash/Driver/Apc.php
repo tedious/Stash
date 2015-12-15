@@ -113,7 +113,7 @@ class Apc extends AbstractDriver
     public function clear($key = null)
     {
         if (!isset($key)) {
-            return $this->apcu ? apcu_clear_cache('user') : apc_clear_cache('user');
+            return $this->apcu ? apcu_clear_cache() : apc_clear_cache('user');
         } else {
             $keyRegex = '[' . $this->makeKey($key) . '*]';
             $chunkSize = isset($this->chunkSize) && is_numeric($this->chunkSize) ? $this->chunkSize : 100;
