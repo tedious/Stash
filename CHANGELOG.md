@@ -38,6 +38,8 @@
 
 * Added support for "APCU" functions.
 
+* Removed sqlite2 support (sqlite3 is still supported).
+
 
 ## Stash v0.13 Changelog
 
