@@ -196,23 +196,6 @@ class SqlitePdo
     }
 
     /**
-     * Filesystem integrity and permissions are checked and exceptions thrown for relevant issues.
-     *
-     * @throws \Stash\Exception\InvalidArgumentException
-     * @throws \Stash\Exception\RuntimeException
-     */
-    public function checkFileSystemPermissions()
-    {
-        if (!isset($this->path)) {
-            throw new RuntimeException('No cache path is set.');
-        }
-
-        if (!is_writable($this->path) && !is_writable(dirname($this->path))) {
-            throw new InvalidArgumentException('The cache sqlite file is not writable.');
-        }
-    }
-
-    /**
      * Checks that PDO extension is present and has the appropriate SQLite driver.
      *
      */
@@ -226,7 +209,6 @@ class SqlitePdo
 
         return in_array(static::$pdoDriver, $drivers);
     }
-
 
     /**
      * Tells the SQLite driver how long to wait for data to be written.
