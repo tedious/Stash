@@ -24,14 +24,16 @@ class DriverList
      *
      * @var array
      */
-    protected static $drivers = array('Apc' => '\Stash\Driver\Apc',
-                                       'BlackHole' => '\Stash\Driver\BlackHole',
-                                       'Composite' => '\Stash\Driver\Composite',
-                                       'Ephemeral' => '\Stash\Driver\Ephemeral',
-                                       'FileSystem' => '\Stash\Driver\FileSystem',
-                                       'Memcache' => '\Stash\Driver\Memcache',
-                                       'Redis' => '\Stash\Driver\Redis',
-                                       'SQLite' => '\Stash\Driver\Sqlite',
+    protected static $drivers = array(
+	    'Apc'        => '\Stash\Driver\Apc',
+        'Apcu'       => '\Stash\Driver\Apcu',
+        'BlackHole'  => '\Stash\Driver\BlackHole',
+        'Composite'  => '\Stash\Driver\Composite',
+        'Ephemeral'  => '\Stash\Driver\Ephemeral',
+        'FileSystem' => '\Stash\Driver\FileSystem',
+        'Memcache'   => '\Stash\Driver\Memcache',
+        'Redis'      => '\Stash\Driver\Redis',
+        'SQLite'     => '\Stash\Driver\Sqlite',
     );
 
     /**
@@ -45,10 +47,10 @@ class DriverList
         $allDrivers = self::getAllDrivers();
         foreach ($allDrivers as $name => $class) {
             if ($name == 'Composite') {
-                $availableDrivers[$name] = $class;
+                $availableDrivers[ $name ] = $class;
             } else {
                 if ($class::isAvailable()) {
-                    $availableDrivers[$name] = $class;
+                    $availableDrivers[ $name ] = $class;
                 }
             }
         }
@@ -68,7 +70,7 @@ class DriverList
             if (!class_exists($class) || !in_array('Stash\Interfaces\DriverInterface', class_implements($class))) {
                 continue;
             }
-            $driverList[$name] = $class;
+            $driverList[ $name ] = $class;
         }
 
         return $driverList;
@@ -82,22 +84,23 @@ class DriverList
      */
     public static function registerDriver($name, $class)
     {
-        self::$drivers[$name] = $class;
+        self::$drivers[ $name ] = $class;
     }
 
     /**
      * Returns the driver class for a specific driver name.
      *
      * @param  string $name
+     *
      * @return bool
      */
     public static function getDriverClass($name)
     {
-        if (!isset(self::$drivers[$name])) {
+        if (!isset(self::$drivers[ $name ])) {
             return false;
         }
 
-        return self::$drivers[$name];
+        return self::$drivers[ $name ];
     }
 
     /**
