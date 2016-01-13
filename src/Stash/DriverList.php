@@ -34,6 +34,7 @@ class DriverList
         'Memcache'   => '\Stash\Driver\Memcache',
         'Redis'      => '\Stash\Driver\Redis',
         'SQLite'     => '\Stash\Driver\Sqlite',
+        'Xcache'     => '\Stash\Driver\Xcache',
     );
 
     /**
