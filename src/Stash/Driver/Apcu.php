@@ -18,7 +18,6 @@ use Stash;
  *
  * Based on original APC driver
  *
- * @package Stash
  * @author  Mate Skoblar <m.ateskobla.r@gmail.com>
  */
 class Apcu extends AbstractDriver
@@ -57,7 +56,7 @@ class Apcu extends AbstractDriver
     }
 
     /**
-     * This function returns iterator based on PECL version. As of version 5 APCUIterator is used
+     * This function returns iterator based on PECL version. As of version 5 APCUIterator is used.
      *
      * @param $search
      * @param $format
@@ -118,7 +117,7 @@ class Apcu extends AbstractDriver
         if (!isset($key)) {
             return apcu_clear_cache();
         } else {
-            $keyRegex = '[' . $this->makeKey($key) . '*]';
+            $keyRegex = '['.$this->makeKey($key).'*]';
             $chunkSize = isset($this->chunkSize) && is_numeric($this->chunkSize) ? $this->chunkSize : 100;
 
             do {
@@ -140,7 +139,7 @@ class Apcu extends AbstractDriver
     public function purge()
     {
         $now = time();
-        $keyRegex = '[' . $this->makeKey(array()) . '*]';
+        $keyRegex = '['.$this->makeKey(array()).'*]';
         $chunkSize = isset($this->chunkSize) && is_numeric($this->chunkSize) ? $this->chunkSize : 100;
 
         $it = $this->getIterator($keyRegex, \APC_ITER_KEY, $chunkSize);
@@ -175,19 +174,20 @@ class Apcu extends AbstractDriver
     /**
      * Turns a key array into a string.
      *
-     * @param  array  $key
+     * @param array $key
+     *
      * @return string
      */
     protected function makeKey($key)
     {
-        $keyString = md5(__FILE__) . '::'; // make it unique per install
+        $keyString = md5(__FILE__).'::'; // make it unique per install
 
         if (isset($this->apcuNamespace)) {
-            $keyString .= $this->apcuNamespace . '::';
+            $keyString .= $this->apcuNamespace.'::';
         }
 
         foreach ($key as $piece) {
-            $keyString .= $piece . '::';
+            $keyString .= $piece.'::';
         }
 
         return $keyString;
@@ -196,7 +196,8 @@ class Apcu extends AbstractDriver
     /**
      * Converts a timestamp into a TTL.
      *
-     * @param  int $expiration
+     * @param int $expiration
+     *
      * @return int
      */
     protected function getCacheTime($expiration)
