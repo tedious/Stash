@@ -26,7 +26,6 @@ class DriverList
      */
     protected static $drivers = array(
         'Apc'        => '\Stash\Driver\Apc',
-        'Apcu'       => '\Stash\Driver\Apcu',
         'BlackHole'  => '\Stash\Driver\BlackHole',
         'Composite'  => '\Stash\Driver\Composite',
         'Ephemeral'  => '\Stash\Driver\Ephemeral',
