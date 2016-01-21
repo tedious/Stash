@@ -70,7 +70,9 @@ class Memcache extends AbstractDriver
      *
      * * extension - Which php extension to use, either 'memcache' or 'memcached'. Defaults to 'memcached' with 'memcache'
      * as a fallback.
-	 *
+     *
+     * * persistent_id - If set this ID is used to set persistence of the memcached extension
+     *
      * * Options can be passed to the memcached driver by adding them to the options array. The memcached extension
      * defined options using constants, ie Memcached::OPT_*. Pass in the * portion (COMPRESSION for
      * Memcached::OPT_COMPRESSION) and its respective option. Please see the php manual for the specific options
@@ -99,7 +101,8 @@ class Memcache extends AbstractDriver
         $extension = strtolower($options['extension']);
 
         if (class_exists('Memcached', false) && $extension != 'memcache') {
-            $this->memcache = new SubMemcached($servers, $options);
+            $persistent_id = isset($options['persistent_id'])?$options['persistent_id']:null;
+            $this->memcache = new SubMemcached($persistent_id, $servers, $options);
         } elseif (class_exists('Memcache', false) && $extension != 'memcached') {
             $this->memcache = new SubMemcache($servers);
         } else {

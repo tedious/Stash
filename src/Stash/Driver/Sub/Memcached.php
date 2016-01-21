@@ -33,11 +33,12 @@ class Memcached
      *
      * Takes an array of options which map to the "\Memcached::OPT_" settings (\Memcached::OPT_COMPRESSION => "compression").
      *
+     * @param  string                            $persistent_id
      * @param  array                             $servers
      * @param  array                             $options
      * @throws \Stash\Exception\RuntimeException
      */
-    public function __construct($servers = array(), $options = array())
+    public function __construct($persistent_id = null, $servers = array(), $options = array())
     {
         // build this array here instead of as a class variable since the constants are only defined if the extension
         // exists
@@ -63,7 +64,11 @@ class Memcached
                             'CLIENT_MODE'
         );
 
-        $memcached = new \Memcached();
+        if (is_null($persistent_id)) {
+            $memcached = new \Memcached();
+        } else {
+            $memcached = new \Memcached($persistent_id);
+        }
 
         $serverList = $memcached->getServerList();
         if (empty($serverList)) {
