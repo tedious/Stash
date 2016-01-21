@@ -68,13 +68,13 @@ class Memcache extends AbstractDriver
      * * servers - An array of servers, with each server represented by its own array (array(host, port, [weight])). If
      * not passed the default is array('127.0.0.1', 11211).
      *
-     * * extension - Which php extension to use, either 'memcache' or 'memcache'. Defaults to memcache with memcache
+     * * extension - Which php extension to use, either 'memcache' or 'memcached'. Defaults to 'memcached' with 'memcache'
      * as a fallback.
-     *
-     * * Options can be passed to the "memcache" driver by adding them to the options array. The memcache extension
-     * defined options using constants, ie Memcached::OPT_*. By passing in the * portion ('compression' for
+	 *
+     * * Options can be passed to the memcached driver by adding them to the options array. The memcached extension
+     * defined options using constants, ie Memcached::OPT_*. Pass in the * portion (COMPRESSION for
      * Memcached::OPT_COMPRESSION) and its respective option. Please see the php manual for the specific options
-     * (http://us2.php.net/manual/en/memcache.constants.php)
+     * (http://php.net/manual/en/memcached.constants.php)
      *
      *
      * @param array $options
