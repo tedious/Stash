@@ -21,6 +21,7 @@ class RedisArrayTest extends RedisTest
 
     protected $redisSecondServer = '127.0.0.1';
     protected $redisSecondPort = '6380';
+    protected $persistence = true;
 
     protected function setUp()
     {

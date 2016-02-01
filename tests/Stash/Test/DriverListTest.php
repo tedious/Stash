@@ -24,20 +24,28 @@ class DriverListTest extends \PHPUnit_Framework_TestCase
         $drivers = DriverList::getAvailableDrivers();
         $this->assertArrayHasKey('FileSystem', $drivers, 'getDrivers returns FileSystem driver');
         $this->assertArrayNotHasKey('Array', $drivers, 'getDrivers doesn\'t return Array driver');
+
+        DriverList::registerDriver('TestUnavailable_getAvailable', '\Stash\Test\Stubs\DriverUnavailableStub');
+        $drivers = DriverList::getAvailableDrivers();
+        $this->assertArrayNotHasKey('TestUnavailable_getAvailable', $drivers, 'getAllDrivers doesn\'t return TestBroken driver');
     }
 
-    public function testGetDrivers()
+    public function testGetAllDrivers()
     {
-        $availableDrivers = DriverList::getAvailableDrivers();
-        $getDrivers = DriverList::getDrivers();
-        $this->assertEquals($availableDrivers, $getDrivers, 'getDrivers is an alias for getAvailableDrivers');
+        DriverList::registerDriver('TestBroken_getAll', 'stdClass');
+        $drivers = DriverList::getAllDrivers();
+        $this->assertArrayNotHasKey('TestBroken_getAll', $drivers, 'getAllDrivers doesn\'t return TestBroken driver');
+
+        DriverList::registerDriver('TestUnavailable_getAll', '\Stash\Test\Stubs\DriverUnavailableStub');
+        $drivers = DriverList::getAllDrivers();
+        $this->assertArrayHasKey('TestUnavailable_getAll', $drivers, 'getAllDrivers doesn\'t return TestBroken driver');
     }
 
     public function testRegisterDriver()
     {
         DriverList::registerDriver('Array', 'Stash\Driver\Ephemeral');
 
-        $drivers = DriverList::getDrivers();
+        $drivers = DriverList::getAvailableDrivers();
         $this->assertArrayHasKey('Array', $drivers, 'getDrivers returns Array driver');
     }
 

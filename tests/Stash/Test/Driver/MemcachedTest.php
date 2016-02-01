@@ -11,6 +11,8 @@
 
 namespace Stash\Test\Driver;
 
+use \Stash\Driver\Memcache;
+
 /**
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
@@ -31,5 +33,65 @@ class MemcachedTest extends MemcacheTest
         );
 
         return array_merge($options, $memcachedOptions);
+    }
+
+    /**
+     * @expectedException Stash\Exception\RuntimeException
+     */
+    public function testSetHashException()
+    {
+        $options = array();
+        $options['servers'][] = array('127.0.0.1', '11211', '50');
+        $options['servers'][] = array('127.0.0.1', '11211');
+        $options['hash'] = 'InvalidOption';
+        $driver = new Memcache($options);
+    }
+
+    /**
+     * @expectedException Stash\Exception\RuntimeException
+     */
+    public function testSetDistributionException()
+    {
+        $options = array();
+        $options['servers'][] = array('127.0.0.1', '11211', '50');
+        $options['servers'][] = array('127.0.0.1', '11211');
+        $options['distribution'] = 'InvalidOption';
+        $driver = new Memcache($options);
+    }
+
+    /**
+     * @expectedException Stash\Exception\RuntimeException
+     */
+    public function testSetSerializerException()
+    {
+        $options = array();
+        $options['servers'][] = array('127.0.0.1', '11211', '50');
+        $options['servers'][] = array('127.0.0.1', '11211');
+        $options['serializer'] = 'InvalidOption';
+        $driver = new Memcache($options);
+    }
+
+    /**
+     * @expectedException Stash\Exception\RuntimeException
+     */
+    public function testSetNumberedValueException()
+    {
+        $options = array();
+        $options['servers'][] = array('127.0.0.1', '11211', '50');
+        $options['servers'][] = array('127.0.0.1', '11211');
+        $options['connect_timeout'] = 'InvalidOption';
+        $driver = new Memcache($options);
+    }
+
+    /**
+     * @expectedException Stash\Exception\RuntimeException
+     */
+    public function testSetBooleanValueException()
+    {
+        $options = array();
+        $options['servers'][] = array('127.0.0.1', '11211', '50');
+        $options['servers'][] = array('127.0.0.1', '11211');
+        $options['cache_lookups'] = 'InvalidOption';
+        $driver = new Memcache($options);
     }
 }

@@ -50,8 +50,7 @@ class MemcacheAnyTest extends \PHPUnit_Framework_TestCase
 
         $options = array();
         $options['servers'][] = array('127.0.0.1', '11211', '50');
-        $driver = new Memcache();
-        $driver->setOptions($options);
+        $driver = new Memcache($options);
 
         $item = new Item();
         $poolStub = new PoolGetDriverStub();
@@ -59,6 +58,6 @@ class MemcacheAnyTest extends \PHPUnit_Framework_TestCase
         $item->setPool($poolStub);
 
         $item->setKey($key);
-        $this->assertTrue($item->set($key), 'Able to load and store with unconfigured extension.');
+        $this->assertTrue($item->set($key)->save(), 'Able to load and store with unconfigured extension.');
     }
 }

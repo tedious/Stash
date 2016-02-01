@@ -30,41 +30,41 @@ class PoolNamespaceTest extends AbstractPoolTest
         return $pool;
     }
 
-    public function testFlushNamespacedCache()
+    public function testClearNamespacedCache()
     {
         $pool = $this->getTestPool(true);
 
         // No Namespace
-        $item = $pool->getItem(array('base', 'one'));
-        $item->set($this->data);
+        $item = $pool->getItem('base/one');
+        $item->set($this->data)->save();
 
         // TestNamespace
         $pool->setNamespace('TestNamespace');
-        $item = $pool->getItem(array('test', 'one'));
-        $item->set($this->data);
+        $item = $pool->getItem('test/one');
+        $item->set($this->data)->save();
 
         // TestNamespace2
         $pool->setNamespace('TestNamespace2');
-        $item = $pool->getItem(array('test', 'one'));
-        $item->set($this->data);
+        $item = $pool->getItem('test/one');
+        $item->set($this->data)->save();
 
-        // Flush TestNamespace
+        // Clear TestNamespace
         $pool->setNamespace('TestNamespace');
-        $this->assertTrue($pool->flush(), 'Flush succeeds with namespace selected.');
+        $this->assertTrue($pool->clear(), 'Clear succeeds with namespace selected.');
 
         // Return to No Namespace
         $pool->setNamespace();
-        $item = $pool->getItem(array('base', 'one'));
-        $this->assertFalse($item->isMiss(), 'Base item exists after other namespace was flushed.');
-        $this->assertEquals($this->data, $item->get(), 'Base item returns data after other namespace was flushed.');
+        $item = $pool->getItem('base/one');
+        $this->assertFalse($item->isMiss(), 'Base item exists after other namespace was cleared.');
+        $this->assertEquals($this->data, $item->get(), 'Base item returns data after other namespace was cleared.');
 
-        // Flush All
-        $this->assertTrue($pool->flush(), 'Flush succeeds with no namespace.');
+        // Clear All
+        $this->assertTrue($pool->clear(), 'Clear succeeds with no namespace.');
 
         // Return to TestNamespace2
         $pool->setNamespace('TestNamespace2');
-        $item = $pool->getItem(array('base', 'one'));
-        $this->assertTrue($item->isMiss(), 'Namespaced item disappears after complete flush.');
+        $item = $pool->getItem('base/one');
+        $this->assertTrue($item->isMiss(), 'Namespaced item disappears after complete clear.');
     }
 
     public function testNamespacing()

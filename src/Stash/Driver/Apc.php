@@ -37,6 +37,14 @@ class Apc extends AbstractDriver
     protected $apcNamespace;
 
     /**
+     * Whether to use the APCu functions or the original APC ones.
+     *
+     * @var string
+     */
+    protected $apcu = false;
+
+
+    /**
      * The number of records \ApcIterator will grab at once.
      *
      * @var int
@@ -51,6 +59,10 @@ class Apc extends AbstractDriver
         return array(
             'ttl' => 300,
             'namespace' => md5(__FILE__),
+
+            // Test using the APCUIterator, as some versions of APCU have the
+            // custom functions but not the iterator class.
+            'apcu' => class_exists('\APCUIterator')
         );
     }
 
@@ -62,12 +74,13 @@ class Apc extends AbstractDriver
      *
      * @param array $options
      */
-    public function setOptions(array $options = array())
+    protected function setOptions(array $options = array())
     {
         $options += $this->getDefaultOptions();
 
         $this->ttl = (int) $options['ttl'];
         $this->apcNamespace = $options['namespace'];
+        $this->apcu = $options['apcu'];
     }
 
     /**
@@ -77,7 +90,7 @@ class Apc extends AbstractDriver
     {
         $keyString = self::makeKey($key);
         $success = null;
-        $data = apc_fetch($keyString, $success);
+        $data = $this->apcu ? apcu_fetch($keyString, $success) : apc_fetch($keyString, $success);
 
         return $success ? $data : false;
     }
@@ -88,8 +101,10 @@ class Apc extends AbstractDriver
     public function storeData($key, $data, $expiration)
     {
         $life = $this->getCacheTime($expiration);
+        $apckey = $this->makeKey($key);
+        $store = array('data' => $data, 'expiration' => $expiration);
 
-        return apc_store($this->makeKey($key), array('data' => $data, 'expiration' => $expiration), $life);
+        return $this->apcu ? apcu_store($apckey, $store, $life) : apc_store($apckey, $store, $life);
     }
 
     /**
@@ -98,17 +113,18 @@ class Apc extends AbstractDriver
     public function clear($key = null)
     {
         if (!isset($key)) {
-            return apc_clear_cache('user');
+            return $this->apcu ? apcu_clear_cache() : apc_clear_cache('user');
         } else {
             $keyRegex = '[' . $this->makeKey($key) . '*]';
             $chunkSize = isset($this->chunkSize) && is_numeric($this->chunkSize) ? $this->chunkSize : 100;
 
             do {
                 $emptyIterator = true;
-                $it = new \APCIterator('user', $keyRegex, \APC_ITER_KEY, $chunkSize);
+                $it = $this->apcu ? new \APCUIterator($keyRegex, \APC_ITER_KEY, $chunkSize) : new \APCIterator('user', $keyRegex, \APC_ITER_KEY, $chunkSize);
+
                 foreach ($it as $item) {
                     $emptyIterator = false;
-                    apc_delete($item['key']);
+                    $this->apcu ? apcu_delete($item['key']) : apc_delete($item['key']);
                 }
             } while (!$emptyIterator);
         }
@@ -124,14 +140,13 @@ class Apc extends AbstractDriver
         $now = time();
         $keyRegex = '[' . $this->makeKey(array()) . '*]';
         $chunkSize = isset($this->chunkSize) && is_numeric($this->chunkSize) ? $this->chunkSize : 100;
-
-        $it = new \APCIterator('user', $keyRegex, \APC_ITER_KEY, $chunkSize);
+        $it = $this->apcu ? new \APCUIterator($keyRegex, \APC_ITER_KEY, $chunkSize) : new \APCIterator('user', $keyRegex, \APC_ITER_KEY, $chunkSize);
         foreach ($it as $item) {
             $success = null;
-            $data = apc_fetch($item['key'], $success);
+            $data = $this->apcu ? apcu_fetch($item['key'], $success): apc_fetch($item['key'], $success);
 
             if ($success && is_array($data) && $data['expiration'] <= $now) {
-                apc_delete($item['key']);
+                $this->apcu ? apcu_delete($item['key']) : apc_delete($item['key']);
             }
         }
 
@@ -145,13 +160,12 @@ class Apc extends AbstractDriver
      */
     public static function isAvailable()
     {
-        // HHVM has some of the APC extension, but not all of it.
-        if (!class_exists('\APCIterator')) {
+        // Some versions of HHVM are missing the APCIterator
+        if (!class_exists('\APCIterator') && !class_exists('\APCUIterator')) {
             return false;
         }
 
-        return (extension_loaded('apc') && ini_get('apc.enabled'))
-            && ((php_sapi_name() !== 'cli') || ini_get('apc.enable_cli'));
+        return function_exists('apcu_fetch') || function_exists('apc_fetch');
     }
 
     /**
@@ -186,5 +200,14 @@ class Apc extends AbstractDriver
         $life = $expiration - time();
 
         return $this->ttl < $life ? $this->ttl : $life;
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isPersistent()
+    {
+        return true;
     }
 }

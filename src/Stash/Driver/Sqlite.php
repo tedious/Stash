@@ -55,7 +55,7 @@ class Sqlite extends AbstractDriver
      *
      * @throws \Stash\Exception\RuntimeException
      */
-    public function setOptions(array $options = array())
+    protected function setOptions(array $options = array())
     {
         $options += $this->getDefaultOptions();
 
@@ -67,34 +67,16 @@ class Sqlite extends AbstractDriver
 
         Utilities::checkFileSystemPermissions($this->cachePath, $this->dirPermissions);
 
-        $extension = isset($options['extension']) ? strtolower($options['extension']) : 'any';
-        $version = isset($options['version']) ? $options['version'] : 'any';
-
-        $subdrivers = array();
-        if (Sub\SqlitePdo::isAvailable()) {
-            $subdrivers['pdo'] = '\Stash\Driver\Sub\SqlitePdo';
-        }
-        if (Sub\Sqlite::isAvailable()) {
-            $subdrivers['sqlite'] = '\Stash\Driver\Sub\Sqlite';
-        }
-        if (Sub\SqlitePdo2::isAvailable()) {
-            $subdrivers['pdo2'] = '\Stash\Driver\Sub\SqlitePdo2';
-        }
-
-        if ($extension == 'pdo' && $version != '2' && isset($subdrivers['pdo'])) {
-            $driver = $subdrivers['pdo'];
-        } elseif ($extension == 'sqlite' && isset($subdrivers['sqlite'])) {
-            $driver = $subdrivers['sqlite'];
-        } elseif ($extension == 'pdo' && $version != '3' && isset($subdrivers['pdo2'])) {
-            $driver = $subdrivers['pdo2'];
-        } elseif (count($subdrivers) > 0 && $extension == 'any') {
-            $driver = reset($subdrivers);
+        if (static::isAvailable() && Sub\SqlitePdo::isAvailable()) {
+            $this->driverClass = '\Stash\Driver\Sub\SqlitePdo';
         } else {
             throw new RuntimeException('No sqlite extension available.');
         }
 
-        $this->driverClass = $driver;
-        $this->checkStatus();
+        $driver = $this->getSqliteDriver(array('_none'));
+        if (!$driver) {
+            throw new RuntimeException('No Sqlite driver could be loaded.');
+        }
     }
 
     /**
@@ -256,32 +238,11 @@ class Sqlite extends AbstractDriver
     }
 
     /**
-     * Checks availability of the specified subdriver.
-     *
-     * @throws \Stash\Exception\RuntimeException
-     * @return bool
-     */
-    protected function checkStatus()
-    {
-        if (!static::isAvailable()) {
-            throw new RuntimeException('No Sqlite extension is available.');
-        }
-
-        $driver = $this->getSqliteDriver(array('_none'));
-
-        if (!$driver) {
-            throw new RuntimeException('No Sqlite driver could be loaded.');
-        }
-
-        $driver->checkFileSystemPermissions();
-    }
-
-    /**
      * {@inheritdoc}
      */
     public static function isAvailable()
     {
-        return (Sub\SqlitePdo::isAvailable()) || (Sub\Sqlite::isAvailable()) || (Sub\SqlitePdo2::isAvailable());
+        return Sub\SqlitePdo::isAvailable();
     }
 
     /**

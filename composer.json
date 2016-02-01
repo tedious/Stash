@@ -7,7 +7,9 @@
     "sessions",
     "memcached",
     "redis",
-    "apc"
+    "apc",
+    "psr-6",
+    "psr6"
   ],
   "homepage": "http://github.com/tedious/Stash",
   "type": "library",
@@ -23,16 +25,20 @@
     }
   ],
   "require": {
-    "php": "^5.4|^7.0"
+    "php": "^5.4|^7.0",
+    "psr/cache": "~1.0"
   },
   "require-dev": {
     "fabpot/php-cs-fixer": "^1.9",
-    "phpunit/phpunit": "4.7.*",
+    "phpunit/phpunit": "4.8.*",
     "satooshi/php-coveralls": "1.0.*"
   },
   "autoload": {
     "psr-4": {
       "Stash\\": "src/Stash/"
     }
+  },
+  "provide": {
+      "psr/cache-implementation": "1.0.0"
   }
 }

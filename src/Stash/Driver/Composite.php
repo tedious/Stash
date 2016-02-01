@@ -13,6 +13,7 @@ namespace Stash\Driver;
 
 use Stash;
 use Stash\Exception\RuntimeException;
+use Stash\Exception\InvalidArgumentException;
 use Stash\Interfaces\DriverInterface;
 
 /**
@@ -39,26 +40,28 @@ class Composite extends AbstractDriver
      *
      * @throws \Stash\Exception\RuntimeException
      */
-    public function setOptions(array $options = array())
+    protected function setOptions(array $options = array())
     {
         $options += $this->getDefaultOptions();
 
-        if (isset($options['drivers'])) {
-            if (count($options['drivers']) < 1) {
-                throw new RuntimeException('One or more secondary drivers are required.');
-            }
-            $this->drivers = array();
+        if (!isset($options['drivers']) || (count($options['drivers']) < 1)) {
+            throw new RuntimeException('One or more secondary drivers are required.');
+        }
 
-            foreach ($options['drivers'] as $driver) {
-                if (!(is_object($driver) && $driver instanceof DriverInterface)) {
-                    continue;
-                }
-                $this->drivers[] = $driver;
-            }
+        if (!is_array($options['drivers'])) {
+            throw new InvalidArgumentException('Drivers option requires an array.');
+        }
 
-            if (count($this->drivers) < 1) {
-                throw new RuntimeException('None of the secondary drivers can be enabled.');
+        $this->drivers = array();
+        foreach ($options['drivers'] as $driver) {
+            if (!(is_object($driver) && $driver instanceof DriverInterface)) {
+                continue;
             }
+            $this->drivers[] = $driver;
+        }
+
+        if (count($this->drivers) < 1) {
+            throw new RuntimeException('None of the secondary drivers can be enabled.');
         }
     }
 

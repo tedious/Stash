@@ -81,7 +81,7 @@ class Memcache extends AbstractDriver
      *
      * @throws RuntimeException
      */
-    public function setOptions(array $options = array())
+    protected function setOptions(array $options = array())
     {
         $options += $this->getDefaultOptions();
 

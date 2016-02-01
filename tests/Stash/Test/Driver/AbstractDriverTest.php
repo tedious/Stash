@@ -44,6 +44,7 @@ abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
     protected $driverClass;
     protected $startTime;
     protected $setup = false;
+    protected $persistence = false;
 
     public static function tearDownAfterClass()
     {
@@ -86,8 +87,7 @@ abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
     {
         $driverType = $this->driverClass;
         $options = $this->getOptions();
-        $driver = new $driverType();
-        $driver->setOptions($options);
+        $driver = new $driverType($options);
         $this->assertTrue(is_a($driver, $driverType), 'Driver is an instance of ' . $driverType);
         $this->assertTrue(is_a($driver, '\Stash\Interfaces\DriverInterface'), 'Driver implments the Stash\Driver\DriverInterface interface');
 
@@ -226,5 +226,16 @@ abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
     public function testDestructor($driver)
     {
         $driver=null;
+    }
+
+    /**
+     * @depends testDestructor
+     */
+    public function testIsPersistant()
+    {
+        if (!$driver = $this->getFreshDriver()) {
+            $this->markTestSkipped('Driver class unsuited for current environment');
+        }
+        $this->assertEquals($this->persistence, $driver->isPersistent());
     }
 }

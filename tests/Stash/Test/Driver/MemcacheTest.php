@@ -25,6 +25,7 @@ class MemcacheTest extends AbstractDriverTest
     protected $extension = 'memcache';
 
     protected $servers = array('127.0.0.1', '11211');
+    protected $persistence = true;
 
     protected function getOptions()
     {
@@ -69,8 +70,7 @@ class MemcacheTest extends AbstractDriverTest
         $options['servers'][] = array('127.0.0.1', '11211', '50');
         $options['servers'][] = array('127.0.0.1', '11211');
         $options['extension'] = $this->extension;
-        $driver = new Memcache();
-        $driver->setOptions($options);
+        $driver = new Memcache($options);
 
         $item = new Item();
         $poolStub = new PoolGetDriverStub();
@@ -78,17 +78,16 @@ class MemcacheTest extends AbstractDriverTest
         $item->setPool($poolStub);
         $item->setKey($key);
 
-        $this->assertTrue($item->set($key), 'Able to load and store memcache driver using multiple servers');
+        $this->assertTrue($item->set($key)->save(), 'Able to load and store memcache driver using multiple servers');
 
         $options = array();
         $options['extension'] = $this->extension;
-        $driver = new Memcache();
-        $driver->setOptions($options);
+        $driver = new Memcache($options);
         $item = new Item();
         $poolStub = new PoolGetDriverStub();
         $poolStub->setDriver($driver);
         $item->setPool($poolStub);
         $item->setKey($key);
-        $this->assertTrue($item->set($key), 'Able to load and store memcache driver using default server');
+        $this->assertTrue($item->set($key)->save(), 'Able to load and store memcache driver using default server');
     }
 }

@@ -9,17 +9,21 @@
  * file that was distributed with this source code.
  */
 
-namespace Stash\Exception;
+namespace Stash\Test\Driver;
 
-//use \Psr\Cache\InvalidArgumentException;
-
+use Stash\Test\Stubs\DriverUnavailableStub;
 
 /**
- * Exception thrown if an argument does not match with the expected value.
- *
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class InvalidArgumentException extends \InvalidArgumentException implements Exception, \Psr\Cache\InvalidArgumentException
+class UnavailableDriverTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @expectedException Stash\Exception\RuntimeException
+     */
+    public function testUnavailableDriver()
+    {
+        new DriverUnavailableStub();
+    }
 }
