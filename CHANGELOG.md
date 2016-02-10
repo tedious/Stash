@@ -1,6 +1,6 @@
-## Stash v1.0.0 Changelog
+## Stash v0.14.0 Changelog
 
-### v1.0.0
+### v0.14.0
 
 * Implemented PSR-6 interfaces.
 
