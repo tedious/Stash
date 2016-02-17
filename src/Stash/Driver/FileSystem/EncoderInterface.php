@@ -9,12 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Stash\Test;
+namespace Stash\Driver\FileSystem;
 
-/**
- * @package Stash
- * @author  Robert Hafner <tedivm@tedivm.com>
- */
-class PoolTest extends AbstractPoolTest
+interface EncoderInterface
 {
+    public function deserialize($path);
+    public function serialize($key, $data);
+    public function getExtension();
 }

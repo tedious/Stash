@@ -34,8 +34,12 @@ class Utilities
                 return 'bool';
             }
 
-            if (is_numeric($data) && ($data >= 2147483648 || $data < -2147483648)) {
-                return 'serialize';
+            if (is_numeric($data)) {
+                if (is_numeric($data) && ($data >= 2147483648 || $data < -2147483648)) {
+                    return 'serialize';
+                } else {
+                    return 'numeric';
+                }
             }
 
             if (is_string($data)) {
@@ -117,11 +121,12 @@ class Utilities
     /**
      * Deletes a directory and all of its contents.
      *
-     * @param  string                     $file Path to file or directory.
-     * @return bool                       Returns true on success, false otherwise.
+     * @param  string $file Path to file or directory.
+     * @param  bool $cleanParent Whether to prune empty parent directories or not.
      * @throws Exception\RuntimeException
+     * @return bool                       Returns true on success, false otherwise.
      */
-    public static function deleteRecursive($file)
+    public static function deleteRecursive($file, $cleanParent = false)
     {
         if (!preg_match('/^(?:\/|\\\\|\w:\\\\|\w:\/).*$/', $file)) {
             throw new RuntimeException('deleteRecursive function requires an absolute path.');
@@ -135,30 +140,51 @@ class Utilities
         $filePath = rtrim($file, ' /');
 
         if (is_dir($filePath)) {
-            $directoryIt = new \RecursiveDirectoryIterator($filePath);
+            $currentPerms = fileperms($filePath);
+            $currentOwner = fileowner($filePath);
+            $parentPath = dirname($filePath);
 
+            $directoryIt = new \RecursiveDirectoryIterator($filePath);
             foreach (new \RecursiveIteratorIterator($directoryIt, \RecursiveIteratorIterator::CHILD_FIRST) as $file) {
                 $filename = $file->getPathname();
+
+                // Clear out children if this is a directory.
                 if ($file->isDir()) {
                     $dirFiles = scandir($file->getPathname());
                     if ($dirFiles && count($dirFiles) == 2) {
                         $filename = rtrim($filename, '/.');
-                        rmdir($filename);
+                        if (file_exists($filename)) {
+                            rmdir($filename);
+                        }
                     }
                     unset($dirFiles);
                     continue;
                 }
 
-
                 if (file_exists($filename)) {
                     unlink($filename);
                 }
-
             }
+
             unset($directoryIt);
 
             if (is_dir($filePath)) {
                 rmdir($filePath);
+            }
+
+
+            if ($cleanParent && static::checkForEmptyDirectory($parentPath)) {
+                $parentPerms = fileperms($parentPath);
+                $parentOwner = fileowner($parentPath);
+
+                if ($currentPerms == $parentPerms && $currentOwner == $parentOwner) {
+                    $grandParentPath = dirname($parentPath);
+                    if ($parentOwner = fileowner($grandParentPath)) {
+                        if (is_writable($grandParentPath) && $parentPerms == fileperms($grandParentPath)) {
+                            rmdir($parentPath);
+                        }
+                    }
+                }
             }
 
             return true;
@@ -181,7 +207,6 @@ class Utilities
         return $pKey;
     }
 
-
     /**
      * Checks to see whether the requisite permissions are available on the specified path.
      *
@@ -198,12 +223,32 @@ class Utilities
             throw new InvalidArgumentException('Cache path is not a directory.');
         }
 
-        if (!is_dir($path) && !@mkdir($path, $permissions, true )) {
+        if (!is_dir($path) && !@mkdir($path, $permissions, true)) {
             throw new InvalidArgumentException('Failed to create cache path.');
         }
 
         if (!is_writable($path)) {
             throw new InvalidArgumentException('Cache path is not writable.');
         }
+    }
+
+    /**
+     * Checks to see if a directory is empty.
+     *
+     * @param  string $path
+     * @return bool
+     */
+    public static function checkForEmptyDirectory($path)
+    {
+        $empty = true;
+        $dir = opendir($path);
+        while ($file = readdir($dir)) {
+            if ($file != '.' && $file != '..') {
+                $empty = false;
+                break;
+            }
+        }
+        closedir($dir);
+        return $empty;
     }
 }

@@ -14,7 +14,6 @@ namespace Stash\Test;
 use Stash\Test\Stubs\LoggerStub;
 use Stash\Test\Stubs\DriverExceptionStub;
 use Stash\Test\Stubs\PoolGetDriverStub;
-
 use Stash\Item;
 use Stash\Driver\Ephemeral as Ephemeral;
 
@@ -76,7 +75,7 @@ class ItemLoggerTest extends \PHPUnit_Framework_TestCase
         $item->setLogger($logger);
 
         // triggerlogging
-        $item->set('test_key');
+        $item->set('test_key')->save();
 
         $this->assertInstanceOf('Stash\Test\Exception\TestException',
                                 $logger->lastContext['exception'], 'Logger was passed exception in event context.');

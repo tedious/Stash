@@ -14,7 +14,6 @@ namespace Stash\Driver;
 use Stash;
 use Stash\Utilities;
 use Stash\Exception\RuntimeException;
-use Stash\Interfaces\DriverInterface;
 
 /**
  * StashSqlite is a wrapper around one or more SQLite databases stored on the local system. While not as quick at at
@@ -24,17 +23,10 @@ use Stash\Interfaces\DriverInterface;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class Sqlite implements DriverInterface
+class Sqlite extends AbstractDriver
 {
-    protected $defaultOptions = array('filePermissions' => 0660,
-                                      'dirPermissions' => 0770,
-                                      'busyTimeout' => 500,
-                                      'nesting' => 0,
-                                      'subdriver' => 'PDO'
-    );
-
-    protected $filePerms;
-    protected $dirPerms;
+    protected $filePermissions;
+    protected $dirPermissions;
     protected $busyTimeout;
     protected $cachePath;
     protected $driverClass;
@@ -44,64 +36,47 @@ class Sqlite implements DriverInterface
     protected $disabled = false;
 
     /**
-     * Initializes the driver.
-     *
-     * @throws RuntimeException 'Extension is not installed.'
+     * {@inheritdoc}
      */
-    public function __construct()
+    public function getDefaultOptions()
     {
-        if (!static::isAvailable()) {
-            throw new RuntimeException('Extension is not installed.');
-        }
+        return array(
+            'path' => Utilities::getBaseDirectory($this),
+            'filePermissions' => 0660,
+            'dirPermissions' => 0770,
+            'busyTimeout' => 500,
+            'nesting' => 0,
+            'subdriver' => 'PDO',
+        );
     }
 
     /**
+     * {@inheritdoc}
      *
-     * @param  array                             $options
      * @throws \Stash\Exception\RuntimeException
      */
-    public function setOptions(array $options = array())
+    protected function setOptions(array $options = array())
     {
-        $options = array_merge($this->defaultOptions, $options);
+        $options += $this->getDefaultOptions();
 
-        $cachePath = isset($options['path']) ? $options['path'] : Utilities::getBaseDirectory($this);
-        $this->cachePath = rtrim($cachePath, '\\/') . '/';
+        $this->cachePath = rtrim($options['path'], '\\/') . DIRECTORY_SEPARATOR;
+        $this->filePermissions = $options['filePermissions'];
+        $this->dirPermissions = $options['dirPermissions'];
+        $this->busyTimeout = $options['busyTimeout'];
+        $this->nesting = max((int) $options['nesting'], 0);
 
-        Utilities::checkFileSystemPermissions($this->cachePath, $this->dirPerms);
+        Utilities::checkFileSystemPermissions($this->cachePath, $this->dirPermissions);
 
-        $extension = isset($options['extension']) ? strtolower($options['extension']) : 'any';
-        $version = isset($options['version']) ? $options['version'] : 'any';
-
-        $subdrivers = array();
-        if (Sub\SqlitePdo::isAvailable()) {
-            $subdrivers['pdo'] = '\Stash\Driver\Sub\SqlitePdo';
-        }
-        if (Sub\Sqlite::isAvailable()) {
-            $subdrivers['sqlite'] = '\Stash\Driver\Sub\Sqlite';
-        }
-        if (Sub\SqlitePdo2::isAvailable()) {
-            $subdrivers['pdo2'] = '\Stash\Driver\Sub\SqlitePdo2';
-        }
-
-        if ($extension == 'pdo' && $version != '2' && isset($subdrivers['pdo'])) {
-            $driver = $subdrivers['pdo'];
-        } elseif ($extension == 'sqlite' && isset($subdrivers['sqlite'])) {
-            $driver = $subdrivers['sqlite'];
-        } elseif ($extension == 'pdo' && $version != '3' && isset($subdrivers['pdo2'])) {
-            $driver = $subdrivers['pdo2'];
-        } elseif (count($subdrivers) > 0 && $extension == 'any') {
-            $driver = reset($subdrivers);
+        if (static::isAvailable() && Sub\SqlitePdo::isAvailable()) {
+            $this->driverClass = '\Stash\Driver\Sub\SqlitePdo';
         } else {
             throw new RuntimeException('No sqlite extension available.');
         }
 
-        $this->driverClass = $driver;
-        $this->filePerms = $options['filePermissions'];
-        $this->dirPerms = $options['dirPermissions'];
-        $this->busyTimeout = $options['busyTimeout'];
-        $this->nesting = $options['nesting'];
-
-        $this->checkStatus();
+        $driver = $this->getSqliteDriver(array('_none'));
+        if (!$driver) {
+            throw new RuntimeException('No Sqlite driver could be loaded.');
+        }
     }
 
     /**
@@ -200,7 +175,6 @@ class Sqlite implements DriverInterface
             }
 
             $file = $key;
-
         } else {
             if (!is_array($key)) {
                 return false;
@@ -223,11 +197,11 @@ class Sqlite implements DriverInterface
 
         $driverClass = $this->driverClass;
 
-        if(is_null($driverClass))
-
+        if (is_null($driverClass)) {
             return false;
+        }
 
-        $driver = new $driverClass($file, $this->dirPerms, $this->filePerms, $this->busyTimeout);
+        $driver = new $driverClass($file, $this->dirPermissions, $this->filePermissions, $this->busyTimeout);
 
         $this->subDrivers[$file] = $driver;
 
@@ -236,8 +210,6 @@ class Sqlite implements DriverInterface
 
     /**
      * Destroys the sub-drivers when this driver is unset -- required for Windows compatibility.
-     *
-     * {@inheritdoc}
      */
     public function __destruct()
     {
@@ -266,32 +238,11 @@ class Sqlite implements DriverInterface
     }
 
     /**
-     * Checks availability of the specified subdriver.
-     *
-     * @throws \Stash\Exception\RuntimeException
-     * @return bool
-     */
-    protected function checkStatus()
-    {
-        if (!static::isAvailable()) {
-            throw new RuntimeException('No Sqlite extension is available.');
-        }
-
-        $driver = $this->getSqliteDriver(array('_none'));
-
-        if (!$driver) {
-            throw new RuntimeException('No Sqlite driver could be loaded.');
-        }
-
-        $driver->checkFileSystemPermissions();
-    }
-
-    /**
      * {@inheritdoc}
      */
     public static function isAvailable()
     {
-        return (Sub\SqlitePdo::isAvailable()) || (Sub\Sqlite::isAvailable()) || (Sub\SqlitePdo2::isAvailable());
+        return Sub\SqlitePdo::isAvailable();
     }
 
     /**
@@ -311,5 +262,13 @@ class Sqlite implements DriverInterface
         }
 
         return $path;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isPersistent()
+    {
+        return true;
     }
 }

@@ -11,6 +11,8 @@
 
 namespace Stash;
 
+use PSR\Cache\CacheItemInterface;
+use Stash\Exception\InvalidArgumentException;
 use Stash\Driver\Ephemeral;
 use Stash\Interfaces\DriverInterface;
 use Stash\Interfaces\ItemInterface;
@@ -24,7 +26,6 @@ use Stash\Interfaces\PoolInterface;
  */
 class Pool implements PoolInterface
 {
-
     /**
      * The cacheDriver being used by the system. While this class handles all of the higher functions, it's the cache
      * driver here that handles all of the storage/retrieval functionality. This value is set by the constructor.
@@ -83,13 +84,15 @@ class Pool implements PoolInterface
      */
     public function setItemClass($class)
     {
-        if(!class_exists($class))
-            throw new \InvalidArgumentException('Item class ' . $class . ' does not exist');
+        if (!class_exists($class)) {
+            throw new InvalidArgumentException('Item class ' . $class . ' does not exist');
+        }
 
         $interfaces = class_implements($class, true);
 
-        if(!in_array('Stash\Interfaces\ItemInterface', $interfaces))
+        if (!in_array('Stash\Interfaces\ItemInterface', $interfaces)) {
             throw new \InvalidArgumentException('Item class ' . $class . ' must inherit from \Stash\Interfaces\ItemInterface');
+        }
 
         $this->itemClass = $class;
 
@@ -99,37 +102,17 @@ class Pool implements PoolInterface
     /**
      * {@inheritdoc}
      */
-    public function getItem()
+    public function getItem($key)
     {
-        $args = func_get_args();
-        $argCount = count($args);
-
-        if ($argCount < 1) {
-            throw new \InvalidArgumentException('Item constructor requires a key.');
-        }
-
-        // check to see if a single array was used instead of multiple arguments
-        if ($argCount == 1 && is_array($args[0])) {
-            $args = $args[0];
-            $argCount = count($args);
-        }
-
-        if ($argCount == 1) {
-            $keyString = trim($args[0], '/');
-            $key = explode('/', $keyString);
-        } else {
-            $key = $args;
-        }
-
-        if (!($namespace = $this->getNamespace())) {
-            $namespace = 'stash_default';
-        }
+        $keyString = trim($key, '/');
+        $key = explode('/', $keyString);
+        $namespace = empty($this->namespace) ? 'stash_default' : $this->namespace;
 
         array_unshift($key, $namespace);
 
         foreach ($key as $node) {
-            if (strlen($node) < 1) {
-                throw new \InvalidArgumentException('Invalid or Empty Node passed to getItem constructor.');
+            if (!isset($node[1]) && strlen($node) < 1) {
+                throw new InvalidArgumentException('Invalid or Empty Node passed to getItem constructor.');
             }
         }
 
@@ -138,11 +121,13 @@ class Pool implements PoolInterface
         $item->setPool($this);
         $item->setKey($key, $namespace);
 
-        if($this->isDisabled)
+        if ($this->isDisabled) {
             $item->disable();
+        }
 
-        if(isset($this->logger))
+        if (isset($this->logger)) {
             $item->setLogger($this->logger);
+        }
 
         return $item;
     }
@@ -150,22 +135,81 @@ class Pool implements PoolInterface
     /**
      * {@inheritdoc}
      */
-    public function getItemIterator($keys)
+    public function getItems(array $keys = array())
     {
         // temporarily cheating here by wrapping around single calls.
 
         $items = array();
         foreach ($keys as $key) {
-            $items[] = $this->getItem($key);
+            $item = $this->getItem($key);
+            $items[$item->getKey()] = $item;
         }
 
-         return new \ArrayIterator($items);
+        return new \ArrayIterator($items);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function flush()
+    public function hasItem($key)
+    {
+        return $this->getItem($key)->isHit();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function save(CacheItemInterface $item)
+    {
+        return $item->save();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function saveDeferred(CacheItemInterface $item)
+    {
+        return $this->save($item);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function commit()
+    {
+        return true;
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function deleteItems(array $keys)
+    {
+        // temporarily cheating here by wrapping around single calls.
+        $items = array();
+        $results = true;
+        foreach ($keys as $key) {
+            $results = $this->deleteItem($key) && $results;
+        }
+
+        return $results;
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function deleteItem($key)
+    {
+        return $this->getItem($key)->clear();
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function clear()
     {
         if ($this->isDisabled) {
             return false;
@@ -177,11 +221,9 @@ class Pool implements PoolInterface
                 $normalizedNamespace = strtolower($this->namespace);
                 $results = $driver->clear(array('cache', $normalizedNamespace))
                         && $driver->clear(array('sp', $normalizedNamespace));
-
             } else {
                 $results = $driver->clear();
             }
-
         } catch (\Exception $e) {
             $this->isDisabled = true;
             $this->logException('Flushing Cache Pool caused exception.', $e);
@@ -226,9 +268,6 @@ class Pool implements PoolInterface
      */
     public function getDriver()
     {
-        if(!isset($this->driver))
-            $this->driver = new Ephemeral();
-
         return $this->driver;
     }
 

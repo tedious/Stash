@@ -12,10 +12,11 @@
 namespace Stash\Driver;
 
 use Stash;
+use Stash\Driver\FileSystem\NativeEncoder;
+use Stash\Driver\FileSystem\EncoderInterface;
 use Stash\Utilities;
 use Stash\Exception\LogicException;
 use Stash\Exception\RuntimeException;
-use Stash\Interfaces\DriverInterface;
 
 /**
  * StashFileSystem stores cache objects in the filesystem as native php, making the process of retrieving stored data
@@ -25,7 +26,7 @@ use Stash\Interfaces\DriverInterface;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class FileSystem implements DriverInterface
+class FileSystem extends AbstractDriver
 {
     /**
      * This is the path to the file which will be used to store the cached item. It is based off of the key.
@@ -103,42 +104,43 @@ class FileSystem implements DriverInterface
     protected $disabled = false;
 
     /**
-     * Default values for selections the user does not make.
-     *
-     * @var array
+     * @var \Stash\Driver\FileSystem\EncoderInterface
      */
-    protected $defaultOptions = array('filePermissions' => 0660,
-                                      'dirPermissions' => 0770,
-                                      'dirSplit' => 2,
-                                      'memKeyLimit' => 20,
-                                      'keyHashFunction' => 'md5'
-    );
+    protected $encoder;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDefaultOptions()
+    {
+        return array(
+            'filePermissions' => 0660,
+            'dirPermissions' => 0770,
+            'dirSplit' => 2,
+            'memKeyLimit' => 20,
+            'keyHashFunction' => 'md5',
+        );
+    }
 
     /**
      * Requests a list of options.
      *
-     * @param  array                             $options
+     * @param array $options
+     *
      * @throws \Stash\Exception\RuntimeException
      */
-    public function setOptions(array $options = array())
+    protected function setOptions(array $options = array())
     {
-        $options = array_merge($this->defaultOptions, $options);
+        $options += $this->getDefaultOptions();
+        if (!isset($options['path'])) {
+            $options['path'] = Utilities::getBaseDirectory($this);
+        }
 
-        $this->cachePath = isset($options['path']) ? $options['path'] : Utilities::getBaseDirectory($this);
-        $this->cachePath = rtrim($this->cachePath, '\\/') . DIRECTORY_SEPARATOR;
-
+        $this->cachePath = rtrim($options['path'], '\\/') . DIRECTORY_SEPARATOR;
         $this->filePermissions = $options['filePermissions'];
         $this->dirPermissions = $options['dirPermissions'];
-
-        if (!is_numeric($options['dirSplit']) || $options['dirSplit'] < 1) {
-            $options['dirSplit'] = 1;
-        }
-
-        $this->directorySplit = (int) $options['dirSplit'];
-
-        if (!is_numeric($options['memKeyLimit']) || $options['memKeyLimit'] < 1) {
-            $options['memKeyLimit'] = 0;
-        }
+        $this->directorySplit = max((int) $options['dirSplit'], 1);
+        $this->memStoreLimit = max((int) $options['memKeyLimit'], 0);
 
         if (is_callable($options['keyHashFunction'])) {
             $this->keyHashFunction = $options['keyHashFunction'];
@@ -146,16 +148,27 @@ class FileSystem implements DriverInterface
             throw new RuntimeException('Key Hash Function is not callable');
         }
 
-        $this->memStoreLimit = (int) $options['memKeyLimit'];
+        if (isset($options['encoder'])) {
+            $encoder = $options['encoder'];
+            if (is_object($encoder)) {
+                if (!($encoder instanceof EncoderInterface)) {
+                    throw new RuntimeException('Encoder object must implement EncoderInterface');
+                }
+                $this->encoder = new $encoder;
+            } else {
+                $encoderInterface = 'Stash\Driver\FileSystem\EncoderInterface';
+                $encoderClass = 'Stash\Driver\FileSystem\\' . $encoder . 'Encoder';
+                if (class_exists($encoder) && in_array($encoderInterface, class_implements($encoder))) {
+                    $this->encoder = new $encoder();
+                } elseif (class_exists($encoderClass) && in_array($encoderInterface, class_implements($encoderClass))) {
+                    $this->encoder = new $encoderClass();
+                } else {
+                    throw new RuntimeException('Invalid Encoder: ' . $encoder);
+                }
+            }
+        }
 
         Utilities::checkFileSystemPermissions($this->cachePath, $this->dirPermissions);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __destruct()
-    {
     }
 
     /**
@@ -185,41 +198,7 @@ class FileSystem implements DriverInterface
      */
     public function getData($key)
     {
-        return self::getDataFromFile($this->makePath($key));
-    }
-
-    /**
-     * Retrieves data from file if that data is there.
-     *
-     * @param  string     $path
-     * @return array|bool
-     */
-    protected static function getDataFromFile($path)
-    {
-        if (!file_exists($path)) {
-            return false;
-        }
-
-        include($path);
-
-        if (!isset($loaded)) {
-            return false;
-        }
-
-        if (!isset($expiration)) {
-            $expiration = null;
-        }
-
-        // If the item does not exist we should return false. However, it's
-        // possible that the item exists as null, so we have to make sure that
-        // it's both unset and not null. The downside to this is that the
-        // is_null function will issue a warning on an item that isn't set.
-        // So we're stuck testing and suppressing the warning.
-        if (!isset($data) || @is_null($data)) {
-            return array('data' => null, 'expiration' => $expiration);
-        } else {
-            return array('data' => $data, 'expiration' => $expiration);
-        }
+        return $this->getEncoder()->deserialize($this->makePath($key));
     }
 
     /**
@@ -233,13 +212,13 @@ class FileSystem implements DriverInterface
         $path = $this->makePath($key);
 
         // MAX_PATH is 260 - http://msdn.microsoft.com/en-us/library/aa365247(VS.85).aspx
-        if (strlen($path) > 259 &&  stripos(PHP_OS,'WIN') === 0) {
+        if (strlen($path) > 259 &&  stripos(PHP_OS, 'WIN') === 0) {
             throw new Stash\Exception\WindowsPathMaxLengthException();
         }
 
         if (!file_exists($path)) {
             if (!is_dir(dirname($path))) {
-                if (!mkdir(dirname($path), $this->dirPermissions, true)) {
+                if (!@mkdir(dirname($path), $this->dirPermissions, true)) {
                     return false;
                 }
             }
@@ -249,32 +228,7 @@ class FileSystem implements DriverInterface
             }
         }
 
-        $storeString = '<?php ' . PHP_EOL
-            . '/* Cachekey: ' . str_replace('*/', '', $this->makeKeyString($key)) . ' */' . PHP_EOL
-            . '/* Type: ' . gettype($data) . ' */' . PHP_EOL
-            . PHP_EOL
-            . PHP_EOL
-            . PHP_EOL
-            . '$loaded = true;' . PHP_EOL
-            . '$expiration = ' . $expiration . ';' . PHP_EOL
-            . PHP_EOL;
-
-        if (is_array($data)) {
-            $storeString .= "\$data = array();" . PHP_EOL;
-
-            foreach ($data as $key => $value) {
-                $dataString = $this->encode($value);
-                $storeString .= PHP_EOL;
-                $storeString .= '/* Child Type: ' . gettype($value) . ' */' . PHP_EOL;
-                $storeString .= "\$data['{$key}'] = {$dataString};" . PHP_EOL;
-            }
-        } else {
-
-            $dataString = $this->encode($data);
-            $storeString .= '/* Type: ' . gettype($data) . ' */' . PHP_EOL;
-            $storeString .= "\$data = {$dataString};" . PHP_EOL;
-        }
-
+        $storeString = $this->getEncoder()->serialize($this->makeKeyString($key), $data, $expiration);
         $result = file_put_contents($path, $storeString, LOCK_EX);
 
         // If opcache is switched on, it will try to cache the PHP data file
@@ -287,40 +241,6 @@ class FileSystem implements DriverInterface
         }
 
         return false !== $result;
-    }
-
-    /**
-     * Finds the method of encoding that has the cheapest decode needs and encodes the data with that method.
-     *
-     * @param  string $data
-     * @return string
-     */
-    protected function encode($data)
-    {
-        switch (Utilities::encoding($data)) {
-            case 'bool':
-                $dataString = (bool) $data ? 'true' : 'false';
-                break;
-
-            case 'serialize':
-                $dataString = 'unserialize(base64_decode(\'' . base64_encode(serialize($data)) . '\'))';
-                break;
-
-            case 'string':
-                $dataString = sprintf('"%s"', addcslashes($data, "\t\"\$\\"));
-                break;
-
-            case 'none':
-            default :
-                if (is_numeric($data)) {
-                    $dataString = (string) $data;
-                } else {
-                    $dataString = 'base64_decode(\'' . base64_encode($data) . '\')';
-                }
-                break;
-        }
-
-        return $dataString;
     }
 
     /**
@@ -378,7 +298,7 @@ class FileSystem implements DriverInterface
                 }
             }
 
-            $path = rtrim($path, DIRECTORY_SEPARATOR) . '.php';
+            $path = rtrim($path, DIRECTORY_SEPARATOR) . $this->getEncoder()->getExtension();
             $this->memStore['keys'][$memkey] = $path;
 
             // in most cases the key will be used almost immediately or not at all, so it doesn't need to grow too large
@@ -406,12 +326,13 @@ class FileSystem implements DriverInterface
             unlink($path);
         }
 
-        if (strpos($path, '.php') !== false) {
-            $path = substr($path, 0, -4);
+        $extension = $this->getEncoder()->getExtension();
+        if (strpos($path, $extension) !== false) {
+            $path = substr($path, 0, -(strlen($extension)));
         }
 
         if (is_dir($path)) {
-            return Utilities::deleteRecursive($path);
+            return Utilities::deleteRecursive($path, true);
         }
 
         return isset($return);
@@ -435,7 +356,10 @@ class FileSystem implements DriverInterface
                 $dirFiles = scandir($file->getPathname());
                 if ($dirFiles && count($dirFiles) == 2) {
                     $filename = rtrim($filename, '/.');
-                    rmdir($filename);
+
+                    if (file_exists(($filename))) {
+                        rmdir($filename);
+                    }
                 }
                 unset($dirFiles);
                 continue;
@@ -445,27 +369,31 @@ class FileSystem implements DriverInterface
                 continue;
             }
 
-            $data = self::getDataFromFile($filename);
-            if ($data['expiration'] <= $startTime) {
+            $data = $this->getEncoder()->deserialize($filename);
+
+            if (is_numeric($data['expiration']) && $data['expiration'] <= $startTime) {
                 unlink($filename);
             }
-
         }
         unset($directoryIt);
 
         return true;
     }
 
+    protected function getEncoder()
+    {
+        if (!isset($this->encoder)) {
+            $this->encoder = new \Stash\Driver\FileSystem\NativeEncoder();
+        }
+
+        return $this->encoder;
+    }
+
     /**
-     * This function checks to see if it is possible to enable this driver. This returns true no matter what, since
-     * there is typically a filesystem available somewhere.
-     *
      * {@inheritdoc}
-     * @return bool true
      */
-    public static function isAvailable()
+    public function isPersistent()
     {
         return true;
     }
-
 }

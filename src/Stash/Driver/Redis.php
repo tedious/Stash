@@ -12,8 +12,6 @@
 namespace Stash\Driver;
 
 use Stash;
-use Stash\Interfaces\DriverInterface;
-use Stash\Exception\RuntimeException;
 
 /**
  * The Redis driver is used for storing data on a Redis system. This class uses
@@ -22,15 +20,8 @@ use Stash\Exception\RuntimeException;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class Redis implements DriverInterface
+class Redis extends AbstractDriver
 {
-    /**
-     * An array of default options.
-     *
-     * @var array
-     */
-    protected $defaultOptions = array ();
-
     /**
      * The Redis drivers.
      *
@@ -58,18 +49,6 @@ class Redis implements DriverInterface
     );
 
     /**
-     * Initializes the driver.
-     *
-     * @throws RuntimeException 'Extension is not installed.'
-     */
-    public function __construct()
-    {
-        if (!static::isAvailable()) {
-            throw new RuntimeException('Extension is not installed.');
-        }
-    }
-
-    /**
      * The options array should contain an array of servers,
      *
      * The "server" option expects an array of servers, with each server being represented by an associative array. Each
@@ -80,17 +59,14 @@ class Redis implements DriverInterface
      *
      * The "password" option is used for clusters which required authentication.
      *
-     * @param  array             $options
-     * @throws \RuntimeException
+     * @param array $options
      */
-    public function setOptions(array $options = array())
+    protected function setOptions(array $options = array())
     {
-        if(!self::isAvailable())
-            throw new \RuntimeException('Unable to load Redis driver without PhpRedis extension.');
+        $options += $this->getDefaultOptions();
 
         // Normalize Server Options
         if (isset($options['servers'])) {
-
             $unprocessedServers = (is_array($options['servers']))
                 ? $options['servers']
                 : array($options['servers']);
@@ -98,7 +74,6 @@ class Redis implements DriverInterface
 
             $servers = array();
             foreach ($unprocessedServers as $server) {
-
                 $ttl = '.1';
                 if (isset($server['ttl'])) {
                     $ttl = $server['ttl'];
@@ -109,7 +84,6 @@ class Redis implements DriverInterface
                 if (isset($server['socket'])) {
                     $servers[] = array('socket' => $server['socket'], 'ttl' => $ttl);
                 } else {
-
                     $host = '127.0.0.1';
                     if (isset($server['server'])) {
                         $host = $server['server'];
@@ -127,13 +101,9 @@ class Redis implements DriverInterface
                     $servers[] = array('server' => $host, 'port' => $port, 'ttl' => $ttl);
                 }
             }
-
         } else {
             $servers = array(array('server' => '127.0.0.1', 'port' => '6379', 'ttl' => 0.1));
         }
-
-        // Merge in default values.
-        $options = array_merge($this->defaultOptions, $options);
 
         // this will have to be revisited to support multiple servers, using
         // the RedisArray object. That object acts as a proxy object, meaning
@@ -152,13 +122,12 @@ class Redis implements DriverInterface
             }
 
             // auth - just password
-            if(isset($options['password']))
+            if (isset($options['password'])) {
                 $redis->auth($options['password']);
+            }
 
             $this->redis = $redis;
-
         } else {
-
             $redisArrayOptions = array();
             foreach ($this->redisArrayOptionNames as $optionName) {
                 if (array_key_exists($optionName, $options)) {
@@ -169,8 +138,9 @@ class Redis implements DriverInterface
             $serverArray = array();
             foreach ($servers as $server) {
                 $serverString = $server['server'];
-                if(isset($server['port']))
+                if (isset($server['port'])) {
                     $serverString .= ':' . $server['port'];
+                }
 
                 $serverArray[] = $serverString;
             }
@@ -179,21 +149,27 @@ class Redis implements DriverInterface
         }
 
         // select database
-        if(isset($options['database']))
+        if (isset($options['database'])) {
             $redis->select($options['database']);
+        }
 
         $this->redis = $redis;
     }
 
     /**
      * Properly close the connection.
-     *
-     * {@inheritdoc}
      */
     public function __destruct()
     {
         if ($this->redis instanceof \Redis) {
-            $this->redis->close();
+            try {
+                $this->redis->close();
+            } catch (\RedisException $e) {
+                /*
+                 * \Redis::close will throw a \RedisException("Redis server went away") exception if
+                 * we haven't previously been able to connect to Redis or the connection has severed.
+                 */
+            }
         }
     }
 
@@ -212,7 +188,7 @@ class Redis implements DriverInterface
     {
         $store = serialize(array('data' => $data, 'expiration' => $expiration));
         if (is_null($expiration)) {
-            return $this->redis->setex($this->makeKeyString($key), $store);
+            return $this->redis->set($this->makeKeyString($key), $store);
         } else {
             $ttl = $expiration - time();
 
@@ -222,7 +198,7 @@ class Redis implements DriverInterface
                 return true;
             }
 
-            return $this->redis->set($this->makeKeyString($key), $store, $ttl);
+            return $this->redis->setex($this->makeKeyString($key), $ttl, $store);
         }
     }
 
@@ -303,4 +279,11 @@ class Redis implements DriverInterface
         return $path ? $pathKey : md5($keyString);
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function isPersistent()
+    {
+        return true;
+    }
 }

@@ -28,12 +28,10 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         if (defined('HHVM_VERSION') && version_compare(HHVM_VERSION, '3.0.0', '<')) {
             $this->markTestSkipped('Sessions not supported on older versions of HHVM.');
         }
-
     }
 
     public function testRegisterHandler()
     {
-
     }
 
     public function testReadAndWrite()
@@ -126,7 +124,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
     protected function getSession($pool = null)
     {
         if (!isset($pool)) {
-           $pool = $this->getPool();
+            $pool = $this->getPool();
         }
 
         return new $this->testClass($pool);
@@ -136,5 +134,4 @@ class SessionTest extends \PHPUnit_Framework_TestCase
     {
         return new $this->poolClass();
     }
-
 }

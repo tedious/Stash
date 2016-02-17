@@ -59,12 +59,16 @@ class Memcached
                             'RECV_TIMEOUT',
                             'POLL_TIMEOUT',
                             'CACHE_LOOKUPS',
-                            'SERVER_FAILURE_LIMIT'
+                            'SERVER_FAILURE_LIMIT',
+                            'CLIENT_MODE'
         );
 
         $memcached = new \Memcached();
 
-        $memcached->addServers($servers);
+        $serverList = $memcached->getServerList();
+        if (empty($serverList)) {
+            $memcached->addServers($servers);
+        }
 
         foreach ($options as $name => $value) {
             $name = strtoupper($name);

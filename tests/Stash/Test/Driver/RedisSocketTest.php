@@ -9,21 +9,20 @@
  * file that was distributed with this source code.
  */
 
-namespace Stash\Driver\Sub;
+namespace Stash\Test\Driver;
 
 /**
- * Class SqlitePDO2
- *
- * This SQLite subdriver uses PDO and SQLite2.
- *
- * @internal
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class SqlitePdo2 extends SqlitePdo
+class RedisSocketTest extends RedisTest
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected static $pdoDriver = 'sqlite2';
+    protected function getOptions()
+    {
+        $socket = '/tmp/redis.sock';
+
+        return array('servers' => array(
+            array('socket' => $socket, 'ttl' => 0.1)
+        ));
+    }
 }

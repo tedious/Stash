@@ -19,6 +19,7 @@ class SqlitePdoSqlite3Test extends AbstractDriverTest
 {
     protected $driverClass = 'Stash\Driver\Sqlite';
     protected $subDriverClass = 'Stash\Driver\Sub\SqlitePdo';
+    protected $persistence = true;
 
     protected function setUp()
     {

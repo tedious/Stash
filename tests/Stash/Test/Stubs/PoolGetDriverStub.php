@@ -11,6 +11,7 @@
 
 namespace Stash\Test\Stubs;
 
+use Psr\Cache\CacheItemInterface;
 use Stash\Interfaces\PoolInterface;
 
 /**
@@ -38,17 +39,17 @@ class PoolGetDriverStub implements PoolInterface
         return true;
     }
 
-    public function getItem()
+    public function getItem($key)
     {
         return false;
     }
 
-    public function getItemIterator($keys)
+    public function getItems(array $keys = array())
     {
         return false;
     }
 
-    public function flush()
+    public function clear()
     {
         return false;
     }
@@ -69,6 +70,37 @@ class PoolGetDriverStub implements PoolInterface
     }
 
     public function setLogger($logger)
+    {
+        return false;
+    }
+
+    public function hasItem($key)
+    {
+        return false;
+    }
+
+    public function commit()
+    {
+        return false;
+    }
+
+    public function saveDeferred(CacheItemInterface $item)
+    {
+        return false;
+    }
+
+    public function save(CacheItemInterface $item)
+    {
+        return false;
+    }
+
+    public function deleteItems(array $keys)
+    {
+        return false;
+    }
+
+
+    public function deleteItem($key)
     {
         return false;
     }

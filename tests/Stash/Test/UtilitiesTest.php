@@ -27,11 +27,11 @@ class UtilitiesTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(Utilities::encoding('String of doom!'), 'string', 'encoding recognized string scalar');
 
-        $this->assertEquals(Utilities::encoding(234), 'none', 'encoding recognized integer scalar');
-        $this->assertEquals(Utilities::encoding(1.432), 'none', 'encoding recognized float scalar');
+        $this->assertEquals(Utilities::encoding(234), 'numeric', 'encoding recognized integer scalar');
+        $this->assertEquals(Utilities::encoding(1.432), 'numeric', 'encoding recognized float scalar');
 
         $this->assertEquals(Utilities::encoding(pow(2, 31)), 'serialize', 'encoding recognized large number');
-        $this->assertEquals(Utilities::encoding(pow(2, 31) - 1), 'none', 'encoding recognized small number');
+        $this->assertEquals(Utilities::encoding(pow(2, 31) - 1), 'numeric', 'encoding recognized small number');
 
         $std = new \stdClass();
         $this->assertEquals(Utilities::encoding($std), 'serialize', 'encoding recognized object');
@@ -106,5 +106,83 @@ class UtilitiesTest extends \PHPUnit_Framework_TestCase
         $this->assertFileNotExists($tmp, 'deleteRecursive cleared out the directory');
 
         $this->assertFalse(Utilities::deleteRecursive($tmp), 'deleteRecursive returned false when passed nonexistant directory');
+
+        $tmp = sys_get_temp_dir() . '/stash/test/';
+        $dirOne = $tmp . '/Test1';
+        @mkdir($dirOne, 0770, true);
+        $dirTwo = $tmp . '/Test2';
+        @mkdir($dirTwo, 0770, true);
+
+        Utilities::deleteRecursive($dirOne, true);
+        $this->assertFileExists($dirTwo, 'deleteRecursive does not erase sibling directories.');
+
+        Utilities::deleteRecursive($dirTwo, true);
+        $this->assertFileNotExists($tmp, 'deleteRecursive cleared out the empty parent directory');
+    }
+
+
+    /**
+     * @expectedException Stash\Exception\RuntimeException
+     */
+    public function testDeleteRecursiveRelativeException()
+    {
+        Utilities::deleteRecursive('../tests/fakename');
+    }
+
+    /**
+     * @expectedException Stash\Exception\RuntimeException
+     */
+    public function testDeleteRecursiveRootException()
+    {
+        Utilities::deleteRecursive('/');
+    }
+
+
+    public function testCheckEmptyDirectory()
+    {
+        $tmp = sys_get_temp_dir() . '/stash/';
+        $dir2 = $tmp . 'emptytest/';
+        @mkdir($dir2, 0770, true);
+
+        $this->assertTrue(Utilities::checkForEmptyDirectory($dir2), 'Returns true for empty directories');
+        $this->assertFalse(Utilities::checkForEmptyDirectory($tmp), 'Returns false for non-empty directories');
+        Utilities::deleteRecursive($tmp);
+    }
+
+    /**
+     * @expectedException Stash\Exception\RuntimeException
+     */
+    public function testCheckFileSystemPermissionsNullException()
+    {
+        Utilities::checkFileSystemPermissions(null, '0644');
+    }
+
+    /**
+     * @expectedException Stash\Exception\InvalidArgumentException
+     */
+    public function testCheckFileSystemPermissionsFileException()
+    {
+        $tmp = sys_get_temp_dir() . '/stash/';
+        $dir2 = $tmp . 'emptytest/';
+        @mkdir($dir2, 0770, true);
+        touch($dir2 . 'testfile');
+
+        Utilities::checkFileSystemPermissions($dir2 . 'testfile', '0644');
+    }
+
+    /**
+     * @expectedException Stash\Exception\InvalidArgumentException
+     */
+    public function testCheckFileSystemPermissionsUnaccessibleException()
+    {
+        Utilities::checkFileSystemPermissions('/fakedir/cache', '0644');
+    }
+
+    /**
+     * @expectedException Stash\Exception\InvalidArgumentException
+     */
+    public function testCheckFileSystemPermissionsUnwrittableException()
+    {
+        Utilities::checkFileSystemPermissions('/home', '0644');
     }
 }

@@ -13,31 +13,20 @@ them back up later.
 
 ## Installing
 
-### Composer
-
 Installing Stash can be done through a variety of methods, although Composer is
 recommended.
 
+### Composer
+
 Until Stash reaches a stable API with version 1.0 it is recommended that you
-review changes before even Minor updates, although bug fixes will always be
+review changes before Minor updates, although bug fixes will always be
 backwards compatible.
 
 ```
 "require": {
-  "tedivm/stash": "0.12.*"
+  "tedivm/stash": "0.14.*"
 }
 ```
-
-
-### Pear
-
-Stash is also available through Pear.
-
-```
-$ pear channel-discover pear.tedivm.com
-$ pear install tedivm/Stash
-```
-
 
 ### Github
 
@@ -46,11 +35,8 @@ Releases of Stash are available on [Github](https://github.com/tedious/Stash/rel
 
 ## Documentation
 
-Although this README contains some userful data there is a lot more information
-at the main site, [stash.tedivm.com](http://stash.tedivm.com).
-
-The [development documentation](http://stash.tedivm.com/dev/) is available for
-testing new releases, but is not considered stable.
+Although this README contains some useful data there is a lot more information
+at the main site, [stashphp.com](http://www.stashphp.com/).
 
 
 ## Core Concepts
@@ -121,7 +107,7 @@ drivers that use a variety of back ends.
 The [Stash Bundle](https://github.com/tedious/TedivmStashBundle) makes using
 Stash inside of Symfony projects significantly easier. This bundle exposes
 Stash as a Service for developers to use, and allows Symfony to use Stash
-as a session handler. 
+as a session handler.
 
 
 ## License

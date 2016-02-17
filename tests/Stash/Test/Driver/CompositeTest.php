@@ -11,6 +11,8 @@
 
 namespace Stash\Test\Driver;
 
+use Stash\Driver\FileSystem;
+use Stash\Driver\Composite;
 use Stash\Driver\Ephemeral;
 
 /**
@@ -89,4 +91,50 @@ class CompositeTest extends AbstractDriverTest
         }
     }
 
+    public function testIsPersistent()
+    {
+        $fileDriver = new FileSystem();
+        $ephemeralDriver = new Ephemeral();
+
+        $drivers = array($fileDriver, $ephemeralDriver);
+        $driver = new Composite(array('drivers' => $drivers));
+        $this->assertTrue($driver->isPersistent());
+
+        $drivers = array($ephemeralDriver, $fileDriver);
+        $driver = new Composite(array('drivers' => $drivers));
+        $this->assertTrue($driver->isPersistent());
+
+        $drivers = array($fileDriver, $fileDriver);
+        $driver = new Composite(array('drivers' => $drivers));
+        $this->assertTrue($driver->isPersistent());
+
+        $drivers = array($ephemeralDriver, $ephemeralDriver);
+        $driver = new Composite(array('drivers' => $drivers));
+        $this->assertFalse($driver->isPersistent());
+    }
+
+
+    /**
+     * @expectedException Stash\Exception\RuntimeException
+     */
+    public function testWithoutDriversException()
+    {
+        $driver = new Composite(array('drivers' => null));
+    }
+
+    /**
+     * @expectedException Stash\Exception\RuntimeException
+     */
+    public function testWithFakeDriversException()
+    {
+        $driver = new Composite(array('drivers' => array('fakedriver')));
+    }
+
+    /**
+     * @expectedException Stash\Exception\InvalidArgumentException
+     */
+    public function testWithBadDriverArgumentException()
+    {
+        $driver = new Composite(array('drivers' => 'fakedriver'));
+    }
 }

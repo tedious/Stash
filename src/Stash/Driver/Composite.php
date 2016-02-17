@@ -13,6 +13,7 @@ namespace Stash\Driver;
 
 use Stash;
 use Stash\Exception\RuntimeException;
+use Stash\Exception\InvalidArgumentException;
 use Stash\Interfaces\DriverInterface;
 
 /**
@@ -23,9 +24,8 @@ use Stash\Interfaces\DriverInterface;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class Composite implements DriverInterface
+class Composite extends AbstractDriver
 {
-
     /**
      * The drivers this driver encapsulates.
      *
@@ -40,30 +40,29 @@ class Composite implements DriverInterface
      *
      * @throws \Stash\Exception\RuntimeException
      */
-    public function setOptions(array $options = array())
+    protected function setOptions(array $options = array())
     {
-        if (!isset($options['drivers']) || !is_array($options['drivers']) || count($options['drivers']) < 1) {
+        $options += $this->getDefaultOptions();
+
+        if (!isset($options['drivers']) || (count($options['drivers']) < 1)) {
             throw new RuntimeException('One or more secondary drivers are required.');
         }
 
+        if (!is_array($options['drivers'])) {
+            throw new InvalidArgumentException('Drivers option requires an array.');
+        }
+
+        $this->drivers = array();
         foreach ($options['drivers'] as $driver) {
             if (!(is_object($driver) && $driver instanceof DriverInterface)) {
                 continue;
             }
-
             $this->drivers[] = $driver;
         }
 
         if (count($this->drivers) < 1) {
             throw new RuntimeException('None of the secondary drivers can be enabled.');
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __destruct()
-    {
     }
 
     /**
@@ -79,6 +78,8 @@ class Composite implements DriverInterface
         foreach ($this->drivers as $driver) {
             if ($return = $driver->getData($key)) {
                 $failedDrivers = array_reverse($failedDrivers);
+                /* @var DriverInterface[] $failedDrivers */
+
                 foreach ($failedDrivers as $failedDriver) {
                     $failedDriver->storeData($key, $return['data'], $return['expiration']);
                 }
@@ -125,6 +126,21 @@ class Composite implements DriverInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function isPersistent()
+    {
+        // If one of the drivers is persistent, then this should be marked as persistent as well. This does not
+        // require all of the drivers to be persistent.
+        foreach ($this->drivers as $driver) {
+            if ($driver->isPersistent()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * This function runs the suggested action on all drivers in the reverse order, passing arguments when called for.
      *
      * @param  string $action purge|clear|storeData
@@ -134,6 +150,8 @@ class Composite implements DriverInterface
     protected function actOnAll($action, $args = array())
     {
         $drivers = array_reverse($this->drivers);
+        /* @var DriverInterface[] $drivers */
+
         $return = true;
         $results = false;
         foreach ($drivers as $driver) {
@@ -152,17 +170,5 @@ class Composite implements DriverInterface
         }
 
         return $return;
-    }
-
-    /**
-     * This function checks to see if this driver is available. This always returns true because this
-     * driver has no dependencies, being a wrapper around other classes.
-     *
-     * {@inheritdoc}
-     * @return bool true
-     */
-    public static function isAvailable()
-    {
-        return true;
     }
 }

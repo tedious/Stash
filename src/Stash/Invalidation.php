@@ -47,5 +47,4 @@ class Invalidation
      * it actually expires. While one item is regenerating the rest are still using the cached data as it is still good.
      */
     const PRECOMPUTE = 4;
-
 }

@@ -44,6 +44,7 @@ abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
     protected $driverClass;
     protected $startTime;
     protected $setup = false;
+    protected $persistence = false;
 
     public static function tearDownAfterClass()
     {
@@ -77,8 +78,7 @@ abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
             return false;
         }
 
-        $driver = new $driverClass();
-        $driver->setOptions($options);
+        $driver = new $driverClass($options);
 
         return $driver;
     }
@@ -87,8 +87,7 @@ abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
     {
         $driverType = $this->driverClass;
         $options = $this->getOptions();
-        $driver = new $driverType();
-        $driver->setOptions($options);
+        $driver = new $driverType($options);
         $this->assertTrue(is_a($driver, $driverType), 'Driver is an instance of ' . $driverType);
         $this->assertTrue(is_a($driver, '\Stash\Interfaces\DriverInterface'), 'Driver implments the Stash\Driver\DriverInterface interface');
 
@@ -127,7 +126,9 @@ abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
             $this->assertArrayHasKey('expiration', $return, 'getData ' . $type . ' has expiration');
             $this->assertLessThanOrEqual($this->expiration, $return['expiration'], 'getData ' . $type . ' returns same expiration that is equal to or sooner than the one passed.');
 
-            $this->assertGreaterThan($this->startTime, $return['expiration'], 'getData ' . $type . ' returns expiration that after it\'s storage time');
+            if (!is_null($return['expiration'])) {
+                $this->assertGreaterThan($this->startTime, $return['expiration'], 'getData ' . $type . ' returns expiration that after it\'s storage time');
+            }
 
             $this->assertArrayHasKey('data', $return, 'getData ' . $type . ' has data');
             $this->assertEquals($value, $return['data'], 'getData ' . $type . ' returns same item as stored');
@@ -224,7 +225,17 @@ abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
      */
     public function testDestructor($driver)
     {
-        $driver->__destruct();
         $driver=null;
+    }
+
+    /**
+     * @depends testDestructor
+     */
+    public function testIsPersistant()
+    {
+        if (!$driver = $this->getFreshDriver()) {
+            $this->markTestSkipped('Driver class unsuited for current environment');
+        }
+        $this->assertEquals($this->persistence, $driver->isPersistent());
     }
 }
