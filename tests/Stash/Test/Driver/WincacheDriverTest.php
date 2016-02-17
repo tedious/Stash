@@ -12,11 +12,9 @@
 namespace Stash\Test\Driver;
 
 /**
- * @package Stash
- * 
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class WincacheTest extends AbstractDriverTest
+class WincacheDriverTest extends AbstractDriverTest
 {
     protected $driverClass = 'Stash\Driver\Wincache';
 
@@ -34,5 +32,4 @@ class WincacheTest extends AbstractDriverTest
 
         return parent::testSetOptions();
     }
-
 }

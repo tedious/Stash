@@ -18,7 +18,6 @@ use Stash\Interfaces\DriverInterface;
 /**
  * The Wincache driver is a wrapper for the Wincache extension, which allows developers to store data in memory on Windows.
  *
- * @package Stash
  * @author  Vincent Lark <vincent.lark@gmail.com>
  */
 class Wincache implements DriverInterface
@@ -56,7 +55,7 @@ class Wincache implements DriverInterface
      * * ttl - This is the maximum time the item will be stored.
      * * namespace - This should be used when multiple projects may use the same library.
      *
-     * @param  array                             $options
+     * @param array $options
      * 
      * @throws \Stash\Exception\RuntimeException
      */
@@ -74,7 +73,6 @@ class Wincache implements DriverInterface
      */
     public function __destruct()
     {
-
     }
 
     /**
@@ -113,7 +111,7 @@ class Wincache implements DriverInterface
             $info = wincache_ucache_info();
 
             foreach ($info['ucache_entries'] as $entry) {
-                if (strlen($entry['key_name']) >= $keyLength 
+                if (strlen($entry['key_name']) >= $keyLength
                     && $keyString == substr($entry['key_name'], 0, $keyLength)) {
                     wincache_ucache_delete($entry['key_name']);
                 }
@@ -146,16 +144,16 @@ class Wincache implements DriverInterface
     /**
      * Turns a key array into a string.
      *
-     * @param  array  $key
+     * @param array $key
      * 
      * @return string
      */
     protected function makeKey($key)
     {
-        $keyString = $this->wincacheNamespace . '::';
+        $keyString = $this->wincacheNamespace.'::';
 
         foreach ($key as $piece) {
-            $keyString .= $piece . '::';
+            $keyString .= $piece.'::';
         }
 
         return $keyString;
@@ -164,7 +162,7 @@ class Wincache implements DriverInterface
     /**
      * Converts a timestamp into a TTL.
      *
-     * @param  int $expiration
+     * @param int $expiration
      * 
      * @return int
      */
@@ -174,5 +172,4 @@ class Wincache implements DriverInterface
 
         return $this->ttl < $life ? $this->ttl : $life;
     }
-
 }
