@@ -23,9 +23,7 @@ review changes before Minor updates, although bug fixes will always be
 backwards compatible.
 
 ```
-"require": {
-  "tedivm/stash": "0.14.*"
-}
+composer require tedivm/stash
 ```
 
 ### Github
