@@ -76,7 +76,6 @@ interface ItemInterface extends CacheItemInterface
      */
     public function isHit();
 
-
     /**
      * Returns true if the cached item needs to be refreshed.
      *
@@ -98,8 +97,8 @@ interface ItemInterface extends CacheItemInterface
      * including arrays and object, except resources and objects which are
      * unable to be serialized.
      *
-     * @param  mixed              $value bool
-     * @return static             The invoked object
+     * @param  mixed $value bool
+     * @return self
      */
     public function set($value);
 
@@ -141,24 +140,40 @@ interface ItemInterface extends CacheItemInterface
      */
     public function getExpiration();
 
-
     /**
     * Sets the expiration based off of an integer or DateInterval
     *
     * @param int|\DateInterval $time
-    * @return static The invoked object.
+    * @return self
     */
     public function expiresAfter($time);
-
 
     /**
     * Sets the expiration to a specific time.
     *
     * @param \DateTimeInterface $expiration
-    * @return static The invoked object.
+    * @return self
     */
     public function expiresAt($expiration);
 
+    /**
+    * Sets the expiration based off a an integer, date interval, or date
+    *
+    * @param mixed $ttl An integer, date interval, or date
+    * @return self
+    */
+    public function setTTL($ttl = null);
+
+    /**
+    * Set the cache invalidation method for this item.
+    *
+    * @see Stash\Invalidation
+    *
+    * @param int   $invalidation A Stash\Invalidation constant
+    * @param mixed $arg          First argument for invalidation method
+    * @param mixed $arg2         Second argument for invalidation method
+    */
+    public function setInvalidationMethod($invalidation, $arg = null, $arg2 = null);
 
     /**
     * Persists the Item's value to the backend storage.
