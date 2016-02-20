@@ -22,10 +22,16 @@ Until Stash reaches a stable API with version 1.0 it is recommended that you
 review changes before Minor updates, although bug fixes will always be
 backwards compatible.
 
-```
+```js
 "require": {
   "tedivm/stash": "0.14.*"
 }
+```
+
+or by using the `composer require` command:
+
+```
+composer require tedivm/stash
 ```
 
 ### Github
