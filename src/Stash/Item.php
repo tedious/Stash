@@ -226,6 +226,9 @@ class Item implements ItemInterface
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setInvalidationMethod($invalidation = Invalidation::PRECOMPUTE, $arg = null, $arg2 = null)
     {
         $this->invalidationMethod = $invalidation;
@@ -336,6 +339,9 @@ class Item implements ItemInterface
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setTTL($ttl = null)
     {
         if (is_numeric($ttl) || ($ttl instanceof \DateInterval)) {
@@ -348,6 +354,9 @@ class Item implements ItemInterface
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function expiresAt($expiration = null)
     {
         if (!is_null($expiration) && !($expiration instanceof \DateTimeInterface)) {
@@ -361,6 +370,9 @@ class Item implements ItemInterface
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function expiresAfter($time)
     {
         $date = new \DateTime();
@@ -381,6 +393,9 @@ class Item implements ItemInterface
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function save()
     {
         try {
