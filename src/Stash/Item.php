@@ -614,7 +614,7 @@ class Item implements ItemInterface
                 break;
 
             case Invalidation::OLD:
-                $this->isHit = $record['data']['return'] !== null;
+                $this->isHit = $record && $record['data']['return'] !== null;
                 break;
 
             default:
