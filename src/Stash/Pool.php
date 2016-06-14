@@ -11,7 +11,7 @@
 
 namespace Stash;
 
-use PSR\Cache\CacheItemInterface;
+use Psr\Cache\CacheItemInterface;
 use Stash\Exception\InvalidArgumentException;
 use Stash\Driver\Ephemeral;
 use Stash\Interfaces\DriverInterface;
