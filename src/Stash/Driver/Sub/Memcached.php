@@ -39,36 +39,96 @@ class Memcached
      */
     public function __construct($servers = array(), $options = array())
     {
+        $this->memcached = $this->createMemcached($servers, $options);
+    }
+
+    /**
+     * Create and setup Memcached instance.
+     *
+     * @param array $servers
+     * @param array $options
+     *
+     * @return \Memcached
+     */
+    protected function createMemcached($servers = array(), $options = array())
+    {
+        $persistId = $this->createPersistentId($servers, $options);
+        $memcached = $this->newMemcachedInstance($persistId);
+
+        /* If memcached instance is persistent and was not created recently
+         * then it is fully configured (all options are set) and we should not
+         * make any changes on persistent connection object.
+         */
+        if (count($memcached->getServerList()) === 0) {
+            $this->setupMemcached($memcached, $servers, $options);
+        }
+
+        return $memcached;
+    }
+
+    /**
+     * Create new Memcached instance.
+     *
+     * @param $persistId
+     *
+     * @return \Memcached
+     */
+    protected function newMemcachedInstance($persistId)
+    {
+        return new \Memcached($persistId);
+    }
+
+    /**
+     * Create persistent id from servers list and options.
+     *
+     * @param array $servers
+     * @param array $options
+     *
+     * @return string
+     */
+    protected function createPersistentId(array $servers, array $options)
+    {
+        $servers = serialize($servers);
+        $options = serialize($options);
+
+        return hash('md5', "{$servers} {$options}");
+    }
+
+    /**
+     * Setup given memcached instance.
+     *
+     * @param \Memcached $memcached
+     * @param array      $servers
+     * @param array      $options
+     */
+    protected function setupMemcached(\Memcached $memcached, array $servers, array $options)
+    {
         // build this array here instead of as a class variable since the constants are only defined if the extension
         // exists
-        $memOptions = array('COMPRESSION',
-                            'SERIALIZER',
-                            'PREFIX_KEY',
-                            'HASH',
-                            'DISTRIBUTION',
-                            'LIBKETAMA_COMPATIBLE',
-                            'BUFFER_WRITES',
-                            'BINARY_PROTOCOL',
-                            'NO_BLOCK',
-                            'TCP_NODELAY',
-                            'SOCKET_SEND_SIZE',
-                            'SOCKET_RECV_SIZE',
-                            'CONNECT_TIMEOUT',
-                            'RETRY_TIMEOUT',
-                            'SEND_TIMEOUT',
-                            'RECV_TIMEOUT',
-                            'POLL_TIMEOUT',
-                            'CACHE_LOOKUPS',
-                            'SERVER_FAILURE_LIMIT',
-                            'CLIENT_MODE'
+        $memOptions = array(
+            'COMPRESSION',
+            'SERIALIZER',
+            'PREFIX_KEY',
+            'HASH',
+            'DISTRIBUTION',
+            'LIBKETAMA_COMPATIBLE',
+            'BUFFER_WRITES',
+            'BINARY_PROTOCOL',
+            'NO_BLOCK',
+            'TCP_NODELAY',
+            'SOCKET_SEND_SIZE',
+            'SOCKET_RECV_SIZE',
+            'CONNECT_TIMEOUT',
+            'RETRY_TIMEOUT',
+            'SEND_TIMEOUT',
+            'RECV_TIMEOUT',
+            'POLL_TIMEOUT',
+            'CACHE_LOOKUPS',
+            'SERVER_FAILURE_LIMIT',
+            'CLIENT_MODE',
         );
 
-        $memcached = new \Memcached();
-
-        $serverList = $memcached->getServerList();
-        if (empty($serverList)) {
-            $memcached->addServers($servers);
-        }
+        $memcached->addServers($servers);
 
         foreach ($options as $name => $value) {
             $name = strtoupper($name);
@@ -138,8 +198,6 @@ class Memcached
                 throw new RuntimeException('Memcached option Memcached::OPT_' . $name . ' not accepted by memcached extension.');
             }
         }
-
-        $this->memcached = $memcached;
     }
 
     /**
