@@ -17,6 +17,7 @@ namespace Stash\Test\Driver;
  */
 class RedisTest extends AbstractDriverTest
 {
+    protected $extension = 'redis';
     protected $driverClass = 'Stash\Driver\Redis';
     protected $redisServer = '127.0.0.1';
     protected $redisPort = '6379';
@@ -53,16 +54,22 @@ class RedisTest extends AbstractDriverTest
 
     protected function getOptions()
     {
-        return array('servers' => array(
-            array('server' => $this->redisServer, 'port' => $this->redisPort, 'ttl' => 0.1)
-        ));
+        return array(
+            'extension' => $this->extension,
+            'servers' => array(
+                array('server' => $this->redisServer, 'port' => $this->redisPort, 'ttl' => 0.1)
+            ),
+        );
     }
 
     protected function getInvalidOptions()
     {
-        return array('servers' => array(
-            array('server' => $this->redisNoServer, 'port' => $this->redisNoPort, 'ttl' => 0.1)
-        ));
+        return array(
+            'extension' => $this->extension,
+            'servers' => array(
+                array('server' => $this->redisNoServer, 'port' => $this->redisNoPort, 'ttl' => 0.1)
+            ),
+        );
     }
 
     public function testBadDisconnect()

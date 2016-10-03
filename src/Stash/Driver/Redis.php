@@ -12,6 +12,9 @@
 namespace Stash\Driver;
 
 use Stash;
+use Stash\Exception\RuntimeException;
+use Stash\Driver\Sub\Redis as SubRedis;
+use Stash\Driver\Sub\Predis as SubPredis;
 
 /**
  * The Redis driver is used for storing data on a Redis system. This class uses
@@ -25,7 +28,7 @@ class Redis extends AbstractDriver
     /**
      * The Redis drivers.
      *
-     * @var \Redis|\RedisArray
+     * @var SubRedis|SubPredis
      */
     protected $redis;
 
@@ -35,18 +38,6 @@ class Redis extends AbstractDriver
      * @var array
      */
     protected $keyCache = array();
-
-    protected $redisArrayOptionNames = array(
-        "previous",
-        "function",
-        "distributor",
-        "index",
-        "autorehash",
-        "pconnect",
-        "retry_interval",
-        "lazy_connect",
-        "connect_timeout",
-    );
 
     /**
      * The options array should contain an array of servers,
@@ -64,6 +55,10 @@ class Redis extends AbstractDriver
     protected function setOptions(array $options = array())
     {
         $options += $this->getDefaultOptions();
+
+        if (!isset($options['extension'])) {
+            $options['extension'] = 'any';
+        }
 
         // Normalize Server Options
         if (isset($options['servers'])) {
@@ -105,55 +100,15 @@ class Redis extends AbstractDriver
             $servers = array(array('server' => '127.0.0.1', 'port' => '6379', 'ttl' => 0.1));
         }
 
-        // this will have to be revisited to support multiple servers, using
-        // the RedisArray object. That object acts as a proxy object, meaning
-        // most of the class will be the same even after the changes.
+        $extension = strtolower($options['extension']);
 
-        if (count($servers) == 1) {
-            $server = $servers[0];
-            $redis = new \Redis();
-
-            if (isset($server['socket']) && $server['socket']) {
-                $redis->connect($server['socket']);
-            } else {
-                $port = isset($server['port']) ? $server['port'] : 6379;
-                $ttl = isset($server['ttl']) ? $server['ttl'] : 0.1;
-                $redis->connect($server['server'], $port, $ttl);
-            }
-
-            // auth - just password
-            if (isset($options['password'])) {
-                $redis->auth($options['password']);
-            }
-
-            $this->redis = $redis;
+        if (SubRedis::isAvailable() && $extension != 'predis') {
+            $this->redis = new SubRedis($servers, $options);
+        } elseif (SubPredis::isAvailable() && $extension != 'redis') {
+            $this->redis = new SubPredis($servers, $options);
         } else {
-            $redisArrayOptions = array();
-            foreach ($this->redisArrayOptionNames as $optionName) {
-                if (array_key_exists($optionName, $options)) {
-                    $redisArrayOptions[$optionName] = $options[$optionName];
-                }
-            }
-
-            $serverArray = array();
-            foreach ($servers as $server) {
-                $serverString = $server['server'];
-                if (isset($server['port'])) {
-                    $serverString .= ':' . $server['port'];
-                }
-
-                $serverArray[] = $serverString;
-            }
-
-            $redis = new \RedisArray($serverArray, $redisArrayOptions);
+            throw new RuntimeException('No redis extension available.');
         }
-
-        // select database
-        if (isset($options['database'])) {
-            $redis->select($options['database']);
-        }
-
-        $this->redis = $redis;
     }
 
     /**
@@ -161,16 +116,7 @@ class Redis extends AbstractDriver
      */
     public function __destruct()
     {
-        if ($this->redis instanceof \Redis) {
-            try {
-                $this->redis->close();
-            } catch (\RedisException $e) {
-                /*
-                 * \Redis::close will throw a \RedisException("Redis server went away") exception if
-                 * we haven't previously been able to connect to Redis or the connection has severed.
-                 */
-            }
-        }
+        $this->redis->close();
     }
 
     /**
@@ -235,7 +181,7 @@ class Redis extends AbstractDriver
      */
     public static function isAvailable()
     {
-        return class_exists('Redis', false);
+        return (SubRedis::isAvailable() || SubPredis::isAvailable());
     }
 
     /**

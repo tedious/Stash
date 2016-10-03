@@ -45,6 +45,7 @@ class RedisArrayTest extends RedisTest
     protected function getOptions()
     {
         return array(
+            'extension' => $this->extension,
             'servers' => array(
                 array('server' => $this->redisServer, 'port' => $this->redisPort, 'ttl' => 0.1),
                 array('server' => $this->redisSecondServer, 'port' => $this->redisSecondPort, 'ttl' => 0.1),
@@ -61,7 +62,12 @@ class RedisArrayTest extends RedisTest
         $class = new \ReflectionClass($driver);
         $redisProperty = $class->getProperty('redis');
         $redisProperty->setAccessible(true);
-        $redisArray = $redisProperty->getValue($driver);
+        $redisImpl = $redisProperty->getValue($driver);
+
+        $class = new \ReflectionClass($redisImpl);
+        $redisProperty = $class->getProperty('redis');
+        $redisProperty->setAccessible(true);
+        $redisArray = $redisProperty->getValue($redisImpl);
 
         $this->assertInstanceOf('\RedisArray', $redisArray);
     }
