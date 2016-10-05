@@ -73,8 +73,12 @@ class RedisArrayTest extends RedisTest
     {
         $redisArrayOptions = array(
             "previous"        => "something",
-            "function"        => function ($key) { return $key; },
-            "distributor"     => function ($key) { return 0; },
+            "function"        => function ($key) {
+                return $key;
+            },
+            "distributor"     => function ($key) {
+                return 0;
+            },
             "index"           => "something",
             "autorehash"      => "something",
             "pconnect"        => "something",
