@@ -191,8 +191,8 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         $controlStash = $this->testConstruct($key);
         $controlStash->setInvalidationMethod(Invalidation::VALUE, $newValue);
         $return = $controlStash->get();
-        $this->assertEquals($oldValue, $return, 'Old value is returned');
-        $this->assertTrue($controlStash->isMiss());
+        $this->assertNull($return, 'NULL is returned when isHit is false');
+        $this->assertFalse($controlStash->isHit());
         unset($controlStash);
 
         // Enable stampede control
@@ -234,8 +234,8 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         $unknownStash = $this->testConstruct($key);
 
         $return = $unknownStash->get(78);
-        $this->assertEquals($oldValue, $return, 'Old value is returned');
-        $this->assertTrue($unknownStash->isMiss(), 'Cache is marked as miss');
+        $this->assertNull($return, 'NULL is returned when isHit is false');
+        $this->assertFalse($unknownStash->isHit(), 'Cache is marked as miss');
         unset($unknownStash);
 
         // Test that storing the cache turns off stampede mode.
@@ -261,8 +261,9 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         $key = array('stampede', 'expire');
         $Item_SPtest = $this->testConstruct($key);
         $Item_SPtest->setInvalidationMethod(Invalidation::VALUE, $newValue);
-        $Item_SPtest->set($oldValue)->expiresAfter(-300)->save();
+        $Item_SPtest->set($oldValue)->expiresAfter(300)->save();
         $Item_SPtest->lock(-5);
+        $Item_SPtest = $this->testConstruct($key);
         $this->assertEquals($oldValue, $Item_SPtest->get(), 'Expired lock is ignored');
     }
 

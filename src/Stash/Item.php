@@ -217,6 +217,10 @@ class Item implements ItemInterface
                     $this->invalidationArg2);
             }
 
+            if (false === $this->isHit) {
+                return null;
+            }
+
             return $this->data;
         } catch (Exception $e) {
             $this->logException('Retrieving from cache caused exception.', $e);
