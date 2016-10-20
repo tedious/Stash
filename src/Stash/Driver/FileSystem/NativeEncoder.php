@@ -97,7 +97,7 @@ class NativeEncoder implements EncoderInterface
                 $dataString = (string) $data;
                 break;
 
-            default :
+            default:
                 case 'serialize':
                     $dataString = 'unserialize(base64_decode(\'' . base64_encode(serialize($data)) . '\'))';
                     break;
