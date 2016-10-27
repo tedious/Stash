@@ -21,6 +21,10 @@ class RedisSocketTest extends RedisTest
     {
         $socket = '/tmp/redis.sock';
 
+        if(!file_exists($socket)) {
+            $this->markTestSkipped("Redis socket not installed");
+        }
+
         return array('servers' => array(
             array('socket' => $socket, 'ttl' => 0.1)
         ));
