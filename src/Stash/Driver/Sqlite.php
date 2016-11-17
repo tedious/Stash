@@ -41,7 +41,6 @@ class Sqlite extends AbstractDriver
     public function getDefaultOptions()
     {
         return array(
-            'path' => Utilities::getBaseDirectory($this),
             'filePermissions' => 0660,
             'dirPermissions' => 0770,
             'busyTimeout' => 500,
@@ -58,6 +57,10 @@ class Sqlite extends AbstractDriver
     protected function setOptions(array $options = array())
     {
         $options += $this->getDefaultOptions();
+
+        if (!isset($options['path'])) {
+          $options['path'] = Utilities::getBaseDirectory($this);
+        }
 
         $this->cachePath = rtrim($options['path'], '\\/') . DIRECTORY_SEPARATOR;
         $this->filePermissions = $options['filePermissions'];
