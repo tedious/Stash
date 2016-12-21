@@ -63,6 +63,10 @@ class Pool implements PoolInterface
      */
     protected $namespace;
 
+    protected $invalidationMethod = Invalidation::PRECOMPUTE;
+    protected $invalidationArg1 = null;
+    protected $invalidationArg2 = null;
+
     /**
      * The constructor takes a Driver class which is used for persistent
      * storage. If no driver is provided then the Ephemeral driver is used by
@@ -120,6 +124,7 @@ class Pool implements PoolInterface
         $item = new $this->itemClass();
         $item->setPool($this);
         $item->setKey($key, $namespace);
+        $item->setInvalidationMethod($this->invalidationMethod, $this->invalidationArg1, $this->invalidationArg2);
 
         if ($this->isDisabled) {
             $item->disable();
@@ -307,6 +312,22 @@ class Pool implements PoolInterface
         $this->logger = $logger;
 
         return true;
+    }
+
+    /**
+     * Set the default cache invalidation method for items created by this pool object.
+     *
+     * @see Stash\Invalidation
+     *
+     * @param int   $invalidation A Stash\Invalidation constant
+     * @param mixed $arg          First argument for invalidation method
+     * @param mixed $arg2         Second argument for invalidation method
+     */
+    public function setInvalidationMethod($invalidation = Invalidation::PRECOMPUTE, $arg = null, $arg2 = null)
+    {
+        $this->invalidationMethod = $invalidation;
+        $this->invalidationArg1 = $arg;
+        $this->invalidationArg2 = $arg2;
     }
 
     /**
