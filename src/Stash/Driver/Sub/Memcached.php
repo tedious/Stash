@@ -60,7 +60,8 @@ class Memcached
                             'POLL_TIMEOUT',
                             'CACHE_LOOKUPS',
                             'SERVER_FAILURE_LIMIT',
-                            'CLIENT_MODE'
+                            'CLIENT_MODE',
+                            'REMOVE_FAILED_SERVERS',
         );
 
         $memcached = new \Memcached();
@@ -128,6 +129,7 @@ class Memcached
                 case 'NO_BLOCK':
                 case 'TCP_NODELAY':
                 case 'CACHE_LOOKUPS':
+                case 'REMOVE_FAILED_SERVERS':
                     if (!is_bool($value)) {
                         throw new RuntimeException('Memcached option ' . $name . ' requires boolean value');
                     }
