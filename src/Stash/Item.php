@@ -422,7 +422,7 @@ class Item implements ItemInterface
         $store['return'] = $data;
         $store['createdOn'] = time();
 
-        if (isset($time) && ($time instanceof \DateTime)) {
+        if (isset($time) && (($time instanceof \DateTime) || ($time instanceof \DateTimeInterface))) {
             $expiration = $time->getTimestamp();
             $cacheTime = $expiration - $store['createdOn'];
         } else {
