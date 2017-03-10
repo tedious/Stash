@@ -59,7 +59,7 @@ class Sqlite extends AbstractDriver
         $options += $this->getDefaultOptions();
 
         if (!isset($options['path'])) {
-          $options['path'] = Utilities::getBaseDirectory($this);
+            $options['path'] = Utilities::getBaseDirectory($this);
         }
 
         $this->cachePath = rtrim($options['path'], '\\/') . DIRECTORY_SEPARATOR;
