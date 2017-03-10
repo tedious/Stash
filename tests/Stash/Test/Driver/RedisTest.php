@@ -65,6 +65,9 @@ class RedisTest extends AbstractDriverTest
         ));
     }
 
+    /**
+     * @expectedException \PHPUnit_Framework_Error_Warning
+     */
     public function testBadDisconnect()
     {
         if (defined('HHVM_VERSION')) {
