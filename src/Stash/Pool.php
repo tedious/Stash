@@ -187,7 +187,6 @@ class Pool implements PoolInterface
     public function deleteItems(array $keys)
     {
         // temporarily cheating here by wrapping around single calls.
-        $items = array();
         $results = true;
         foreach ($keys as $key) {
             $results = $this->deleteItem($key) && $results;
