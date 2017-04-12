@@ -218,7 +218,7 @@ class Redis extends AbstractDriver
         $this->redis->incr($pathString); // increment index for children items
         $this->redis->delete($keyString); // remove direct item.
         $this->deleteSubKeys($keyString);
-        $this->keyCache = array();
+        $this->keyCache[$pathString] = array();
         
         return true;
     }
@@ -249,21 +249,32 @@ class Redis extends AbstractDriver
      */
     protected function makeKeyString($key, $path = false)
     {
+    	$pathPrefix = 'pathdb:';
         $key = Stash\Utilities::normalizeKeys($key);
-        $keyString = $path ? 'pathdb:' : '';
         
+        $keyString = '';
         foreach ($key as $name) {
             $keyString .= $name;
             
-            $index = $this->redis->get('pathdb:'.$keyString);
+            $pathString = $pathPrefix.$keyString;
+            
+            if (isset($this->keyCache[$pathString])) {
+            	$index = $this->keyCache[$pathString];
+			}
+            else {
+				$index = $this->redis->get('pathdb:'.$keyString);
+			}
+            
             if ($index) {
                 $keyString .= '_'.$index;
             }
             
             $keyString .= ':';
         }
-        
-        return rtrim($keyString, ':');
+	
+		$keyString = rtrim($keyString, ':');
+	
+		return $path ? $pathPrefix.$keyString : $keyString;
     }
     
     /**
