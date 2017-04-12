@@ -212,13 +212,14 @@ class Redis extends AbstractDriver
 
             return true;
         }
-
-        $keyString = $this->makeKeyString($key, true);
-        $keyReal = $this->makeKeyString($key);
-        $this->redis->incr($keyString); // increment index for children items
-        $this->redis->delete($keyReal); // remove direct item.
+        
+        $pathString = $this->makeKeyString($key, true);
+        $keyString = $this->makeKeyString($key);
+        $this->redis->incr($pathString); // increment index for children items
+        $this->redis->delete($keyString); // remove direct item.
+        $this->deleteSubKeys($keyString);
         $this->keyCache = array();
-
+        
         return true;
     }
 
@@ -237,34 +238,47 @@ class Redis extends AbstractDriver
     {
         return class_exists('Redis', false);
     }
-	
-	/**
-	 * Turns a key array into a key string. This includes running the indexing functions used to manage the Redis
-	 * hierarchical storage.
-	 *
-	 * @param  array  $key
-	 * @param  bool   $path
-	 * @return string
-	 */
-	protected function makeKeyString($key, $path = false)
-	{
-		$key = Stash\Utilities::normalizeKeys($key);
-		$keyString = $path ? 'pathdb:' : '';
-		
-		foreach ($key as $name) {
-			$keyString .= $name;
-			
-			$index = $this->redis->get('pathdb:'.$keyString);
-			if ($index) {
-				$keyString .= '_'.$index;
-			}
-			
-			$keyString .= ':';
-		}
-		
-		return rtrim($keyString, ':');
-	}
-
+    
+    /**
+     * Turns a key array into a key string. This includes running the indexing functions used to manage the Redis
+     * hierarchical storage.
+     *
+     * @param  array  $key
+     * @param  bool   $path
+     * @return string
+     */
+    protected function makeKeyString($key, $path = false)
+    {
+        $key = Stash\Utilities::normalizeKeys($key);
+        $keyString = $path ? 'pathdb:' : '';
+        
+        foreach ($key as $name) {
+            $keyString .= $name;
+            
+            $index = $this->redis->get('pathdb:'.$keyString);
+            if ($index) {
+                $keyString .= '_'.$index;
+            }
+            
+            $keyString .= ':';
+        }
+        
+        return rtrim($keyString, ':');
+    }
+    
+    /**
+     * @param string $keyString
+     */
+    private function deleteSubKeys($keyString) {
+        $iterator = null;
+        
+        while($subKeys = $this->redis->scan($iterator, $keyString.'*')) {
+            foreach ($subKeys as $subKey) {
+                $this->redis->delete($subKey);
+            }
+        }
+    }
+    
     /**
      * {@inheritdoc}
      */
