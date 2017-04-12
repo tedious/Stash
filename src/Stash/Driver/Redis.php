@@ -22,6 +22,8 @@ use Stash;
  */
 class Redis extends AbstractDriver
 {
+	protected static $pathPrefix = 'pathdb:';
+	
     /**
      * The Redis drivers.
      *
@@ -249,19 +251,21 @@ class Redis extends AbstractDriver
      */
     protected function makeKeyString($key, $path = false)
     {
-    	$pathPrefix = 'pathdb:';
         $key = Stash\Utilities::normalizeKeys($key);
         
         $keyString = '';
         foreach ($key as $name) {
             $keyString .= $name;
             
-            $pathString = $pathPrefix.$keyString;
-            
-            if (isset($this->keyCache[$pathString])) {
+			/*
+			 * Check if there is an index available in the pathdb, that means there was a deletion of the stackparent before
+			 * and we should use the index inside the pathdb to create the keystring.
+			 */
+			$pathString = self::$pathPrefix.$keyString;
+			if (isset($this->keyCache[$pathString])) {
             	$index = $this->keyCache[$pathString];
 			} else {
-				$index = $this->redis->get('pathdb:'.$keyString);
+				$index = $this->redis->get(self::$pathPrefix.$keyString);
 			}
             
             if ($index) {
@@ -273,7 +277,7 @@ class Redis extends AbstractDriver
 	
 		$keyString = rtrim($keyString, ':');
 	
-		return $path ? $pathPrefix.$keyString : $keyString;
+		return $path ? self::$pathPrefix.$keyString : $keyString;
     }
     
     /**
