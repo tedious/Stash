@@ -259,7 +259,7 @@ class Redis extends AbstractDriver
             
 			/*
 			 * Check if there is an index available in the pathdb, that means there was a deletion of the stackparent before
-			 * and we should use the index inside the pathdb to create the keystring.
+			 * and we should use the index inside the pathdb to as a prefix for the sub-keys.
 			 */
 			$pathString = self::$pathPrefix.$keyString;
 			if (isset($this->keyCache[$pathString])) {
