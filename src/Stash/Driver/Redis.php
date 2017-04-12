@@ -237,47 +237,33 @@ class Redis extends AbstractDriver
     {
         return class_exists('Redis', false);
     }
-
-    /**
-     * Turns a key array into a key string. This includes running the indexing functions used to manage the Redis
-     * hierarchical storage.
-     *
-     * When requested the actual path, rather than a normalized value, is returned.
-     *
-     * @param  array  $key
-     * @param  bool   $path
-     * @return string
-     */
-    protected function makeKeyString($key, $path = false)
-    {
-        $key = \Stash\Utilities::normalizeKeys($key);
-
-        $keyString = 'cache:::';
-        $pathKey = ':pathdb::';
-        foreach ($key as $name) {
-            //a. cache:::name
-            //b. cache:::name0:::sub
-            $keyString .= $name;
-
-            //a. :pathdb::cache:::name
-            //b. :pathdb::cache:::name0:::sub
-            $pathKey = ':pathdb::' . $keyString;
-            $pathKey = md5($pathKey);
-
-            if (isset($this->keyCache[$pathKey])) {
-                $index = $this->keyCache[$pathKey];
-            } else {
-                $index = $this->redis->get($pathKey);
-                $this->keyCache[$pathKey] = $index;
-            }
-
-            //a. cache:::name0:::
-            //b. cache:::name0:::sub1:::
-            $keyString .= '_' . $index . ':::';
-        }
-
-        return $path ? $pathKey : md5($keyString);
-    }
+	
+	/**
+	 * Turns a key array into a key string. This includes running the indexing functions used to manage the Redis
+	 * hierarchical storage.
+	 *
+	 * @param  array  $key
+	 * @param  bool   $path
+	 * @return string
+	 */
+	protected function makeKeyString($key, $path = false)
+	{
+		$key = Stash\Utilities::normalizeKeys($key);
+		$keyString = $path ? 'pathdb:' : '';
+		
+		foreach ($key as $name) {
+			$keyString .= $name;
+			
+			$index = $this->redis->get('pathdb:'.$keyString);
+			if ($index) {
+				$keyString .= '_'.$index;
+			}
+			
+			$keyString .= ':';
+		}
+		
+		return rtrim($keyString, ':');
+	}
 
     /**
      * {@inheritdoc}
