@@ -237,7 +237,18 @@ class FileSystem extends AbstractDriver
         // This fix immediately invalidates that opcode cache after a file is written,
         // so that future includes are not using the stale opcode cached file.
         if (function_exists('opcache_invalidate')) {
-            opcache_invalidate($path, true);
+            $invalidate = true;
+
+            if ($restrictedDirectory = ini_get('opcache.restrict_api')) {
+                if (strpos(__FILE__, $restrictedDirectory) !== 0) {
+                    // Opcache is restricted and likely to throw an error, let's just not invalidate
+                    $invalidate = false;
+                }
+            }
+
+            if ($invalidate) {
+                @opcache_invalidate($path, true);
+            }
         }
 
         return false !== $result;
