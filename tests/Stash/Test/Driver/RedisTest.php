@@ -56,7 +56,7 @@ class RedisTest extends AbstractDriverTest
             $this->data['object'] = new \stdClass();
             $this->data['large_string'] = str_repeat('apples', ceil(200000 / 6));
 
-            //Connect a redis client so we can do validation outside of the test we are testing
+            //Connect a redis client so we can do validation outside of the driver we are testing
             $this->redisClient = new \Redis();
             $this->redisClient->connect($this->redisServer, $this->redisPort);
             $this->redisClient->flushDB();
@@ -108,7 +108,7 @@ class RedisTest extends AbstractDriverTest
         $this->deleteSubkeysTest($normalizeKeys = false);
     }
 
-    public function testItDeletedNormalizedSubkeys()
+    public function testItDeletesNormalizedSubkeys()
     {
         $this->deleteSubkeysTest($normalizeKeys = true);
     }
