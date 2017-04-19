@@ -27,7 +27,7 @@ class Redis extends AbstractDriver
 {
     const SERVER_DEFAULT_HOST = '127.0.0.1';
     const SERVER_DEFAULT_PORT = 6379;
-    const SERVER_DEFAULT_TTL = 0.1;
+    const SERVER_DEFAULT_TTL  = 0.1;
 
     protected static $pathPrefix = 'pathdb:';
 
