@@ -21,6 +21,7 @@ use Stash\Utilities;
  *
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
+ * @author  Tim Strijdhorst <tim@decorrespondent.nl>
  */
 class Redis extends AbstractDriver {
 	const SERVER_DEFAULT_HOST = '127.0.0.1';
