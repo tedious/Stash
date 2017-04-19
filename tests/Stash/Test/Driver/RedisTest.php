@@ -127,7 +127,7 @@ class RedisTest extends AbstractDriverTest
             $expectedException = $e;
         }
 
-        $this->assertInstanceOf(InvalidArgumentException::class, $expectedException);
+        $this->assertInstanceOf('\Stash\Exception\InvalidArgumentException', $expectedException);
         $this->assertEquals('You cannot use `:` or `_` in keys if key_normalization is off.',
             $expectedException->getMessage());
 
@@ -138,7 +138,7 @@ class RedisTest extends AbstractDriverTest
             $expectedException = $e;
         }
 
-        $this->assertInstanceOf(InvalidArgumentException::class, $expectedException);
+        $this->assertInstanceOf('\Stash\Exception\InvalidArgumentException', $expectedException);
         $this->assertEquals('You cannot use `:` or `_` in keys if key_normalization is off.',
             $expectedException->getMessage());
     }
