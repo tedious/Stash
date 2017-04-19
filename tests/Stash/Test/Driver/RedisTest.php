@@ -22,8 +22,8 @@ use Stash\Utilities;
 class RedisTest extends AbstractDriverTest
 {
     protected $driverClass = 'Stash\Driver\Redis';
-    protected $redisServer = '192.168.33.11';
-    protected $redisPort   = 6666;
+    protected $redisServer = '127.0.0.1';
+    protected $redisPort   = 6379;
 
     protected $redisNoServer = '127.0.0.1';
     protected $redisNoPort   = 6381;
