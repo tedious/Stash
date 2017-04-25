@@ -12,6 +12,8 @@
 namespace Stash\Driver;
 
 use Stash;
+use Stash\Exception\InvalidArgumentException;
+use Stash\Utilities;
 
 /**
  * The Redis driver is used for storing data on a Redis system. This class uses
@@ -34,9 +36,18 @@ class Redis extends AbstractDriver
      *
      * @var array
      */
-    protected $keyCache = array();
+    protected $keyCache = [];
 
-    protected $redisArrayOptionNames = array(
+    /**
+     * If this is true the keyParts will be normalized using the default Utilities::normalizeKeys($key)
+     *
+     * @var bool
+     */
+    protected $normalizeKeys = true;
+
+    protected static $pathPrefix = 'pathdb:';
+
+    protected static $redisArrayOptionNames = array(
         "previous",
         "function",
         "distributor",
@@ -64,6 +75,10 @@ class Redis extends AbstractDriver
     protected function setOptions(array $options = array())
     {
         $options += $this->getDefaultOptions();
+
+        if (isset($options['normalize_keys'])) {
+            $this->normalizeKeys = $options['normalize_keys'];
+        }
 
         // Normalize Server Options
         if (isset($options['servers'])) {
@@ -129,7 +144,7 @@ class Redis extends AbstractDriver
             $this->redis = $redis;
         } else {
             $redisArrayOptions = array();
-            foreach ($this->redisArrayOptionNames as $optionName) {
+            foreach (static::$redisArrayOptionNames as $optionName) {
                 if (array_key_exists($optionName, $options)) {
                     $redisArrayOptions[$optionName] = $options[$optionName];
                 }
@@ -203,21 +218,28 @@ class Redis extends AbstractDriver
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function clear($key = null)
     {
-        if (is_null($key)) {
-            $this->redis->flushDB();
-
-            return true;
+        if ($key === null) {
+            return $this->redis->flushDB();
         }
 
-        $keyString = $this->makeKeyString($key, true);
-        $keyReal = $this->makeKeyString($key);
-        $this->redis->incr($keyString); // increment index for children items
-        $this->redis->delete($keyReal); // remove direct item.
-        $this->keyCache = array();
+        $keyString = $this->makeKeyString($key);
+        $this->redis->delete($keyString); // remove direct item.
+
+        /**
+         * If the key has subkeys that means that we will have to remove them too.
+         * But first we create a new index for the stackparent in the pathdb so we are sure there will be no new
+         * subkeys added while we are deleting them.
+         */
+        if ($this->hasSubKeys($keyString)) {
+            $pathString = $this->makeKeyString($key, true);
+            $this->keyCache[$pathString] = $this->redis->incr($pathString); //Create a new index and save it in the key cache
+
+            $this->deleteSubKeys($keyString); // remove all the subitems
+        }
 
         return true;
     }
@@ -242,41 +264,91 @@ class Redis extends AbstractDriver
      * Turns a key array into a key string. This includes running the indexing functions used to manage the Redis
      * hierarchical storage.
      *
-     * When requested the actual path, rather than a normalized value, is returned.
-     *
-     * @param  array  $key
-     * @param  bool   $path
+     * @param  array $keyParts
+     * @param  bool $path
      * @return string
+     * @throws \Exception
      */
-    protected function makeKeyString($key, $path = false)
+    protected function makeKeyString($keyParts, $path = false)
     {
-        $key = \Stash\Utilities::normalizeKeys($key);
-
-        $keyString = 'cache:::';
-        $pathKey = ':pathdb::';
-        foreach ($key as $name) {
-            //a. cache:::name
-            //b. cache:::name0:::sub
-            $keyString .= $name;
-
-            //a. :pathdb::cache:::name
-            //b. :pathdb::cache:::name0:::sub
-            $pathKey = ':pathdb::' . $keyString;
-            $pathKey = md5($pathKey);
-
-            if (isset($this->keyCache[$pathKey])) {
-                $index = $this->keyCache[$pathKey];
-            } else {
-                $index = $this->redis->get($pathKey);
-                $this->keyCache[$pathKey] = $index;
-            }
-
-            //a. cache:::name0:::
-            //b. cache:::name0:::sub1:::
-            $keyString .= '_' . $index . ':::';
+        if ($this->normalizeKeys) {
+            $keyParts = Utilities::normalizeKeys($keyParts);
         }
 
-        return $path ? $pathKey : md5($keyString);
+        $keyString = '';
+        foreach ($keyParts as $keyPart) {
+            if (!$this->normalizeKeys && (strpos($keyPart, ':') || strpos($keyPart, '_'))) {
+                throw new InvalidArgumentException('You cannot use `:` or `_` in keys if key_normalization is off.');
+            }
+
+            $keyString .= $keyPart;
+
+            /*
+             * Check if there is an index available in the pathdb, that means there was a deletion of the stackparent before
+             * and we should use the index inside the pathdb to as a prefix for the sub-keys.
+             *
+             * However if we are generating the path this should not be included since the index will never get higher than 1 then.
+             */
+            if (!$path) {
+                $pathString = self::$pathPrefix . $keyString;
+                if (isset($this->keyCache[$pathString])) {
+                    $index = $this->keyCache[$pathString];
+                } else {
+                    $index = $this->redis->get($pathString);
+                }
+
+                if ($index) {
+                    $keyString .= '_' . $index;
+                }
+            }
+
+            $keyString .= ':';
+        }
+
+        $keyString = rtrim($keyString, ':');
+
+        return $path ? self::$pathPrefix . $keyString : $keyString;
+    }
+
+    /**
+     * @param $keyString
+     * @return bool
+     */
+    protected function hasSubKeys($keyString)
+    {
+        /**
+         * PHPRedis examples are lying. It will not return a boolean false if there are no keys but it will return an empty array.
+         * But it will also return an empty array if there are no keys fetched in this iteration even though there are more keys to be fetched
+         * because there are no guarantees given for that.
+         * So we will need to check whether there are no keys until the iterator is set to 0 which means the whole space has been traversed.
+         *
+         * For more information see @link https://redis.io/commands/scan#number-of-elements-returned-at-every-scan-call
+         */
+
+        $iterator = null;
+        $hasSubKeys = false;
+        while ($iterator !== 0 && $hasSubKeys === false) {
+            $hasSubKeys = $this->redis->scan($iterator, $keyString . ':*') !== [];
+        }
+
+        return $hasSubKeys;
+    }
+
+    /**
+     * @param string $keyString
+     */
+    protected function deleteSubKeys($keyString)
+    {
+        //Make sure the pattern matches with in the separator as the last char or else it will also delete the newly indexed keys
+        $pattern = $keyString . ':*';
+
+        $iterator = null;
+        while ($iterator !== 0) {
+            $subKeys = $this->redis->scan($iterator, $pattern);
+            foreach ($subKeys as $subKey) {
+                $this->redis->delete($subKey);
+            }
+        }
     }
 
     /**
