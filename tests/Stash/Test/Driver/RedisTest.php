@@ -11,6 +11,10 @@
 
 namespace Stash\Test\Driver;
 
+use Stash\Driver\Redis;
+use Stash\Exception\InvalidArgumentException;
+use Stash\Utilities;
+
 /**
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
@@ -22,8 +26,11 @@ class RedisTest extends AbstractDriverTest
     protected $redisPort = '6379';
 
     protected $redisNoServer = '127.0.0.1';
-    protected $redisNoPort = '6381';
-    protected $persistence = true;
+    protected $redisNoPort   = 6381;
+    protected $persistence   = true;
+
+    /** @var  \Redis */
+    protected $redisClient;
 
     protected function setUp()
     {
@@ -58,6 +65,14 @@ class RedisTest extends AbstractDriverTest
         ));
     }
 
+    protected function getNormalizedOptions($normalizeKeys = true)
+    {
+        $options = $this->getOptions();
+        $options['normalize_keys'] = $normalizeKeys;
+
+        return $options;
+    }
+
     protected function getInvalidOptions()
     {
         return array('servers' => array(
@@ -74,8 +89,169 @@ class RedisTest extends AbstractDriverTest
             $this->markTestSkipped('This test can not run on HHVM as HHVM throws a different set of errors.');
         }
 
+        /** @var Redis $driver */
         $driver = $this->getFreshDriver($this->getInvalidOptions());
         $driver->__destruct();
         $driver = null;
+    }
+
+    public function testItDeletesUnnormalizedSubkeys()
+    {
+        $this->deleteSubkeysTest($normalizeKeys = false);
+    }
+
+    public function testItDeletesNormalizedSubkeys()
+    {
+        $this->deleteSubkeysTest($normalizeKeys = true);
+    }
+
+    public function testItCannotUseReservedCharactersIfUnnormalized()
+    {
+        /** @var Redis $redisDriver */
+        $redisDriver = $this->getFreshDriver($this->getNormalizedOptions($normalizeKeys = false));
+        $this->getRedisClientFromDriver($redisDriver)->flushDB();
+
+        $expectedException = null;
+        try {
+            $redisDriver->storeData(['cache', 'namespace', 'illegalkey:'], ['data'], null);
+        } catch (InvalidArgumentException $e) {
+            $expectedException = $e;
+        }
+
+        $this->assertInstanceOf('\Stash\Exception\InvalidArgumentException', $expectedException);
+        $this->assertEquals('You cannot use `:` or `_` in keys if key_normalization is off.',
+            $expectedException->getMessage());
+
+        $expectedException = null;
+        try {
+            $redisDriver->storeData(['cache', 'namespace', 'illegalkey_'], ['data'], null);
+        } catch (InvalidArgumentException $e) {
+            $expectedException = $e;
+        }
+
+        $this->assertInstanceOf('\Stash\Exception\InvalidArgumentException', $expectedException);
+        $this->assertEquals('You cannot use `:` or `_` in keys if key_normalization is off.',
+            $expectedException->getMessage());
+    }
+
+    public function testItIncreasedTheIndexAfterStackParentDeletion()
+    {
+        /** @var Redis $redisDriver */
+        $redisDriver = $this->getFreshDriver($this->getNormalizedOptions($normalizeKeys = false));
+        $redisClient = $this->getRedisClientFromDriver($redisDriver);
+        $redisClient->flushDB();
+
+        $keyBase = ['cache', 'namespace', 'test', 'directory'];
+        $pathDbProperty = (new \ReflectionClass($redisDriver))->getProperty('pathPrefix');
+        $pathDbProperty->setAccessible(true);
+        $pathDb = $pathDbProperty->getValue($redisDriver);
+
+        $testKey = $keyBase;
+        $testKey[] = 'key1';
+        $redisDriver->storeData($testKey, ['testData'], null);
+        $this->assertNotFalse($redisClient->get('cache:namespace:test:directory:key1'));
+
+        $redisDriver->clear($keyBase);
+        $this->assertFalse($redisClient->get('cache:namespace:test:directory:key1'));
+        $this->assertEquals(1, $redisClient->get($pathDb . 'cache:namespace:test:directory'));
+
+        $redisDriver->storeData($testKey, ['testData'], null);
+        $this->assertNotFalse($redisClient->get('cache:namespace:test:directory_1:key1'));
+
+        $redisDriver->clear($keyBase);
+        $this->assertFalse($redisClient->get('cache:namespace:test:directory_1:key1'));
+        $this->assertEquals(2, $redisClient->get($pathDb . 'cache:namespace:test:directory'));
+    }
+
+    public function testItDoesNotIncreaseAnIndexAfterLeafDeletion()
+    {
+        /** @var Redis $redisDriver */
+        $redisDriver = $this->getFreshDriver($this->getNormalizedOptions($normalizeKeys = false));
+        $redisClient = $this->getRedisClientFromDriver($redisDriver);
+        $redisClient->flushDB();
+
+        $keyBase = ['cache', 'namespace', 'test', 'directory'];
+        $pathDbProperty = (new \ReflectionClass($redisDriver))->getProperty('pathPrefix');
+        $pathDbProperty->setAccessible(true);
+        $pathDb = $pathDbProperty->getValue($redisDriver);
+
+        $redisDriver->storeData($keyBase, ['testData'], null);
+        $this->assertNotFalse($redisClient->get('cache:namespace:test:directory'));
+
+        $redisDriver->clear($keyBase);
+        $this->assertFalse($redisClient->get($pathDb . 'cache:namespace:test:directory'));
+    }
+
+    private function deleteSubkeysTest($normalizeKeys = true)
+    {
+        /** @var Redis $redisDriver */
+        $redisDriver = $this->getFreshDriver($this->getNormalizedOptions($normalizeKeys));
+        $redisClient = $this->getRedisClientFromDriver($redisDriver);
+        $redisClient->flushDB();
+
+        $keyBase = ['cache', 'namespace', 'test', 'directory'];
+
+        $redisDriver->storeData($keyBase, 'stackparent', null);
+        $amountOfTestKeys = 5;
+        //Insert initial data in a stacked structure
+        for ($i = 0; $i < $amountOfTestKeys; $i++) {
+            $key = $keyBase;
+            $testKeyIndexed = 'test' . $i;
+            $key[] = $testKeyIndexed;
+
+            $redisDriver->storeData($key, 'stackChild', null);
+
+            if ($normalizeKeys) {
+                $key = Utilities::normalizeKeys($key);
+            }
+            $keyCheck = implode(':', $key);
+
+            $this->assertNotFalse($redisClient->get($keyCheck));
+        }
+
+        //Delete the stackparent
+        $redisDriver->clear($keyBase);
+
+        $this->assertFalse($redisDriver->getData($keyBase), 'The stackparent should not exist after deletion');
+
+        //Insert the second batch of data that should now have a new index
+        for ($i = 0; $i < $amountOfTestKeys; $i++) {
+            $key = $keyBase;
+            $testKeyIndexed = 'test' . $i;
+            $key[] = $testKeyIndexed;
+
+            $redisDriver->storeData($key, 'testdata', null);
+
+            $keyCheckOldIndex = $keyCheckNewIndex = $key;
+
+            if ($normalizeKeys) {
+                $keyCheckOldIndex = Utilities::normalizeKeys($key);
+                $keyCheckNewIndex = Utilities::normalizeKeys($key);
+            }
+
+            $keyCheckStringOldIndex = implode(':', $keyCheckOldIndex);
+
+            $keyCheckNewIndex[count($key) - 2] .= '_1';
+            $keyCheckStringNewIndex = implode(':', $keyCheckNewIndex);
+
+            $this->assertFalse($redisClient->get($keyCheckStringOldIndex), 'initial keys should be gone');
+            $this->assertNotFalse($redisClient->get($keyCheckStringNewIndex),
+                'second batch of keys should exist with index');
+        }
+    }
+
+    /**
+     * @param Redis $driver
+     * @return \Redis|\RedisArray
+     */
+    protected function getRedisClientFromDriver(Redis $driver) {
+        if ($this->redisClient === null) {
+            $redisPropertyReflection = (new \ReflectionClass($driver))->getProperty('redis');
+            $redisPropertyReflection->setAccessible(true);
+
+            $this->redisClient = $redisPropertyReflection->getValue($driver);
+        }
+
+        return $this->redisClient;
     }
 }
