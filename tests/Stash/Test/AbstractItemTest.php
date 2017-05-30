@@ -226,7 +226,7 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         $sleepTime = ($end - $start) * 1000;
 
         $this->assertGreaterThan(500, $sleepTime, 'Sleep method sleeps for required time.');
-        $this->assertLessThan(520, $sleepTime, 'Sleep method does not oversleep.');
+        $this->assertLessThan(550, $sleepTime, 'Sleep method does not oversleep.');
 
         unset($sleepStash);
 
