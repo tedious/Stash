@@ -321,6 +321,11 @@ class FileSystem extends AbstractDriver
     public function clear($key = null)
     {
         $path = $this->makePath($key);
+
+        if($key === null) {
+            return Utilities::deleteRecursive($path, false);
+        }
+
         if (is_file($path)) {
             $return = true;
             unlink($path);
