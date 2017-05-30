@@ -24,14 +24,16 @@ class DriverList
      *
      * @var array
      */
-    protected static $drivers = array('Apc' => '\Stash\Driver\Apc',
-                                       'BlackHole' => '\Stash\Driver\BlackHole',
-                                       'Composite' => '\Stash\Driver\Composite',
-                                       'Ephemeral' => '\Stash\Driver\Ephemeral',
-                                       'FileSystem' => '\Stash\Driver\FileSystem',
-                                       'Memcache' => '\Stash\Driver\Memcache',
-                                       'Redis' => '\Stash\Driver\Redis',
-                                       'SQLite' => '\Stash\Driver\Sqlite',
+    protected static $drivers = array(
+        'Apc'        => '\Stash\Driver\Apc',
+        'Apcu'       => '\Stash\Driver\Apcu',
+        'BlackHole'  => '\Stash\Driver\BlackHole',
+        'Composite'  => '\Stash\Driver\Composite',
+        'Ephemeral'  => '\Stash\Driver\Ephemeral',
+        'FileSystem' => '\Stash\Driver\FileSystem',
+        'Memcache'   => '\Stash\Driver\Memcache',
+        'Redis'      => '\Stash\Driver\Redis',
+        'SQLite'     => '\Stash\Driver\Sqlite',
     );
 
     /**
@@ -89,6 +91,7 @@ class DriverList
      * Returns the driver class for a specific driver name.
      *
      * @param  string $name
+     *
      * @return bool
      */
     public static function getDriverClass($name)
