@@ -558,6 +558,62 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         Item::$runtimeDisable = false;
     }
 
+    /**
+     * @group single
+     */
+    public function testDependencies() {
+        $item = $this->getItem();
+        $pool = new \Stash\Pool();
+        $pool->setDriver(new Ephemeral());
+
+        $item = $pool->getItem("model/bar");
+        $item->set(["barModel1"]);
+
+        $dependant = $pool->getItem("model/foo");        
+        $dependant->set("fooModel1");
+
+        $dependant2 = $pool->getItem("model/baz");
+        $dependant2->set("bazModel1");
+        $dependant2->save();
+        
+        $dependant->addDependency($dependant2);
+        $item->addDependency($dependant);
+
+        $dependant->save();
+        $item->save();
+
+        $this->assertTrue($pool->getItem("model/bar")->isHit());
+        $this->assertTrue($pool->getItem("model/foo")->isHit());
+
+        $dependant->clear();
+
+        $this->assertFalse($pool->getItem("model/bar")->isHit());
+        $this->assertFalse($pool->getItem("model/foo")->isHit());     
+
+        $this->assertTrue($pool->getItem("model/baz")->isHit());  
+
+        $dependant = $pool->getItem("model/foo"); 
+        $dependant->set("fooModel2");
+        $dependant->addDependency($dependant2);
+        $dependant->save();
+
+        $item = $pool->getItem("model/bar");
+        $item->set("barModel2");
+        $item->addDependency($dependant);
+        $item->save();
+
+        $this->assertTrue($pool->getItem("model/baz")->isHit());          
+        $this->assertTrue($pool->getItem("model/bar")->isHit());
+        $this->assertTrue($pool->getItem("model/foo")->isHit());
+
+        $dependant2->clear();
+
+        $this->assertFalse($pool->getItem("model/bar")->isHit());
+        $this->assertFalse($pool->getItem("model/foo")->isHit());     
+        $this->assertFalse($pool->getItem("model/baz")->isHit());
+
+    }
+
     private function getMockedDriver()
     {
         return new \Stash\Test\Stubs\DriverCallCheckStub();

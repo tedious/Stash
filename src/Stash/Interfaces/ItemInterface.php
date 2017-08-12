@@ -103,6 +103,22 @@ interface ItemInterface extends CacheItemInterface
     public function set($value);
 
     /**
+     * Creates an Dependency. If an underlaying 
+     * item gets invalidated, also the Dependency Key gets
+     * invalidated as it is hierarchically under the dependency.
+     * @param ItemInterface $dep
+     * @param boolean $inherit if dependencies should be inherited
+     * @return boolean
+     */
+    public function addDependency(ItemInterface $dep, $inherit = true);
+
+    /**
+     * Returns all dependency identifiers
+     * @return array
+     */
+    public function getDependencies();
+
+    /**
      * Extends the expiration on the current cached item. For some engines this
      * can be faster than storing the item again.
      *

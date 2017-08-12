@@ -121,6 +121,8 @@ class Item implements ItemInterface
      */
     protected $namespace = null;
 
+    protected $dependencies = [];
+
     /**
      * This is a flag to see if a valid response is returned. It is set by the getData function and is used by the
      * isMiss function.
@@ -196,6 +198,7 @@ class Item implements ItemInterface
     {
         unset($this->data);
         unset($this->expiration);
+        $this->dependencies = [];
 
         if ($this->isDisabled()) {
             return false;
@@ -211,10 +214,12 @@ class Item implements ItemInterface
     {
         try {
             if (!isset($this->data)) {
-                $this->data = $this->executeGet(
+                $data = $this->executeGet(
                     $this->invalidationMethod,
                     $this->invalidationArg1,
                     $this->invalidationArg2);
+                $this->data = $data["return"];
+                $this->dependencies = $this->isHit ? $data["dependencies"] : [];
             }
 
             if (false === $this->isHit) {
@@ -274,7 +279,7 @@ class Item implements ItemInterface
 
         $this->validateRecord($invalidation, $record);
 
-        return isset($record['data']['return']) ? $record['data']['return'] : null;
+        return isset($record['data']) ? $record['data'] : null;
     }
 
 
@@ -346,6 +351,45 @@ class Item implements ItemInterface
     /**
      * {@inheritdoc}
      */
+    public function addDependency(ItemInterface $dep, $inherit = true) {
+        
+        $childDependenyKeys = [];
+        if ($inherit) {
+            $childDependenyKeys = array_map(function($childDepKey) {
+                return array_merge($childDepKey, $this->key);
+            }, $dep->getDependencies());
+        }
+
+        $dependencyKey = array_merge($dep->key, $this->key);
+        $dependencyKeys = array_merge([$dependencyKey], $childDependenyKeys);
+        $this->dependencies = array_unique(array_merge($this->dependencies, $dependencyKeys), SORT_REGULAR);
+        foreach($this->dependencies as $key)
+            $this->driver->storeData($key, true, $dep->getExpiration());
+        return true;
+    }
+
+    public function getDependencies() {
+        return $this->dependencies;
+    }
+
+    /**
+     * Fetches Dependency Keys. If the count of 
+     * retreived items is the same as the length of the defined
+     * dependencies, all dependencies are still valid
+     * @param  array $record 
+     * @return boolean
+     */
+    protected function validateDependencies($record) {
+        if (empty($record["data"]["dependencies"]))
+            return true;
+        $depKeys = $record["data"]["dependencies"];
+        $deps = $this->driver->getMany($depKeys);
+        return count($depKeys) === count($deps);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function setTTL($ttl = null)
     {
         if (is_numeric($ttl) || ($ttl instanceof \DateInterval)) {
@@ -403,7 +447,7 @@ class Item implements ItemInterface
     public function save()
     {
         try {
-            return $this->executeSet($this->data, $this->expiration);
+            return $this->executeSet($this->data, $this->dependencies, $this->expiration);
         } catch (Exception $e) {
             $this->logException('Setting value in cache caused exception.', $e);
             $this->disable();
@@ -412,7 +456,7 @@ class Item implements ItemInterface
         }
     }
 
-    private function executeSet($data, $time)
+    private function executeSet($data, $dependencies, $time)
     {
         if ($this->isDisabled() || !isset($this->key)) {
             return false;
@@ -420,6 +464,7 @@ class Item implements ItemInterface
 
         $store = array();
         $store['return'] = $data;
+        $store['dependencies'] = $dependencies;
         $store['createdOn'] = time();
 
         if (isset($time) && (($time instanceof \DateTime) || ($time instanceof \DateTimeInterface))) {
@@ -561,8 +606,9 @@ class Item implements ItemInterface
         }
 
         $curTime = microtime(true);
+        $validExpiry = isset($record['expiration']) && ($ttl = $record['expiration'] - $curTime) > 0;
 
-        if (isset($record['expiration']) && ($ttl = $record['expiration'] - $curTime) > 0) {
+        if ($validExpiry && $this->validateDependencies($record)) {
             $this->isHit = true;
 
             if ($invalidation == Invalidation::PRECOMPUTE) {
@@ -614,7 +660,8 @@ class Item implements ItemInterface
                 }
 
                 usleep($ptime);
-                $record['data']['return'] = $this->executeGet(Invalidation::SLEEP, $time, $attempts - 1);
+                $data = $this->executeGet(Invalidation::SLEEP, $time, $attempts - 1);
+                $record['data']['return'] = $data['return'];
                 break;
 
             case Invalidation::OLD:

@@ -53,6 +53,13 @@ interface DriverInterface
     public function getData($key);
 
     /**
+     * Returns mutliple previously stored data
+     * @param  string[string[]] $keys
+     * @return
+     */
+    public function getMany($keys);
+
+    /**
      * Takes in data from the exposed Stash class and stored it for later retrieval.
      *
      * *The first argument is an array which should map to a specific, unique location for that array, This location
