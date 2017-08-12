@@ -558,9 +558,6 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         Item::$runtimeDisable = false;
     }
 
-    /**
-     * @group single
-     */
     public function testDependencies() {
         $item = $this->getItem();
         $pool = new \Stash\Pool();
