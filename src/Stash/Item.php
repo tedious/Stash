@@ -357,7 +357,7 @@ class Item implements ItemInterface
         if ($inherit) {
             $childDependenyKeys = array_map(function($childDepKey) {
                 return array_merge($childDepKey, $this->key);
-            }, $dep->getDependencies());
+            }, $dep->dependencies);
         }
 
         $dependencyKey = array_merge($dep->key, $this->key);
@@ -366,10 +366,6 @@ class Item implements ItemInterface
         foreach($this->dependencies as $key)
             $this->driver->storeData($key, true, $dep->getExpiration());
         return true;
-    }
-
-    public function getDependencies() {
-        return $this->dependencies;
     }
 
     /**

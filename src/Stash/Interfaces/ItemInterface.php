@@ -113,12 +113,6 @@ interface ItemInterface extends CacheItemInterface
     public function addDependency(ItemInterface $dep, $inherit = true);
 
     /**
-     * Returns all dependency identifiers
-     * @return array
-     */
-    public function getDependencies();
-
-    /**
      * Extends the expiration on the current cached item. For some engines this
      * can be faster than storing the item again.
      *
