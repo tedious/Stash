@@ -351,21 +351,28 @@ class Item implements ItemInterface
     /**
      * {@inheritdoc}
      */
-    public function addDependency(ItemInterface $dep, $inherit = true) {
-        
+    public function addDependency(ItemInterface $dependency, $inherit = true) {
+
         $childDependenyKeys = [];
         if ($inherit) {
             $childDependenyKeys = array_map(function($childDepKey) {
                 return array_merge($childDepKey, $this->key);
-            }, $dep->dependencies);
+            }, $dependency->dependencies);
         }
 
-        $dependencyKey = array_merge($dep->key, $this->key);
+        // make a dependency key, which is basically /Dependency/This
+        $dependencyKey = array_merge($dependency->key, $this->key);
         $dependencyKeys = array_merge([$dependencyKey], $childDependenyKeys);
-        $this->dependencies = array_unique(array_merge($this->dependencies, $dependencyKeys), SORT_REGULAR);
-        foreach($this->dependencies as $key)
-            $this->driver->storeData($key, true, $dep->getExpiration());
-        return true;
+
+        // store the newly created dependency key    
+        $saved = $this->driver->storeData($dependencyKey, true, $dependency->getExpiration());
+        
+        if ($saved) {
+            // store all dependencies, they need to be validated
+            $this->dependencies = array_unique(array_merge($this->dependencies, $dependencyKeys), SORT_REGULAR);
+        }
+        
+        return $saved;
     }
 
     /**

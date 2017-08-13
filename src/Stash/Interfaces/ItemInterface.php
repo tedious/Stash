@@ -103,9 +103,10 @@ interface ItemInterface extends CacheItemInterface
     public function set($value);
 
     /**
-     * Creates an Dependency. If an underlaying 
-     * item gets invalidated, also the Dependency Key gets
-     * invalidated as it is hierarchically under the dependency.
+     * Adds an ItemInterface as dependency. If the added
+     * item gets invalidated, the caller also gets invalidated.
+     * If $inherit is true, hierarchical dependencies are enabled.
+     * 
      * @param ItemInterface $dep
      * @param boolean $inherit if dependencies should be inherited
      * @return boolean

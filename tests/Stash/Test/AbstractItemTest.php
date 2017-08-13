@@ -608,7 +608,6 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($pool->getItem("model/bar")->isHit());
         $this->assertFalse($pool->getItem("model/foo")->isHit());     
         $this->assertFalse($pool->getItem("model/baz")->isHit());
-
     }
 
     private function getMockedDriver()
