@@ -559,51 +559,50 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
     }
 
     public function testDependencies() {
-        $item = $this->getItem();
         $pool = new \Stash\Pool();
         $pool->setDriver(new Ephemeral());
 
-        $item = $pool->getItem("model/bar");
-        $item->set(["barModel1"]);
+        $bar = $pool->getItem("model/bar");
+        $bar->set(["barModel1"]);
 
-        $dependant = $pool->getItem("model/foo");        
-        $dependant->set("fooModel1");
+        $foo = $pool->getItem("model/foo");        
+        $foo->set("fooModel1");
 
-        $dependant2 = $pool->getItem("model/baz");
-        $dependant2->set("bazModel1");
-        $dependant2->save();
+        $baz = $pool->getItem("model/baz");
+        $baz->set("bazModel1");
+        $baz->save();
         
-        $dependant->addDependency($dependant2);
-        $item->addDependency($dependant);
+        $foo->addDependency($baz);
+        $bar->addDependency($foo);
 
-        $dependant->save();
-        $item->save();
+        $foo->save();
+        $bar->save();
 
         $this->assertTrue($pool->getItem("model/bar")->isHit());
         $this->assertTrue($pool->getItem("model/foo")->isHit());
 
-        $dependant->clear();
+        $foo->clear();
 
         $this->assertFalse($pool->getItem("model/bar")->isHit());
         $this->assertFalse($pool->getItem("model/foo")->isHit());     
 
         $this->assertTrue($pool->getItem("model/baz")->isHit());  
 
-        $dependant = $pool->getItem("model/foo"); 
-        $dependant->set("fooModel2");
-        $dependant->addDependency($dependant2);
-        $dependant->save();
+        $foo = $pool->getItem("model/foo"); 
+        $foo->set("fooModel2");
+        $foo->addDependency($baz);
+        $foo->save();
 
-        $item = $pool->getItem("model/bar");
-        $item->set("barModel2");
-        $item->addDependency($dependant);
-        $item->save();
+        $bar = $pool->getItem("model/bar");
+        $bar->set("barModel2");
+        $bar->addDependency($foo);
+        $bar->save();
 
         $this->assertTrue($pool->getItem("model/baz")->isHit());          
         $this->assertTrue($pool->getItem("model/bar")->isHit());
         $this->assertTrue($pool->getItem("model/foo")->isHit());
 
-        $dependant2->clear();
+        $baz->clear();
 
         $this->assertFalse($pool->getItem("model/bar")->isHit());
         $this->assertFalse($pool->getItem("model/foo")->isHit());     
