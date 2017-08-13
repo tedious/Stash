@@ -351,14 +351,15 @@ class Item implements ItemInterface
     /**
      * {@inheritdoc}
      *
-     *  this implementation sees a dependency as a connection between 
-     *  two items. this connection can be expressed as a key 
+     *  this implementation sees a dependency as a connection between
+     *  two items. this connection can be expressed as a key
      *  built like follows keyDependency/keyChild.
      *  this key is saved in the cache the same way like stampede key.
-     *  The key begins the exact same way the dependency key begins, so 
+     *  The key begins the exact same way the dependency key begins, so
      *  that invalidating the Item will invalidate also the connection
      */
-    public function addDependency(ItemInterface $dependency, $inherit = true) {
+    public function addDependency(ItemInterface $dependency, $inherit = true)
+    {
 
         // make a dependency key, which is basically /Dependency/This
         $dependencyKey = array_merge($dependency->key, $this->key);
@@ -366,7 +367,7 @@ class Item implements ItemInterface
             $dependencyKeys = array_merge([$dependencyKey], $dependency->dependencies);
         }
 
-        // store the newly created dependency key    
+        // store the newly created dependency key
         $saved = $this->driver->storeData($dependencyKey, true, $dependency->getExpiration());
         
         if ($saved) {
@@ -378,15 +379,17 @@ class Item implements ItemInterface
     }
 
     /**
-     * Fetches Dependency Keys. If the count of 
+     * Fetches Dependency Keys. If the count of
      * retreived items is the same as the length of the defined
      * dependencies, all dependencies are still valid
-     * @param  array $record 
+     * @param  array $record
      * @return boolean
      */
-    protected function validateDependencies($record) {
-        if (empty($record["data"]["dependencies"]))
+    protected function validateDependencies($record)
+    {
+        if (empty($record["data"]["dependencies"])) {
             return true;
+        }
         $depKeys = $record["data"]["dependencies"];
         $deps = $this->driver->getMany($depKeys);
         return count($depKeys) === count($deps);

@@ -106,7 +106,7 @@ interface ItemInterface extends CacheItemInterface
      * Adds an ItemInterface as dependency. If the added
      * item gets invalidated, the caller also gets invalidated.
      * If $inherit is true, hierarchical dependencies are enabled.
-     * 
+     *
      * @param ItemInterface $dep
      * @param boolean $inherit if dependencies should be inherited
      * @return boolean
