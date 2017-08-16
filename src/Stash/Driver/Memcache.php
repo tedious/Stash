@@ -149,6 +149,34 @@ class Memcache extends AbstractDriver
         return $this->memcache->get($this->makeKeyString($key));
     }
 
+
+    public function getMany($keys)
+    {
+        if (!method_exists($this->memcache, "getMulti")) {
+            return parent::getMany($keys);
+        }
+
+        if (empty($keys)) return $keys;
+
+        $keyMap = array_reduce($keys, function($map, $item) {
+            $map[$this->makeKeyString($item)] = $item;
+            return $map;
+        }, []);
+
+        $results = $this->memcache->getMulti(array_keys($keyMap));
+
+        if (false === $results)
+            return $results;
+
+        foreach ($results as $key => $value) {
+            // copy original key back in
+            // cannot be a string key as the input keys are arrays
+            $results[$key]["key"] = $keyMap[$key];
+        }
+
+        return $results;
+    }
+
     /**
      * {@inheritdoc}
      */
