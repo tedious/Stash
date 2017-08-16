@@ -15,6 +15,7 @@ use Stash\Exception\Exception;
 use Stash\Exception\InvalidArgumentException;
 use Stash\Interfaces\DriverInterface;
 use Stash\Interfaces\ItemInterface;
+use Stash\Interfaces\CollectionInterface;
 use Stash\Interfaces\PoolInterface;
 
 /**
@@ -67,7 +68,7 @@ class Item implements ItemInterface
     protected $invalidationMethod = Invalidation::PRECOMPUTE;
     protected $invalidationArg1 = null;
     protected $invalidationArg2 = null;
-
+    protected $resultCollection = null;
 
 
     /**
@@ -177,6 +178,14 @@ class Item implements ItemInterface
     public function getKey()
     {
         return isset($this->keyString) ? $this->keyString : false;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCacheKey()
+    {
+        return $this->key;
     }
 
     /**
@@ -364,6 +373,8 @@ class Item implements ItemInterface
         // make a dependency key, which is basically /Dependency/This
         $dependencyKey = array_merge($dependency->key, $this->key);
         if ($inherit) {
+            // ensure we fetched data so that dependencies are populated
+            $dependency->get();
             $dependencyKeys = array_merge([$dependencyKey], $dependency->dependencies);
         }
 
@@ -578,6 +589,11 @@ class Item implements ItemInterface
      */
     protected function getRecord()
     {
+        $collection = $this->resultCollection;
+        if (null !== $collection) {
+            return $this->resultCollection->getRecord($this);
+        }
+
         $record = $this->driver->getData($this->key);
 
         if (!is_array($record)) {
@@ -727,5 +743,17 @@ class Item implements ItemInterface
             $spkey[0] = 'sp';
             $this->driver->clear($spkey);
         }
+    }
+
+    /**
+     * @param mixed $resultCollection
+     *
+     * @return self
+     */
+    public function setResultCollection(CollectionInterface $resultCollection)
+    {
+        $this->resultCollection = $resultCollection;
+
+        return $this;
     }
 }

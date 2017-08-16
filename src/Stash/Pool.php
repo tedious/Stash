@@ -14,8 +14,10 @@ namespace Stash;
 use Psr\Cache\CacheItemInterface;
 use Stash\Exception\InvalidArgumentException;
 use Stash\Driver\Ephemeral;
+use Stash\Collection;
 use Stash\Interfaces\DriverInterface;
 use Stash\Interfaces\ItemInterface;
+use Stash\Interfaces\CollectionInterface;
 use Stash\Interfaces\PoolInterface;
 
 /**
@@ -137,15 +139,7 @@ class Pool implements PoolInterface
      */
     public function getItems(array $keys = array())
     {
-        // temporarily cheating here by wrapping around single calls.
-
-        $items = array();
-        foreach ($keys as $key) {
-            $item = $this->getItem($key);
-            $items[$item->getKey()] = $item;
-        }
-
-        return new \ArrayIterator($items);
+        return new Collection($keys, $this);
     }
 
     /**
