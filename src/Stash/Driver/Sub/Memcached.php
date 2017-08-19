@@ -177,7 +177,7 @@ class Memcached
         return $value;
     }
 
-    public function getMulti($keys) 
+    public function getMulti($keys)
     {
         $values = $this->memcached->getMulti($keys);
         if ($values === false && $this->memcached->getResultCode() == \Memcached::RES_NOTFOUND) {

@@ -13,7 +13,8 @@ namespace Stash\Interfaces;
 
 use IteratorAggregate;
 
-interface CollectionInterface extends IteratorAggregate {
+interface CollectionInterface extends IteratorAggregate
+{
     /**
      * Returns a record from cache for the specified cache item.
      * @param  ItemInterface $item

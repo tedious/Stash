@@ -156,17 +156,20 @@ class Memcache extends AbstractDriver
             return parent::getMany($keys);
         }
 
-        if (empty($keys)) return $keys;
+        if (empty($keys)) {
+            return $keys;
+        }
 
-        $keyMap = array_reduce($keys, function($map, $item) {
+        $keyMap = array_reduce($keys, function ($map, $item) {
             $map[$this->makeKeyString($item)] = $item;
             return $map;
         }, []);
 
         $results = $this->memcache->getMulti(array_keys($keyMap));
 
-        if (false === $results)
+        if (false === $results) {
             return $results;
+        }
 
         foreach ($results as $key => $value) {
             // copy original key back in

@@ -16,7 +16,8 @@ use Stash\Interfaces\PoolInterface;
 use Stash\Interfaces\CollectionInterface;
 use ArrayIterator;
 
-class Collection implements CollectionInterface {
+class Collection implements CollectionInterface
+{
 
     /** @var mixed key/item map */
     protected $items;
@@ -30,10 +31,10 @@ class Collection implements CollectionInterface {
      * @param array        $keys list of key array
      * @param PoolInterface $pool
      */
-    public function __construct($keys, PoolInterface $pool) 
+    public function __construct($keys, PoolInterface $pool)
     {
         $this->pool = $pool;
-        $this->items = array_reduce($keys, function($map, $key) {
+        $this->items = array_reduce($keys, function ($map, $key) {
             $item = $this->pool->getItem($key);
             $item->setResultCollection($this);
             $map[$key] = $item;
@@ -45,7 +46,7 @@ class Collection implements CollectionInterface {
     /**
      * {@inheritdoc}
      */
-    public function getIterator() 
+    public function getIterator()
     {
         $this->fetch();
         return new ArrayIterator($this->items);
@@ -54,7 +55,7 @@ class Collection implements CollectionInterface {
     /**
      * {@inheritdoc}
      */
-    public function getRecord(ItemInterface $item) 
+    public function getRecord(ItemInterface $item)
     {
         $this->fetch();
         $key = serialize($item->getCacheKey());
@@ -69,13 +70,13 @@ class Collection implements CollectionInterface {
      * fetches data for each key, if not already fetched
      * @return void
      */
-    protected function fetch() 
+    protected function fetch()
     {
         if (null === $this->results) {
             $this->results = [];
 
             // stringified versions of the array keys
-            $ids = array_map(function($item) {
+            $ids = array_map(function ($item) {
                 return $item->getCacheKey();
             }, $this->items);
 
@@ -85,7 +86,7 @@ class Collection implements CollectionInterface {
                 return;
             }
 
-            foreach($data as $item) {
+            foreach ($data as $item) {
                 $this->results[serialize($item["key"])] = $item;
             }
         }
