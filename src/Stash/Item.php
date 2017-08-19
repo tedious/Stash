@@ -381,7 +381,7 @@ class Item implements ItemInterface
         }
 
         // store the newly created dependency key
-        $saved = $this->driver->storeData($dependencyKey, true, static::$cacheTime);
+        $saved = $this->driver->storeData($dependencyKey, true, time() + static::$cacheTime);
         
         if ($saved) {
             // store all dependencies, they need to be validated
