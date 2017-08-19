@@ -370,13 +370,14 @@ class Item implements ItemInterface
     public function addDependency(ItemInterface $dependency, $inherit = true)
     {
 
-        $dependencyKeys = [];
         // make a dependency key, which is basically /Dependency/This
         $dependencyKey = array_merge($dependency->key, $this->key);
         if ($inherit) {
             // ensure we fetched data so that dependencies are populated
             $dependency->get();
             $dependencyKeys = array_merge([$dependencyKey], $dependency->dependencies);
+        } else {
+            $dependencyKeys = [$dependencyKey];
         }
 
         // store the newly created dependency key
