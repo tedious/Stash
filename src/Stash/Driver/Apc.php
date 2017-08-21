@@ -165,7 +165,7 @@ class Apc extends AbstractDriver
             return false;
         }
 
-	    if (PHP_SAPI === 'cli' && !ini_get('apc.enable_cli')) {
+	    if (PHP_SAPI === 'cli' && (int) ini_get('apc.enable_cli') !== 1) {
 		    return false;
 	    }
 
