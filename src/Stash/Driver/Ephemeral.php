@@ -29,6 +29,53 @@ class Ephemeral extends AbstractDriver
      */
     protected $store = array();
 
+    protected $maxItems = 0;
+
+    public function getDefaultOptions()
+    {
+        return ['maxItems' => 0];
+    }
+
+    /**
+     * Allows setting maxItems.
+     *
+     * @param array $options
+     *                       If maxItems is 0, infinite items will be cached
+     */
+    protected function setOptions(array $options = array())
+    {
+        $options += $this->getDefaultOptions();
+
+        if (array_key_exists('maxItems', $options)) {
+            $maxItems = $options['maxItems'];
+            if (!is_int($maxItems) || $maxItems < 0) {
+                throw new Stash\Exception\InvalidArgumentException(
+                  'maxItems must be a positive integer.'
+                );
+            }
+            $this->maxItems = $maxItems;
+            if ($this->maxItems > 0 && count($this->store) > $this->maxItems) {
+                $this->evict(count($this->store) - $this->maxItems);
+            }
+        }
+    }
+
+    /**
+     * Evicts the first $count items that were added to the store.
+     *
+     * Subclasses could implement more advanced eviction policies.
+     *
+     * @param int $count
+     */
+    protected function evict($count)
+    {
+        while (
+          $count-- > 0
+          && array_shift($this->store) !== null
+        ) {
+        }
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -60,6 +107,10 @@ class Ephemeral extends AbstractDriver
      */
     public function storeData($key, $data, $expiration)
     {
+        if ($this->maxItems > 0 && count($this->store) >= $this->maxItems) {
+            $this->evict((count($this->store) + 1) - $this->maxItems);
+        }
+
         $this->store[$this->getKeyIndex($key)] = array('data' => $data, 'expiration' => $expiration);
 
         return true;
