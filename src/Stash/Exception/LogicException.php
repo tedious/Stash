@@ -15,7 +15,8 @@ namespace Stash\Exception;
  * Exception that represents error in the program logic.
  * This kind of exceptions should directly lead to a fix in your code.
  *
- * @package Stash
+ * Class LogicException
+ * @package Stash\Exception
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
 class LogicException extends \LogicException implements Exception
