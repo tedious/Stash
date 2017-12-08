@@ -8,7 +8,9 @@ echo "Setting up PHP Extensions."
 echo "**************************"
 echo ""
 echo "PHP Version: $TRAVIS_PHP_VERSION"
-
+echo ""
+echo "Update Pecl"
+pecl channel-update pecl.php.net
 
 echo ""
 echo "******************************"
@@ -35,7 +37,7 @@ echo "******************************"
 echo "Installing memcached extension"
 echo "******************************"
 set +e
-echo $(pkg-config libmemcached --variable=prefix) | pecl install memcached
+printf "no\n"  | pecl install memcached
 set -e
 echo "Finished installing memcached extension."
 
