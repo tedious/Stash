@@ -62,6 +62,11 @@ class MemcacheTest extends AbstractDriverTest
         }
     }
 
+    public function testIsAvailable()
+    {
+        $this->assertTrue(\Stash\Driver\Sub\Memcache::isAvailable());
+    }
+
     public function testConstructionOptions()
     {
         $key = array('apple', 'sauce');
