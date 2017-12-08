@@ -35,7 +35,7 @@ echo "******************************"
 echo "Installing memcached extension"
 echo "******************************"
 set +e
-printf "yes\n" | pecl install memcached
+printf "no\n" | pecl install memcached
 set -e
 echo "Finished installing memcached extension."
 
