@@ -103,6 +103,6 @@ class RedisArrayTest extends RedisTest
         $redisProperty->setAccessible(true);
         $redisArray = $redisProperty->getValue($driver);
         $this->assertInstanceOf('\RedisArray', $redisArray);
-        $this->assertEquals(2, $redisArray->_hosts().length);
+        $this->assertEquals(2, count($redisArray->_hosts()));
     }
 }
