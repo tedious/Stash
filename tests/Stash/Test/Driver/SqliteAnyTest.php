@@ -21,7 +21,7 @@ use Stash\Utilities;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class SqliteAnyTest extends \PHPUnit_Framework_TestCase
+class SqliteAnyTest extends \PHPUnit\Framework\TestCase
 {
     protected $driverClass = 'Stash\Driver\Sqlite';
 

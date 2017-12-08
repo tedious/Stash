@@ -42,11 +42,7 @@ class Utilities
                 }
             }
 
-            if (is_string($data)) {
-                return 'string';
-            }
-
-            return 'none';
+            return 'string';
         }
 
         return 'serialize';

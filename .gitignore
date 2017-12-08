@@ -6,3 +6,5 @@
 /vendor
 /report
 /build
+
+.php_cs.cache

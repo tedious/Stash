@@ -21,7 +21,7 @@ use Stash\Driver\Ephemeral as Ephemeral;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class ItemLoggerTest extends \PHPUnit_Framework_TestCase
+class ItemLoggerTest extends \PHPUnit\Framework\TestCase
 {
     protected function getItem($key, $exceptionDriver = false)
     {
@@ -60,8 +60,11 @@ class ItemLoggerTest extends \PHPUnit_Framework_TestCase
         // triggerlogging
         $item->get('test_key');
 
-        $this->assertInstanceOf('Stash\Test\Exception\TestException',
-                                $logger->lastContext['exception'], 'Logger was passed exception in event context.');
+        $this->assertInstanceOf(
+            'Stash\Test\Exception\TestException',
+                                $logger->lastContext['exception'],
+            'Logger was passed exception in event context.'
+        );
 
         $this->assertTrue(strlen($logger->lastMessage) > 0, 'Logger message set after "get" exception.');
         $this->assertEquals('critical', $logger->lastLevel, 'Exceptions logged as critical.');
@@ -77,8 +80,11 @@ class ItemLoggerTest extends \PHPUnit_Framework_TestCase
         // triggerlogging
         $item->set('test_key')->save();
 
-        $this->assertInstanceOf('Stash\Test\Exception\TestException',
-                                $logger->lastContext['exception'], 'Logger was passed exception in event context.');
+        $this->assertInstanceOf(
+            'Stash\Test\Exception\TestException',
+                                $logger->lastContext['exception'],
+            'Logger was passed exception in event context.'
+        );
         $this->assertTrue(strlen($logger->lastMessage) > 0, 'Logger message set after "set" exception.');
         $this->assertEquals('critical', $logger->lastLevel, 'Exceptions logged as critical.');
     }
@@ -93,8 +99,11 @@ class ItemLoggerTest extends \PHPUnit_Framework_TestCase
         // triggerlogging
         $item->clear();
 
-        $this->assertInstanceOf('Stash\Test\Exception\TestException',
-                                $logger->lastContext['exception'], 'Logger was passed exception in event context.');
+        $this->assertInstanceOf(
+            'Stash\Test\Exception\TestException',
+                                $logger->lastContext['exception'],
+            'Logger was passed exception in event context.'
+        );
         $this->assertTrue(strlen($logger->lastMessage) > 0, 'Logger message set after "clear" exception.');
         $this->assertEquals('critical', $logger->lastLevel, 'Exceptions logged as critical.');
     }

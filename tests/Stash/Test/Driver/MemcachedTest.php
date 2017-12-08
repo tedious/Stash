@@ -35,6 +35,11 @@ class MemcachedTest extends MemcacheTest
         return array_merge($options, $memcachedOptions);
     }
 
+    public function testIsAvailable()
+    {
+        $this->assertTrue(\Stash\Driver\Sub\Memcached::isAvailable());
+    }
+
     /**
      * @expectedException Stash\Exception\RuntimeException
      */
