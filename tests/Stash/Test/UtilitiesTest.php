@@ -18,7 +18,7 @@ use Stash\Driver\FileSystem;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class UtilitiesTest extends \PHPUnit_Framework_TestCase
+class UtilitiesTest extends \PHPUnit\Framework\TestCase
 {
     public function testEncoding()
     {

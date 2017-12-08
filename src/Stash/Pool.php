@@ -321,8 +321,10 @@ class Pool implements PoolInterface
             return false;
         }
 
-        $this->logger->critical($message,
-                                array('exception' => $exception));
+        $this->logger->critical(
+            $message,
+            array('exception' => $exception)
+        );
 
         return true;
     }

@@ -17,7 +17,7 @@ use Stash\Test\Stubs\DriverUnavailableStub;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class UnavailableDriverTest extends \PHPUnit_Framework_TestCase
+class UnavailableDriverTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @expectedException Stash\Exception\RuntimeException

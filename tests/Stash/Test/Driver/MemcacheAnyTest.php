@@ -19,7 +19,7 @@ use Stash\Item;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class MemcacheAnyTest extends \PHPUnit_Framework_TestCase
+class MemcacheAnyTest extends \PHPUnit\Framework\TestCase
 {
     protected $driverClass = 'Stash\Driver\Memcache';
 

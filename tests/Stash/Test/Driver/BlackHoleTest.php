@@ -16,7 +16,7 @@ use Stash\Driver\BlackHole;
 /**
  * @author  Benjamin Zikarsky <benjamin.zikarsky@perbility.de>
  */
-class BlackHoleTest extends \PHPUnit_Framework_TestCase
+class BlackHoleTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Stash\Driver\BlackHole

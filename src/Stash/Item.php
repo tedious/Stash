@@ -249,7 +249,8 @@ class Item implements ItemInterface
                 $this->data = $this->executeGet(
                     $this->invalidationMethod,
                     $this->invalidationArg1,
-                    $this->invalidationArg2);
+                    $this->invalidationArg2
+                );
             }
 
             if (false === $this->isHit) {
@@ -569,9 +570,13 @@ class Item implements ItemInterface
             return false;
         }
 
-        $this->logger->critical($message,
-                                array('exception' => $exception,
-                                      'key' => $this->keyString));
+        $this->logger->critical(
+            $message,
+            array(
+                'exception' => $exception,
+                 'key' => $this->keyString
+              )
+        );
 
         return true;
     }

@@ -17,7 +17,7 @@ use Stash\DriverList;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class DriverListTest extends \PHPUnit_Framework_TestCase
+class DriverListTest extends \PHPUnit\Framework\TestCase
 {
     public function testGetAvailableDrivers()
     {
