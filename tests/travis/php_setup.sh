@@ -35,7 +35,7 @@ echo "******************************"
 echo "Installing memcached extension"
 echo "******************************"
 set +e
-printf "no\n" | pecl install memcached
+echo $(pkg-config libmemcached --variable=prefix) | pecl install memcached
 set -e
 echo "Finished installing memcached extension."
 
