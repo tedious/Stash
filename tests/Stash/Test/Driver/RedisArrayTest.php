@@ -97,7 +97,7 @@ class RedisArrayTest extends RedisTest
             $this->markTestSkipped('uopz extension is necessarry in order to stub "new".');
         }
 
-        $this->getFreshDriver($driverOptions);
+        $driver = $this->getFreshDriver($driverOptions);
         $class = new \ReflectionClass($driver);
         $redisProperty = $class->getProperty('redis');
         $redisProperty->setAccessible(true);
