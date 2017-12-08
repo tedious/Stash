@@ -65,4 +65,44 @@ class RedisArrayTest extends RedisTest
 
         $this->assertInstanceOf('\RedisArray', $redisArray);
     }
+
+
+    /**
+     * @test
+     */
+    public function itShouldPassOptionsToRedisArray()
+    {
+        $redisArrayOptions = array(
+            "previous"        => "something",
+            "function"        => function ($key) {
+                return $key;
+            },
+            "distributor"     => function ($key) {
+                return 0;
+            },
+            "index"           => "something",
+            "autorehash"      => "something",
+            "pconnect"        => "something",
+            "retry_interval"  => "something",
+            "lazy_connect"    => "something",
+            "connect_timeout" => "something",
+        );
+
+        $driverOptions = array_merge(
+            $this->getOptions(),
+            $redisArrayOptions
+        );
+
+        if (!extension_loaded('uopz')) {
+            $this->markTestSkipped('uopz extension is necessarry in order to stub "new".');
+        }
+
+        $this->getFreshDriver($driverOptions);
+        $class = new \ReflectionClass($driver);
+        $redisProperty = $class->getProperty('redis');
+        $redisProperty->setAccessible(true);
+        $redisArray = $redisProperty->getValue($driver);
+        $this->assertInstanceOf('\RedisArray', $redisArray);
+        $this->assertEquals(2, $redisArray->_hosts().length);
+    }
 }
