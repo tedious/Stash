@@ -201,12 +201,7 @@ class SqlitePdo
      */
     public static function isAvailable()
     {
-        if (!class_exists('\PDO', false)) {
-            return false;
-        }
-
         $drivers = \PDO::getAvailableDrivers();
-
         return in_array(static::$pdoDriver, $drivers);
     }
 

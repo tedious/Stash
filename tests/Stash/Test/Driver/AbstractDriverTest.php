@@ -44,7 +44,7 @@ abstract class AbstractDriverTest extends \PHPUnit\Framework\TestCase
     protected $driverClass;
     protected $startTime;
     protected $setup = false;
-    protected $persistence = false;
+    protected $persistence = true;
 
     public static function tearDownAfterClass()
     {
@@ -228,10 +228,7 @@ abstract class AbstractDriverTest extends \PHPUnit\Framework\TestCase
         $driver=null;
     }
 
-    /**
-     * @depends testDestructor
-     */
-    public function testIsPersistant()
+    public function testIsPersistent()
     {
         if (!$driver = $this->getFreshDriver()) {
             $this->markTestSkipped('Driver class unsuited for current environment');

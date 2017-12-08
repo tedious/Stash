@@ -21,6 +21,7 @@ use Stash\Test\Stubs\PoolGetDriverStub;
 class EphemeralTest extends AbstractDriverTest
 {
     protected $driverClass = 'Stash\Driver\Ephemeral';
+    protected $persistence = false;
 
     public function testKeyCollisions1()
     {
