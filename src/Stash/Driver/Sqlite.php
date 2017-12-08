@@ -82,7 +82,7 @@ class Sqlite extends AbstractDriver
     public function getData($key)
     {
         $sqlKey = $this->makeSqlKey($key);
-        if (!($sqlDriver = $this->getSqliteDriver($key)) || !($data = $sqlDriver->get($sqlKey)) ) {
+        if (!($sqlDriver = $this->getSqliteDriver($key)) || !($data = $sqlDriver->get($sqlKey))) {
             return false;
         }
 
