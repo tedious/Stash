@@ -369,9 +369,9 @@ class FileSystem extends AbstractDriver
                 continue;
             }
 
-            $data = $this->getEncoder()->deserialize($filename);
+            $expiration = $this->getEncoder()->getExpiration($filename);
 
-            if (is_numeric($data['expiration']) && $data['expiration'] <= $startTime) {
+            if (is_numeric($expiration) && $expiration <= $startTime) {
                 unlink($filename);
             }
         }

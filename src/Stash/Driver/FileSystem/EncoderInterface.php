@@ -16,4 +16,5 @@ interface EncoderInterface
     public function deserialize($path);
     public function serialize($key, $data);
     public function getExtension();
+    public function getExpiration($path);
 }

@@ -105,4 +105,42 @@ class NativeEncoder implements EncoderInterface
 
         return $dataString;
     }
+
+    /**
+     * Efficiently extract the expiration timestamp.
+     *
+     * @param $path
+     * @return bool|int|null
+     */
+    public function getExpiration($path)
+    {
+        if (!file_exists($path)) {
+            return false;
+        }
+
+        $file = fopen($path, 'r');
+        for ($i=0; $i<8; $i++) {
+            $line = fread($file, 1024);
+            if (!$line) break;
+        }
+        if (!empty($line) && substr($line, 0, 14) === '$expiration = ') {
+            $expiration = trim(substr($line, 14));
+            if (!empty($expiration)) {
+                return (int)$expiration;
+            }
+        }
+
+        $expiration = null;
+        include($path);
+
+        if (!isset($loaded)) {
+            return false;
+        }
+
+        if (!isset($data)) {
+            $data = null;
+        }
+
+        return $expiration;
+    }
 }
