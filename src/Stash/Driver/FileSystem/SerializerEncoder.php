@@ -46,9 +46,12 @@ class SerializerEncoder implements EncoderInterface
         return '.pser';
     }
 
-    public function getExpiration($path) {
+    public function getExpiration($path)
+    {
         $data = self::deserialize($path);
-        if (empty($data['expiration'])) return false;
+        if (empty($data['expiration'])) {
+            return false;
+        }
 
         return $data['expiration'];
     }

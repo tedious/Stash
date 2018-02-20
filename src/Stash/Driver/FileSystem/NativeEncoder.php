@@ -121,7 +121,9 @@ class NativeEncoder implements EncoderInterface
         $file = fopen($path, 'r');
         for ($i=0; $i<8; $i++) {
             $line = fread($file, 1024);
-            if (!$line) break;
+            if (!$line) {
+                break;
+            }
         }
         if (!empty($line) && substr($line, 0, 14) === '$expiration = ') {
             $expiration = trim(substr($line, 14));
