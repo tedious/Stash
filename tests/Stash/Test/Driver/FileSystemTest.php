@@ -33,7 +33,7 @@ class FileSystemTest extends AbstractDriverTest
 
     protected function getOptions($options = array())
     {
-        return array_merge(array('memKeyLimit' => 2), $options);
+        return array_merge(array('memKeyLimit' => 2, 'encoder' => $this->encoder), $options);
     }
 
     /**
@@ -191,9 +191,9 @@ class FileSystemTest extends AbstractDriverTest
     }
 
     /**
-     * Test if expiry date is readable from cache file
+     * Test if expiration is readable from cache file
      */
-    public function testGetExpiryDate()
+    public function testGetExpiration()
     {
         $driver = new FileSystem($this->getOptions(array(
             'keyHashFunction' => 'Stash\Test\Driver\strdup',
@@ -226,5 +226,6 @@ class FileSystemTest extends AbstractDriverTest
         $expirationFromFile = $encoder->getExpiration($path);
         $this->assertInternalType('integer', $expirationFromFile);
         $this->assertLessThanOrEqual($expiration, $expirationFromFile);
+        unlink($path);
     }
 }
