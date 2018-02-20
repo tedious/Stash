@@ -21,9 +21,10 @@ class FileSystemSerializerTest extends FileSystemTest
 {
     protected $driverClass = 'Stash\Driver\FileSystem';
     protected $extension = '.pser';
+    protected $encoder = 'Serializer';
 
     protected function getOptions($options = array())
     {
-        return array_merge(array('memKeyLimit' => 2, 'encoder' => 'Serializer'), $options);
+        return array_merge(array('memKeyLimit' => 2, 'encoder' => $this->encoder), $options);
     }
 }

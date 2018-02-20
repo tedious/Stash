@@ -28,6 +28,7 @@ class FileSystemTest extends AbstractDriverTest
 {
     protected $driverClass = 'Stash\Driver\FileSystem';
     protected $extension = '.php';
+    protected $encoder = 'Native';
     protected $persistence = true;
 
     protected function getOptions($options = array())
@@ -187,5 +188,43 @@ class FileSystemTest extends AbstractDriverTest
 
         $this->setExpectedException('\Stash\Exception\WindowsPathMaxLengthException');
         $driver->storeData($key, "test", $this->expiration);
+    }
+
+    /**
+     * Test if expiry date is readable from cache file
+     */
+    public function testGetExpiryDate()
+    {
+        $driver = new FileSystem($this->getOptions(array(
+            'keyHashFunction' => 'Stash\Test\Driver\strdup',
+            'path' => sys_get_temp_dir().DIRECTORY_SEPARATOR.'stash',
+            'dirSplit' => 1
+        )));
+
+        $rand = str_repeat(uniqid(), 32);
+        $expiration = time() + 3600;
+
+        $item = new Item();
+
+        $poolStub = new PoolGetDriverStub();
+        $poolStub->setDriver($driver);
+        $item->setPool($poolStub);
+        $item->setKey(array('test'));
+        $item->expiresAt(\DateTime::createFromFormat('U', $expiration));
+        $item->set($rand)->save();
+        $path = sys_get_temp_dir().
+            DIRECTORY_SEPARATOR.
+            'stash'.
+            DIRECTORY_SEPARATOR.
+            'cache'.
+            DIRECTORY_SEPARATOR.
+            'test'.
+            $this->extension;
+
+        $encoderClass = '\Stash\Driver\FileSystem\\'.$this->encoder.'Encoder';
+        $encoder = new $encoderClass();
+        $expirationFromFile = $encoder->getExpiration($path);
+        $this->assertInternalType('integer', $expirationFromFile);
+        $this->assertLessThanOrEqual($expiration, $expirationFromFile);
     }
 }
