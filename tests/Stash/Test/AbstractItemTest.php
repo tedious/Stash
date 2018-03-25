@@ -123,6 +123,17 @@ abstract class AbstractItemTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($item->set($this->data), 'Item without key returns false for set.');
     }
 
+    public function testSetAfterMiss()
+    {
+        $key = array('path', 'to', 'item');
+        $stash = $this->testConstruct($key);
+        $this->assertFalse($stash->isHit(), 'Newly constructed item is a miss');
+        $value = 'test value';
+        $stash->set($value)->save();
+        $this->assertTrue($stash->isHit(), 'newly persisted items are hits');
+        $this->assertEquals($value, $stash->get(), 'get returns newly set data');
+    }
+
     /**
      * @depends testSet
      */

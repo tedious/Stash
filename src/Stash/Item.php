@@ -470,7 +470,7 @@ class Item implements ItemInterface
     public function save()
     {
         try {
-            return $this->executeSet($this->data, $this->expiration);
+            return $this->isHit = $this->executeSet($this->data, $this->expiration);
         } catch (Exception $e) {
             $this->logException('Setting value in cache caused exception.', $e);
             $this->disable();
