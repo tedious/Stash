@@ -82,8 +82,18 @@ class Ephemeral extends AbstractDriver
     public function getData($key)
     {
         $key = $this->getKeyIndex($key);
-
-        return isset($this->store[$key]) ? $this->store[$key] : false;
+        
+        if (isset($this->store[$key])) {
+            if (is_object($this->store[$key])) {
+                $data = clone $this->store[$key];
+            } else {
+                $data = $this->store[$key];
+            }
+        } else {
+            $data = false;
+        }
+        
+        return $data;
     }
 
     /**
@@ -109,6 +119,10 @@ class Ephemeral extends AbstractDriver
     {
         if ($this->maxItems > 0 && count($this->store) >= $this->maxItems) {
             $this->evict((count($this->store) + 1) - $this->maxItems);
+        }
+
+        if (is_object($data)) {
+            $data = clone $data;
         }
 
         $this->store[$this->getKeyIndex($key)] = array('data' => $data, 'expiration' => $expiration);
