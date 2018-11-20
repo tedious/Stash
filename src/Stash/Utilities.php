@@ -34,6 +34,10 @@ class Utilities
                 return 'bool';
             }
 
+            if (is_string($data)) {
+                return 'string';
+            }
+
             if (is_numeric($data)) {
                 if (is_numeric($data) && ($data >= 2147483648 || $data < -2147483648)) {
                     return 'serialize';
@@ -41,8 +45,6 @@ class Utilities
                     return 'numeric';
                 }
             }
-
-            return 'string';
         }
 
         return 'serialize';
