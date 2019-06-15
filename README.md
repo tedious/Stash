@@ -119,3 +119,8 @@ as a session handler.
 ## License
 
 Stash is licensed under the BSD License. See the LICENSE file for details.
+
+
+## Reporting Security and Vulnerability Issues
+
+This project utilizes the [Tidelift Security Reporting System](https://tidelift.com/security) for security and vulnerability reporting. 
