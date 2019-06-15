@@ -124,3 +124,10 @@ Stash is licensed under the BSD License. See the LICENSE file for details.
 ## Reporting Security and Vulnerability Issues
 
 This project utilizes the [Tidelift Security Reporting System](https://tidelift.com/security) for security and vulnerability reporting. 
+
+
+## Support
+
+Issues can be opened directly in Github for issues that aren't related to security.
+
+[Professionally supported Stash is now available with Tidelift.](https://tidelift.com/subscription/pkg/packagist-tedivm-stash?utm_source=packagist-tedivm-stash&utm_medium=referral&utm_campaign=readme)
