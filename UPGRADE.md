@@ -1,3 +1,9 @@
+## Upgrading to 0.14
+
+* Item set no longer saves
+
+    $item->save() has to be explicitly called after setting an item.
+
 ## Upgrading to 0.11
 
 
