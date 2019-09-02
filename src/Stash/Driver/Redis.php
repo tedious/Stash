@@ -216,7 +216,7 @@ class Redis extends AbstractDriver
         $keyString = $this->makeKeyString($key, true);
         $keyReal = $this->makeKeyString($key);
         $this->redis->incr($keyString); // increment index for children items
-        $this->redis->delete($keyReal); // remove direct item.
+        $this->redis->del($keyReal); // remove direct item.
         $this->keyCache = array();
 
         return true;
