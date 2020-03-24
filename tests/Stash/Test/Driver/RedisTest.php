@@ -11,13 +11,16 @@
 
 namespace Stash\Test\Driver;
 
+use RedisException;
+use Stash\Driver\Redis;
+
 /**
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
 class RedisTest extends AbstractDriverTest
 {
-    protected $driverClass = 'Stash\Driver\Redis';
+    protected $driverClass = Redis::class;
     protected $redisServer = '127.0.0.1';
     protected $redisPort = '6379';
 
@@ -66,7 +69,7 @@ class RedisTest extends AbstractDriverTest
     }
 
     /**
-     * @expectedException \PHPUnit\Framework\Error\Warning
+     * @expectedException RedisException
      */
     public function testBadDisconnect()
     {
