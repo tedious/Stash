@@ -27,7 +27,7 @@ class Ephemeral extends AbstractDriver
      *
      * @var array
      */
-    protected $store = array();
+    protected $store = [];
 
     protected $maxItems = 0;
 
@@ -42,7 +42,7 @@ class Ephemeral extends AbstractDriver
      * @param array $options
      *                       If maxItems is 0, infinite items will be cached
      */
-    protected function setOptions(array $options = array())
+    protected function setOptions(array $options = [])
     {
         $options += $this->getDefaultOptions();
 
@@ -50,7 +50,7 @@ class Ephemeral extends AbstractDriver
             $maxItems = $options['maxItems'];
             if (!is_int($maxItems) || $maxItems < 0) {
                 throw new Stash\Exception\InvalidArgumentException(
-                  'maxItems must be a positive integer.'
+                    'maxItems must be a positive integer.'
                 );
             }
             $this->maxItems = $maxItems;
@@ -70,8 +70,8 @@ class Ephemeral extends AbstractDriver
     protected function evict($count)
     {
         while (
-          $count-- > 0
-          && array_shift($this->store) !== null
+            $count-- > 0
+            && array_shift($this->store) !== null
         ) {
         }
     }
@@ -89,7 +89,7 @@ class Ephemeral extends AbstractDriver
     /**
      * Converts the key array into a passed function
      *
-     * @param  array  $key
+     * @param array $key
      * @return string
      */
     protected function getKeyIndex($key)
@@ -111,7 +111,7 @@ class Ephemeral extends AbstractDriver
             $this->evict((count($this->store) + 1) - $this->maxItems);
         }
 
-        $this->store[$this->getKeyIndex($key)] = array('data' => $data, 'expiration' => $expiration);
+        $this->store[$this->getKeyIndex($key)] = ['data' => $data, 'expiration' => $expiration];
 
         return true;
     }
@@ -122,7 +122,7 @@ class Ephemeral extends AbstractDriver
     public function clear($key = null)
     {
         if (!isset($key)) {
-            $this->store = array();
+            $this->store = [];
         } else {
             $clearIndex = $this->getKeyIndex($key);
             foreach ($this->store as $index => $data) {

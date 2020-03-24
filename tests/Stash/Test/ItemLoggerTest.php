@@ -43,18 +43,23 @@ class ItemLoggerTest extends \PHPUnit\Framework\TestCase
 
     public function testSetLogger()
     {
-        $item = $this->getItem(array('path', 'to', 'constructor'));
+        $item = $this->getItem(['path', 'to', 'constructor']);
 
         $logger = new LoggerStub();
         $item->setLogger($logger);
-        $this->assertAttributeInstanceOf('Stash\Test\Stubs\LoggerStub', 'logger', $item, 'setLogger injects logger into Item.');
+        $this->assertAttributeInstanceOf(
+            'Stash\Test\Stubs\LoggerStub',
+            'logger',
+            $item,
+            'setLogger injects logger into Item.'
+        );
     }
 
     public function testGet()
     {
         $logger = new LoggerStub();
 
-        $item = $this->getItem(array('path', 'to', 'get'), true);
+        $item = $this->getItem(['path', 'to', 'get'], true);
         $item->setLogger($logger);
 
         // triggerlogging
@@ -62,7 +67,7 @@ class ItemLoggerTest extends \PHPUnit\Framework\TestCase
 
         $this->assertInstanceOf(
             'Stash\Test\Exception\TestException',
-                                $logger->lastContext['exception'],
+            $logger->lastContext['exception'],
             'Logger was passed exception in event context.'
         );
 
@@ -74,7 +79,7 @@ class ItemLoggerTest extends \PHPUnit\Framework\TestCase
     {
         $logger = new LoggerStub();
 
-        $item = $this->getItem(array('path', 'to', 'set'), true);
+        $item = $this->getItem(['path', 'to', 'set'], true);
         $item->setLogger($logger);
 
         // triggerlogging
@@ -82,7 +87,7 @@ class ItemLoggerTest extends \PHPUnit\Framework\TestCase
 
         $this->assertInstanceOf(
             'Stash\Test\Exception\TestException',
-                                $logger->lastContext['exception'],
+            $logger->lastContext['exception'],
             'Logger was passed exception in event context.'
         );
         $this->assertTrue(strlen($logger->lastMessage) > 0, 'Logger message set after "set" exception.');
@@ -93,7 +98,7 @@ class ItemLoggerTest extends \PHPUnit\Framework\TestCase
     {
         $logger = new LoggerStub();
 
-        $item = $this->getItem(array('path', 'to', 'clear'), true);
+        $item = $this->getItem(['path', 'to', 'clear'], true);
         $item->setLogger($logger);
 
         // triggerlogging
@@ -101,7 +106,7 @@ class ItemLoggerTest extends \PHPUnit\Framework\TestCase
 
         $this->assertInstanceOf(
             'Stash\Test\Exception\TestException',
-                                $logger->lastContext['exception'],
+            $logger->lastContext['exception'],
             'Logger was passed exception in event context.'
         );
         $this->assertTrue(strlen($logger->lastMessage) > 0, 'Logger message set after "clear" exception.');

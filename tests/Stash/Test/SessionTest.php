@@ -41,17 +41,17 @@ class SessionTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(
             '',
             $session->read('session_id'),
-                          'Empty session returns empty string.'
+            'Empty session returns empty string.'
         );
 
         $this->assertTrue(
             $session->write('session_id', 'session_data'),
-                          'Data was written to the session.'
+            'Data was written to the session.'
         );
         $this->assertSame(
             'session_data',
             $session->read('session_id'),
-                          'Active session returns session data.'
+            'Active session returns session data.'
         );
     }
 
@@ -72,7 +72,7 @@ class SessionTest extends \PHPUnit\Framework\TestCase
 
         $this->assertTrue(
             $DataA != $DataB,
-                          'Sessions with different paths do not share data.'
+            'Sessions with different paths do not share data.'
         );
 
         $pool = $this->getPool();
@@ -90,7 +90,7 @@ class SessionTest extends \PHPUnit\Framework\TestCase
 
         $this->assertTrue(
             $DataA != $DataB,
-                          'Sessions with different names do not share data.'
+            'Sessions with different names do not share data.'
         );
     }
 
@@ -99,7 +99,7 @@ class SessionTest extends \PHPUnit\Framework\TestCase
         $session = $this->getSession();
         $this->assertTrue(
             $session->close(),
-                          'Session was closed'
+            'Session was closed'
         );
     }
 
@@ -112,18 +112,18 @@ class SessionTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(
             'session_data',
             $session->read('session_id'),
-                          'Active session returns session data.'
+            'Active session returns session data.'
         );
 
         $this->assertTrue(
             $session->destroy('session_id'),
-                          'Data was removed from the session.'
+            'Data was removed from the session.'
         );
 
         $this->assertSame(
             '',
             $session->read('session_id'),
-                          'Destroyed session returns empty string.'
+            'Destroyed session returns empty string.'
         );
     }
 
@@ -132,7 +132,7 @@ class SessionTest extends \PHPUnit\Framework\TestCase
         $pool = $this->getPool();
 
         $sessionA = $this->getSession($pool);
-        $sessionA->setOptions(array('ttl' => -30));
+        $sessionA->setOptions(['ttl' => -30]);
         $sessionA->write('session_id', "session_a_data");
 
         $sessionB = $this->getSession($pool);
@@ -142,7 +142,7 @@ class SessionTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(
             '',
             $sessionC->read('session_id'),
-                          'Purged session returns empty string.'
+            'Purged session returns empty string.'
         );
     }
 
