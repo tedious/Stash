@@ -30,7 +30,7 @@
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^2.8",
-    "phpunit/phpunit": "^6",
+    "phpunit/phpunit": "^6|^7",
     "satooshi/php-coveralls": "1.0.*"
   },
   "autoload": {

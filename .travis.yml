@@ -6,28 +6,25 @@ php:
     - 7.0
     - 7.1
     - 7.2
+    - 7.3
+    - 7.4
 
 before_install:
+    - tests/travis/php_setup.sh
+    - tests/travis/redis_setup.sh
     - composer self-update
 
 install:
     - composer install
 
-before_script:
-    - tests/travis/php_setup.sh
-    - tests/travis/redis_setup.sh
-
-script: ./tests/runTests.sh
+script: tests/runTests.sh
 
 after_script:
     - php vendor/bin/coveralls -v
 
 services:
-    - redis-server
+    - redis
     - memcached
-
-matrix:
-    fast_finish: true
 
 cache:
   directories:
