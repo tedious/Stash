@@ -43,9 +43,21 @@ class Ephemeral extends AbstractDriver
      */
     protected $memoryLimit = 0;
 
+    /**
+     * How aggressive to perform eviction in case of memory limit violation.
+     * Should be positive float less than 1.
+     *
+     * @var float
+     */
+    private $memoryLimitEvictionFactor;
+
     public function getDefaultOptions()
     {
-        return ['maxItems' => 0, 'memoryLimit' => 0];
+        return [
+            'maxItems' => 0,
+            'memoryLimit' => 0,
+            'memoryLimitEvictionFactor' => 0.25,
+        ];
     }
 
     /**
@@ -60,6 +72,7 @@ class Ephemeral extends AbstractDriver
 
         $this->maxItems = self::positiveIntegerOption($options, 'maxItems');
         $this->memoryLimit = self::positiveIntegerOption($options, 'memoryLimit');
+        $this->memoryLimitEvictionFactor = self::factorOption($options, 'memoryLimitEvictionFactor');
 
         if ($this->maxItems > 0 && count($this->store) > $this->maxItems) {
             $this->evict(count($this->store) - $this->maxItems);
@@ -121,10 +134,12 @@ class Ephemeral extends AbstractDriver
 
         if ($this->memoryLimit > 0) {
             while (count($this->store) && memory_get_usage() > $this->memoryLimit) {
-                $numItemsToKeep = count($this->store) * .25;
-                $this->store = $numItemsToKeep > 10
-                    ? array_slice($this->store, $numItemsToKeep, null, true)
-                    : [];
+                $offset = max(
+                    ceil(count($this->store) * $this->memoryLimitEvictionFactor),
+                    1
+                );
+
+                $this->store = array_slice($this->store, $offset, null, true);
             }
         }
 
@@ -178,6 +193,25 @@ class Ephemeral extends AbstractDriver
         if (!is_int($optionValue) || $optionValue < 0) {
             throw new Stash\Exception\InvalidArgumentException(
                 $optionName . ' must be a positive integer.'
+            );
+        }
+
+        return $optionValue;
+    }
+
+    /**
+     * @param array $options
+     * @param string $optionName
+     * @return int
+     * @throws Stash\Exception\InvalidArgumentException
+     */
+    protected static function factorOption(array $options, $optionName)
+    {
+        $optionValue = $options[$optionName];
+
+        if (!is_float($optionValue) || $optionValue < 0 || $optionValue > 1) {
+            throw new Stash\Exception\InvalidArgumentException(
+                $optionName . ' must be a factor 0..1'
             );
         }
 

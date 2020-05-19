@@ -157,6 +157,16 @@ class EphemeralTest extends AbstractDriverTest
         ]);
     }
 
+    /**
+     * @expectedException \Stash\Exception\InvalidArgumentException
+     */
+    public function testSettingInvalidMemoryLimitEvictionFactorThrows()
+    {
+        new $this->driverClass([
+            'memoryLimitEvictionFactor' => 98,
+        ]);
+    }
+
     public function testEvictionCausedByMemoryLimit()
     {
         $expire = time() + 100;
