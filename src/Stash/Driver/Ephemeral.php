@@ -29,11 +29,23 @@ class Ephemeral extends AbstractDriver
      */
     protected $store = array();
 
+    /**
+     * Maximum number of items to cache
+     *
+     * @var int
+     */
     protected $maxItems = 0;
+
+    /**
+     * Limit by memory utilized by PHP
+     *
+     * @var int
+     */
+    protected $memoryLimit = 0;
 
     public function getDefaultOptions()
     {
-        return ['maxItems' => 0];
+        return ['maxItems' => 0, 'memoryLimit' => 0];
     }
 
     /**
@@ -46,17 +58,11 @@ class Ephemeral extends AbstractDriver
     {
         $options += $this->getDefaultOptions();
 
-        if (array_key_exists('maxItems', $options)) {
-            $maxItems = $options['maxItems'];
-            if (!is_int($maxItems) || $maxItems < 0) {
-                throw new Stash\Exception\InvalidArgumentException(
-                  'maxItems must be a positive integer.'
-                );
-            }
-            $this->maxItems = $maxItems;
-            if ($this->maxItems > 0 && count($this->store) > $this->maxItems) {
-                $this->evict(count($this->store) - $this->maxItems);
-            }
+        $this->maxItems = self::positiveIntegerOption($options, 'maxItems', 0);
+        $this->memoryLimit = self::positiveIntegerOption($options, 'memoryLimit', 0);
+
+        if ($this->maxItems > 0 && count($this->store) > $this->maxItems) {
+            $this->evict(count($this->store) - $this->maxItems);
         }
     }
 
@@ -113,6 +119,12 @@ class Ephemeral extends AbstractDriver
 
         $this->store[$this->getKeyIndex($key)] = array('data' => $data, 'expiration' => $expiration);
 
+        if ($this->memoryLimit > 0) {
+            while (count($this->store) && memory_get_usage() > $this->memoryLimit) {
+                array_shift($this->store);
+            }
+        }
+
         return true;
     }
 
@@ -149,4 +161,27 @@ class Ephemeral extends AbstractDriver
 
         return true;
     }
+
+    /**
+     * @param array $options
+     * @param string $optionName
+     * @param int $default
+     * @return mixed
+     * @throws Stash\Exception\InvalidArgumentException
+     */
+    protected static function positiveIntegerOption(array $options, $optionName, $default)
+    {
+        if (array_key_exists($optionName, $options)) {
+            $optionValue = $options[$optionName];
+            if (!is_int($optionValue) || $optionValue < 0) {
+                throw new Stash\Exception\InvalidArgumentException(
+                    $optionName . ' must be a positive integer.'
+                );
+            }
+            return $optionValue;
+        }
+
+        return $default;
+    }
+
 }

@@ -130,4 +130,65 @@ class EphemeralTest extends AbstractDriverTest
             );
         }
     }
+
+    public function testMemoryLimitCanBeSet()
+    {
+        $usedMemory = memory_get_usage(true);
+
+        /**
+         * @var \Stash\Driver\Ephemeral
+         */
+        $driver = new $this->driverClass([
+            'memoryLimit' => $usedMemory + 1024
+        ]);
+
+        $expire = time() + 100;
+        $driver->storeData(['hello'], 'world', $expire);
+        $this->assertNotFalse($driver->getData(['hello']));
+    }
+
+    /**
+     * @expectedException \Stash\Exception\InvalidArgumentException
+     */
+    public function testSettingInvalidMemoryLimitThrows()
+    {
+        new $this->driverClass([
+            'memoryLimit' => 'nonsense',
+        ]);
+    }
+
+    public function testEvictionCausedByMemoryLimit()
+    {
+        $expire = time() + 100;
+
+        $anObject = (object)['foo' => PHP_INT_MAX, 'bar' => 42];
+
+        $memoryForThreeKeys = (function () use ($anObject, $expire) {
+            $memoryUsage = memory_get_usage();
+
+            $driver = new $this->driverClass();
+            $driver->storeData(['key1'], clone $anObject, $expire);
+            $driver->storeData(['key2'], clone $anObject, $expire);
+            $driver->storeData(['key3'], clone $anObject, $expire);
+
+            return memory_get_usage() - $memoryUsage;
+        })();
+
+        /**
+         * @var \Stash\Driver\Ephemeral
+         */
+        $driver = new $this->driverClass([
+            'memoryLimit' => memory_get_usage() + $memoryForThreeKeys
+        ]);
+
+        $driver->storeData(['key1'], clone $anObject, $expire);
+        $driver->storeData(['key2'], clone $anObject, $expire);
+        $driver->storeData(['key3'], clone $anObject, $expire);
+        $driver->storeData(['key4'], clone $anObject, $expire);
+
+        $this->assertFalse($driver->getData(['key1'])); // evicted
+        $this->assertNotFalse($driver->getData(['key2']));
+        $this->assertNotFalse($driver->getData(['key3']));
+        $this->assertNotFalse($driver->getData(['key4']));
+    }
 }
