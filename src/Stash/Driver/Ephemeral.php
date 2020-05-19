@@ -121,7 +121,10 @@ class Ephemeral extends AbstractDriver
 
         if ($this->memoryLimit > 0) {
             while (count($this->store) && memory_get_usage() > $this->memoryLimit) {
-                array_shift($this->store);
+                $numItemsToKeep = count($this->store) * .25;
+                $this->store = $numItemsToKeep > 10
+                    ? array_slice($this->store, $numItemsToKeep, null, true)
+                    : [];
             }
         }
 

@@ -161,15 +161,19 @@ class EphemeralTest extends AbstractDriverTest
     {
         $expire = time() + 100;
 
-        $anObject = (object)['foo' => PHP_INT_MAX, 'bar' => 42];
+        $cacheObjects = static function ($driver, $count) use ($expire) {
+            $anObject = (object)['foo' => PHP_INT_MAX, 'theAnswer' => 42];
 
-        $memoryForThreeKeys = (function () use ($anObject, $expire) {
+            for ($i = 1; $i <= $count ; $i++) {
+                $driver->storeData(['key' . $i], clone $anObject, $expire);
+            }
+        };
+
+        $neededMemory = (function () use ($cacheObjects) {
             $memoryUsage = memory_get_usage();
 
             $driver = new $this->driverClass();
-            $driver->storeData(['key1'], clone $anObject, $expire);
-            $driver->storeData(['key2'], clone $anObject, $expire);
-            $driver->storeData(['key3'], clone $anObject, $expire);
+            $cacheObjects($driver, 100);
 
             return memory_get_usage() - $memoryUsage;
         })();
@@ -178,17 +182,14 @@ class EphemeralTest extends AbstractDriverTest
          * @var \Stash\Driver\Ephemeral
          */
         $driver = new $this->driverClass([
-            'memoryLimit' => memory_get_usage() + $memoryForThreeKeys
+            'memoryLimit' => memory_get_usage() + $neededMemory
         ]);
+        $cacheObjects($driver, 100);
 
-        $driver->storeData(['key1'], clone $anObject, $expire);
-        $driver->storeData(['key2'], clone $anObject, $expire);
-        $driver->storeData(['key3'], clone $anObject, $expire);
-        $driver->storeData(['key4'], clone $anObject, $expire);
+        $driver->storeData(['extra'], ['hello!'], $expire);
 
         $this->assertFalse($driver->getData(['key1'])); // evicted
-        $this->assertNotFalse($driver->getData(['key2']));
-        $this->assertNotFalse($driver->getData(['key3']));
-        $this->assertNotFalse($driver->getData(['key4']));
+        $this->assertFalse($driver->getData(['key20'])); // evicted
+        $this->assertSame(42, $driver->getData(['key98'])['data']->theAnswer);
     }
 }
