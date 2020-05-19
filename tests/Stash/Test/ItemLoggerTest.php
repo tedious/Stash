@@ -62,7 +62,7 @@ class ItemLoggerTest extends \PHPUnit\Framework\TestCase
 
         $this->assertInstanceOf(
             'Stash\Test\Exception\TestException',
-                                $logger->lastContext['exception'],
+            $logger->lastContext['exception'],
             'Logger was passed exception in event context.'
         );
 
@@ -82,7 +82,7 @@ class ItemLoggerTest extends \PHPUnit\Framework\TestCase
 
         $this->assertInstanceOf(
             'Stash\Test\Exception\TestException',
-                                $logger->lastContext['exception'],
+            $logger->lastContext['exception'],
             'Logger was passed exception in event context.'
         );
         $this->assertTrue(strlen($logger->lastMessage) > 0, 'Logger message set after "set" exception.');
@@ -101,7 +101,7 @@ class ItemLoggerTest extends \PHPUnit\Framework\TestCase
 
         $this->assertInstanceOf(
             'Stash\Test\Exception\TestException',
-                                $logger->lastContext['exception'],
+            $logger->lastContext['exception'],
             'Logger was passed exception in event context.'
         );
         $this->assertTrue(strlen($logger->lastMessage) > 0, 'Logger message set after "clear" exception.');

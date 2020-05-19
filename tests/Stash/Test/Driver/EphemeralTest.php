@@ -99,15 +99,15 @@ class EphemeralTest extends AbstractDriverTest
         $expire = time() + 100;
         $driver->storeData(['fred'], 'tuttle', $expire);
         $this->assertArraySubset(
-          ['data' => 'tuttle', 'expiration' => $expire],
-          $driver->getData(['fred'])
+            ['data' => 'tuttle', 'expiration' => $expire],
+            $driver->getData(['fred'])
         );
 
         $driver->storeData(['foo'], 'bar', $expire);
         $this->assertFalse($driver->getData(['fred']));
         $this->assertArraySubset(
-          ['data' => 'bar', 'expiration' => $expire],
-          $driver->getData(['foo'])
+            ['data' => 'bar', 'expiration' => $expire],
+            $driver->getData(['foo'])
         );
     }
 
@@ -125,8 +125,8 @@ class EphemeralTest extends AbstractDriverTest
 
         for ($i = 1; $i <= 5; ++$i) {
             $this->assertArraySubset(
-              ['data' => "value$i", 'expiration' => $expire],
-              $driver->getData(["item$i"])
+                ['data' => "value$i", 'expiration' => $expire],
+                $driver->getData(["item$i"])
             );
         }
     }

@@ -183,5 +183,4 @@ class Ephemeral extends AbstractDriver
 
         return $default;
     }
-
 }
