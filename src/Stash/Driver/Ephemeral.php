@@ -58,8 +58,8 @@ class Ephemeral extends AbstractDriver
     {
         $options += $this->getDefaultOptions();
 
-        $this->maxItems = self::positiveIntegerOption($options, 'maxItems', 0);
-        $this->memoryLimit = self::positiveIntegerOption($options, 'memoryLimit', 0);
+        $this->maxItems = self::positiveIntegerOption($options, 'maxItems');
+        $this->memoryLimit = self::positiveIntegerOption($options, 'memoryLimit');
 
         if ($this->maxItems > 0 && count($this->store) > $this->maxItems) {
             $this->evict(count($this->store) - $this->maxItems);
@@ -168,22 +168,19 @@ class Ephemeral extends AbstractDriver
     /**
      * @param array $options
      * @param string $optionName
-     * @param int $default
-     * @return mixed
+     * @return int
      * @throws Stash\Exception\InvalidArgumentException
      */
-    protected static function positiveIntegerOption(array $options, $optionName, $default)
+    protected static function positiveIntegerOption(array $options, $optionName)
     {
-        if (array_key_exists($optionName, $options)) {
-            $optionValue = $options[$optionName];
-            if (!is_int($optionValue) || $optionValue < 0) {
-                throw new Stash\Exception\InvalidArgumentException(
-                    $optionName . ' must be a positive integer.'
-                );
-            }
-            return $optionValue;
+        $optionValue = $options[$optionName];
+
+        if (!is_int($optionValue) || $optionValue < 0) {
+            throw new Stash\Exception\InvalidArgumentException(
+                $optionName . ' must be a positive integer.'
+            );
         }
 
-        return $default;
+        return $optionValue;
     }
 }
