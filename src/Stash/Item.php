@@ -78,7 +78,7 @@ class Item implements ItemInterface
     /**
      * Invalidation method
      *
-     * @var string
+     * @var int
      */
     protected $invalidationMethod = Invalidation::PRECOMPUTE;
 
@@ -269,7 +269,7 @@ class Item implements ItemInterface
     /**
      * {@inheritdoc}
      *
-     * @param string $invalidation
+     * @param int $invalidation
      * @param mixed  $arg
      * @param mixed  $arg2
      */
