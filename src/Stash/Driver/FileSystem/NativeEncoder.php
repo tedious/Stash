@@ -90,23 +90,20 @@ class NativeEncoder implements EncoderInterface
     {
         switch (Utilities::encoding($data)) {
             case 'bool':
-                $dataString = (bool) $data ? 'true' : 'false';
-                break;
+                return (bool) $data ? 'true' : 'false';
 
             case 'string':
-                $dataString = sprintf('"%s"', addcslashes($data, "\t\"\$\\"));
-                break;
+                return sprintf('"%s"', addcslashes($data, "\t\"\$\\"));
 
             case 'numeric':
-                $dataString = (string) $data;
-                break;
+                return (string) $data;
 
             default:
-                case 'serialize':
-                    $dataString = 'unserialize(base64_decode(\'' . base64_encode(serialize($data)) . '\'))';
-                    break;
+            case 'serialize':
+                if (!is_object($data)) {
+                    return var_export($data, true);
+                }
+                return 'unserialize(base64_decode(\'' . base64_encode(serialize($data)) . '\'))';
         }
-
-        return $dataString;
     }
 }
