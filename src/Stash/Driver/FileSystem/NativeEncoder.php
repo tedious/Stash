@@ -22,7 +22,11 @@ class NativeEncoder implements EncoderInterface
         }
 
         $expiration = null;
-        include($path);
+        try {
+            include($path);
+        } catch (\Error $e) {
+            return false;
+        }
 
         if (!isset($loaded)) {
             return false;
