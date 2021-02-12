@@ -25,7 +25,7 @@ class MemcacheAnyTest extends \PHPUnit\Framework\TestCase
 
     protected $servers = array('127.0.0.1', '11211');
 
-    protected function setUp()
+    protected function setUp() : void
     {
         $driverClass = $this->driverClass;
 

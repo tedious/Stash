@@ -32,7 +32,7 @@ class MemcacheTest extends AbstractDriverTest
         return array('extension' => $this->extension, 'servers' => $this->servers);
     }
 
-    protected function setUp()
+    protected function setUp() : void
     {
         if (!$this->setup) {
             $this->startTime = time();

@@ -23,7 +23,7 @@ class RedisArrayTest extends RedisTest
     protected $redisSecondPort = '6380';
     protected $persistence = true;
 
-    protected function setUp()
+    protected function setUp() : void
     {
         if (defined('HHVM_VERSION')) {
             $this->markTestSkipped('RedisArray currently not supported by HHVM.');

@@ -29,9 +29,10 @@
     "psr/cache": "~1.0"
   },
   "require-dev": {
+    "php": "^7.2|^8.0",
     "friendsofphp/php-cs-fixer": "^2.8",
-    "phpunit/phpunit": "^6",
-    "satooshi/php-coveralls": "1.0.*"
+    "phpunit/phpunit": "^8.0",
+    "php-coveralls/php-coveralls": "^2.0"
   },
   "autoload": {
     "psr-4": {

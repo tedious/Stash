@@ -23,7 +23,7 @@ class SessionTest extends \PHPUnit\Framework\TestCase
     protected $testClass = '\Stash\Session';
     protected $poolClass = '\Stash\Pool';
 
-    protected function setUp()
+    protected function setUp() : void
     {
         if (defined('HHVM_VERSION') && version_compare(HHVM_VERSION, '3.0.0', '<')) {
             $this->markTestSkipped('Sessions not supported on older versions of HHVM.');

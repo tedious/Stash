@@ -25,7 +25,7 @@ class RedisTest extends AbstractDriverTest
     protected $redisNoPort = '6381';
     protected $persistence = true;
 
-    protected function setUp()
+    protected function setUp() : void
     {
         if (!$this->setup) {
             $this->startTime = time();
