@@ -107,8 +107,8 @@ class Utilities
             $baseDir .= str_replace(array('/', '\\'), '_', get_class($driver)) . '/';
         }
 
-        if (!is_dir($baseDir)) {
-            mkdir($baseDir, 0770, true);
+        if (!@mkdir($baseDir, 0770, true) && !is_dir($baseDir)) {
+            throw new \RuntimeException(sprintf('Directory "%s" was not created', $baseDir));
         }
 
         return $baseDir;
@@ -219,7 +219,7 @@ class Utilities
             throw new InvalidArgumentException('Cache path is not a directory.');
         }
 
-        if (!is_dir($path) && !@mkdir($path, $permissions, true)) {
+        if (!@mkdir($path, $permissions, true) && !is_dir($path)) {
             throw new InvalidArgumentException('Failed to create cache path.');
         }
 

@@ -217,10 +217,8 @@ class FileSystem extends AbstractDriver
         }
 
         if (!file_exists($path)) {
-            if (!is_dir(dirname($path))) {
-                if (!@mkdir(dirname($path), $this->dirPermissions, true)) {
-                    return false;
-                }
+            if (!@mkdir(dirname($path), $this->dirPermissions, true) && !is_dir(dirname($path))) {
+                return false;
             }
 
             if (!(touch($path) && chmod($path, $this->filePermissions))) {
@@ -321,9 +319,8 @@ class FileSystem extends AbstractDriver
     public function clear($key = null)
     {
         $path = $this->makePath($key);
-        if (is_file($path)) {
+        if (!unlink($path) && !is_file($path)) {
             $return = true;
-            unlink($path);
         }
 
         $extension = $this->getEncoder()->getExtension();
