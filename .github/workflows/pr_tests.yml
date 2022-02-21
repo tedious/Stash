@@ -1,0 +1,20 @@
+name: CI
+
+on: [push]
+
+jobs:
+  phpunit:
+    strategy:
+      fail-fast: false
+      matrix:
+        php_version: ["8.0", "8.1", "latest"]
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    # These are the versions of the *actions*, not the libraries.
+    - uses: php-actions/composer@v5
+    - uses: php-actions/phpunit@v3
+      with:
+        php_version: ${{ matrix.php_version }}
