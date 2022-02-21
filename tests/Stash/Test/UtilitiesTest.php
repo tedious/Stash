@@ -163,13 +163,22 @@ class UtilitiesTest extends \PHPUnit\Framework\TestCase
 
     public function testCheckFileSystemPermissionsUnaccessibleException()
     {
+        $this->checkForGithub();
         $this->expectException('InvalidArgumentException');
         Utilities::checkFileSystemPermissions('/fakedir/cache', '0644');
     }
 
-    public function testCheckFileSystemPermissionsUnwrittableException()
+    public function testCheckFileSystemPermissionsUnwritableException()
     {
+        $this->checkForGithub();
         $this->expectException('InvalidArgumentException');
         Utilities::checkFileSystemPermissions('/home', '0644');
+    }
+
+    protected function checkForGithub()
+    {
+        if(get_current_user() === "root") {
+            $this->markTestSkipped('Github tests run under the root user.');
+        }
     }
 }
