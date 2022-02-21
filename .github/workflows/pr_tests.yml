@@ -21,10 +21,10 @@ jobs:
         redis-port: 6379
 
 
-    - name: Start 2nd Redis Server on 6380
-      uses: supercharge/redis-github-action@1.4.0
-      with:
-        redis-port: 6380
+    # - name: Start 2nd Redis Server on 6380
+    #   uses: supercharge/redis-github-action@1.4.0
+    #   with:
+    #     redis-port: 6380
 
     # These are the versions of the *actions*, not the libraries.
     - name: Install PHP Packages
