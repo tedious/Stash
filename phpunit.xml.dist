@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<phpunit bootstrap="./tests/bootstrap.php" colors="true">
-    <testsuites>
-        <testsuite name="Stash Test Suite">
-            <directory suffix="Test.php">./tests/Stash/</directory>
-        </testsuite>
-    </testsuites>
-    <filter>
-        <whitelist>
-            <directory suffix=".php">./src/Stash/</directory>
-            <exclude>
-                <directory>./src/Stash/Exception</directory>
-                <directory>./src/Stash/Interfaces</directory>
-            </exclude>
-        </whitelist>
-    </filter>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="./tests/bootstrap.php" colors="true" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+  <coverage>
+    <include>
+      <directory suffix=".php">./src/Stash/</directory>
+    </include>
+    <exclude>
+      <directory>./src/Stash/Exception</directory>
+      <directory>./src/Stash/Interfaces</directory>
+    </exclude>
+  </coverage>
+  <testsuites>
+    <testsuite name="Stash Test Suite">
+      <directory suffix="Test.php">./tests/Stash/</directory>
+    </testsuite>
+  </testsuites>
 </phpunit>

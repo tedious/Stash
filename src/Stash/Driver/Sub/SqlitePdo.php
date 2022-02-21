@@ -215,7 +215,7 @@ class SqlitePdo
     {
         $driver = $this->getDriver();
         $timeout = ceil($milliseconds / 1000);
-        $driver->setAttribute(\PDO::ATTR_TIMEOUT, $timeout);
+        $driver->setAttribute(\PDO::ATTR_TIMEOUT, (int) $timeout);
     }
 
     /**

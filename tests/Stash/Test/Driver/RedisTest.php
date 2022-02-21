@@ -65,11 +65,9 @@ class RedisTest extends AbstractDriverTest
         ));
     }
 
-    /**
-     * @expectedException \PHPUnit\Framework\Error\Warning
-     */
     public function testBadDisconnect()
     {
+        $this->expectException('Warning');
         if (defined('HHVM_VERSION')) {
             $this->markTestSkipped('This test can not run on HHVM as HHVM throws a different set of errors.');
         }

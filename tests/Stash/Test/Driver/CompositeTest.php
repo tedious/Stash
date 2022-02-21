@@ -113,28 +113,21 @@ class CompositeTest extends AbstractDriverTest
         $this->assertFalse($driver->isPersistent());
     }
 
-
-    /**
-     * @expectedException Stash\Exception\RuntimeException
-     */
     public function testWithoutDriversException()
     {
+        $this->expectException('RuntimeException');
         $driver = new Composite(array('drivers' => null));
     }
 
-    /**
-     * @expectedException Stash\Exception\RuntimeException
-     */
     public function testWithFakeDriversException()
     {
+        $this->expectException('RuntimeException');
         $driver = new Composite(array('drivers' => array('fakedriver')));
     }
 
-    /**
-     * @expectedException Stash\Exception\InvalidArgumentException
-     */
     public function testWithBadDriverArgumentException()
     {
+        $this->expectException('InvalidArgumentException');
         $driver = new Composite(array('drivers' => 'fakedriver'));
     }
 }
