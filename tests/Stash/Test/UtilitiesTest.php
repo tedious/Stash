@@ -117,7 +117,7 @@ class UtilitiesTest extends \PHPUnit\Framework\TestCase
         $this->assertFileExists($dirTwo, 'deleteRecursive does not erase sibling directories.');
 
         Utilities::deleteRecursive($dirTwo, true);
-        $this->assertFileDoesNotExist($tmp, 'deleteRecursive cleared out the empty parent directory');
+        $this->assertFileDoesNotExist($dirTwo, 'deleteRecursive cleared out the empty parent directory');
     }
 
     public function testDeleteRecursiveRelativeException()
