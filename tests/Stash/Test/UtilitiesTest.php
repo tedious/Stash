@@ -25,6 +25,8 @@ class UtilitiesTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(Utilities::encoding(true), 'bool', 'encoding recognized \'true\' boolean.');
         $this->assertEquals(Utilities::encoding(false), 'bool', 'encoding recognized \'false\' boolean');
 
+        $this->assertEquals(Utilities::encoding('1'), 'string', 'encoding recognized \'1\' string.');
+        $this->assertEquals(Utilities::encoding('1.2'), 'string', 'encoding recognized \'1.2\' string.');
         $this->assertEquals(Utilities::encoding('String of doom!'), 'string', 'encoding recognized string scalar');
 
         $this->assertEquals(Utilities::encoding(234), 'numeric', 'encoding recognized integer scalar');
