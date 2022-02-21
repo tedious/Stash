@@ -163,7 +163,7 @@ class UtilitiesTest extends \PHPUnit\Framework\TestCase
 
     public function testCheckFileSystemPermissionsUnaccessibleException()
     {
-        if(get_current_user() === "root") {
+        if(getenv("IS_GITHUB") === "true") {
             return $this->markTestSkipped('Github tests run under the root user.');
         }
         $this->expectException('InvalidArgumentException');
@@ -172,7 +172,7 @@ class UtilitiesTest extends \PHPUnit\Framework\TestCase
 
     public function testCheckFileSystemPermissionsUnwritableException()
     {
-        if(get_current_user() === "root") {
+        if(getenv("IS_GITHUB") === "true") {
             return $this->markTestSkipped('Github tests run under the root user.');
         }
         $this->expectException('InvalidArgumentException');
