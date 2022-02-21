@@ -100,10 +100,10 @@ class UtilitiesTest extends \PHPUnit\Framework\TestCase
         touch($dirTwo . '/test4');
 
         $this->assertTrue(Utilities::deleteRecursive($dirTwo . '/test3'), 'deleteRecursive returned true when removing single file.');
-        $this->assertFileNotExists($dirTwo . '/test3', 'deleteRecursive removed single file');
+        $this->assertFileDoesNotExist($dirTwo . '/test3', 'deleteRecursive removed single file');
 
         $this->assertTrue(Utilities::deleteRecursive($tmp), 'deleteRecursive returned true when removing directories.');
-        $this->assertFileNotExists($tmp, 'deleteRecursive cleared out the directory');
+        $this->assertFileDoesNotExist($tmp, 'deleteRecursive cleared out the directory');
 
         $this->assertFalse(Utilities::deleteRecursive($tmp), 'deleteRecursive returned false when passed nonexistant directory');
 
@@ -117,7 +117,7 @@ class UtilitiesTest extends \PHPUnit\Framework\TestCase
         $this->assertFileExists($dirTwo, 'deleteRecursive does not erase sibling directories.');
 
         Utilities::deleteRecursive($dirTwo, true);
-        $this->assertFileNotExists($tmp, 'deleteRecursive cleared out the empty parent directory');
+        $this->assertFileDoesNotExist($tmp, 'deleteRecursive cleared out the empty parent directory');
     }
 
     public function testDeleteRecursiveRelativeException()

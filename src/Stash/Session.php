@@ -147,7 +147,7 @@ class Session implements \SessionHandlerInterface
     }
 
 
-    protected function getCache($session_id) : string
+    protected function getCache($session_id) : \Stash\Item
     {
         $path = '/' .
             base64_encode($this->path) . '/' .

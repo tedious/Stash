@@ -11,12 +11,15 @@
 
 namespace Stash\Test;
 
+use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
+
 /**
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
 abstract class AbstractTest extends \PHPUnit\Framework\TestCase
 {
+  use ArraySubsetAsserts;
 
   public function accessProtected($obj, $prop) {
     $reflection = new \ReflectionClass($obj);
@@ -33,6 +36,11 @@ abstract class AbstractTest extends \PHPUnit\Framework\TestCase
   public function assertAttributeInstanceOf($expectedClass, $actualAttributeName, $object, $errorMessage="") {
     $actualValue = $this->accessProtected($object, $actualAttributeName);
     return $this->assertInstanceOf($expectedClass, $actualValue);
+  }
+
+  public function assertAttributeInternalType($expectedType, $actualAttributeName, $object, $errorMessage="") {
+    $actualValue = $this->accessProtected($object, $actualAttributeName);
+    return $this->assertSame($expectedType, gettype($actualValue), $errorMessage);
   }
 
 }
