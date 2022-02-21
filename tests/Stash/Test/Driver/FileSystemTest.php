@@ -118,6 +118,44 @@ class FileSystemTest extends AbstractDriverTest
         }
     }
 
+
+    /**
+     * Test if the dir split functionality cleanly finished an uneven split e.g. when requested to split "one" into 2, it should split it in "o" and "ne"
+     */
+    public function testDirSplitFinishesCorrectly()
+    {
+        $paths = array('one', 'two', 'three', 'four');
+        $outputpaths = array('o', 'ne', 't', 'wo', 'th', 'ree', 'fo', 'ur');
+
+        $driver = new FileSystem($this->getOptions(array(
+             'keyHashFunction' => function ($key) {
+                 return $key;
+             },
+             'path' => sys_get_temp_dir().DIRECTORY_SEPARATOR.'stash',
+             'dirSplit' => 2
+        )));
+
+        $rand = str_repeat(uniqid(), 32);
+
+        $item = new Item();
+
+        $poolStub = new PoolGetDriverStub();
+        $poolStub->setDriver($driver);
+        $item->setPool($poolStub);
+        $item->setKey($paths);
+        $item->set($rand)->save();
+
+        $allpaths = array_merge(array('ca', 'che'), $outputpaths);
+        $predicted = sys_get_temp_dir().
+          DIRECTORY_SEPARATOR.
+          'stash'.
+          DIRECTORY_SEPARATOR.
+          implode(DIRECTORY_SEPARATOR, $allpaths).
+          $this->extension;
+
+        $this->assertFileExists($predicted);
+    }
+
     /**
      * Test creation of directories with long paths (Windows issue)
      *

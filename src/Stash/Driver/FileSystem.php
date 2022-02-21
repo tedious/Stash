@@ -288,14 +288,15 @@ class FileSystem extends AbstractDriver
                 }
 
                 $sLen = strlen($value);
-                $len = floor($sLen / $this->directorySplit);
-                for ($i = 0; $i < $this->directorySplit; $i++) {
-                    $start = $len * $i;
-                    if ($i == $this->directorySplit) {
-                        $len = $sLen - $start;
-                    }
+                $len = (int)floor($sLen / $this->directorySplit);
+                $splitMinusOne = $this->directorySplit - 1;
+                $start = 0;
+                for ($i = 0; $i < $splitMinusOne; $i++) {
                     $path .= substr($value, $start, $len) . DIRECTORY_SEPARATOR;
+                    $start += $len;
                 }
+
+                $path .= substr($value, $start) . DIRECTORY_SEPARATOR;
             }
 
             $path = rtrim($path, DIRECTORY_SEPARATOR) . $this->getEncoder()->getExtension();
