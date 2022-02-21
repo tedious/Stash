@@ -21,7 +21,7 @@ use Stash\Test\Stubs\DriverExceptionStub;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class AbstractPoolTest extends \PHPUnit\Framework\TestCase
+class AbstractPoolTest extends AbstractTest
 {
     protected $data = array(array('test', 'test'));
     protected $multiData = array('key' => 'value',
