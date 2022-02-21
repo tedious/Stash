@@ -19,11 +19,9 @@ use Stash\Test\Stubs\DriverUnavailableStub;
  */
 class UnavailableDriverTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @expectedException Stash\Exception\RuntimeException
-     */
     public function testUnavailableDriver()
     {
+        $this->expectException('RuntimeException');
         new DriverUnavailableStub();
     }
 }

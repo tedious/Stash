@@ -35,28 +35,22 @@ class FileSystemTest extends AbstractDriverTest
         return array_merge(array('memKeyLimit' => 2), $options);
     }
 
-    /**
-     * @expectedException Stash\Exception\RuntimeException
-     */
     public function testOptionKeyHashFunctionException()
     {
+        $this->expectException('RuntimeException');
         $driver = new FileSystem($this->getOptions(array('keyHashFunction' => 'foobar_'.mt_rand())));
     }
 
-    /**
-     * @expectedException Stash\Exception\RuntimeException
-     */
     public function testOptionEncoderObjectException()
     {
+        $this->expectException('RuntimeException');
         $encoder = new \stdClass();
         $driver = new FileSystem($this->getOptions(array('encoder' => $encoder)));
     }
 
-    /**
-     * @expectedException Stash\Exception\RuntimeException
-     */
     public function testOptionEncoderStringException()
     {
+        $this->expectException('RuntimeException');
         $encoder = 'stdClass';
         $driver = new FileSystem($this->getOptions(array('encoder' => $encoder)));
     }

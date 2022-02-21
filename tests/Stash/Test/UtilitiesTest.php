@@ -120,20 +120,15 @@ class UtilitiesTest extends \PHPUnit\Framework\TestCase
         $this->assertFileNotExists($tmp, 'deleteRecursive cleared out the empty parent directory');
     }
 
-
-    /**
-     * @expectedException Stash\Exception\RuntimeException
-     */
     public function testDeleteRecursiveRelativeException()
     {
+        $this->expectException('RuntimeException');
         Utilities::deleteRecursive('../tests/fakename');
     }
 
-    /**
-     * @expectedException Stash\Exception\RuntimeException
-     */
     public function testDeleteRecursiveRootException()
     {
+        $this->expectException('RuntimeException');
         Utilities::deleteRecursive('/');
     }
 
@@ -149,19 +144,15 @@ class UtilitiesTest extends \PHPUnit\Framework\TestCase
         Utilities::deleteRecursive($tmp);
     }
 
-    /**
-     * @expectedException Stash\Exception\RuntimeException
-     */
     public function testCheckFileSystemPermissionsNullException()
     {
+        $this->expectException('RuntimeException');
         Utilities::checkFileSystemPermissions(null, '0644');
     }
 
-    /**
-     * @expectedException Stash\Exception\InvalidArgumentException
-     */
     public function testCheckFileSystemPermissionsFileException()
     {
+        $this->expectException('InvalidArgumentException');
         $tmp = sys_get_temp_dir() . '/stash/';
         $dir2 = $tmp . 'emptytest/';
         @mkdir($dir2, 0770, true);
@@ -170,19 +161,15 @@ class UtilitiesTest extends \PHPUnit\Framework\TestCase
         Utilities::checkFileSystemPermissions($dir2 . 'testfile', '0644');
     }
 
-    /**
-     * @expectedException Stash\Exception\InvalidArgumentException
-     */
     public function testCheckFileSystemPermissionsUnaccessibleException()
     {
+        $this->expectException('InvalidArgumentException');
         Utilities::checkFileSystemPermissions('/fakedir/cache', '0644');
     }
 
-    /**
-     * @expectedException Stash\Exception\InvalidArgumentException
-     */
     public function testCheckFileSystemPermissionsUnwrittableException()
     {
+        $this->expectException('InvalidArgumentException');
         Utilities::checkFileSystemPermissions('/home', '0644');
     }
 }

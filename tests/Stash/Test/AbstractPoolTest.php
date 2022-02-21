@@ -172,11 +172,11 @@ class AbstractPoolTest extends AbstractTest
 
 
     /**
-     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Invalid or Empty Node passed to getItem constructor.
      */
     public function testGetItemInvalidKeyMissingNode()
     {
+        $this->expectException('InvalidArgumentException');
         $pool = $this->getTestPool();
         $item = $pool->getItem('This/Test//Fail');
     }
@@ -277,11 +277,11 @@ class AbstractPoolTest extends AbstractTest
     }
 
     /**
-     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Namespace must be alphanumeric.
      */
     public function testInvalidNamespace()
     {
+        $this->expectException('InvalidArgumentException');
         $pool = $this->getTestPool();
         $pool->setNamespace('!@#$%^&*(');
     }

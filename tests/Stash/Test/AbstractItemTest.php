@@ -335,11 +335,11 @@ abstract class AbstractItemTest extends AbstractTest
     }
 
     /**
-     * @expectedException Stash\Exception\InvalidArgumentException
      * @expectedExceptionMessage expiresAt requires \DateTimeInterface or null
      */
     public function testExpiresAtException()
     {
+        $this->expectException('InvalidArgumentException');
         $stash = $this->testConstruct(array('base', 'expiration', 'test'));
         $stash->expiresAt(false);
     }

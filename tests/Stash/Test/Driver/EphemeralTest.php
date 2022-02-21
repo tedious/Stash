@@ -61,11 +61,9 @@ class EphemeralTest extends AbstractDriverTest
         $this->assertEquals('X', $item1->get());
     }
 
-    /**
-     * @expectedException \Stash\Exception\InvalidArgumentException
-     */
     public function testSettingMaxItems_InvalidArgument_Throws()
     {
+        $this->expectException('InvalidArgumentException');
         /**
          * @var \Stash\Driver\Ephemeral
          */
@@ -74,11 +72,9 @@ class EphemeralTest extends AbstractDriverTest
         ]);
     }
 
-    /**
-     * @expectedException \Stash\Exception\InvalidArgumentException
-     */
     public function testSettingMaxItems_LessThan0_Throws()
     {
+        $this->expectException('InvalidArgumentException');
         /**
          * @var \Stash\Driver\Ephemeral
          */
