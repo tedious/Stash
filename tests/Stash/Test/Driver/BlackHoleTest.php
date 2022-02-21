@@ -23,7 +23,7 @@ class BlackHoleTest extends \PHPUnit\Framework\TestCase
      */
     private $driver = null;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->driver = new BlackHole();
     }

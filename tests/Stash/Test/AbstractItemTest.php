@@ -48,12 +48,12 @@ abstract class AbstractItemTest extends \PHPUnit\Framework\TestCase
 
     protected $itemClass = '\Stash\Item';
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass() : void
     {
         Utilities::deleteRecursive(Utilities::getBaseDirectory());
     }
 
-    protected function setUp()
+    protected function setUp() : void
     {
         if (!$this->setup) {
             $this->startTime = time();
