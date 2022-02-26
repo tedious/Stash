@@ -74,6 +74,11 @@ class PoolGetDriverStub implements PoolInterface
         return false;
     }
 
+    public function setInvalidationMethod($invalidation, $arg = null, $arg2 = null)
+    {
+        return false;
+    }
+
     public function hasItem($key)
     {
         return false;
