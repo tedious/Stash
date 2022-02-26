@@ -63,8 +63,25 @@ class Pool implements PoolInterface
      */
     protected $namespace;
 
+    /**
+     * The default cache invalidation method for items created by this pool object.
+     *
+     * @var int
+     */
     protected $invalidationMethod = Invalidation::PRECOMPUTE;
+
+    /**
+     * Argument 1 for the default cache invalidation method
+     *
+     * @var mixed
+     */
     protected $invalidationArg1 = null;
+
+    /**
+     * Argument 2 for the default cache invalidation method
+     *
+     * @var mixed
+     */
     protected $invalidationArg2 = null;
 
     /**
@@ -314,19 +331,15 @@ class Pool implements PoolInterface
     }
 
     /**
-     * Set the default cache invalidation method for items created by this pool object.
-     *
-     * @see Stash\Invalidation
-     *
-     * @param int   $invalidation A Stash\Invalidation constant
-     * @param mixed $arg          First argument for invalidation method
-     * @param mixed $arg2         Second argument for invalidation method
+     * {@inheritdoc}
      */
     public function setInvalidationMethod($invalidation = Invalidation::PRECOMPUTE, $arg = null, $arg2 = null)
     {
         $this->invalidationMethod = $invalidation;
         $this->invalidationArg1 = $arg;
         $this->invalidationArg2 = $arg2;
+
+        return true;
     }
 
     /**

@@ -132,6 +132,17 @@ interface PoolInterface extends CacheItemPoolInterface
     public function setLogger($logger);
 
     /**
+     * Set the default cache invalidation method for items created by this pool object.
+     *
+     * @see Stash\Invalidation
+     *
+     * @param int   $invalidation A Stash\Invalidation constant
+     * @param mixed $arg          First argument for invalidation method
+     * @param mixed $arg2         Second argument for invalidation method
+     */
+    public function setInvalidationMethod($invalidation, $arg = null, $arg2 = null);
+
+    /**
     * Forces any save-deferred objects to get flushed to the backend drivers.
     *
     * @return bool
