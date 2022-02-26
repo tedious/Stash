@@ -164,9 +164,9 @@ interface PoolInterface extends CacheItemPoolInterface
     public function deleteItems(array $keys);
 
     /**
-     * Removes multiple items from the pool by their key.
+     * Removes single item from the pool by its key.
      *
-     * @param array $keys
+     * @param string $key
      * @return bool
      */
     public function deleteItem($key);

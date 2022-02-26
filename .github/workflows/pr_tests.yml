@@ -1,0 +1,36 @@
+name: CI
+
+on: [push]
+env:
+  IS_GITHUB: "true"
+
+jobs:
+  phpunit:
+    strategy:
+      fail-fast: false
+      matrix:
+        php_version: ["8.0", "8.1", "latest"]
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Start Redis on Default Port
+      uses: supercharge/redis-github-action@1.4.0
+      with:
+        redis-port: 6379
+
+
+    # - name: Start 2nd Redis Server on 6380
+    #   uses: supercharge/redis-github-action@1.4.0
+    #   with:
+    #     redis-port: 6380
+
+    # These are the versions of the *actions*, not the libraries.
+    - name: Install PHP Packages
+      uses: php-actions/composer@v5
+
+    - name: Run Tests
+      uses: php-actions/phpunit@v3
+      with:
+        php_version: ${{ matrix.php_version }}

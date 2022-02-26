@@ -11,13 +11,11 @@
 
 namespace Stash\Exception;
 
-//use \Psr\Cache\InvalidArgumentException;
-
-
 /**
  * Exception thrown if an argument does not match with the expected value.
  *
- * @package Stash
+ * Class InvalidArgumentException
+ * @package Stash\Exception
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
 class InvalidArgumentException extends \InvalidArgumentException implements Exception, \Psr\Cache\InvalidArgumentException

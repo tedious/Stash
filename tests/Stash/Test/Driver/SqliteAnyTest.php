@@ -21,11 +21,11 @@ use Stash\Utilities;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class SqliteAnyTest extends \PHPUnit_Framework_TestCase
+class SqliteAnyTest extends \PHPUnit\Framework\TestCase
 {
     protected $driverClass = 'Stash\Driver\Sqlite';
 
-    protected function setUp()
+    protected function setUp() : void
     {
         $driverClass = $this->driverClass;
 
@@ -48,7 +48,7 @@ class SqliteAnyTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($pool->save($item), 'Able to load and store with unconfigured extension.');
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass() : void
     {
         Utilities::deleteRecursive(Utilities::getBaseDirectory());
     }

@@ -19,13 +19,13 @@ use Stash\Item;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class MemcacheAnyTest extends \PHPUnit_Framework_TestCase
+class MemcacheAnyTest extends \PHPUnit\Framework\TestCase
 {
     protected $driverClass = 'Stash\Driver\Memcache';
 
     protected $servers = array('127.0.0.1', '11211');
 
-    protected function setUp()
+    protected function setUp() : void
     {
         $driverClass = $this->driverClass;
 

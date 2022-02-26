@@ -18,12 +18,12 @@ use Stash\Pool;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class SessionTest extends \PHPUnit_Framework_TestCase
+class SessionTest extends \PHPUnit\Framework\TestCase
 {
     protected $testClass = '\Stash\Session';
     protected $poolClass = '\Stash\Pool';
 
-    protected function setUp()
+    protected function setUp() : void
     {
         if (defined('HHVM_VERSION') && version_compare(HHVM_VERSION, '3.0.0', '<')) {
             $this->markTestSkipped('Sessions not supported on older versions of HHVM.');
@@ -38,13 +38,21 @@ class SessionTest extends \PHPUnit_Framework_TestCase
     {
         $session = $this->getSession();
 
-        $this->assertSame('', $session->read('session_id'),
-                          'Empty session returns empty string.');
+        $this->assertSame(
+            '',
+            $session->read('session_id'),
+                          'Empty session returns empty string.'
+        );
 
-        $this->assertTrue($session->write('session_id', 'session_data'),
-                          'Data was written to the session.');
-        $this->assertSame('session_data', $session->read('session_id'),
-                          'Active session returns session data.');
+        $this->assertTrue(
+            $session->write('session_id', 'session_data'),
+                          'Data was written to the session.'
+        );
+        $this->assertSame(
+            'session_data',
+            $session->read('session_id'),
+                          'Active session returns session data.'
+        );
     }
 
     public function testOpen()
@@ -62,8 +70,10 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         $DataA = $sessionA->read('shared_id');
         $DataB = $sessionB->read('shared_id');
 
-        $this->assertTrue($DataA != $DataB,
-                          'Sessions with different paths do not share data.');
+        $this->assertTrue(
+            $DataA != $DataB,
+                          'Sessions with different paths do not share data.'
+        );
 
         $pool = $this->getPool();
 
@@ -78,15 +88,19 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         $DataA = $sessionA->read('shared_id');
         $DataB = $sessionB->read('shared_id');
 
-        $this->assertTrue($DataA != $DataB,
-                          'Sessions with different names do not share data.');
+        $this->assertTrue(
+            $DataA != $DataB,
+                          'Sessions with different names do not share data.'
+        );
     }
 
     public function testClose()
     {
         $session = $this->getSession();
-        $this->assertTrue($session->close(),
-                          'Session was closed');
+        $this->assertTrue(
+            $session->close(),
+                          'Session was closed'
+        );
     }
 
     public function testDestroy()
@@ -95,14 +109,22 @@ class SessionTest extends \PHPUnit_Framework_TestCase
 
         $session->write('session_id', 'session_data');
         $session->write('session_id', 'session_data');
-        $this->assertSame('session_data', $session->read('session_id'),
-                          'Active session returns session data.');
+        $this->assertSame(
+            'session_data',
+            $session->read('session_id'),
+                          'Active session returns session data.'
+        );
 
-        $this->assertTrue($session->destroy('session_id'),
-                          'Data was removed from the session.');
+        $this->assertTrue(
+            $session->destroy('session_id'),
+                          'Data was removed from the session.'
+        );
 
-        $this->assertSame('', $session->read('session_id'),
-                          'Destroyed session returns empty string.');
+        $this->assertSame(
+            '',
+            $session->read('session_id'),
+                          'Destroyed session returns empty string.'
+        );
     }
 
     public function testGarbageCollect()
@@ -117,8 +139,11 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         $sessionB->gc(null);
 
         $sessionC = $this->getSession($pool);
-        $this->assertSame('', $sessionC->read('session_id'),
-                          'Purged session returns empty string.');
+        $this->assertSame(
+            '',
+            $sessionC->read('session_id'),
+                          'Purged session returns empty string.'
+        );
     }
 
     protected function getSession($pool = null)

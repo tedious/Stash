@@ -20,7 +20,7 @@ use Stash\Item;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class CacheExceptionTest extends \PHPUnit_Framework_TestCase
+class CacheExceptionTest extends \PHPUnit\Framework\TestCase
 {
     public function testSet()
     {

@@ -23,7 +23,7 @@ class RedisArrayTest extends RedisTest
     protected $redisSecondPort = '6380';
     protected $persistence = true;
 
-    protected function setUp()
+    protected function setUp() : void
     {
         if (defined('HHVM_VERSION')) {
             $this->markTestSkipped('RedisArray currently not supported by HHVM.');
@@ -66,6 +66,7 @@ class RedisArrayTest extends RedisTest
         $this->assertInstanceOf('\RedisArray', $redisArray);
     }
 
+
     /**
      * @test
      */
@@ -96,22 +97,12 @@ class RedisArrayTest extends RedisTest
             $this->markTestSkipped('uopz extension is necessarry in order to stub "new".');
         }
 
-        uopz_backup('\RedisArray', '__construct');
-
-        $self = $this;
-        uopz_function(
-            '\RedisArray',
-            '__construct',
-            function ($serverArray, $actualRedisArrayOptions) use ($self, $redisArrayOptions) {
-                $self->assertEquals(
-                    $redisArrayOptions,
-                    $actualRedisArrayOptions
-                );
-            }
-        );
-
-        $this->getFreshDriver($driverOptions);
-
-        uopz_restore('\RedisArray', '__construct');
+        $driver = $this->getFreshDriver($driverOptions);
+        $class = new \ReflectionClass($driver);
+        $redisProperty = $class->getProperty('redis');
+        $redisProperty->setAccessible(true);
+        $redisArray = $redisProperty->getValue($driver);
+        $this->assertInstanceOf('\RedisArray', $redisArray);
+        $this->assertEquals(2, count($redisArray->_hosts()));
     }
 }

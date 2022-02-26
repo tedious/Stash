@@ -34,6 +34,10 @@ class Utilities
                 return 'bool';
             }
 
+            if (is_string($data)) {
+                return 'string';
+            }
+
             if (is_numeric($data)) {
                 if (is_numeric($data) && ($data >= 2147483648 || $data < -2147483648)) {
                     return 'serialize';
@@ -41,12 +45,6 @@ class Utilities
                     return 'numeric';
                 }
             }
-
-            if (is_string($data)) {
-                return 'string';
-            }
-
-            return 'none';
         }
 
         return 'serialize';
@@ -213,7 +211,7 @@ class Utilities
      * @throws Exception\RuntimeException
      * @throws Exception\InvalidArgumentException
      */
-    public static function checkFileSystemPermissions($path = null, $permissions)
+    public static function checkFileSystemPermissions($path, string $permissions)
     {
         if (!isset($path)) {
             throw new RuntimeException('Cache path was not set correctly.');

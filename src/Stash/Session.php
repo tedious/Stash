@@ -62,7 +62,7 @@ class Session implements \SessionHandlerInterface
      * @param  \Stash\Session $handler
      * @return bool
      */
-    public static function registerHandler(Session $handler)
+    public static function registerHandler(Session $handler): bool
     {
         // this isn't possible to test with the CLI phpunit test
         // @codeCoverageIgnoreStart
@@ -114,7 +114,7 @@ class Session implements \SessionHandlerInterface
      * @param  array $options
      * @return bool
      */
-    public function setOptions($options = array())
+    public function setOptions($options = array()) : void
     {
         $this->options = array_merge($this->options, $options);
     }
@@ -133,7 +133,7 @@ class Session implements \SessionHandlerInterface
      * @param  string $session_name
      * @return bool
      */
-    public function open($save_path, $session_name)
+    public function open($save_path, $session_name) : bool
     {
         if (isset($save_path) && $save_path !== '') {
             $this->path = $save_path;
@@ -147,7 +147,7 @@ class Session implements \SessionHandlerInterface
     }
 
 
-    protected function getCache($session_id)
+    protected function getCache($session_id) : \Stash\Item
     {
         $path = '/' .
             base64_encode($this->path) . '/' .
@@ -164,7 +164,7 @@ class Session implements \SessionHandlerInterface
      * @param  string $session_id
      * @return string
      */
-    public function read($session_id)
+    public function read($session_id) : string
     {
         $cache = $this->getCache($session_id);
         $data = $cache->get();
@@ -180,7 +180,7 @@ class Session implements \SessionHandlerInterface
      * @param  string $session_data
      * @return bool
      */
-    public function write($session_id, $session_data)
+    public function write($session_id, $session_data) : bool
     {
         $cache = $this->getCache($session_id);
 
@@ -194,7 +194,7 @@ class Session implements \SessionHandlerInterface
      *
      * @return bool
      */
-    public function close()
+    public function close() : bool
     {
         return true;
     }
@@ -206,7 +206,7 @@ class Session implements \SessionHandlerInterface
      * @param  string $session_id
      * @return bool
      */
-    public function destroy($session_id)
+    public function destroy($session_id) : bool
     {
         $cache = $this->getCache($session_id);
 
@@ -226,7 +226,7 @@ class Session implements \SessionHandlerInterface
      * @param  int  $maxlifetime
      * @return bool
      */
-    public function gc($maxlifetime)
+    public function gc($maxlifetime) : int|false
     {
         return $this->pool->purge();
     }

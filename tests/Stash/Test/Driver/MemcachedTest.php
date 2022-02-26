@@ -35,11 +35,14 @@ class MemcachedTest extends MemcacheTest
         return array_merge($options, $memcachedOptions);
     }
 
-    /**
-     * @expectedException Stash\Exception\RuntimeException
-     */
+    public function testIsAvailable()
+    {
+        $this->assertTrue(\Stash\Driver\Sub\Memcached::isAvailable());
+    }
+
     public function testSetHashException()
     {
+        $this->expectException('RuntimeException');
         $options = array();
         $options['servers'][] = array('127.0.0.1', '11211', '50');
         $options['servers'][] = array('127.0.0.1', '11211');
@@ -47,11 +50,9 @@ class MemcachedTest extends MemcacheTest
         $driver = new Memcache($options);
     }
 
-    /**
-     * @expectedException Stash\Exception\RuntimeException
-     */
     public function testSetDistributionException()
     {
+        $this->expectException('RuntimeException');
         $options = array();
         $options['servers'][] = array('127.0.0.1', '11211', '50');
         $options['servers'][] = array('127.0.0.1', '11211');
@@ -59,11 +60,9 @@ class MemcachedTest extends MemcacheTest
         $driver = new Memcache($options);
     }
 
-    /**
-     * @expectedException Stash\Exception\RuntimeException
-     */
     public function testSetSerializerException()
     {
+        $this->expectException('RuntimeException');
         $options = array();
         $options['servers'][] = array('127.0.0.1', '11211', '50');
         $options['servers'][] = array('127.0.0.1', '11211');
@@ -71,11 +70,9 @@ class MemcachedTest extends MemcacheTest
         $driver = new Memcache($options);
     }
 
-    /**
-     * @expectedException Stash\Exception\RuntimeException
-     */
     public function testSetNumberedValueException()
     {
+        $this->expectException('RuntimeException');
         $options = array();
         $options['servers'][] = array('127.0.0.1', '11211', '50');
         $options['servers'][] = array('127.0.0.1', '11211');
@@ -83,11 +80,9 @@ class MemcachedTest extends MemcacheTest
         $driver = new Memcache($options);
     }
 
-    /**
-     * @expectedException Stash\Exception\RuntimeException
-     */
     public function testSetBooleanValueException()
     {
+        $this->expectException('RuntimeException');
         $options = array();
         $options['servers'][] = array('127.0.0.1', '11211', '50');
         $options['servers'][] = array('127.0.0.1', '11211');

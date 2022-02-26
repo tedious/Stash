@@ -25,7 +25,7 @@ class RedisTest extends AbstractDriverTest
     protected $redisNoPort = '6381';
     protected $persistence = true;
 
-    protected function setUp()
+    protected function setUp() : void
     {
         if (!$this->setup) {
             $this->startTime = time();
@@ -67,6 +67,7 @@ class RedisTest extends AbstractDriverTest
 
     public function testBadDisconnect()
     {
+        $this->expectException('Warning');
         if (defined('HHVM_VERSION')) {
             $this->markTestSkipped('This test can not run on HHVM as HHVM throws a different set of errors.');
         }

@@ -41,7 +41,6 @@ class Sqlite extends AbstractDriver
     public function getDefaultOptions()
     {
         return array(
-            'path' => Utilities::getBaseDirectory($this),
             'filePermissions' => 0660,
             'dirPermissions' => 0770,
             'busyTimeout' => 500,
@@ -59,6 +58,10 @@ class Sqlite extends AbstractDriver
     {
         $options += $this->getDefaultOptions();
 
+        if (!isset($options['path'])) {
+            $options['path'] = Utilities::getBaseDirectory($this);
+        }
+
         $this->cachePath = rtrim($options['path'], '\\/') . DIRECTORY_SEPARATOR;
         $this->filePermissions = $options['filePermissions'];
         $this->dirPermissions = $options['dirPermissions'];
@@ -66,15 +69,9 @@ class Sqlite extends AbstractDriver
         $this->nesting = max((int) $options['nesting'], 0);
 
         Utilities::checkFileSystemPermissions($this->cachePath, $this->dirPermissions);
-
-        if (static::isAvailable() && Sub\SqlitePdo::isAvailable()) {
-            $this->driverClass = '\Stash\Driver\Sub\SqlitePdo';
-        } else {
-            throw new RuntimeException('No sqlite extension available.');
-        }
-
+        $this->driverClass = '\Stash\Driver\Sub\SqlitePdo';
         $driver = $this->getSqliteDriver(array('_none'));
-        if (!$driver) {
+        if (!static::isAvailable() || !Sub\SqlitePdo::isAvailable() || !$driver) {
             throw new RuntimeException('No Sqlite driver could be loaded.');
         }
     }
@@ -84,13 +81,8 @@ class Sqlite extends AbstractDriver
      */
     public function getData($key)
     {
-        if (!($sqlDriver = $this->getSqliteDriver($key))) {
-            return false;
-        }
-
         $sqlKey = $this->makeSqlKey($key);
-
-        if (!($data = $sqlDriver->get($sqlKey))) {
+        if (!($sqlDriver = $this->getSqliteDriver($key)) || !($data = $sqlDriver->get($sqlKey))) {
             return false;
         }
 

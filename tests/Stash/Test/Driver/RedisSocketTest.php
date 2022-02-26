@@ -17,7 +17,7 @@ namespace Stash\Test\Driver;
  */
 class RedisSocketTest extends RedisTest
 {
-    protected function setUp()
+    protected function setUp() : void
     {
         if (!$this->setup) {
             if (!($sock = @fsockopen('/tmp/redis.sock', null, $errno, $errstr, 1))) {

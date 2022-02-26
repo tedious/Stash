@@ -1,3 +1,13 @@
+## Upgrading to 0.14
+
+* Item set no longer saves
+
+    $item->save() has to be explicitly called after setting an item.
+
+* Item set no longer takes ttl parameter
+
+    $item->setTTL($ttl) now has to be called separately.
+
 ## Upgrading to 0.11
 
 

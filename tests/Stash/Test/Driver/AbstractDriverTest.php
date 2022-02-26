@@ -17,7 +17,7 @@ use Stash\Utilities;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
+abstract class AbstractDriverTest extends \Stash\Test\AbstractTest
 {
     protected $data = array('string' => 'Hello world!',
                             'complexString' => "\t\tHello\r\n\r\'\'World!\"\'\\",
@@ -44,14 +44,14 @@ abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
     protected $driverClass;
     protected $startTime;
     protected $setup = false;
-    protected $persistence = false;
+    protected $persistence = true;
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass() : void
     {
         Utilities::deleteRecursive(Utilities::getBaseDirectory());
     }
 
-    protected function setUp()
+    protected function setUp() : void
     {
         if (!$this->setup) {
             $this->startTime = time();
@@ -228,10 +228,7 @@ abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
         $driver=null;
     }
 
-    /**
-     * @depends testDestructor
-     */
-    public function testIsPersistant()
+    public function testIsPersistent()
     {
         if (!$driver = $this->getFreshDriver()) {
             $this->markTestSkipped('Driver class unsuited for current environment');

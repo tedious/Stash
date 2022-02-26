@@ -62,7 +62,7 @@ class Apc extends AbstractDriver
 
             // Test using the APCUIterator, as some versions of APCU have the
             // custom functions but not the iterator class.
-            'apcu' => class_exists('\APCUIterator')
+            'apcu' => class_exists('\APCUIterator', false)
         );
     }
 
@@ -161,7 +161,11 @@ class Apc extends AbstractDriver
     public static function isAvailable()
     {
         // Some versions of HHVM are missing the APCIterator
-        if (!class_exists('\APCIterator') && !class_exists('\APCUIterator')) {
+        if (!class_exists('\APCIterator', false) && !class_exists('\APCUIterator', false)) {
+            return false;
+        }
+
+        if (PHP_SAPI === 'cli' && (int) ini_get('apc.enable_cli') !== 1) {
             return false;
         }
 

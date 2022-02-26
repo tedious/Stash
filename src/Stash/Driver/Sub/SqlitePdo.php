@@ -201,12 +201,7 @@ class SqlitePdo
      */
     public static function isAvailable()
     {
-        if (!class_exists('\PDO', false)) {
-            return false;
-        }
-
         $drivers = \PDO::getAvailableDrivers();
-
         return in_array(static::$pdoDriver, $drivers);
     }
 
@@ -220,7 +215,7 @@ class SqlitePdo
     {
         $driver = $this->getDriver();
         $timeout = ceil($milliseconds / 1000);
-        $driver->setAttribute(\PDO::ATTR_TIMEOUT, $timeout);
+        $driver->setAttribute(\PDO::ATTR_TIMEOUT, (int) $timeout);
     }
 
     /**

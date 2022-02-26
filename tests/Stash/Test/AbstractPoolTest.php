@@ -22,7 +22,7 @@ use Stash\Test\Stubs\DriverExceptionStub;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class AbstractPoolTest extends \PHPUnit_Framework_TestCase
+class AbstractPoolTest extends AbstractTest
 {
     protected $data = array(array('test', 'test'));
     protected $multiData = array('key' => 'value',
@@ -48,7 +48,7 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
 
     public function testSetItemClass()
     {
-        $mockItem = $this->getMock('Stash\Interfaces\ItemInterface');
+        $mockItem = $this->createMock('Stash\Interfaces\ItemInterface');
         $mockClassName = get_class($mockItem);
         $pool = $this->getTestPool();
 
@@ -173,11 +173,11 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
 
 
     /**
-     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Invalid or Empty Node passed to getItem constructor.
      */
     public function testGetItemInvalidKeyMissingNode()
     {
+        $this->expectException('InvalidArgumentException');
         $pool = $this->getTestPool();
         $item = $pool->getItem('This/Test//Fail');
     }
@@ -278,11 +278,11 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Namespace must be alphanumeric.
      */
     public function testInvalidNamespace()
     {
+        $this->expectException('InvalidArgumentException');
         $pool = $this->getTestPool();
         $pool->setNamespace('!@#$%^&*(');
     }
@@ -317,8 +317,11 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
         // triggerlogging
         $pool->clear();
 
-        $this->assertInstanceOf('Stash\Test\Exception\TestException',
-            $logger->lastContext['exception'], 'Logger was passed exception in event context.');
+        $this->assertInstanceOf(
+            'Stash\Test\Exception\TestException',
+            $logger->lastContext['exception'],
+            'Logger was passed exception in event context.'
+        );
 
         $this->assertTrue(strlen($logger->lastMessage) > 0, 'Logger message set after "get" exception.');
         $this->assertEquals('critical', $logger->lastLevel, 'Exceptions logged as critical.');
@@ -337,8 +340,11 @@ class AbstractPoolTest extends \PHPUnit_Framework_TestCase
         // triggerlogging
         $pool->purge();
 
-        $this->assertInstanceOf('Stash\Test\Exception\TestException',
-            $logger->lastContext['exception'], 'Logger was passed exception in event context.');
+        $this->assertInstanceOf(
+            'Stash\Test\Exception\TestException',
+            $logger->lastContext['exception'],
+            'Logger was passed exception in event context.'
+        );
         $this->assertTrue(strlen($logger->lastMessage) > 0, 'Logger message set after "set" exception.');
         $this->assertEquals('critical', $logger->lastLevel, 'Exceptions logged as critical.');
     }

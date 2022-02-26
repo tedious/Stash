@@ -23,7 +23,7 @@ use Stash\Test\Stubs\PoolGetDriverStub;
  *
  * @todo find out why this has to be abstract to work (see https://github.com/tedivm/Stash/pull/10)
  */
-abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
+abstract class AbstractItemTest extends AbstractTest
 {
     protected $data = array('string' => 'Hello world!',
                             'complexString' => "\t\t\t\tHello\r\n\rWorld!",
@@ -48,12 +48,12 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
 
     protected $itemClass = '\Stash\Item';
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass() : void
     {
         Utilities::deleteRecursive(Utilities::getBaseDirectory());
     }
 
-    protected function setUp()
+    protected function setUp() : void
     {
         if (!$this->setup) {
             $this->startTime = time();
@@ -226,7 +226,7 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
         $sleepTime = ($end - $start) * 1000;
 
         $this->assertGreaterThan(500, $sleepTime, 'Sleep method sleeps for required time.');
-        $this->assertLessThan(520, $sleepTime, 'Sleep method does not oversleep.');
+        $this->assertLessThan(550, $sleepTime, 'Sleep method does not oversleep.');
 
         unset($sleepStash);
 
@@ -335,11 +335,11 @@ abstract class AbstractItemTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Stash\Exception\InvalidArgumentException
      * @expectedExceptionMessage expiresAt requires \DateTimeInterface or null
      */
     public function testExpiresAtException()
     {
+        $this->expectException('InvalidArgumentException');
         $stash = $this->testConstruct(array('base', 'expiration', 'test'));
         $stash->expiresAt(false);
     }

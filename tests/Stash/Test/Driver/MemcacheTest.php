@@ -32,7 +32,7 @@ class MemcacheTest extends AbstractDriverTest
         return array('extension' => $this->extension, 'servers' => $this->servers);
     }
 
-    protected function setUp()
+    protected function setUp() : void
     {
         if (!$this->setup) {
             $this->startTime = time();
@@ -60,6 +60,11 @@ class MemcacheTest extends AbstractDriverTest
             fclose($sock);
             $this->data['object'] = new \stdClass();
         }
+    }
+
+    public function testIsAvailable()
+    {
+        $this->assertTrue(\Stash\Driver\Sub\Memcache::isAvailable());
     }
 
     public function testConstructionOptions()
