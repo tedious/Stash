@@ -211,7 +211,7 @@ class Utilities
      * @throws Exception\RuntimeException
      * @throws Exception\InvalidArgumentException
      */
-    public static function checkFileSystemPermissions($path, string $permissions)
+    public static function checkFileSystemPermissions($path, int $permissions)
     {
         if (!isset($path)) {
             throw new RuntimeException('Cache path was not set correctly.');
