@@ -23,7 +23,7 @@ backwards compatible.
 
 ```js
 "require": {
-  "tedivm/stash": "0.14.*"
+  "tedivm/stash": "0.17.*"
 }
 ```
 
