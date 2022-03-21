@@ -12,6 +12,7 @@
 namespace Stash\Test;
 
 use Stash\Exception\InvalidArgumentException;
+use Stash\Invalidation;
 use Stash\Pool;
 use Stash\Driver\Ephemeral;
 use Stash\Test\Stubs\LoggerStub;
@@ -346,6 +347,18 @@ class AbstractPoolTest extends AbstractTest
         );
         $this->assertTrue(strlen($logger->lastMessage) > 0, 'Logger message set after "set" exception.');
         $this->assertEquals('critical', $logger->lastLevel, 'Exceptions logged as critical.');
+    }
+
+    public function testSetInvalidationMethod()
+    {
+        $pool = $this->getTestPool();
+
+        $pool->setInvalidationMethod(Invalidation::OLD, 'test1', 'test2');
+        $item = $pool->getItem('test/item');
+
+        $this->assertAttributeEquals(Invalidation::OLD, 'invalidationMethod', $item, 'Pool sets Item invalidation constant.');
+        $this->assertAttributeEquals('test1', 'invalidationArg1', $item, 'Pool sets Item invalidation argument 1.');
+        $this->assertAttributeEquals('test2', 'invalidationArg2', $item, 'Pool sets Item invalidation argument 2.');
     }
 
     /**
