@@ -16,7 +16,7 @@ use Stash\Utilities;
 use Stash\Exception\RuntimeException;
 
 /**
- * StashSqlite is a wrapper around one or more SQLite databases stored on the local system. While not as quick at at
+ * StashSqlite is a wrapper around one or more SQLite databases stored on the local system. While not as quick at
  * reading as the StashFilesystem driver this class is significantly better when it comes to clearing multiple keys
  * at once.
  *
@@ -81,7 +81,7 @@ class Sqlite extends AbstractDriver
      */
     public function getData($key)
     {
-        $sqlKey = $this->makeSqlKey($key);
+        $sqlKey = self::makeSqlKey($key);
         if (!($sqlDriver = $this->getSqliteDriver($key)) || !($data = $sqlDriver->get($sqlKey))) {
             return false;
         }
@@ -105,7 +105,7 @@ class Sqlite extends AbstractDriver
                            'encoding' => Utilities::encoding($data)
         );
 
-        return $sqlDriver->set($this->makeSqlKey($key), $storeData, $expiration);
+        return $sqlDriver->set(self::makeSqlKey($key), $storeData, $expiration);
     }
 
     /**
@@ -118,7 +118,7 @@ class Sqlite extends AbstractDriver
         }
 
         if (!is_null($key)) {
-            $sqlKey = $this->makeSqlKey($key);
+            $sqlKey = self::makeSqlKey($key);
         }
 
         foreach ($databases as $database) {
@@ -157,7 +157,7 @@ class Sqlite extends AbstractDriver
      *
      * @param  null|array               $key
      * @param  bool                     $name = false
-     * @return \Stash\Driver\Sub\Sqlite
+     * @return \Stash\Driver\Sub\SqlitePdo|false
      */
     protected function getSqliteDriver($key, $name = false)
     {
@@ -174,7 +174,7 @@ class Sqlite extends AbstractDriver
 
             $key = Utilities::normalizeKeys($key);
 
-            $nestingLevel = $this->nesting;
+            $nestingLevel = min($this->nesting, count($key)+1);
             $fileName = 'cache_';
             for ($i = 1; $i < $nestingLevel; $i++) {
                 $fileName .= $key[$i - 1] . '_';

@@ -48,6 +48,18 @@ class SqliteAnyTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($pool->save($item), 'Able to load and store with unconfigured extension.');
     }
 
+    public function testNesting()
+    {
+        $key = array('apple', 'sauce');
+
+        $driver = new Sqlite(array('nesting' => 3));
+        $pool = new Pool();
+        $pool->setDriver($driver);
+        $item = $pool->getItem('testKey');
+        $item->set($key);
+        $this->assertTrue($pool->save($item), 'Able to load and store with nesting level 3.');
+    }
+
     public static function tearDownAfterClass() : void
     {
         Utilities::deleteRecursive(Utilities::getBaseDirectory());
