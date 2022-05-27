@@ -11,6 +11,8 @@
 
 namespace Stash\Driver\Sub;
 
+use Stash\Exception\RuntimeException;
+
 /**
  * Class SqlitePDO
  *
@@ -243,8 +245,14 @@ class SqlitePdo
                 $dir = substr($this->path, 0, $pos);
             }
 
-            if (!is_dir($dir)) {
-                mkdir($dir, $this->dirPermissions, true);
+            if (!is_dir($dir) && !mkdir($dir, $this->dirPermissions, true) && !is_dir($dir)) {
+                throw new RuntimeException(sprintf('Directory "%s" was not created', $dir));
+            }
+            if (file_put_contents($this->path, '') === false) {
+                throw new RuntimeException(sprintf('Cache file "%s" was not created', basename($this->path)));
+            }
+            if (!chmod($this->path, $this->filePermissions)) {
+                throw new RuntimeException(sprintf('Cache file permissions for "%s" could not be set', basename($this->path)));
             }
             $runInstall = true;
         } else {
