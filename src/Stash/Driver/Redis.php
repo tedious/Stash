@@ -57,7 +57,10 @@ class Redis extends AbstractDriver
      *
      * The "database" option lets developers specific which specific database to use.
      *
-     * The "password" option is used for clusters which required authentication.
+     * The "password" option is used for clusters which require authentication.
+     *
+     * The "username" option is used for authentication with a non-default user, for clusters which have ACL rules.
+     * If "username" isn't set, but "password" is set, the `default` user will be used for authentication.
      *
      * @param array $options
      */
@@ -121,9 +124,18 @@ class Redis extends AbstractDriver
                 $redis->connect($server['server'], $port, $ttl);
             }
 
-            // auth - just password
+            // authentication
             if (isset($options['password'])) {
-                $redis->auth($options['password']);
+                if (isset($options['username'])) {
+                    $redis->auth(
+                        [
+                            'user' => $options['username'],
+                            'pass' => $options['password']
+                        ]
+                    );
+                } else {
+                    $redis->auth(['pass' => $options['password']]);
+                }
             }
 
             $this->redis = $redis;
