@@ -283,7 +283,7 @@ class Item implements ItemInterface
     /**
      * {@inheritdoc}
      *
-     * @param string $invalidation
+     * @param int $invalidation
      * @param mixed  $arg
      * @param mixed  $arg2
      * @return mixed|Null
@@ -357,7 +357,7 @@ class Item implements ItemInterface
      * {@inheritdoc}
      *
      * @param int $ttl time to live
-     * @return object data with new expiration date
+     * @return bool
      */
     public function lock($ttl = null)
     {
@@ -384,7 +384,7 @@ class Item implements ItemInterface
      * {@inheritdoc}
      *
      * @param mixed $value
-     * @return \Stash\Item
+     * @return \Stash\Item|false
      */
     public function set($value)
     {
@@ -523,8 +523,8 @@ class Item implements ItemInterface
     /**
      * {@inheritdoc}
      *
-     * @param int $ttl time to live
-     * @return bool
+     * @param int|\DateInterval $ttl time to live
+     * @return \Stash\Item|false
      */
     public function extend($ttl = null)
     {
@@ -532,7 +532,25 @@ class Item implements ItemInterface
             return false;
         }
 
-        return $this->set($this->get(), $ttl);
+        $expiration = $this->getExpiration();
+
+        if (is_numeric($ttl)) {
+            $dateInterval = \DateInterval::createFromDateString(abs($ttl) . ' seconds');
+            if ($ttl > 0) {
+                $expiration->add($dateInterval);
+            } else {
+                $expiration->sub($dateInterval);
+            }
+        } elseif ($ttl instanceof \DateInterval) {
+            $expiration->add($ttl);
+        } else {
+            $expiration = null;
+        }
+
+        if ($this->executeSet($this->get(), $expiration)) {
+            return $this;
+        }
+        return false;
     }
 
     /**
@@ -574,7 +592,7 @@ class Item implements ItemInterface
             $message,
             array(
                 'exception' => $exception,
-                 'key' => $this->keyString
+                'key' => $this->keyString
               )
         );
 
@@ -715,7 +733,7 @@ class Item implements ItemInterface
     /**
      * {@inheritdoc}
      *
-     * @return \DateTime
+     * @return \DateTime|false
      */
     public function getCreation()
     {
@@ -733,7 +751,7 @@ class Item implements ItemInterface
     /**
      * {@inheritdoc}
      *
-     * @return int date timestamp
+     * @return \DateTime date timestamp
      */
     public function getExpiration()
     {
