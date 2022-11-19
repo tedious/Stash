@@ -11,7 +11,15 @@
 namespace Stash;
 
 use Stash\Interfaces\PoolInterface;
-use Stash\Session\SessionHandlerInterface as SessionHandlerInterface;
+/*
+ * Rough fix for SessionHandlerInterface difference in gc
+ * return type after version PHP 8.0.0.
+ * To be compatible with PHP 7.x versions we fixed return type
+ * and suppress depreciation warning
+*/
+if (version_compare(PHP_VERSION,"8.0.0",">=")) {
+	$__ERROR_REPORTING_FIXED = error_reporting(E_ALL ^ E_DEPRECATED);
+}
 
 /**
  * Stash\Session lets developers use Stash's Pool class to back session storage.
@@ -55,41 +63,14 @@ class Session implements \SessionHandlerInterface
     protected $options = array();
 
     /**
-     * Registers a Session object with PHP as the session handler. This
-     * eliminates some boilerplate code from projects while also helping with
-     * the differences in php versions.
+     * Registers a Session object with PHP as the session handler. 
      *
      * @param  \Stash\Session $handler
      * @return bool
      */
     public static function registerHandler(Session $handler): bool
     {
-        // this isn't possible to test with the CLI phpunit test
-        // @codeCoverageIgnoreStart
-
-        if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
-            return session_set_save_handler($handler, true);
-        } else {
-            $results = session_set_save_handler(
-                array($handler, 'open'),
-                array($handler, 'close'),
-                array($handler, 'read'),
-                array($handler, 'write'),
-                array($handler, 'destroy'),
-                array($handler, 'gc')
-            );
-
-            if (!$results) {
-                return false;
-            }
-
-            // the following prevents unexpected effects when using objects as save handlers
-            register_shutdown_function('session_write_close');
-
-            return true;
-        }
-
-        // @codeCoverageIgnoreEnd
+        return session_set_save_handler($handler, true);
     }
 
     /**
@@ -223,11 +204,19 @@ class Session implements \SessionHandlerInterface
      * gc_probability as zero) and call the "purge" function on the Stash\Pool
      * class directly.
      *
-     * @param  int  $maxlifetime
+     * @param  int|false  $maxlifetime
      * @return bool
      */
-    public function gc($maxlifetime) : int|false
+	//#[ReturnTypeWillChange]
+	public function gc($maxlifetime)
     {
         return $this->pool->purge();
     }
+}
+
+/*
+ * Restore error reporting to previous state
+ */
+if (isset($__ERROR_REPORTING_FIXED)) {
+	error_reporting($__ERROR_REPORTING_FIXED);
 }
