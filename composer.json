@@ -26,7 +26,7 @@
   ],
   "require": {
     "php": ">7.0",
-    "psr/cache": "~1.0"
+    "psr/cache": ">=1.0,<4"
   },
   "require-dev": {
     "php": "^7.2|^8.0",
