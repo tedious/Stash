@@ -22,7 +22,7 @@ use Stash\Test\Stubs\DriverExceptionStub;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class AbstractPoolTest extends AbstractTest
+class AbstractPoolTestCase extends AbstractTestCase
 {
     protected $data = array(array('test', 'test'));
     protected $multiData = array('key' => 'value',

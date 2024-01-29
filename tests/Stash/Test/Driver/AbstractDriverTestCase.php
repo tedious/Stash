@@ -17,7 +17,7 @@ use Stash\Utilities;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-abstract class AbstractDriverTest extends \Stash\Test\AbstractTest
+abstract class AbstractDriverTestCase extends \Stash\Test\AbstractTestCase
 {
     protected $data = array('string' => 'Hello world!',
                             'complexString' => "\t\tHello\r\n\r\'\'World!\"\'\\",

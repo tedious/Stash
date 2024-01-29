@@ -19,7 +19,7 @@ use Stash\Driver\Ephemeral;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class CompositeTest extends AbstractDriverTest
+class CompositeTest extends AbstractDriverTestCase
 {
     protected $driverClass = 'Stash\Driver\Composite';
     protected $subDrivers;

@@ -17,7 +17,7 @@ use Stash\Utilities;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class SqlitePdoSqlite3Test extends AbstractDriverTest
+class SqlitePdoSqlite3Test extends AbstractDriverTestCase
 {
     protected $driverClass = 'Stash\Driver\Sqlite';
     protected $subDriverClass = 'Stash\Driver\Sub\SqlitePdo';

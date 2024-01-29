@@ -15,6 +15,6 @@ namespace Stash\Test;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class ItemTest extends AbstractItemTest
+class ItemTest extends AbstractItemTestCase
 {
 }

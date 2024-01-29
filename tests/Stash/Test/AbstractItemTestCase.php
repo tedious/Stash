@@ -24,7 +24,7 @@ use Stash\Test\Stubs\PoolGetDriverStub;
  *
  * @todo find out why this has to be abstract to work (see https://github.com/tedivm/Stash/pull/10)
  */
-abstract class AbstractItemTest extends AbstractTest
+abstract class AbstractItemTestCase extends AbstractTestCase
 {
     protected $data = array('string' => 'Hello world!',
                             'complexString' => "\t\t\t\tHello\r\n\rWorld!",

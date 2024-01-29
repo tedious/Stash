@@ -17,7 +17,7 @@ use Stash\Pool;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class PoolNamespaceTest extends AbstractPoolTest
+class PoolNamespaceTest extends AbstractPoolTestCase
 {
     protected function getTestPool($skipNametest = false)
     {

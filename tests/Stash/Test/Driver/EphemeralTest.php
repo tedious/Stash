@@ -18,7 +18,7 @@ use Stash\Test\Stubs\PoolGetDriverStub;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class EphemeralTest extends AbstractDriverTest
+class EphemeralTest extends AbstractDriverTestCase
 {
     protected $driverClass = 'Stash\Driver\Ephemeral';
     protected $persistence = false;

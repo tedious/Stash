@@ -15,7 +15,7 @@ namespace Stash\Test\Driver;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class RedisTest extends AbstractDriverTest
+class RedisTest extends AbstractDriverTestCase
 {
     protected $driverClass = 'Stash\Driver\Redis';
     protected $redisServer = '127.0.0.1';
