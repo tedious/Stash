@@ -11,6 +11,7 @@
 
 namespace Stash\Test\Stubs;
 
+use Psr\Log\LoggerInterface;
 use Stash;
 
 /**
@@ -21,7 +22,7 @@ use Stash;
  *
  * @codeCoverageIgnore
  */
-class LoggerStub
+class LoggerStub implements LoggerInterface
 {
     public $lastContext;
     public $lastLevel;

@@ -25,11 +25,10 @@
     }
   ],
   "require": {
-    "php": ">7.0",
-    "psr/cache": "~1.0"
+    "php": "^8.0",
+    "psr/cache": "^2|^3"
   },
   "require-dev": {
-    "php": "^7.2|^8.0",
     "friendsofphp/php-cs-fixer": "^2.8",
     "phpunit/phpunit": "^9.0",
     "php-coveralls/php-coveralls": "^2.0",
@@ -41,6 +40,6 @@
     }
   },
   "provide": {
-    "psr/cache-implementation": "1.0.0"
+    "psr/cache-implementation": "2.0|3.0"
   }
 }
