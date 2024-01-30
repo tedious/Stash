@@ -13,6 +13,7 @@ namespace Stash\Test\Stubs;
 
 use Psr\Cache\CacheItemInterface;
 use Stash\Interfaces\PoolInterface;
+use Stash\Item;
 
 /**
  *
@@ -24,88 +25,88 @@ class PoolGetDriverStub implements PoolInterface
 {
     protected $driver;
 
-    public function setDriver(\Stash\Interfaces\DriverInterface $driver)
+    public function setDriver(\Stash\Interfaces\DriverInterface $driver): void
     {
         $this->driver = $driver;
     }
 
-    public function getDriver()
+    public function getDriver(): \Stash\Interfaces\DriverInterface
     {
         return $this->driver;
     }
 
-    public function setItemClass($class)
+    public function setItemClass(string $class): bool
     {
         return true;
     }
 
-    public function getItem($key)
+    public function getItem(string $key): CacheItemInterface
+    {
+        return new Item();
+    }
+
+    public function getItems(array $keys = array()): iterable
+    {
+        return [];
+    }
+
+    public function clear(): bool
     {
         return false;
     }
 
-    public function getItems(array $keys = array())
+    public function purge(): bool
     {
         return false;
     }
 
-    public function clear()
+    public function setNamespace(string $namespace = null): bool
     {
         return false;
     }
 
-    public function purge()
+    public function getNamespace(): bool|string
     {
         return false;
     }
 
-    public function setNamespace($namespace = null)
+    public function setLogger($logger): bool
     {
         return false;
     }
 
-    public function getNamespace()
+    public function setInvalidationMethod($invalidation, $arg = null, $arg2 = null): bool
     {
         return false;
     }
 
-    public function setLogger($logger)
+    public function hasItem($key): bool
     {
         return false;
     }
 
-    public function setInvalidationMethod($invalidation, $arg = null, $arg2 = null)
+    public function commit(): bool
     {
         return false;
     }
 
-    public function hasItem($key)
+    public function saveDeferred(CacheItemInterface $item): bool
     {
         return false;
     }
 
-    public function commit()
+    public function save(CacheItemInterface $item): bool
     {
         return false;
     }
 
-    public function saveDeferred(CacheItemInterface $item)
-    {
-        return false;
-    }
-
-    public function save(CacheItemInterface $item)
-    {
-        return false;
-    }
-
-    public function deleteItems(array $keys)
+    public function deleteItems(array $keys): bool
     {
         return false;
     }
 
 
-    public function deleteItem($key)
+    public function deleteItem($key): bool
     {
         return false;
     }

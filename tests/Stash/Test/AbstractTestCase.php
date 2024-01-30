@@ -17,7 +17,7 @@ use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-abstract class AbstractTest extends \PHPUnit\Framework\TestCase
+abstract class AbstractTestCase extends \PHPUnit\Framework\TestCase
 {
   use ArraySubsetAsserts;
 

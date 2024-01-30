@@ -33,4 +33,5 @@ jobs:
     - name: Run Tests
       uses: php-actions/phpunit@v3
       with:
+        version: 9.6.16
         php_version: ${{ matrix.php_version }}

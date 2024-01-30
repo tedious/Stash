@@ -15,7 +15,7 @@ namespace Stash\Test\Driver;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class ApcTest extends AbstractDriverTest
+class ApcTest extends AbstractDriverTestCase
 {
     protected $driverClass = 'Stash\Driver\Apc';
     protected $persistence = true;

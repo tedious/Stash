@@ -11,6 +11,7 @@
 
 namespace Stash\Test;
 
+use Stash\Exception\ItemKeyMissingException;
 use Stash\Item;
 use Stash\Invalidation;
 use Stash\Utilities;
@@ -23,7 +24,7 @@ use Stash\Test\Stubs\PoolGetDriverStub;
  *
  * @todo find out why this has to be abstract to work (see https://github.com/tedivm/Stash/pull/10)
  */
-abstract class AbstractItemTest extends AbstractTest
+abstract class AbstractItemTestCase extends AbstractTestCase
 {
     protected $data = array('string' => 'Hello world!',
                             'complexString' => "\t\t\t\tHello\r\n\rWorld!",
@@ -115,12 +116,17 @@ abstract class AbstractItemTest extends AbstractTest
 
             $this->assertTrue($stash->set($value)->save(), 'Driver class able to store data type ' . $type);
         }
+    }
+
+    public function testSetException()
+    {
+        $this->expectException(ItemKeyMissingException::class);
 
         $item = $this->getItem();
         $poolStub = new PoolGetDriverStub();
         $poolStub->setDriver(new Ephemeral(array()));
         $item->setPool($poolStub);
-        $this->assertFalse($item->set($this->data), 'Item without key returns false for set.');
+        $item->set($this->data);
     }
 
     /**

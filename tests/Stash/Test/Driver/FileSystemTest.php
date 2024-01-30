@@ -24,7 +24,7 @@ function strdup($str)
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class FileSystemTest extends AbstractDriverTest
+class FileSystemTest extends AbstractDriverTestCase
 {
     protected $driverClass = 'Stash\Driver\FileSystem';
     protected $extension = '.php';

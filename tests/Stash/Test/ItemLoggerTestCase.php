@@ -21,7 +21,7 @@ use Stash\Driver\Ephemeral as Ephemeral;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class ItemLoggerTest extends AbstractTest
+class ItemLoggerTestCase extends AbstractTestCase
 {
     protected function getItem($key, $exceptionDriver = false)
     {

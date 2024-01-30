@@ -13,6 +13,8 @@ namespace Stash\Interfaces;
 
 use \Psr\Cache\CacheItemPoolInterface;
 use \Psr\Cache\CacheItemInterface;
+use Psr\Log\LoggerInterface;
+use Stash\Exception\ItemKeyMissingException;
 
 /**
  *
@@ -31,7 +33,7 @@ interface PoolInterface extends CacheItemPoolInterface
      * @return bool
      * @throws \InvalidArgumentException When passed invalid or nonexistant classes.
      */
-    public function setItemClass($class);
+    public function setItemClass(string $class): bool;
 
     /**
      * Returns an initialized Item for a given Key.
@@ -57,8 +59,9 @@ interface PoolInterface extends CacheItemPoolInterface
      * @param  string              $key
      * @return ItemInterface
      * @throws \InvalidArgumentException
+     * @throws ItemKeyMissingException When the item cannot be saved due to missing item key
      */
-    public function getItem($key);
+    public function getItem(string $key): CacheItemInterface;
 
     /**
      * Returns a group of cache objects in an \Iterator
@@ -67,9 +70,9 @@ interface PoolInterface extends CacheItemPoolInterface
      * each key passed, but is not required to maintain an order.
      *
      * @param  array     $keys
-     * @return array|\Traversable
+     * @return iterable
      */
-    public function getItems(array $keys = array());
+    public function getItems(array $keys = []): iterable;
 
     /**
      * Empties the entire cache pool of all Items.
@@ -78,7 +81,7 @@ interface PoolInterface extends CacheItemPoolInterface
      *
      * @return bool True on success
      */
-    public function clear();
+    public function clear(): bool;
 
     /**
      * The Purge function allows drivers to perform basic maintenance tasks, such as removing stale or expired items
@@ -89,7 +92,7 @@ interface PoolInterface extends CacheItemPoolInterface
      *
      * @return bool success
      */
-    public function purge();
+    public function purge(): bool;
 
     /**
      * Sets the driver for use by the caching system. This driver handles the direct interfaceion with the caching
@@ -97,66 +100,66 @@ interface PoolInterface extends CacheItemPoolInterface
      *
      * @param DriverInterface $driver
      */
-    public function setDriver(\Stash\Interfaces\DriverInterface $driver);
+    public function setDriver(DriverInterface $driver): void;
 
     /**
      * Returns the current driver used by the Pool.
      *
      * @return DriverInterface
      */
-    public function getDriver();
+    public function getDriver(): DriverInterface;
 
     /**
      * Places the Pool inside of a "namespace". All Items inside a specific namespace should be completely segmented
      * from all other Items.
      *
-     * @param  string                    $namespace Namespaces must be alphanumeric
+     * @param  string|null               $namespace Namespaces must be alphanumeric
      * @return bool
      * @throws \InvalidArgumentException Namespaces must be alphanumeric
      */
-    public function setNamespace($namespace = null);
+    public function setNamespace(string $namespace = null): bool;
 
     /**
      * Returns the current namespace, or false if no namespace was set.
      *
      * @return string|false
      */
-    public function getNamespace();
+    public function getNamespace(): string|bool;
 
     /**
      * Sets a PSR\Logger style logging client to enable the tracking of errors.
      *
-     * @param  \PSR\Log\LoggerInterface $logger
+     * @param  LoggerInterface $logger
      * @return bool
      */
-    public function setLogger($logger);
+    public function setLogger(LoggerInterface $logger): bool;
 
     /**
      * Sets the default cache invalidation method for items created by this pool object.
      *
-     * @see Stash\Invalidation
+     * @see \Stash\Invalidation
      *
      * @param int   $invalidation A Stash\Invalidation constant
      * @param mixed $arg          First argument for invalidation method
      * @param mixed $arg2         Second argument for invalidation method
      */
-    public function setInvalidationMethod($invalidation, $arg = null, $arg2 = null);
+    public function setInvalidationMethod(int $invalidation, mixed $arg = null, mixed $arg2 = null): bool;
 
     /**
     * Forces any save-deferred objects to get flushed to the backend drivers.
     *
     * @return bool
     */
-    public function commit();
+    public function commit(): bool;
 
     /**
     * Sets an Item to be saved at some point. This allows buffering for
     * multi-save events.
     *
     * @param CacheItemInterface $item
-    * @return static The invoked object.
+    * @return bool.
     */
-    public function saveDeferred(CacheItemInterface $item);
+    public function saveDeferred(CacheItemInterface $item): bool;
 
     /**
     * Sets an Item to be saved immediately.
@@ -164,7 +167,7 @@ interface PoolInterface extends CacheItemPoolInterface
     * @param CacheItemInterface $item
     * @return bool
     */
-    public function save(CacheItemInterface $item);
+    public function save(CacheItemInterface $item): bool;
 
     /**
      * Removes multiple items from the pool by their key.
@@ -172,7 +175,7 @@ interface PoolInterface extends CacheItemPoolInterface
      * @param array $keys
      * @return bool
      */
-    public function deleteItems(array $keys);
+    public function deleteItems(array $keys): bool;
 
     /**
      * Removes single item from the pool by its key.
@@ -180,7 +183,7 @@ interface PoolInterface extends CacheItemPoolInterface
      * @param string $key
      * @return bool
      */
-    public function deleteItem($key);
+    public function deleteItem(string $key): bool;
 
     /**
     * Checks for the existance of an item in the cache.
@@ -188,5 +191,5 @@ interface PoolInterface extends CacheItemPoolInterface
     * @param  string $key
     * @return boolean True if item exists in the cache, false otherwise.
     */
-    public function hasItem($key);
+    public function hasItem(string $key): bool;
 }

@@ -19,7 +19,7 @@ use Stash\Item;
  * @package Stash
  * @author  Robert Hafner <tedivm@tedivm.com>
  */
-class MemcacheTest extends AbstractDriverTest
+class MemcacheTest extends AbstractDriverTestCase
 {
     protected $driverClass = 'Stash\Driver\Memcache';
     protected $extension = 'memcache';

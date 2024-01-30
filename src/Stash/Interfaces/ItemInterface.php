@@ -12,6 +12,7 @@
 namespace Stash\Interfaces;
 
 use \Psr\Cache\CacheItemInterface;
+use Psr\Log\LoggerInterface;
 
 interface ItemInterface extends CacheItemInterface
 {
@@ -22,7 +23,7 @@ interface ItemInterface extends CacheItemInterface
      *
      * @param PoolInterface $driver
      */
-    public function setPool(PoolInterface $driver);
+    public function setPool(PoolInterface $driver): void;
 
     /**
      * Takes and sets the key and namespace.
@@ -32,7 +33,7 @@ interface ItemInterface extends CacheItemInterface
      * @param array       $key
      * @param string|null $namespace
      */
-    public function setKey(array $key, $namespace = null);
+    public function setKey(array $key, string $namespace = null): void;
 
     /**
      * This disables any IO operations by this object, effectively preventing
@@ -40,7 +41,7 @@ interface ItemInterface extends CacheItemInterface
      *
      * @return bool
      */
-    public function disable();
+    public function disable(): bool;
 
     /**
      * Returns the key as a string. This is particularly useful when the Item is
@@ -48,7 +49,7 @@ interface ItemInterface extends CacheItemInterface
      *
      * @return string
      */
-    public function getKey();
+    public function getKey(): string;
 
     /**
      * Clears the current Item. If hierarchical or "stackable" caching is being
@@ -56,7 +57,7 @@ interface ItemInterface extends CacheItemInterface
      *
      * @return bool
      */
-    public function clear();
+    public function clear(): bool;
 
     /**
      * Returns the data retrieved from the cache. Since this can return false or
@@ -67,21 +68,21 @@ interface ItemInterface extends CacheItemInterface
      *
      * @return mixed
      */
-    public function get();
+    public function get(): mixed;
 
     /**
      * Returns true if the cached item is valid and usable.
      *
      * @return bool
      */
-    public function isHit();
+    public function isHit(): bool;
 
     /**
      * Returns true if the cached item needs to be refreshed.
      *
      * @return bool
      */
-    public function isMiss();
+    public function isMiss(): bool;
 
     /**
      * Enables stampede protection by marking this specific instance of the Item
@@ -90,7 +91,7 @@ interface ItemInterface extends CacheItemInterface
      * @param  null $ttl
      * @return bool
      */
-    public function lock($ttl = null);
+    public function lock(int $ttl = null): bool;
 
     /**
      * Takes and stores data for later retrieval. This data can be any php data,
@@ -100,23 +101,23 @@ interface ItemInterface extends CacheItemInterface
      * @param  mixed $value bool
      * @return self
      */
-    public function set($value);
+    public function set(mixed $value): static;
 
     /**
      * Extends the expiration on the current cached item. For some engines this
      * can be faster than storing the item again.
      *
-     * @param  null $ttl
-     * @return bool
+     * @param  int|\DateInterval|null $ttl
+     * @return \Stash\Item|bool
      */
-    public function extend($ttl = null);
+    public function extend(int|\DateInterval $ttl = null): \Stash\Item|bool;
 
     /**
      * Return true if caching is disabled
      *
      * @return bool True if caching is disabled.
      */
-    public function isDisabled();
+    public function isDisabled(): bool;
 
     /**
      * Sets a PSR\Logger style logging client to enable the tracking of errors.
@@ -124,61 +125,61 @@ interface ItemInterface extends CacheItemInterface
      * @param  \PSR\Log\LoggerInterface $logger
      * @return bool
      */
-    public function setLogger($logger);
+    public function setLogger(LoggerInterface $logger): bool;
 
     /**
      * Returns the record's creation time or false if it isn't set
      *
-     * @return \DateTime
+     * @return \DateTime|bool
      */
-    public function getCreation();
+    public function getCreation(): \DateTime|bool;
 
     /**
      * Returns the record's expiration timestamp or false if no expiration timestamp is set
      *
      * @return \DateTime
      */
-    public function getExpiration();
+    public function getExpiration(): \DateTime;
 
     /**
     * Sets the expiration based off of an integer or DateInterval
     *
-    * @param int|\DateInterval $time
+    * @param int|\DateInterval|null $time
     * @return self
     */
-    public function expiresAfter($time);
+    public function expiresAfter(int|\DateInterval|null $time): static;
 
     /**
     * Sets the expiration to a specific time.
     *
-    * @param \DateTimeInterface $expiration
+    * @param \DateTimeInterface|null $expiration
     * @return self
     */
-    public function expiresAt($expiration);
+    public function expiresAt(\DateTimeInterface|null $expiration): static;
 
     /**
     * Sets the expiration based off a an integer, date interval, or date
     *
-    * @param mixed $ttl An integer, date interval, or date
+    * @param int|\DateInterval|\DateTimeInterface|null $ttl An integer, date interval, or date
     * @return self
     */
-    public function setTTL($ttl = null);
+    public function setTTL(int|\DateInterval|\DateTimeInterface $ttl = null): static;
 
     /**
     * Set the cache invalidation method for this item.
     *
-    * @see Stash\Invalidation
+    * @see \Stash\Invalidation
     *
     * @param int   $invalidation A Stash\Invalidation constant
     * @param mixed $arg          First argument for invalidation method
     * @param mixed $arg2         Second argument for invalidation method
     */
-    public function setInvalidationMethod($invalidation, $arg = null, $arg2 = null);
+    public function setInvalidationMethod(int $invalidation, mixed $arg = null, mixed $arg2 = null): void;
 
     /**
     * Persists the Item's value to the backend storage.
     *
     * @return bool
     */
-    public function save();
+    public function save(): bool;
 }
