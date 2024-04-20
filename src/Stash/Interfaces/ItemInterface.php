@@ -88,7 +88,7 @@ interface ItemInterface extends CacheItemInterface
      * Enables stampede protection by marking this specific instance of the Item
      * as the one regenerating the cache.
      *
-     * @param  null $ttl
+     * @param  ?int $ttl
      * @return bool
      */
     public function lock(int $ttl = null): bool;
