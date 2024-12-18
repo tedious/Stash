@@ -100,7 +100,7 @@ class Utilities
      * @param  DriverInterface $driver
      * @return string          Path for Stash files
      */
-    public static function getBaseDirectory(DriverInterface $driver = null)
+    public static function getBaseDirectory(?DriverInterface $driver = null)
     {
         $tmp = rtrim(sys_get_temp_dir(), '/\\') . '/';
 

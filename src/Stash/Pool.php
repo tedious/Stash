@@ -92,7 +92,7 @@ class Pool implements PoolInterface
      *
      * @param DriverInterface $driver
      */
-    public function __construct(DriverInterface $driver = null)
+    public function __construct(?DriverInterface $driver = null)
     {
         if (isset($driver)) {
             $this->setDriver($driver);
@@ -296,7 +296,7 @@ class Pool implements PoolInterface
     /**
      * {@inheritdoc}
      */
-    public function setNamespace(string $namespace = null): bool
+    public function setNamespace(?string $namespace = null): bool
     {
         if (is_null($namespace)) {
             $this->namespace = null;

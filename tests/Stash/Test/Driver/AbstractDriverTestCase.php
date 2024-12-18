@@ -66,7 +66,7 @@ abstract class AbstractDriverTestCase extends \Stash\Test\AbstractTestCase
         }
     }
 
-    protected function getFreshDriver(array $options = null)
+    protected function getFreshDriver(?array $options = null)
     {
         $driverClass = $this->driverClass;
 
