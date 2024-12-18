@@ -173,7 +173,7 @@ class Item implements ItemInterface
      * @param array $key        the key to set for this cache item
      * @param string $namespace the namespace for this cache item
      */
-    public function setKey(array $key, string $namespace = null): void
+    public function setKey(array $key, ?string $namespace = null): void
     {
         $this->namespace = $namespace;
 
@@ -360,7 +360,7 @@ class Item implements ItemInterface
      * @param int $ttl time to live
      * @return bool
      */
-    public function lock(int $ttl = null): bool
+    public function lock(?int $ttl = null): bool
     {
         if ($this->isDisabled()) {
             return true;
@@ -407,7 +407,7 @@ class Item implements ItemInterface
      * @param int|\DateInterval|\DateTimeInterface|null $ttl time to live
      * @return \Stash\Item
      */
-    public function setTTL(int|\DateInterval|\DateTimeInterface $ttl = null): static
+    public function setTTL(int|\DateInterval|\DateTimeInterface|null $ttl = null): static
     {
         if (is_numeric($ttl) || ($ttl instanceof \DateInterval)) {
             return $this->expiresAfter($ttl);
@@ -427,7 +427,7 @@ class Item implements ItemInterface
      * @throws \Stash\Exception\InvalidArgumentException
      * @return \Stash\Item
      */
-    public function expiresAt(int|\DateInterval|\DateTimeInterface $expiration = null): static
+    public function expiresAt(int|\DateInterval|\DateTimeInterface|null $expiration = null): static
     {
         if (!is_null($expiration) && !($expiration instanceof \DateTimeInterface)) {
             # For compatbility with PHP 5.4 we also allow inheriting from the DateTime object.
@@ -526,10 +526,10 @@ class Item implements ItemInterface
     /**
      * {@inheritdoc}
      *
-     * @param int|\DateInterval $ttl time to live
+     * @param int|\DateInterval|null $ttl time to live
      * @return \Stash\Item|false
      */
-    public function extend(int|\DateInterval $ttl = null): \Stash\Item|bool
+    public function extend(int|\DateInterval|null $ttl = null): \Stash\Item|bool
     {
         if ($this->isDisabled()) {
             return false;

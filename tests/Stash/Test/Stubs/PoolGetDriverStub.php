@@ -60,7 +60,7 @@ class PoolGetDriverStub implements PoolInterface
         return false;
     }
 
-    public function setNamespace(string $namespace = null): bool
+    public function setNamespace(?string $namespace = null): bool
     {
         return false;
     }

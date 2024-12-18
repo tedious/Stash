@@ -117,7 +117,7 @@ interface PoolInterface extends CacheItemPoolInterface
      * @return bool
      * @throws \InvalidArgumentException Namespaces must be alphanumeric
      */
-    public function setNamespace(string $namespace = null): bool;
+    public function setNamespace(?string $namespace = null): bool;
 
     /**
      * Returns the current namespace, or false if no namespace was set.

@@ -33,7 +33,7 @@ interface ItemInterface extends CacheItemInterface
      * @param array       $key
      * @param string|null $namespace
      */
-    public function setKey(array $key, string $namespace = null): void;
+    public function setKey(array $key, ?string $namespace = null): void;
 
     /**
      * This disables any IO operations by this object, effectively preventing
@@ -91,7 +91,7 @@ interface ItemInterface extends CacheItemInterface
      * @param  null $ttl
      * @return bool
      */
-    public function lock(int $ttl = null): bool;
+    public function lock(?int $ttl = null): bool;
 
     /**
      * Takes and stores data for later retrieval. This data can be any php data,
@@ -110,7 +110,7 @@ interface ItemInterface extends CacheItemInterface
      * @param  int|\DateInterval|null $ttl
      * @return \Stash\Item|bool
      */
-    public function extend(int|\DateInterval $ttl = null): \Stash\Item|bool;
+    public function extend(int|\DateInterval|null $ttl = null): \Stash\Item|bool;
 
     /**
      * Return true if caching is disabled
@@ -163,7 +163,7 @@ interface ItemInterface extends CacheItemInterface
     * @param int|\DateInterval|\DateTimeInterface|null $ttl An integer, date interval, or date
     * @return self
     */
-    public function setTTL(int|\DateInterval|\DateTimeInterface $ttl = null): static;
+    public function setTTL(int|\DateInterval|\DateTimeInterface|null $ttl = null): static;
 
     /**
     * Set the cache invalidation method for this item.
