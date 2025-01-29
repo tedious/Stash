@@ -67,7 +67,7 @@ class RedisTest extends AbstractDriverTestCase
 
     public function testBadDisconnect()
     {
-        $this->expectException('Warning');
+        $this->expectException("RedisException");
         if (defined('HHVM_VERSION')) {
             $this->markTestSkipped('This test can not run on HHVM as HHVM throws a different set of errors.');
         }
