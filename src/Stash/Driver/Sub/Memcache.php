@@ -65,7 +65,7 @@ class Memcache
             return true;
         }
 
-        return $this->memcached->set($key, array('data' => $value, 'expiration' => $expire), MEMCACHE_COMPRESSED, $expire);
+        return $this->memcached->set($key, array('data' => $value, 'expiration' => $expire), false, $expire);
     }
 
     /**
