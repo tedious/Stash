@@ -198,7 +198,7 @@ class Redis extends AbstractDriver
      */
     public function storeData($key, $data, $expiration)
     {
-        $store = array('data' => $data, 'expiration' => $expiration);
+        $store = serialize(array('data' => $data, 'expiration' => $expiration));
         if (is_null($expiration)) {
             return $this->redis->set($this->makeKeyString($key), $store);
         }
