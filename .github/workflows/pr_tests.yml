@@ -31,7 +31,7 @@ jobs:
       uses: php-actions/composer@v5
 
     - name: Run Tests
-      uses: php-actions/phpunit@v3
+      uses: php-actions/phpunit@v4
       with:
         version: 9.6.16
         php_version: ${{ matrix.php_version }}
